@@ -1,0 +1,3 @@
+[submodule "accelerators"]
+	path = accelerators
+	url = https://gitenterprise.xilinx.com/aisw/dpu_example
