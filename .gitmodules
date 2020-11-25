@@ -1,3 +1,7 @@
 [submodule "accelerators"]
 	path = accelerators
 	url = https://gitenterprise.xilinx.com/aisw/dpu_example
+[submodule "petalinux/xilinx-kv260-smartcamera-2020.2-final"]
+	path = petalinux/xilinx-kv260-smartcamera-2020.2-final
+	url = https://gitenterprise.xilinx.com/PAEG/xilinx-SOM-functional-bsp.git
+	branch = EA1
