@@ -1,0 +1,89 @@
+1. File structure:
+    The application folder is /home/root/somapp [! TO BE CHANGED !]
+        Binary File                     Folder/File                 Description
+            somapp:                     somapp                      main app
+        Script File:
+                                        script/setupmipi.sh         find mipi meida number, to be used by somapp.
+                                        script/01.mipi-rtsp.sh      call somapp to run facedetction and send out rtsp stream.
+                                        script/02.mipi-dp.sh        call somapp to run facedetction and display on DP display.
+                                        script/03.file-file.sh      call somapp to run facedetction and display on input h264/5
+                                                                    file and generate output h264/5 with detection boxes.
+        configuration File:
+                                        kernel_boundingbox_facedetect.json
+                                        kernel_densebox_640_360.json
+                                        kernel_xpp_pipeline.json
+    Jupyter notebook file:
+                                        /usr/share/notebooks/somapp/AA1.ipynb
+                                                                    Jupyter notebook file for MIPI->RTSP demo.
+
+2. How to run application:
+    cd /home/root/somapp
+
+    1) MIPI RTSP server:
+       a) ./01.mipi-rtsp.sh will start rtsp server for mipi captured images
+       b) run "ffplay rtsp://boardip:5000/test" on other pc having access to the board,
+          will receive the rtsp stream.
+       c) script accepts ${width} ${height} as the 1st and 2nd parameter, the default is 1920 x 1080
+
+    2) MIPI DP display
+       a) connect the monitor to dp connector on the board, and run:
+       b) ./02.mipi-dp.sh will play the captured video with detection results on monitor.
+       c) script accepts ${width} ${height} as the 1st and 2nd parameter, the default is 1920 x 1080
+
+    3) File to File
+       a) ./03.file-to-file.sh
+       b) Read in the sample video file from "/usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264",
+          perform detection and generate video with detection bbox, save as ./out.h264
+
+3. More combinations based on somapp invocation:
+   Above 3 scripts works as examples to show capability of the somapp by giving proper parameters.
+   More combinations could be made based on the options provided by somapp.
+   You can get detailed application options as following by invoking ./somapp --help.
+
+    Usage:
+      somapp [OPTION?] - Application for facedetion detction on SoM board of Xilinx.
+    
+    Help Options:
+      -?, --help                        Show help options
+      --help-all                        Show all help options
+      --help-gst                        Show GStreamer Options
+    
+    Application Options:
+      -m, --mipi=media_ID               mipi media id, e.g. 1 for /dev/media1
+      -u, --usb=video_ID                usb camera video device id, e.g. 2 for /dev/video2
+      -f, --file=file path              location of h26x file as input
+      -i, --infile-type=h264            input file type: [h264 | h265]
+      -w, --w=1920                      resolution w of the input
+      -h, --h=1080                      resolution h of the input
+      -r, --framerate=30                framerate of the input
+      -t, --target=dp                   [dp|rtsp|file]
+      -o, --outmedia-type=h264          output file type: [h264 | h265]
+      -p, --port=5000                   Port to listen on (default: 5000)
+      -n, --nodet                       no AI inference
+
+   Example of supported combinations and limitations:
+   1) input MIPI:
+      output: RTSP
+        ./somapp  --mipi 0 -w 1920 -h 1080 --target rtsp >/dev/null 2>&1
+      output: DP
+        ./somapp  --mipi 0 -w 1920 -h 1080 --target dp >/dev/null 2>&1
+      output: file
+        ./somapp  --mipi 0 -w 1920 -h 1080 --target file >/dev/null 2>&1
+
+   2) input file:
+      output: DP [! detection not effective !]
+        ./somapp  --file ./test.h264 -i h264 -w 1920 -h 1080 -r 30 --target dp >/dev/null 2>&1
+      output: RTSP [! currently not ok, will update later !]
+        ./somapp  --file ./test.h264 -i h264 -w 1920 -h 1080 -r 30 --target rtsp >/dev/null 2>&1
+      output: file
+        ./somapp  --file ./test.h264 -i h264 -w 1920 -h 1080 -r 30 --target file >/dev/null 2>&1
+
+   3) input USB:
+      Please make sure the width/height/framerate are supported by USB camera.
+      output: DP
+        ./somapp  --usb 1 -w 1920 -h 1080 -r 30 --target dp >/dev/null 2>&1
+      output: RTSP [! currently not ok, will update later !]
+        ./somapp  --usb 1 -w 1920 -h 1080 -r 30 --target rtsp >/dev/null 2>&1
+      output: file
+        ./somapp  --usb 1 -w 1920 -h 1080 -r 30 --target file >/dev/null 2>&1
+
