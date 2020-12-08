@@ -1,0 +1,6 @@
+Step 1: Source 2020.1 vitis
+Step 2: edit Makefile to point PLATFORM_FILE to any 2020.1 vitis platform (tested with zcu104 base platform)
+Step 3: edit options eg: multiscaler/v_multi_scaler_config.h of your choice
+Step 4: make OR make <kernel name>
+
+Kernels will be generate at xo folder. eg: Multiscaler kernel will be generated as xo/v_multi_scaler.xo

@@ -1,0 +1,20 @@
+{
+  "xclbin-location":"/usr/lib/dpu.xclbin",
+  "ivas-library-repo": "/usr/lib/",
+  "element-mode":"inplace",
+  "kernels" :[
+    {
+      "library-name":"libivas_xboundingbox.so",
+      "config": {
+	"font_size" : 0.5,
+	"font" : 3,
+	"thickness" : 2,
+	"debug_level" : 1,
+	"label_color" : { "blue" : 0, "green" : 0, "red" : 0 },
+	"label_filter" : [ "class", "probability" ],
+        "classes" : [
+	]
+      }
+    }
+  ]
+}
