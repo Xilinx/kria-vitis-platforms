@@ -9,7 +9,6 @@ CONFIG_packagegroup-petalinux-audio
 CONFIG_gstreamer-vcu-notebooks
 CONFIG_xrt
 CONFIG_jansson
-CONFIG_mnt-sd
 CONFIG_xrt-dev
 CONFIG_zocl
 CONFIG_opencl-clhpp-dev

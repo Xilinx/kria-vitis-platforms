@@ -1,1 +1,1 @@
-rm -rf *log *jou xilinx_zcu104_vcu_202010_1 .Xil xilinx_zcu104_vcu_202010_1.xsa
+rm -rf *log *jou xilinx_zcu104_vcu_202020_1 .Xil xilinx_zcu104_vcu_202020_1.xsa

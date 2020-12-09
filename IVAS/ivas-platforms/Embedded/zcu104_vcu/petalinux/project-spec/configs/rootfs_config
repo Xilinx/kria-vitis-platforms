@@ -2120,6 +2120,7 @@ CONFIG_mali-backend-x11=y
 # openssl 
 #
 # CONFIG_openssl is not set
+# CONFIG_openssl-bin is not set
 # CONFIG_openssl-misc is not set
 # CONFIG_openssl-conf is not set
 # CONFIG_openssl-dbg is not set
@@ -2653,7 +2654,6 @@ CONFIG_gdb=y
 #
 # mesa-gl 
 #
-# CONFIG_mesa-gl is not set
 # CONFIG_mesa-gl-dev is not set
 # CONFIG_libgl-mesa is not set
 # CONFIG_mesa-megadriver is not set
@@ -3303,7 +3303,7 @@ CONFIG_tcf-agent=y
 #
 # valgrind
 #
-CONFIG_valgrind=y
+# CONFIG_valgrind is not set
 # CONFIG_valgrind-dbg is not set
 # CONFIG_valgrind-dev is not set
 
@@ -3682,11 +3682,25 @@ CONFIG_hellopm=y
 #
 
 #
+# dosfstools 
+#
+# CONFIG_dosfstools is not set
+# CONFIG_dosfstools-dev is not set
+# CONFIG_dosfstools-dbg is not set
+
+#
 # patch 
 #
 # CONFIG_patch is not set
 # CONFIG_patch-dbg is not set
 # CONFIG_patch-dev is not set
+
+#
+# resize-part
+#
+# CONFIG_resize-part is not set
+# CONFIG_resize-part-dbg is not set
+# CONFIG_resize-part-dev is not set
 
 #
 # x11 
@@ -4161,6 +4175,13 @@ CONFIG_packagegroup-petalinux-opencv=y
 # CONFIG_packagegroup-petalinux-self-hosted-dev is not set
 
 #
+# packagegroup-petalinux-updateboot 
+#
+# CONFIG_packagegroup-petalinux-updateboot is not set
+# CONFIG_packagegroup-petalinux-updateboot-dbg is not set
+# CONFIG_packagegroup-petalinux-updateboot-dev is not set
+
+#
 # packagegroup-petalinux-utils 
 #
 # CONFIG_packagegroup-petalinux-utils is not set
@@ -4216,7 +4237,8 @@ CONFIG_imagefeature-ssh-server-dropbear=y
 # CONFIG_imagefeature-ssh-server-openssh is not set
 CONFIG_imagefeature-hwcodecs=y
 CONFIG_imagefeature-package-management=y
-CONFIG_package-feed-uris="http://petalinux.xilinx.com/sswreleases/rel-v2020/feeds/zynqmp-generic"
+CONFIG_package-feed-uris="http://petalinux.xilinx.com/sswreleases/rel-v2020.2/generic/rpm"
+CONFIG_package-feed-archs="noarch ${TARGET_ARCH} ${SOC_FAMILY} ${SOC_FAMILY}eg ${SOC_FAMILY}ev ${SOC_FAMILY}dr ${SOC_FAMILY}cg ${MACHINE_ARCH}"
 CONFIG_imagefeature-debug-tweaks=y
 CONFIG_auto-login=y
 
@@ -4224,8 +4246,6 @@ CONFIG_auto-login=y
 # apps 
 #
 # CONFIG_gpio-demo is not set
-CONFIG_jansson=y
-CONFIG_mnt-sd=y
 # CONFIG_peekpoke is not set
 
 #
@@ -4234,6 +4254,7 @@ CONFIG_mnt-sd=y
 CONFIG_gstreamer-vcu-examples=y
 # CONFIG_gstreamer-vcu-notebooks is not set
 CONFIG_htop=y
+CONFIG_jansson=y
 # CONFIG_opencl-clhpp-dev is not set
 # CONFIG_opencl-headers-dev is not set
 

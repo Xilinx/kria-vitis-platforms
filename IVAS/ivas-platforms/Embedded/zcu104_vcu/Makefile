@@ -1,4 +1,4 @@
-PLATFORM ?= xilinx_zcu104_vcu_202010_1
+PLATFORM ?= xilinx_zcu104_vcu_202020_1
 CWD=$(shell pwd)
 XSA_DIR ?= $(CWD)/vivado
 OUTPUT_PATH ?= $(CWD)/platform_repo
@@ -17,7 +17,7 @@ $(PLATFORM): xsa petalinux_proj peta_sysroot pfm
 xsa:
 	$(MAKE) -C vivado PLATFORM=$(PLATFORM)
 
-petalinux_proj: ./vivado/xilinx_zcu104_vcu_202010_1.xsa
+petalinux_proj: ./vivado/xilinx_zcu104_vcu_202020_1.xsa
 	$(MAKE) -C petalinux all XSA_DIR=$(XSA_DIR) PLATFORM=$(PLATFORM)
 
 peta_sysroot:

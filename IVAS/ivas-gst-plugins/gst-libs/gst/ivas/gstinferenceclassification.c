@@ -19,6 +19,12 @@
  *
  */
 
+/*
+ * This is the modified version of RidgeRun code
+ * (https://github.com/RidgeRun/gst-inference) to support Xilinx IVAS product
+ * specific use cases
+ */
+
 #include "gstinferenceclassification.h"
 
 #include <string.h>

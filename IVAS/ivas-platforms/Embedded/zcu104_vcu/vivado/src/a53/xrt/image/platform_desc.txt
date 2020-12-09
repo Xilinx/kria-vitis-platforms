@@ -1,1 +1,1 @@
-xilinx_zcu104_vcu_202010_1
+xilinx_zcu104_vcu_202020_1

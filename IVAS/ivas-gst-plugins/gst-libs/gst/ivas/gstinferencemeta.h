@@ -19,6 +19,12 @@
  *
  */
 
+/*
+ * This is the modified version of RidgeRun code
+ * (https://github.com/RidgeRun/gst-inference) to support Xilinx IVAS product
+ * specific use cases
+ */
+
 #ifndef GST_INFERENCE_META_H
 #define GST_INFERENCE_META_H
 

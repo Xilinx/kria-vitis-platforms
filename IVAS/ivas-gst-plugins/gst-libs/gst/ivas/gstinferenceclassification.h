@@ -19,6 +19,12 @@
  *
  */
 
+/*
+ * This is the modified version of RidgeRun code
+ * (https://github.com/RidgeRun/gst-inference) to support Xilinx IVAS product
+ * specific use cases
+ */
+
 #ifndef __GST_INFERENCE_CLASSIFICATION__
 #define __GST_INFERENCE_CLASSIFICATION__
 
@@ -60,7 +66,7 @@ struct _GstInferenceClassification
 
 /**
  * gst_inference_classification_new:
- * 
+ *
  * Creates a new GstInferenceClassification.
  *
  * Returns: A newly allocated and initialized GstInferenceClassification.
@@ -79,7 +85,7 @@ GstInferenceClassification * gst_inference_classification_new (void);
  * prediction. A copy of the array is made.
  * @labels: the entire array of labels of the prediction or NULL if
  * not available. A copy is made, if available.
- * 
+ *
  * Creates a new GstInferenceClassification and assigns its members.
  *
  * Returns: A newly allocated and initialized GstInferenceClassification.
@@ -90,7 +96,7 @@ GstInferenceClassification * gst_inference_classification_new_full (gint class_i
 
 /**
  * gst_inference_classification_reset:
- * @self: the classification to reset 
+ * @self: the classification to reset
  *
  * Clears a classification, effectively freeing all associated memory.
  */

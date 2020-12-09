@@ -19,6 +19,12 @@
  *
  */
 
+/*
+ * This is the modified version of RidgeRun code
+ * (https://github.com/RidgeRun/gst-inference) to support Xilinx IVAS product
+ * specific use cases
+ */
+
 #ifndef __GST_INFERENCE_PREDICTION__
 #define __GST_INFERENCE_PREDICTION__
 
@@ -81,7 +87,7 @@ struct _GstInferencePrediction
 
 /**
  * gst_inference_prediction_new:
- * 
+ *
  * Creates a new GstInferencePrediction. Values can be later assigned
  * manually, however these assignments should be done with the
  * GST_INFERENCE_PREDICTION_LOCK held. See
@@ -104,7 +110,7 @@ GstInferencePrediction * gst_inference_prediction_new_full (BoundingBox *bbox);
 
 /**
  * gst_inference_prediction_reset:
- * @self: the prediction to reset 
+ * @self: the prediction to reset
  *
  * Clears a prediction, effectively removing al children and resetting
  * all members.
@@ -172,7 +178,7 @@ void gst_inference_prediction_append (GstInferencePrediction * self, GstInferenc
  * Gets a list of the immediate children of the current prediction. In
  * other words, the children of these childrens are not returned. The
  * references of these children are still owned by the parent.
- * 
+ *
  * Returns: A linked list of the child predictions.
  */
 GSList * gst_inference_prediction_get_children (GstInferencePrediction * self);

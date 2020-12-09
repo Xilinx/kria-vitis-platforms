@@ -11,4 +11,4 @@ hw:
 	$(VIVADO) -mode batch -notrace -source $(PLATFORM)_xsa.tcl
 
 clean:
-	$(RM) -r vivado.* $(PLATFORM) $(PLATFORM).xsa  xilinx_zcu104_vcu_202010_1 xilinx_zcu104_vcu_202010_1.xsa .Xil *log *jou
+	$(RM) -r vivado.* $(PLATFORM) $(PLATFORM).xsa  xilinx_zcu104_vcu_202020_1 xilinx_zcu104_vcu_202020_1.xsa .Xil *log *jou
