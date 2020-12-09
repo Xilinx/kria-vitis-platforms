@@ -1,0 +1,19 @@
+{
+  "xclbin-location": "/usr/lib/dpu.xclbin",
+  "ivas-library-repo": "/usr/lib/ivas",
+  "kernels": [
+    {
+      "kernel-name": "pp_pipeline_accel:pp_pipeline_accel_1",
+      "library-name": "libivas_xpp_pipeline.so",
+      "config": {
+	"debug_level" : 1,
+        "mean_r": 128,
+        "mean_g": 128,
+        "mean_b": 128,
+        "scale_r": 1,
+        "scale_g": 1,
+        "scale_b": 1
+      }
+    }
+  ]
+}
