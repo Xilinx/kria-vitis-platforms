@@ -1,1 +1,0 @@
-# IVAS_Platforms
