@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Edited by yushun  -->
+<!-- simple user manual
+1. support data type: int/uint/string
+2. if having minus, should asign it using minus attribute
+3. inst type includes: load, save, conv, misc
+-->
+<ROOT ver="DPU4F" inst_num="15" word_len="32">
+    <!-- Load inst definition  -->
+    <Load opcode="0x00" word_num="4" category="load">
+        <WORD0>
+            <bank_addr pos="0" len="12" type="uint"> </bank_addr>
+            <bank_id pos="12" len="6" type="uint"> </bank_id>
+            <hp_id pos="18" len="2" type="uint"> </hp_id>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+
+        <WORD1>
+            <jump_read pos="0" len="16" type="uint" minus="1"> </jump_read>
+            <pad_idx pos="16" len="5" type="uint" minus="1"> </pad_idx>
+            <pad_end pos="21" len="5" type="uint"> </pad_end>
+            <pad_start pos="26" len="5" type="uint"> </pad_start>
+            <quant_lth pos="31" len="1" type="uint"> </quant_lth>
+        </WORD1>
+
+        <WORD2>
+            <channel pos="0" len="12" type="uint" minus="1"> </channel>
+            <mode_avg pos="12" len="2" type="uint"> </mode_avg>
+            <length pos="14" len="10" type="uint" minus="1"> </length>
+            <jump_write pos="24" len="8" type="uint" minus="1"> </jump_write>
+        </WORD2>
+
+        <WORD3>
+            <ddr_addr pos="0" len="29" type="uint"> </ddr_addr>
+            <reg_id pos="29" len="3" type="uint"> </reg_id>
+        </WORD3>
+    </Load>
+
+    <!-- Save inst definition  -->
+    <Save opcode="0x04" word_num="4" category="save">
+        <WORD0>
+            <bank_addr pos="0" len="12" type="uint"> </bank_addr>
+            <bank_id pos="12" len="6" type="uint"> </bank_id>
+            <hp_id pos="18" len="2" type="uint"> </hp_id>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+
+        <WORD1>
+            <jump_write pos="0" len="16" type="uint" minus="1"> </jump_write>
+            <reserved pos="16" len="15" type="string"> </reserved>
+            <quant_lth pos="31" len="1" type="uint"> </quant_lth>
+        </WORD1>
+
+        <WORD2>
+            <channel pos="0" len="12" type="uint" minus="1"> </channel>
+            <reserved pos="12" len="2" type="string"> </reserved>
+            <length pos="14" len="10" type="uint" minus="1"> </length>
+            <jump_read pos="24" len="8" type="uint" minus="1"> </jump_read>
+        </WORD2>
+
+        <WORD3>
+            <ddr_addr pos="0" len="29" type="uint"> </ddr_addr>
+            <reg_id pos="29" len="3" type="uint"> </reg_id>
+        </WORD3>
+    </Save>
+
+
+    <!-- ConvInit inst definition  -->
+    <ConvInit opcode="0x09" word_num="4" category="conv">
+        <WORD0>
+            <jump_read pos="0" len="10" type="uint" minus="1"> </jump_read>
+            <shift_cut pos="10" len="6" type="uint"> </shift_cut>
+            <act_type pos="16" len="4" type="uint"> </act_type>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+
+        <WORD1>
+            <jump_read_endl pos="0" len="10" type="uint" minus="1"> </jump_read_endl>
+            <shift_bias pos="10" len="6" type="uint"> </shift_bias>
+            <reserved pos="16" len="8" type="string"> </reserved>
+            <quant_lth pos="24" len="2" type="uint"> </quant_lth>
+            <calt_mode pos="26" len="2" type="uint"> </calt_mode>
+            <stride_out pos="28" len="4" type="uint" minus="1"> </stride_out>
+        </WORD1>
+
+        <WORD2>
+            <jump_write pos="0" len="10" type="uint" minus="1"> </jump_write>
+            <stride_offset_in pos="10" len="3" type="uint"> </stride_offset_in>
+            <valid_pixel_parallel pos="13" len="3" type="uint" minus="1"> </valid_pixel_parallel>
+            <reserved pos="16" len="8" type="string"> </reserved>
+            <kernel_h pos="24" len="4" type="uint" minus="1"> </kernel_h>
+            <stride_h pos="28" len="4" type="uint" minus="1"> </stride_h>
+        </WORD2>
+
+        <WORD3>
+            <jump_write_endl pos="0" len="10" type="uint" minus="1"> </jump_write_endl>
+            <stride_offset_out pos="10" len="3" type="uint"> </stride_offset_out>
+            <reserved pos="13" len="11" type="string"> </reserved>
+            <kernel_w pos="24" len="4" type="uint" minus="1"> </kernel_w>
+            <stride_w pos="28" len="4" type="uint" minus="1"> </stride_w>
+        </WORD3>
+    </ConvInit>
+
+    <!-- Conv inst definition  -->
+    <Conv opcode="0x08" word_num="5" category="conv">
+        <WORD0>
+            <bank_addr_in pos="0" len="12" type="uint"> </bank_addr_in>
+            <pad_top pos="12" len="4" type="uint"> </pad_top>
+            <pad_left pos="16" len="4" type="uint"> </pad_left>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+
+        <WORD1>
+            <bank_addr_out pos="0" len="12" type="uint"> </bank_addr_out>
+            <pad_bottom pos="12" len="4" type="uint"> </pad_bottom>
+            <pad_right pos="16" len="4" type="uint"> </pad_right>
+            <channel_offset pos="20" len="4" type="uint"> </channel_offset>
+            <channel_group pos="24" len="8" type="uint" minus="1"> </channel_group>
+        </WORD1>
+
+        <WORD2>
+            <bank_addr_weights pos="0" len="12" type="uint"> </bank_addr_weights>
+            <bank_id_in pos="12" len="6" type="uint"> </bank_id_in>
+            <reserved pos="18" len="4" type="string"> </reserved>
+            <length pos="22" len="10" type="uint" minus="1"> </length>
+        </WORD2>
+
+        <WORD3>
+            <bank_addr_bias pos="0" len="12" type="uint"> </bank_addr_bias>
+            <bank_id_out pos="12" len="6" type="uint"> </bank_id_out>
+            <bank_addr_in_1 pos="18" len="12" type="uint"> </bank_addr_in_1>
+            <reserved pos="30" len="2" type="string"> </reserved>
+        </WORD3>
+
+        <WORD4>
+            <bank_addr_in_2 pos="0" len="12" type="uint"> </bank_addr_in_2>
+            <bank_addr_in_3 pos="12" len="12" type="uint"> </bank_addr_in_3>
+            <reserved pos="24" len="8" type="string"> </reserved>
+        </WORD4>
+    </Conv>
+
+    <!-- PoolInit inst definition  -->
+    <PoolInit opcode="0x06" word_num="2" category="misc">
+        <WORD0>
+            <jump_read pos="0" len="10" type="uint" minus="1"> </jump_read>
+            <kernel_h pos="10" len="3" type="uint" minus="1"> </kernel_h>
+            <kernel_w pos="13" len="3" type="uint" minus="1"> </kernel_w>
+            <shift_cut pos="16" len="4" type="uint"> </shift_cut>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+    </WORD0>
+    <WORD1>
+            <pool_type pos="0" len="2" type="uint"> </pool_type>
+            <stride_h pos="2" len="3" type="uint" minus="1"> </stride_h>
+            <stride_w pos="5" len="3" type="uint" minus="1"> </stride_w>
+            <stride_offset_in pos="8" len="3" type="uint"> </stride_offset_in>
+            <valid_pixel_parallel pos="11" len="3" type="uint" minus="1"> </valid_pixel_parallel>
+            <stride_offset_out pos="14" len="3" type="uint"> </stride_offset_out>
+            <stride_out pos="17" len="4" type="uint" minus="1"> </stride_out>
+            <jump_write pos="21" len="10" type="uint" minus="1"> </jump_write>
+            <reserved  pos="31" len="1" type="string"></reserved>
+    </WORD1>
+     </PoolInit>
+    <!-- Pool inst definition  -->
+    <Pool opcode="0x0C" word_num="5" category="misc">
+        <WORD0>
+            <bank_addr_in pos="0" len="12" type="uint"> </bank_addr_in>
+           <channel_group pos="12" len="8" type="uint" minus="1"> </channel_group>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+
+        <WORD1>
+            <bank_id_in pos="0" len="6" type="uint"> </bank_id_in>
+            <pad_bottom pos="6" len="3" type="uint"> </pad_bottom>
+            <pad_right pos="9" len="3" type="uint"> </pad_right>
+            <pad_top pos="12" len="3" type="uint"> </pad_top>
+            <pad_left pos="15" len="3" type="uint"> </pad_left>
+            <jump_write_endl pos="18" len="12" type="uint" minus="1"> </jump_write_endl>
+            <reserved  pos="30" len="2" type="string"></reserved>
+        </WORD1>
+
+        <WORD2>
+            <bank_id_out pos="0" len="6" type="uint"> </bank_id_out>
+            <length pos="6" len="10" type="uint" minus="1"> </length>
+            <jump_read_endl pos="16" len="12" type="uint" minus="1"> </jump_read_endl>
+            <reserved  pos="28" len="4" type="string"></reserved>
+        </WORD2>
+
+        <WORD3>
+            <bank_addr_out pos="0" len="12" type="uint"> </bank_addr_out>
+            <bank_addr_in_1 pos="12" len="12" type="uint"> </bank_addr_in_1>
+            <reserved  pos="24" len="8" type="string"></reserved>
+        </WORD3>
+
+        <WORD4>
+            <bank_addr_in_2 pos="0" len="12" type="uint"> </bank_addr_in_2>
+            <bank_addr_in_3 pos="12" len="12" type="uint"> </bank_addr_in_3>
+            <reserved  pos="24" len="8" type="string"></reserved>
+        </WORD4>
+    </Pool>
+
+    <!-- DWInit inst definition  -->
+    <DWInit opcode="0x0B" word_num="3" category="misc">
+        <WORD0>
+            <jump_read_endl pos="0" len="10" type="uint" minus="1"> </jump_read_endl>
+            <jump_read pos="10" len="10" type="uint" minus="1"> </jump_read>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+
+        <WORD1>
+            <jump_write_endl pos="0" len="10" type="uint" minus="1"> </jump_write_endl>
+            <kernel_h pos="10" len="4" type="uint" minus="1"> </kernel_h>
+            <kernel_w pos="14" len="4" type="uint" minus="1"> </kernel_w>
+            <stride_h pos="18" len="4" type="uint" minus="1"> </stride_h>
+            <stride_w pos="22" len="4" type="uint" minus="1"> </stride_w>
+            <valid_pixel_parallel pos="26" len="3" type="uint" minus="1"> </valid_pixel_parallel>
+            <stride_offset_in pos="29" len="3" type="uint"> </stride_offset_in>
+        </WORD1>
+
+        <WORD2>
+            <reserved pos="0" len="12" type="string"> </reserved>
+            <stride_offset_out pos="12" len="3" type="uint"> </stride_offset_out>
+            <stride_out pos="15" len="4" type="uint" minus="1"> </stride_out>
+            <jump_write pos="19" len="10" type="uint" minus="1"> </jump_write>
+            <reserved pos="29" len="3" type="string"> </reserved>
+        </WORD2>
+    </DWInit>
+    <!-- DptWise inst definition  -->
+    <DptWise opcode="0x0A" word_num="5" category="misc">
+        <WORD0>
+            <bank_addr_in pos="0" len="12" type="uint"> </bank_addr_in>
+            <channel_group pos="12" len="8" type="uint" minus="1"> </channel_group>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+
+        <WORD1>
+            <bank_addr_out pos="0" len="12" type="uint"> </bank_addr_out>
+            <channel_offset pos="12" len="4" type="uint"> </channel_offset>
+            <pad_bottom pos="16" len="4" type="uint"> </pad_bottom>
+            <pad_top pos="20" len="4" type="uint"> </pad_top>
+            <pad_right pos="24" len="4" type="uint"> </pad_right>
+            <pad_left pos="28" len="4" type="uint"> </pad_left>
+        </WORD1>
+
+        <WORD2>
+            <bank_addr_weights pos="0" len="12" type="uint"> </bank_addr_weights>
+            <bank_id_in pos="12" len="6" type="uint"> </bank_id_in>
+            <length pos="18" len="10" type="uint" minus="1"> </length>
+            <act_type pos="28" len="4" type="uint"> </act_type>
+        </WORD2>
+
+        <WORD3>
+            <bank_addr_bias pos="0" len="12" type="uint"> </bank_addr_bias>
+            <bank_id_out pos="12" len="6" type="uint"> </bank_id_out>
+            <bank_addr_in_1 pos="18" len="12" type="uint"> </bank_addr_in_1>
+            <reserved pos="30" len="2" type="string"> </reserved>
+        </WORD3>
+
+        <WORD4>
+            <bank_addr_in_2 pos="0" len="12" type="uint"> </bank_addr_in_2>
+            <bank_addr_in_3 pos="12" len="12" type="uint"> </bank_addr_in_3>
+            <reserved pos="24" len="8" type="string"> </reserved>
+        </WORD4>
+    </DptWise>
+
+    <ElewInit opcode="0x0D" word_num="2" category="misc">
+        <WORD0>
+            <jump_read pos="0" len="10" type="uint" minus="1"> </jump_read>
+            <shift_read pos="10" len="4" type="uint"> </shift_read>
+            <bank_id_in pos="14" len="6" type="uint"> </bank_id_in>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+
+        <WORD1>
+            <bank_addr_in pos="0" len="12" type="uint"> </bank_addr_in>
+            <id pos="12" len="2" type="uint"> </id>
+            <jump_read_endl pos="14" len="12" type="uint" minus="1"> </jump_read_endl>
+            <reserved pos="26" len="6" type="string"> </reserved>
+        </WORD1>
+    </ElewInit>
+
+    <!-- Elew inst definition  -->
+    <Elew opcode="0x0E" word_num="3" category="misc">
+        <WORD0>
+            <jump_write pos="0" len="10" type="uint" minus="1"> </jump_write>
+            <shift_write pos="10" len="4" type="uint"> </shift_write>
+            <bank_id_out pos="14" len="6" type="uint"> </bank_id_out>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+
+        <WORD1>
+            <bank_addr_out pos="0" len="12" type="uint"> </bank_addr_out>
+            <length pos="12" len="9" type="uint" minus="1"> </length>
+            <act_type pos="21" len="1" type="uint"> </act_type>
+            <channel_group pos="22" len="8" type="uint" minus="1"> </channel_group>
+            <num pos="30" len="2" type="uint" minus="1"> </num>
+        </WORD1>
+
+        <WORD2>
+            <jump_write_endl pos="0" len="12" type="uint" minus="1"> </jump_write_endl>
+            <valid_pixel_parallel pos="12" len="3" type="uint" minus="1"> </valid_pixel_parallel>
+            <reserved pos="15" len="17" type="string"> </reserved>
+        </WORD2>
+    </Elew>
+
+    <!-- Thd inst definition  -->
+    <Thd opcode="0x0F" word_num="5" category="misc">
+        <WORD0>
+            <bank_addr_in pos="0" len="12" type="uint"> </bank_addr_in>
+            <channel_group pos="12" len="8" type="uint" minus="1"> </channel_group>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+
+        <WORD1>
+            <bank_addr_out pos="0" len="12" type="uint"> </bank_addr_out>
+            <length pos="12" len="9" type="uint" minus="1"> </length>
+            <valid_pixel_parallel pos="21" len="3" type="uint" minus="1"> </valid_pixel_parallel>
+            <signed_mode pos="24" len="1" type="uint"> </signed_mode>
+            <reserved pos="25" len="7" type="string"> </reserved>
+        </WORD1>
+
+        <WORD2>
+            <jump_read_endl pos="0" len="12" type="uint" minus="1"> </jump_read_endl>
+            <jump_read pos="12" len="10" type="uint" minus="1"> </jump_read>
+            <bank_id_in pos="22" len="6" type="uint"> </bank_id_in>
+            <stride_out pos="28" len="4" type="uint" minus="1"> </stride_out>
+        </WORD2>
+
+        <WORD3>
+            <jump_write_endl pos="0" len="12" type="uint" minus="1"> </jump_write_endl>
+            <jump_write pos="12" len="10" type="uint" minus="1"> </jump_write>
+            <bank_id_out pos="22" len="6" type="uint"> </bank_id_out>
+            <stride_offset_out pos="28" len="4" type="uint"> </stride_offset_out>
+        </WORD3>
+
+        <WORD4>
+            <param_addr pos="0" len="12" type="uint"> </param_addr>
+            <reserved pos="12" len="20" type="string"> </reserved>
+        </WORD4>
+    </Thd>
+
+    <!-- End inst definition  -->
+    <End opcode="0x07" word_num="1" category="save">
+        <WORD0>
+            <reserved pos="0" len="20" type="string"> </reserved>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+    </End>
+
+    <!-- DumpBank inst definition  -->
+    <DumpBank opcode="0xFF" word_num="2" category="misc">
+        <WORD0>
+            <save_name pos="0" len="20" type="string"> </save_name>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+        <WORD1>
+            <reserved pos="0" len="10" type="string"> </reserved>
+            <bank_num pos="10" len="8" type="uint"> </bank_num>
+            <bank_start pos="18" len="8" type="uint"> </bank_start>
+            <save_fmt pos="26" len="6" type="uint"> </save_fmt>
+        </WORD1>
+    </DumpBank>
+
+    <!-- DumpDDR inst definition  -->
+    <DumpDDR opcode="0xFE" word_num="4" category="misc">
+        <WORD0>
+            <save_name pos="0" len="20" type="string"> </save_name>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+        <WORD1>
+            <reserved pos="0" len="20" type="string"> </reserved>
+            <reg_id pos="20" len="6" type="uint"> </reg_id>
+            <save_fmt pos="26" len="6" type="uint"> </save_fmt>
+        </WORD1>
+        <WORD2>
+            <ddr_start pos="0" len="32" type="uint"> </ddr_start>
+        </WORD2>
+        <WORD3>
+            <ddr_size pos="0" len="32" type="uint"> </ddr_size>
+        </WORD3>
+    </DumpDDR>
+
+    <!-- DumpDDRSlice inst definition  -->
+    <DumpDDRSlice opcode="0xFD" word_num="6" category="misc">
+        <WORD0>
+            <save_name pos="0" len="20" type="string"> </save_name>
+            <dpdby pos="20" len="4" type="string"> </dpdby>
+            <dpdon pos="24" len="4" type="string"> </dpdon>
+            <opcode pos="28" len="4" type="string"> </opcode>
+        </WORD0>
+        <WORD1>
+            <reserved pos="0" len="20" type="string"> </reserved>
+            <reg_id pos="20" len="6" type="uint"> </reg_id>
+            <save_fmt pos="26" len="6" type="uint"> </save_fmt>
+        </WORD1>
+        <WORD2>
+            <ddr_start pos="0" len="32" type="uint"> </ddr_start>
+        </WORD2>
+        <WORD3>
+            <height_stride pos="0" len="16" type="uint"> </height_stride>
+            <height pos="16" len="16" type="uint"> </height>
+        </WORD3>
+        <WORD4>
+            <width_stride pos="0" len="16" type="uint"> </width_stride>
+            <width pos="16" len="16" type="uint"> </width>
+        </WORD4>
+        <WORD5>
+            <channel_stride pos="0" len="16" type="uint"> </channel_stride>
+            <channel pos="16" len="16" type="uint"> </channel>
+        </WORD5>
+    </DumpDDRSlice>
+</ROOT>

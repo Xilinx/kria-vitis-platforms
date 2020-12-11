@@ -19,7 +19,10 @@
                                                              Jupyter notebook file for MIPI->RTSP demo.
 
 2. How to run application:
-    The systems is supposed to add "/opt/xilinx/bin" to the ${PATH}, if not, do it by yourself.
+    0) To receive and play the RTSP stream, you should install ffplay which is part of package FFmpeg.
+       For Linux, you can install FFmpeg with the package manager of your distribution.
+       For Windows, you can find install instructions on https://ffmpeg.org/download.html
+
     1) MIPI RTSP server:
        a) Invoking "01.mipi-rtsp.sh" will start rtsp server for mipi captured images
        b) Run "ffplay rtsp://boardip:5000/test" on other pc having access to the board,
@@ -87,4 +90,3 @@
         somapp  --usb 1 -w 1920 -h 1080 -r 30 --target rtsp >/dev/null 2>&1
       output: file
         somapp  --usb 1 -w 1920 -h 1080 -r 30 --target file >/dev/null 2>&1
-

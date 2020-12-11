@@ -1,0 +1,5 @@
+1. Install the sdk.sh for SoM.
+2. Setup your cross-compiling envirionment.
+        e.g: source ${SoM-sdk-dir}/environment-setup-aarch64-xilinx-linux
+3. Excute the source code compile script.
+   bash ./build.sh
