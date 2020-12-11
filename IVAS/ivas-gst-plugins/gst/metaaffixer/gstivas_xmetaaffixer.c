@@ -323,6 +323,13 @@ gst_ivas_xmetaaffixer_sink_event (GstCollectPads * pads,
       break;
     case GST_EVENT_SEGMENT:
       gst_event_copy_segment (event, &segment);
+
+      if (!gst_pad_push_event (pad->srcpad, gst_event_new_segment(&segment))) {
+        GST_DEBUG_OBJECT (pad, "Pushing segment event to src pad");
+      } else {
+        GST_DEBUG_OBJECT (pad, "Pushing segment event to src pad failed");
+      }
+
       break;
     default:
       break;

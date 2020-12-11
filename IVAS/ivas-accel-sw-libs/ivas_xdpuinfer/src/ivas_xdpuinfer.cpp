@@ -303,7 +303,8 @@ ivas_xsetcaps (ivas_xkpriv * kpriv, ivas_xdpumodel * model)
   for (int i = 0; i < padinfo->nu_sinkpad; i++) {
     sinkpads[i] = (kernelpads *) calloc (1, sizeof (kernelpads));
     sinkpads[i]->nu_caps = 2;
-    sinkpads[i]->kcaps = (kernelcaps **) calloc (1, sizeof (kernelcaps *));
+    sinkpads[i]->kcaps = (kernelcaps **) calloc (sinkpads[i]->nu_caps,
+						 sizeof (kernelcaps *));
     /* Create memory for all caps */
     for (int j = 0; j < sinkpads[i]->nu_caps; j++) {
       sinkpads[i]->kcaps[j] = (kernelcaps *) calloc (1, sizeof (kernelcaps));

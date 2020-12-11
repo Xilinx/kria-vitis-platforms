@@ -1,3 +1,8 @@
+/******************************************************************************
+* Copyright (C) 2010 - 2020 Xilinx, Inc. All rights reserved.
+* SPDX-License-Identifier: Apache-2.0
+******************************************************************************/
+
 1. File structure:
     The application is installed as:
         Binary File: => /opt/xilinx/bin
@@ -19,25 +24,40 @@
                                                              Jupyter notebook file for MIPI->RTSP demo.
 
 2. How to run application:
-    0) To receive and play the RTSP stream, you should install ffplay which is part of package FFmpeg.
-       For Linux, you can install FFmpeg with the package manager of your distribution.
-       For Windows, you can find install instructions on https://ffmpeg.org/download.html
+    0) Prerequisites:
+       a) Monitor:
+          Before booting the board, please connect the monitor to the board via either DP or HDMI port.
+       b) RTSP client:
+          You need another PC having network access to the board as the RTSP client machine.
+          On the client machine, to receive and play the RTSP stream, you should install ffplay which is part of package FFmpeg.
+            For Linux, you can install FFmpeg with the package manager of your distribution.
+            For Windows, you can find install instructions on https://ffmpeg.org/download.html
 
     1) MIPI RTSP server:
        a) Invoking "01.mipi-rtsp.sh" will start rtsp server for mipi captured images
-       b) Run "ffplay rtsp://boardip:5000/test" on other pc having access to the board,
-          will receive the rtsp stream.
-       c) Script accepts ${width} ${height} as the 1st and 2nd parameter, the default is 1920 x 1080
+       b) Script accepts ${width} ${height} as the 1st and 2nd parameter, the default is 1920 x 1080
+       c) Run "ffplay rtsp://boardip:5000/test" on the client PC to receive the rtsp stream.
+       d) Checking:
+          You should be able to see the images the camera is capturing on the ffplay window, and when there's face captured 
+          by camera, there should be blue box drawn around the face, and the box should follow the movemnt of the face.
 
     2) MIPI DP display
-       a) Connect the monitor to dp connector on the board, and run:
+       a) Make sure the monitor is connected as 0)-a).
        b) Invoking "02.mipi-dp.sh" will play the captured video with detection results on monitor.
        c) Script accepts ${width} ${height} as the 1st and 2nd parameter, the default is 1920 x 1080
+       d) Checking:
+          You should be able to see the images the camera is capturing on the monitor connected to the board,  and when there's
+          face captured by camera, there should be blue box drawn around the face, and the box should follow the movemnt of the face.
 
     3) File to File
        a) Invoking "03.file-to-file.sh"
        b) Read in the sample video file from "/usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264",
           perform detection and generate video with detection bbox, save as ./out.h264
+       c) Checking:
+          Play the input video file "/usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264" and generated video file 
+          "./out.h264" with any media player you prefer, e.g. VLC, ffplay.
+          You should be able to see in the output video file, there are blue boxes around the faces of walking peoples, and the boxes
+          should follow the movemnt of the faces, while there's no such boxes with the input video file.
 
 3. More combinations based on somapp invocation:
    Above 3 scripts works as examples to show capability of the somapp by giving proper parameters.
