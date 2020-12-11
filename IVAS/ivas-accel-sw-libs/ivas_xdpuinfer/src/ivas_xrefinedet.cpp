@@ -88,6 +88,7 @@ for (auto & box:result.bboxes) {
   pstr = gst_inference_prediction_to_string (infer_meta->prediction);
   LOG_MESSAGE (LOG_LEVEL_DEBUG, kpriv->log_level, "prediction tree : \n%s",
       pstr);
+  free(pstr);
   LOG_MESSAGE (LOG_LEVEL_INFO, kpriv->log_level, " ");
 
   return true;
