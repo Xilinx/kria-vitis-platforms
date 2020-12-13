@@ -1,0 +1,43 @@
+/******************************************************************************
+* Copyright (C) 2020 Xilinx, Inc.  All rights reserved.
+* SPDX-License-Identifier: Apache-2.0
+******************************************************************************/
+
+This folder contains the KV260 smartcamera Vitis platform. The smartcamera
+platform supports the following multimedia peripherals and interfaces:
+
+1. MIPI CSI PL interface connected to the AR1335 IAS image sensor and  on-board
+   AP1302 ISP.
+
+2. DisplayPort and HDMI Tx via the PS DP interface and on-board DP splitter.
+
+3. USB 3.0 PS interface for connecting a UVC compliant USB webcam.
+
+4. Hardened Video Codec Unit (VCU) consisting of H264/H265 encoder and decoder.
+
+5. I2S audio Rx and Tx PL interfaces via optional PMOD.
+
+6. Ethernet PS interface for video streaming protocols like RTSP.
+
+7. SD card PS interface for video file playback and storage.
+
+
+Open the Vivado design:
+***********************
+
+To open the underlying Vivado platform design from the provided XSA file, run
+the following command from the Vivado tcl console:
+
+$ open_hw_platform xilinx_kv260_smartcamera_202022_1/hw/kv260_smartcamera.xsa
+
+You can now modify the block design and run Vivado implementation and bitstream
+generation.
+
+To write out a new extensible platform XSA file, run the following command from
+the Vivado tcl console:
+
+$ write_hw_platform -force -include_bit -file kv260_smartcamera.xsa
+
+The new XSA file can now be used replacing the existing XSA file in the Vitis
+platform or as hardware handoff file inside the Petalinux project.
+
