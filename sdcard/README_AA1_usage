@@ -2,70 +2,70 @@
 * Copyright (C) 2010 - 2020 Xilinx, Inc. All rights reserved.
 * SPDX-License-Identifier: Apache-2.0
 ******************************************************************************/
+The following file outlines the file structure and instructions on how to use
+the AA1 application. This file outlines the HW requirements for the application,
+how to run the application, and an overview of the application file structure. 
 
-1. File structure:
-    The application is installed as:
-        Binary File: => /opt/xilinx/bin
-                                        somapp                      main app
-
-        Script File: => /opt/xilinx/bin/
-                                        setupmipi.sh         find mipi meida number, to be used by somapp.
-                                        01.mipi-rtsp.sh      call somapp to run facedetction and send out rtsp stream.
-                                        02.mipi-dp.sh        call somapp to run facedetction and display on DP display.
-                                        03.file-file.sh      call somapp to run facedetction and display on input h264/5
-                                                                  file and generate output h264/5 with detection boxes.
-        configuration File: => /opt/xilinx/share/ivas
-                                        kernel_boundingbox_facedetect.json
-                                        kernel_densebox_640_360.json
-                                        kernel_xpp_pipeline.json
-
-    Jupyter notebook file:  => /usr/share/notebooks/somapp
-                                        AA1.ipynb
-                                                             Jupyter notebook file for MIPI->RTSP demo.
-
-2. How to run application:
-    0) Prerequisites:
+1. How to run the example application:
+    A) Hardware and software set-up:
        a) Monitor:
-          Before booting the board, please connect the monitor to the board via either DP or HDMI port.
-       b) RTSP client:
-          You need another PC having network access to the board as the RTSP client machine.
-          On the client machine, to receive and play the RTSP stream, you should install ffplay which is part of package FFmpeg.
+          Before booting, connect the monitor to the board via either DP or HDMI port.
+       b) IAS sensor:
+          Install a AR1335 sensor module in J7.
+       c) UART/JTAG interface:
+          For interacting and seeing boot time information connect a USB debugger to the J4.
+       d) You may also use a USB webcam as an input device. 
+           The webcam is optional video input device supported in the application.
+           Recommended is the Logitech BRIO.
+       d) Network connection:
+          Connect the Ethernet cable to your local network with DHCP enabled or a direct PC connection
+          with a static IP configuration.
+       e) RTSP client:
+          You will use a PC having network access to the board as the RTSP client machine.
+          On the client machine, to receive and play the RTSP stream, you need to install ffplay which is part of package FFmpeg.
             For Linux, you can install FFmpeg with the package manager of your distribution.
             For Windows, you can find install instructions on https://ffmpeg.org/download.html
 
-    1) MIPI RTSP server:
-       a) Invoking "01.mipi-rtsp.sh" will start rtsp server for mipi captured images
-       b) Script accepts ${width} ${height} as the 1st and 2nd parameter, the default is 1920 x 1080
-       c) Run "ffplay rtsp://boardip:5000/test" on the client PC to receive the rtsp stream.
-       d) Checking:
-          You should be able to see the images the camera is capturing on the ffplay window, and when there's face captured 
-          by camera, there should be blue box drawn around the face, and the box should follow the movemnt of the face.
+    B) Two methods of interacting with the application are provided. A Juypter notebook and command
+       line scripts. The Jupyter notebook URL will be printed to the UART if the board is connected and
+       allocated an IP address at boot. 
+          Example: http://<board_ip_addr>:8888
 
-    2) MIPI DP display
-       a) Make sure the monitor is connected as 0)-a).
-       b) Invoking "02.mipi-dp.sh" will play the captured video with detection results on monitor.
-       c) Script accepts ${width} ${height} as the 1st and 2nd parameter, the default is 1920 x 1080
-       d) Checking:
-          You should be able to see the images the camera is capturing on the monitor connected to the board,  and when there's
-          face captured by camera, there should be blue box drawn around the face, and the box should follow the movemnt of the face.
+    C) Example scripts are provided on the system. For location see "File Structure"
 
-    3) File to File
-       a) Invoking "03.file-to-file.sh"
-       b) Read in the sample video file from "/usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264",
-          perform detection and generate video with detection bbox, save as ./out.h264
-       c) Checking:
-          Play the input video file "/usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264" and generated video file 
-          "./out.h264" with any media player you prefer, e.g. VLC, ffplay.
-          You should be able to see in the output video file, there are blue boxes around the faces of walking peoples, and the boxes
-          should follow the movemnt of the faces, while there's no such boxes with the input video file.
+       a) MIPI RTSP server:
+         i) Invoking "01.mipi-rtsp.sh" will start rtsp server for mipi captured images
+         ii) Script accepts ${width} ${height} as the 1st and 2nd parameter, the default is 1920 x 1080
+         iii) Run "ffplay rtsp://boardip:5000/test" on the client PC to receive the rtsp stream.
+         iv) Checking:
+            You should be able to see the images the camera is capturing on the ffplay window, and when there's face captured 
+            by camera, there should be blue box drawn around the face, and the box should follow the movemnt of the face.
 
-3. More combinations based on somapp invocation:
-   Above 3 scripts works as examples to show capability of the somapp by giving proper parameters.
+       b) MIPI DP display
+         i) Make sure the monitor is connected as 0)-a).
+         ii) Invoking "02.mipi-dp.sh" will play the captured video with detection results on monitor.
+         iii) Script accepts ${width} ${height} as the 1st and 2nd parameter, the default is 1920 x 1080
+         iv) Checking:
+            You should be able to see the images the camera is capturing on the monitor connected to the board,  and when there's
+            face captured by camera, there should be blue box drawn around the face, and the box should follow the movement of the face.
+
+       c) File to File
+         i) Invoking "03.file-to-file.sh"
+         ii) Read in the sample video file from "/usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264",
+            perform detection and generate video with detection bbox, save as ./out.h264
+         iii) Checking:
+            Play the input video file "/usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264" and generated video file 
+            "./out.h264" with any media player you prefer, e.g. VLC, ffplay.
+            You should be able to see in the output video file, there are blue boxes around the faces of walking people, and the boxes
+            should follow the movement of the faces, while there's no such boxes with the input video file.
+
+2. Additional configuration options for somapp invocation:
+   The example scripts and Jupyter notebook work as examples to show capability of the somapp for specific configurations.
    More combinations could be made based on the options provided by somapp.
    You can get detailed application options as following by invoking ./somapp --help.
 
     Usage:
-      somapp [OPTION?] - Application for facedetion detction on SoM board of Xilinx.
+      somapp [OPTION?] - Application for facedetion detection on SOM board of Xilinx.
     
     Help Options:
       -?, --help                        Show help options
@@ -85,8 +85,9 @@
       -p, --port=5000                   Port to listen on (default: 5000)
       -n, --nodet                       no AI inference
 
-   Example of supported combinations and limitations:
-   1) input MIPI:
+   Example of supported combinations sorted by input are outlined below. Note some of the interfaces
+   have limitations:
+   A) input MIPI (IAS sensor input):
       output: RTSP
         somapp  --mipi 0 -w 1920 -h 1080 --target rtsp >/dev/null 2>&1
       output: DP
@@ -94,7 +95,7 @@
       output: file
         somapp  --mipi 0 -w 1920 -h 1080 --target file >/dev/null 2>&1
 
-   2) input file:
+   2) input file (file on file system):
       output: DP [! detection not effective !]
         somapp  --file ./test.h264 -i h264 -w 1920 -h 1080 -r 30 --target dp >/dev/null 2>&1
       output: RTSP [! currently not ok, will update later !]
@@ -102,11 +103,37 @@
       output: file
         somapp  --file ./test.h264 -i h264 -w 1920 -h 1080 -r 30 --target file >/dev/null 2>&1
 
-   3) input USB:
-      Please make sure the width/height/framerate are supported by USB camera.
+      *Note you must update the command to the specific file desired as input source.
+
+   3) input USB (USB webcam):
       output: DP
         somapp  --usb 1 -w 1920 -h 1080 -r 30 --target dp >/dev/null 2>&1
       output: RTSP [! currently not ok, will update later !]
         somapp  --usb 1 -w 1920 -h 1080 -r 30 --target rtsp >/dev/null 2>&1
       output: file
         somapp  --usb 1 -w 1920 -h 1080 -r 30 --target file >/dev/null 2>&1
+      
+      *Please make sure the width/height/framerate are supported by USB camera.
+
+
+3. File structure:
+    The application is installed as:
+        Binary File: => /opt/xilinx/bin
+                                        somapp                      main app
+
+        Script File: => /opt/xilinx/bin/
+                                        setupmipi.sh         find mipi media number, to be used by somapp.
+                                        01.mipi-rtsp.sh      call somapp to run facedetction and send out rtsp stream.
+                                        02.mipi-dp.sh        call somapp to run facedetction and display on DP display.
+                                        03.file-file.sh      call somapp to run facedetction and display on input h264/5
+                                                                  file and generate output h264/5 with detection boxes.
+        configuration File: => /opt/xilinx/share/ivas
+                                        kernel_boundingbox_facedetect.json
+                                        kernel_densebox_640_360.json
+                                        kernel_xpp_pipeline.json
+
+    Jupyter notebook file:  => /usr/share/notebooks/somapp
+                                        AA1.ipynb
+                                                             Jupyter notebook file for MIPI->RTSP demo.
+
+    Example video files: => /usr/share/somapp/movies
