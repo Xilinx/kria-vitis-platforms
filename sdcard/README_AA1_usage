@@ -45,6 +45,7 @@ how to run the application, and an overview of the application file structure.
          i) Invoking "01.mipi-rtsp.sh" will start rtsp server for mipi captured images
          ii) Script accepts ${width} ${height} as the 1st and 2nd parameter, the default is 1920 x 1080
          iii) Run "ffplay rtsp://boardip:5000/test" on the client PC to receive the rtsp stream.
+                - if using a direct connection (no DHCP), see B)a)ii) above to configure a boardip before this step.
          iv) Checking:
             You should be able to see the images the camera is capturing on the ffplay window, and when there's face captured 
             by camera, there should be blue box drawn around the face, and the box should follow the movement of the face.
