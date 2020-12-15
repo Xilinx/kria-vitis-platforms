@@ -11,7 +11,7 @@ how to run the application, and an overview of the application file structure.
        a) Monitor:
           Before booting, connect the monitor to the board via either DP or HDMI port.
        b) IAS sensor:
-          Install a AR1335 sensor module in J7.
+          Before power on, install a AR1335 sensor module in J7.
        c) UART/JTAG interface:
           For interacting and seeing boot time information connect a USB debugger to the J4.
        d) You may also use a USB webcam as an input device. 
@@ -26,10 +26,18 @@ how to run the application, and an overview of the application file structure.
             For Linux, you can install FFmpeg with the package manager of your distribution.
             For Windows, you can find install instructions on https://ffmpeg.org/download.html
 
-    B) Two methods of interacting with the application are provided. A Juypter notebook and command
-       line scripts. The Jupyter notebook URL will be printed to the UART if the board is connected and
-       allocated an IP address at boot. 
-          Example: http://<board_ip_addr>:8888
+    B) Two methods of interacting with the application are provided. 
+       a) A Juypter notebook. Use a web-browser (e.g. Chrome, Firefox) to interact with the platform.
+          i) The Jupyter notebook URL will be printed to the UART if the board is connected and allocated an IP address at boot. 
+                Example: http://<board_ip_addr>:8888
+          ii) If using a direct connection (no DHCP) see public documentation on how to configure your PC with a static IP on the same subnet. 
+              For the SOM target set the desired IP address within the same subnet using ifconfig.
+                Example: ifconfig eth0 10.0.1.15 netmask 255.255.255.0
+              The notebook will be available at http://<your defined IP addr>:8888
+       
+       b) Command line scripts and configurations. These allow for the user to define different video input and output device targets using
+          the "somapp" application. These are to be executed using the UART/debug interface. Example scripts and configuration definitions 
+          are provided below.
 
     C) Example scripts are provided on the system. For location see "File Structure"
 
@@ -39,7 +47,7 @@ how to run the application, and an overview of the application file structure.
          iii) Run "ffplay rtsp://boardip:5000/test" on the client PC to receive the rtsp stream.
          iv) Checking:
             You should be able to see the images the camera is capturing on the ffplay window, and when there's face captured 
-            by camera, there should be blue box drawn around the face, and the box should follow the movemnt of the face.
+            by camera, there should be blue box drawn around the face, and the box should follow the movement of the face.
 
        b) MIPI DP display
          i) Make sure the monitor is connected as 0)-a).
@@ -65,7 +73,7 @@ how to run the application, and an overview of the application file structure.
    You can get detailed application options as following by invoking ./somapp --help.
 
     Usage:
-      somapp [OPTION?] - Application for facedetion detection on SOM board of Xilinx.
+      somapp [OPTION?] - Application for face detection on SOM board of Xilinx.
     
     Help Options:
       -?, --help                        Show help options
@@ -85,7 +93,9 @@ how to run the application, and an overview of the application file structure.
       -p, --port=5000                   Port to listen on (default: 5000)
       -n, --nodet                       no AI inference
 
-   Example of supported combinations sorted by input are outlined below. Note some of the interfaces
+   Example of supported combinations sorted by input are outlined below. If using command line to invoke
+   the somapp stop the process via CTLR-C prior to starting the next instance.
+   Note some of the configurations have functional limitations in EA1.
    have limitations:
    A) input MIPI (IAS sensor input):
       output: RTSP
@@ -95,25 +105,25 @@ how to run the application, and an overview of the application file structure.
       output: file
         somapp  --mipi 0 -w 1920 -h 1080 --target file >/dev/null 2>&1
 
-   2) input file (file on file system):
-      output: DP [! detection not effective !]
+   B) input file (file on file system):
+      output: RTSP [!Not functional in EA1]
+        somapp  --file ./test.h264 -i h264 -w 1920 -h 1080 -r 30 --target rtsp >/dev/null 2>&1 
+      output: DP [!Not functional in EA1]
         somapp  --file ./test.h264 -i h264 -w 1920 -h 1080 -r 30 --target dp >/dev/null 2>&1
-      output: RTSP [! currently not ok, will update later !]
-        somapp  --file ./test.h264 -i h264 -w 1920 -h 1080 -r 30 --target rtsp >/dev/null 2>&1
       output: file
         somapp  --file ./test.h264 -i h264 -w 1920 -h 1080 -r 30 --target file >/dev/null 2>&1
 
       *Note you must update the command to the specific file desired as input source.
 
-   3) input USB (USB webcam):
+   C) input USB (USB webcam): [!Detection limitation with USB3.0 cameras]
+      output: RTSP
+        somapp  --usb 1 -w 1920 -h 1080 -r 30 --target rtsp >/dev/null 2>&1      
       output: DP
         somapp  --usb 1 -w 1920 -h 1080 -r 30 --target dp >/dev/null 2>&1
-      output: RTSP [! currently not ok, will update later !]
-        somapp  --usb 1 -w 1920 -h 1080 -r 30 --target rtsp >/dev/null 2>&1
       output: file
         somapp  --usb 1 -w 1920 -h 1080 -r 30 --target file >/dev/null 2>&1
       
-      *Please make sure the width/height/framerate are supported by USB camera.
+      *You must ensure the width/height/framerate defined are supported by your USB camera.
 
 
 3. File structure:
