@@ -4,7 +4,9 @@ PWD = $(shell readlink -f .)
 
 # the platform directory has to be an absolute path when passed to v++
 PFM_DIR = $(PWD)/platforms
-PFM_SMARTCAMERA = $(PFM_DIR)/xilinx_kv260_smartcamera_202022_1/kv260_smartcamera.xpfm
+PFM_VER = 202020_1
+PFM_SC_NAME = kv260_smartcamera
+PFM_SC_XPFM = $(PFM_DIR)/xilinx_$(PFM_SC_NAME)_$(PFM_VER)/$(PFM_SC_NAME).xpfm
 
 PLNX_DIR = petalinux/xilinx-kv260-smartcamera-2020.2-final
 PLNX_WIC = $(PLNX_DIR)/images/linux/petalinux-sdimage.wic
@@ -36,6 +38,9 @@ help:
 	@echo '  make aa1'
 	@echo '    Build the AA1 Vitis overlay against the KV260 smartcamera Vitis platform.'
 	@echo ''
+	@echo '  make smartcamera'
+	@echo '    Generate the KV260 smartcamera Vitis platform'
+	@echo ''
 
 .PHONY: all
 all: sdcard
@@ -56,12 +61,18 @@ $(PLNX_AA1_OBJS): $(VITIS_AA1_OBJS)
 
 .PHONY: aa1
 aa1: $(VITIS_AA1_OBJS)
-$(VITIS_AA1_OBJS):
-	@echo 'Build AA1 Vitis overlay using platform $(PFM_SMARTCAMERA)'
-	$(MAKE) -C $(VITIS_AA1_DIR) all PLATFORM=$(PFM_SMARTCAMERA)
+$(VITIS_AA1_OBJS): $(PFM_SC_XPFM)
+	@echo 'Build AA1 Vitis overlay using platform $(PFM_SC_NAME)'
+	$(MAKE) -C $(VITIS_AA1_DIR) all PLATFORM=$(PFM_SC_XPFM)
+
+.PHONY: smartcamera
+smartcamera: $(PFM_SC_XPFM)
+$(PFM_SC_XPFM):
+	$(MAKE) -C $(PFM_DIR) platform PLATFORM=$(PFM_SC_NAME) VERSION=$(PFM_VER)
 
 .PHONY: clean
 clean:
 	$(MAKE) -C $(VITIS_AA1_DIR) clean
 	$(MAKE) -C $(PLNX_DIR) clean
+	$(MAKE) -C $(PFM_DIR) clean PLATFORM=$(PFM_SC_NAME) VERSION=$(PFM_VER)
 
