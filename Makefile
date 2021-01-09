@@ -46,8 +46,11 @@ help:
 	@echo 'Usage:'
 	@echo ''
 	@echo '  make sdcard'
-	@echo '    Generate an SD card wic image for the AA1 smartcamera application using PetaLinux.'
-	@echo '    This triggers the aa1-import rule.'
+	@echo '    Generate an SD card wic image using PetaLinux.'
+	@echo ''
+	@echo '    Note: This rule does *not* trigger any of the aa*-import rules. The user'
+	@echo '          has to manually run those rules (if desired) to import previously'
+	@echo '          generated AA firmware artifacts.'
 	@echo ''
 	@echo '  make aa1-import'
 	@echo '    Import the AA1 bitstream and xclbin from the Vitis project into PetaLinux.'
@@ -64,10 +67,10 @@ help:
 	@echo '    Build the AA2 Vitis overlay against the KV260 aibox Vitis platform.'
 	@echo ''
 	@echo '  make smartcamera'
-	@echo '    Generate the KV260 smartcamera Vitis platform'
+	@echo '    Generate the KV260 smartcamera Vitis platform.'
 	@echo ''
 	@echo '  make aibox'
-	@echo '    Generate the KV260 aibox Vitis platform'
+	@echo '    Generate the KV260 aibox Vitis platform.'
 	@echo ''
 
 .PHONY: all
@@ -75,8 +78,8 @@ all: sdcard
 
 .PHONY: sdcard
 sdcard: $(PLNX_WIC)
-$(PLNX_WIC): $(PLNX_AA1_OBJS)
-	$(MAKE) -C $(PLNX_DIR) all
+$(PLNX_WIC):
+	$(MAKE) -C $(PLNX_DIR) wic
 	@echo 'The PetaLinux wic image is available at $(PLNX_WIC)'
 
 .PHONY: aa1-import
@@ -85,7 +88,6 @@ $(PLNX_AA1_OBJS): $(VITIS_AA1_OBJS)
 	@echo 'Copy AA1 xclbin and bitstream into PetaLinux project'
 	@$(CP) $(VITIS_AA1_BIT) $(PLNX_AA1_BIT)
 	@$(CP) $(VITIS_AA1_XCLBIN) $(PLNX_AA1_XCLBIN)
-	$(MAKE) -C $(PLNX_DIR) image
 
 .PHONY: aa2-import
 aa2-import: $(PLNX_AA2_OBJS)
@@ -93,7 +95,6 @@ $(PLNX_AA2_OBJS): $(VITIS_AA2_OBJS)
 	@echo 'Copy AA2 xclbin and bitstream into PetaLinux project'
 	@$(CP) $(VITIS_AA2_BIT) $(PLNX_AA2_BIT)
 	@$(CP) $(VITIS_AA2_XCLBIN) $(PLNX_AA2_XCLBIN)
-	$(MAKE) -C $(PLNX_DIR) image
 
 .PHONY: aa1
 aa1: $(VITIS_AA1_OBJS)
