@@ -30,7 +30,7 @@ all: platform
 .PHONY: platform
 platform: $(PFM_XPFM)
 $(PFM_XPFM): $(VIV_XSA)
-	$(XSCT) $(PFM_TCL) -nodisp -xsa $(VIV_XSA)
+	$(XSCT) $(PFM_TCL) -xsa $(VIV_XSA)
 	@$(CP) $(PFM_PRJ_DIR) $(PFM_DIR)
 	@echo 'Vitis platform available at $(PFM_DIR)'
 
