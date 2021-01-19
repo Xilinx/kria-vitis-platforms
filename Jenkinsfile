@@ -4,7 +4,7 @@ pipeline {
     }
     environment {
         PROOT="petalinux/xilinx-kv260-smartcamera-2020.2-final"
-        tool_release="2020.2"
+        tool_release="2020.2.2"
         auto_branch="2020.2"
         rel_name="kv260_apps_${tool_release}"
     }
