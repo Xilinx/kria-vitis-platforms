@@ -6,8 +6,7 @@ pipeline {
         PROOT="petalinux/xilinx-kv260-smartcamera-2020.2-final"
         tool_release="2020.2"
         auto_branch="2020.2"
-        rel_ver="ea2"
-        rel_name="kv260_apps_${rel_ver}"
+        rel_name="kv260_apps_${tool_release}"
     }
     triggers {
         pollSCM('H/5 * * * *')
