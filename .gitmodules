@@ -5,4 +5,4 @@
 [submodule "petalinux/xilinx-kv260-smartcamera-2020.2-final"]
 	path = petalinux/xilinx-kv260-smartcamera-2020.2-final
 	url = https://gitenterprise.xilinx.com/PAEG/xilinx-kv260-smartcamera-2020.2-final
-	branch = master
+	branch = 2020.2
