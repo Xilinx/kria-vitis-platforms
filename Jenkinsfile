@@ -123,7 +123,10 @@ pipeline {
                 }
             }
         }
-        stage('Clean Project') {
+        stage('Package and Deploy') {
+            when {
+                branch tool_release
+            }
             steps {
                 sh label: 'clean project',
                 script: '''
@@ -140,10 +143,7 @@ pipeline {
                     cp -rf ./* ${rel_name} || true
                     rm ${rel_name}/Jenkinsfile
                 '''
-            }
-        }
-        stage('Package Project') {
-            steps {
+
                 sh label: 'create release zip file',
                 script: 'zip -r ${rel_name}.zip ${rel_name}'
 
