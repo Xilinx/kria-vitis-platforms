@@ -9,6 +9,9 @@ pipeline {
         rel_ver="ea2"
         rel_name="kv260_apps_${rel_ver}"
     }
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
     stages {
         stage('Clone Helper Repo') {
             steps {
