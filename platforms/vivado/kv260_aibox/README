@@ -1,0 +1,77 @@
+/******************************************************************************
+* Copyright (C) 2020 Xilinx, Inc.  All rights reserved.
+* SPDX-License-Identifier: MIT
+******************************************************************************/
+
+The KV260 aibox Vivado project is generated in this directory. 
+The aibox design supports the following multimedia peripherals 
+and interfaces:
+
+1. Ethernet PS interface for video streaming protocols like RTSP.
+   Receive video stream over this interface. 
+
+2. Hardened Video Codec Unit (VCU) consisting of H264/H265 decoder 
+   supporting upto 4 streams.
+
+3. DisplayPort and HDMI Tx via the PS DP stream interface and on-board 
+   DP splitter.
+
+The Vivado block design (scripts/config_bd.tcl) defines the above
+interfaces and peripherals. It also defines the Platform Interfaces
+that acclerators can connect to.
+
+Platform Interfaces supported:
+******************************
+* Clocks: clock_100M, clock_300M, and clock_600M  to drive clock inputs 
+          on the accelerator.
+* Master AXI: M01_AXI to M15 _AXI AXI Memory Mapped master ports on 
+              axi_ic_accel_ctrl Interconnect to drive the accelerator's 
+              control port.
+* Slave AXI:  S_AXI_HPC0_FPD, S_AXI_HP1_FPD, S_AXI_HP2_FPD and S_AXI_LPD AXI 
+              Memory Mapped slave ports driven by the accelerator's read/write 
+              data ports.
+* Interrupts: pl_ps_irq0[7:0] for the accelerator to drive interrupt signals.
+
+S_AXI_HPC0_FPD S_AXI_HP1_FPD S_AXI_HP2_FPD S_AXI_LPD 
+
+For more information on how to setup Platform Interfaces refer to Section
+Declaring Platform (PFM) Interfaces and Properties in Xilinx Vitis Unified 
+Software Platform Documentation(UG1393)
+
+
+Generate Extensible XSA :
+*************************
+An extensible XSA is required build a Vitis Platform which is in turn used to 
+integrate accelerators into the platform. 
+
+To build the XSA, run the following make command
+
+> make xsa
+
+The Makefile uses scripts/main.tcl file to create a vivado project, populate the 
+block design and finally build a XSA. 
+
+The generated XSA will be located at:
+
+> ./project/kv260_aibox.xsa
+
+
+Modify the Vivado design:
+*************************
+
+To open the Vivado project run the following command from the 
+Vivado tcl console:
+
+> open_project ./project/kv260_aibox.xpr
+
+The user can now modify the block design and run Vivado implementation 
+and bitstream generation in the Vivado cockpit.
+
+To write out a new extensible platform XSA file, run the following 
+command from the Vivado tcl console:
+
+> write_hw_platform -force -include_bit -file kv260_aibox.xsa
+
+The new XSA file can now be used replacing the existing XSA file in the Vitis
+platform generation or as hardware handoff file inside the Petalinux project.
+
