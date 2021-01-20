@@ -118,6 +118,11 @@ pipeline {
                     # set TMPDIR
                     sed -i -e "s#CONFIG_TMP_DIR_LOCATION=.*#CONFIG_TMP_DIR_LOCATION=\\"${NEWTMPDIR}\\"#" \
                         ${PROOT}/project-spec/configs/config
+                    # answer yes to SDK update prompt
+                    cd ${PROOT}
+                    yes | petalinux-config --silentconfig
+                    cd -
+                    # main build
                     make sdcard
                     # restore TMPDIR to default
                     sed -i -e "s#CONFIG_TMP_DIR_LOCATION=.*#CONFIG_TMP_DIR_LOCATION=\\"\\${PROOT}/build/tmp\\"#" \
