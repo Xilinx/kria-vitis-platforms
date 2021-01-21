@@ -698,8 +698,8 @@ proc create_hier_cell_display_pipeline { parentCell nameHier } {
   set_property -dict [ list \
    CONFIG.AUTO_PRIMITIVE {MMCM} \
    CONFIG.CLKOUT1_DRIVES {Buffer} \
-   CONFIG.CLKOUT1_JITTER {284.556} \
-   CONFIG.CLKOUT1_PHASE_ERROR {526.977} \
+   CONFIG.CLKOUT1_JITTER {160.489} \
+   CONFIG.CLKOUT1_PHASE_ERROR {282.343} \
    CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {262.75} \
    CONFIG.CLKOUT2_DRIVES {Buffer} \
    CONFIG.CLKOUT3_DRIVES {Buffer} \
@@ -709,10 +709,10 @@ proc create_hier_cell_display_pipeline { parentCell nameHier } {
    CONFIG.CLKOUT7_DRIVES {Buffer} \
    CONFIG.FEEDBACK_SOURCE {FDBK_AUTO} \
    CONFIG.MMCM_BANDWIDTH {OPTIMIZED} \
-   CONFIG.MMCM_CLKFBOUT_MULT_F {64.375} \
-   CONFIG.MMCM_CLKOUT0_DIVIDE_F {3.500} \
+   CONFIG.MMCM_CLKFBOUT_MULT_F {59.000} \
+   CONFIG.MMCM_CLKOUT0_DIVIDE_F {4.750} \
    CONFIG.MMCM_COMPENSATION {AUTO} \
-   CONFIG.MMCM_DIVCLK_DIVIDE {21} \
+   CONFIG.MMCM_DIVCLK_DIVIDE {13} \
    CONFIG.PRIMITIVE {MMCM} \
    CONFIG.PRIM_SOURCE {Global_buffer} \
    CONFIG.USE_DYN_RECONFIG {true} \
@@ -958,33 +958,34 @@ proc create_root_design { parentCell } {
   # Create instance: clk_wiz_0, and set properties
   set clk_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0 ]
   set_property -dict [ list \
-   CONFIG.CLKOUT1_JITTER {102.087} \
-   CONFIG.CLKOUT1_PHASE_ERROR {87.181} \
+   CONFIG.CLKOUT1_JITTER {108.849} \
+   CONFIG.CLKOUT1_PHASE_ERROR {92.673} \
    CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {200.000} \
-   CONFIG.CLKOUT2_JITTER {115.833} \
-   CONFIG.CLKOUT2_PHASE_ERROR {87.181} \
+   CONFIG.CLKOUT2_JITTER {123.671} \
+   CONFIG.CLKOUT2_PHASE_ERROR {92.673} \
    CONFIG.CLKOUT2_USED {true} \
-   CONFIG.CLKOUT3_JITTER {94.863} \
-   CONFIG.CLKOUT3_PHASE_ERROR {87.181} \
-   CONFIG.CLKOUT3_REQUESTED_OUT_FREQ {300.000} \
+   CONFIG.CLKOUT3_JITTER {102.699} \
+   CONFIG.CLKOUT3_PHASE_ERROR {92.673} \
+   CONFIG.CLKOUT3_REQUESTED_OUT_FREQ {275.000} \
    CONFIG.CLKOUT3_USED {true} \
-   CONFIG.CLKOUT4_JITTER {132.685} \
-   CONFIG.CLKOUT4_PHASE_ERROR {87.181} \
+   CONFIG.CLKOUT4_JITTER {142.810} \
+   CONFIG.CLKOUT4_PHASE_ERROR {92.673} \
    CONFIG.CLKOUT4_REQUESTED_OUT_FREQ {50.000} \
    CONFIG.CLKOUT4_USED {true} \
-   CONFIG.CLKOUT5_JITTER {83.769} \
-   CONFIG.CLKOUT5_PHASE_ERROR {87.181} \
-   CONFIG.CLKOUT5_REQUESTED_OUT_FREQ {600.000} \
+   CONFIG.CLKOUT5_JITTER {90.570} \
+   CONFIG.CLKOUT5_PHASE_ERROR {92.673} \
+   CONFIG.CLKOUT5_REQUESTED_OUT_FREQ {550.000} \
    CONFIG.CLKOUT5_USED {true} \
    CONFIG.CLK_OUT1_PORT {clk_200M} \
    CONFIG.CLK_OUT2_PORT {clk_100M} \
    CONFIG.CLK_OUT3_PORT {clk_300M} \
    CONFIG.CLK_OUT4_PORT {clk_50M} \
    CONFIG.CLK_OUT5_PORT {clk_600M} \
-   CONFIG.MMCM_CLKOUT0_DIVIDE_F {6.000} \
-   CONFIG.MMCM_CLKOUT1_DIVIDE {12} \
+   CONFIG.MMCM_CLKFBOUT_MULT_F {11.000} \
+   CONFIG.MMCM_CLKOUT0_DIVIDE_F {5.500} \
+   CONFIG.MMCM_CLKOUT1_DIVIDE {11} \
    CONFIG.MMCM_CLKOUT2_DIVIDE {4} \
-   CONFIG.MMCM_CLKOUT3_DIVIDE {24} \
+   CONFIG.MMCM_CLKOUT3_DIVIDE {22} \
    CONFIG.MMCM_CLKOUT4_DIVIDE {2} \
    CONFIG.MMCM_DIVCLK_DIVIDE {1} \
    CONFIG.NUM_OUT_CLKS {5} \
@@ -1033,33 +1034,34 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_LPD [get_bd_intf_pins ${::PS_INST}/M_AXI_HPM0_LPD] [get_bd_intf_pins axi_interconnect_ctrl/S00_AXI]
 
   # Create port connections
+  connect_bd_net -net ARESETN_1 [get_bd_pins axi_ic_accel_ctrl/ARESETN] [get_bd_pins proc_sys_reset_100MHz/interconnect_aresetn]
   connect_bd_net -net ${::PS_INST}_emio_gpio_o [get_bd_pins ${::PS_INST}/emio_gpio_o] [get_bd_pins display_pipeline/Din] -boundary_type upper
   connect_bd_net -net ${::PS_INST}_emio_gpio_o [get_bd_pins ${::PS_INST}/emio_gpio_o] [get_bd_pins vcu/Din] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins axi_interconnect_ctrl/M00_ACLK] [get_bd_pins axi_interconnect_ctrl/M01_ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins axi_interconnect_ctrl/M00_ACLK] [get_bd_pins axi_interconnect_ctrl/M03_ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins axi_interconnect_ctrl/M00_ACLK] [get_bd_pins clk_wiz_0/clk_100M] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins axi_interconnect_ctrl/M00_ACLK] [get_bd_pins display_pipeline/s_axi_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins axi_interconnect_ctrl/M00_ACLK] [get_bd_pins proc_sys_reset_100MHz/slowest_sync_clk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins axi_interconnect_ctrl/M00_ACLK] [get_bd_pins vcu/s_axi_lite_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins ${::PS_INST}/saxi_lpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins ${::PS_INST}/saxihp0_fpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins ${::PS_INST}/saxihp1_fpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins ${::PS_INST}/saxihp2_fpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins ${::PS_INST}/saxihp3_fpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins ${::PS_INST}/saxihpc0_fpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins ${::PS_INST}/saxihpc1_fpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_ic_accel_ctrl/ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_ic_accel_ctrl/M00_ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_ic_accel_ctrl/S00_ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_interconnect_ctrl/ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_interconnect_ctrl/M02_ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_interconnect_ctrl/S00_ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_vip_0/aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins clk_wiz_0/clk_300M] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins display_pipeline/clk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins proc_sys_reset_300MHz/slowest_sync_clk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins vcu/ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_ic_accel_ctrl/ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_ic_accel_ctrl/M00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_ic_accel_ctrl/S00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_interconnect_ctrl/M00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_interconnect_ctrl/M01_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_interconnect_ctrl/M03_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins axi_vip_0/aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins clk_wiz_0/clk_100M] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins display_pipeline/s_axi_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins proc_sys_reset_100MHz/slowest_sync_clk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins vcu/s_axi_lite_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxi_lpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihp0_fpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihp1_fpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihp2_fpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihp3_fpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihpc0_fpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihpc1_fpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl/ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl/M02_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl/S00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins clk_wiz_0/clk_300M] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins display_pipeline/clk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins proc_sys_reset_300MHz/slowest_sync_clk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins vcu/ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_50M [get_bd_pins clk_wiz_0/clk_50M] [get_bd_pins vcu/pll_ref_clk]
   connect_bd_net -net clk_wiz_0_clk_600M [get_bd_pins clk_wiz_0/clk_600M] [get_bd_pins proc_sys_reset_600MHz/slowest_sync_clk]
   connect_bd_net -net display_pipeline_interrupt [get_bd_pins display_pipeline/interrupt] [get_bd_pins xlconcat_0/In0]
@@ -1069,20 +1071,19 @@ proc create_root_design { parentCell } {
   connect_bd_net -net display_pipeline_vid_hsync [get_bd_pins ${::PS_INST}/dp_live_video_in_hsync] [get_bd_pins display_pipeline/vid_hsync]
   connect_bd_net -net display_pipeline_vid_vsync [get_bd_pins ${::PS_INST}/dp_live_video_in_vsync] [get_bd_pins display_pipeline/vid_vsync]
   connect_bd_net -net display_pipeline_video_clk [get_bd_pins ${::PS_INST}/dp_video_in_clk] [get_bd_pins display_pipeline/video_clk]
-  connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_ic_accel_ctrl/ARESETN] [get_bd_pins axi_interconnect_ctrl/ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_ic_accel_ctrl/ARESETN] [get_bd_pins axi_vip_0/aresetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_ic_accel_ctrl/ARESETN] [get_bd_pins proc_sys_reset_300MHz/interconnect_aresetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_ic_accel_ctrl/ARESETN] [get_bd_pins vcu/ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins axi_ic_accel_ctrl/S00_ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins axi_interconnect_ctrl/M02_ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins axi_interconnect_ctrl/S00_ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins display_pipeline/resetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins proc_sys_reset_300MHz/peripheral_aresetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins vcu/M00_ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M00_ARESETN] [get_bd_pins axi_interconnect_ctrl/M01_ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M00_ARESETN] [get_bd_pins axi_interconnect_ctrl/M03_ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M00_ARESETN] [get_bd_pins display_pipeline/s_axi_aresetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M00_ARESETN] [get_bd_pins proc_sys_reset_100MHz/peripheral_aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_interconnect_ctrl/ARESETN] [get_bd_pins proc_sys_reset_300MHz/interconnect_aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_interconnect_ctrl/ARESETN] [get_bd_pins vcu/ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M02_ARESETN] [get_bd_pins axi_interconnect_ctrl/S00_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M02_ARESETN] [get_bd_pins display_pipeline/resetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M02_ARESETN] [get_bd_pins proc_sys_reset_300MHz/peripheral_aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M02_ARESETN] [get_bd_pins vcu/M00_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins axi_ic_accel_ctrl/S00_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins axi_interconnect_ctrl/M00_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins axi_interconnect_ctrl/M01_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins axi_interconnect_ctrl/M03_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins axi_vip_0/aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins display_pipeline/s_axi_aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins proc_sys_reset_100MHz/peripheral_aresetn] -boundary_type upper
   connect_bd_net -net vcu_vcu_host_interrupt [get_bd_pins vcu/vcu_host_interrupt] [get_bd_pins xlconcat_0/In2]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins ${::PS_INST}/pl_ps_irq1] [get_bd_pins xlconcat_0/dout]
   connect_bd_net -net xlconstant_0_fan_en_b_dout [get_bd_ports fan_en_b] [get_bd_pins xlconstant_0_fan_en_b/dout]
