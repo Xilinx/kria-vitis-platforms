@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'Slave'
+        label 'Build_Master'
     }
     environment {
         PROOT="petalinux/xilinx-kv260-smartcamera-2020.2-final"
@@ -98,8 +98,17 @@ pipeline {
             }
         }
         stage('PetaLinux Build') {
+            agent {
+                node {
+                    label 'Slave'
+                    customWorkspace "${WORKSPACE}"
+                }
+            }
             environment {
                 NEWTMPDIR = sh(script: 'mktemp -d /tmp/${rel_name}.XXXXXXXXXX', returnStdout: true).trim()
+            }
+            options {
+                skipDefaultCheckout true
             }
             steps {
                 sh label: 'build PetaLinux project',
