@@ -1,1 +1,0 @@
-# IVAS embedded examples
