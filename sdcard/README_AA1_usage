@@ -36,7 +36,7 @@ how to run the application, and an overview of the application file structure.
               The notebook will be available at http://<your defined IP addr>:8888
        
        b) Command line scripts and configurations. These allow for the user to define different video input and output device targets using
-          the "somapp" application. These are to be executed using the UART/debug interface. Example scripts and configuration definitions 
+          the "smartcam_aa1" application. These are to be executed using the UART/debug interface. Example scripts and configuration definitions 
           are provided below.
 
     C) Example scripts are provided on the system. For location see "File Structure"
@@ -68,61 +68,65 @@ how to run the application, and an overview of the application file structure.
             You should be able to see in the output video file, there are blue boxes around the faces of walking people, and the boxes
             should follow the movement of the faces, while there's no such boxes with the input video file.
 
-2. Additional configuration options for somapp invocation:
-   The example scripts and Jupyter notebook work as examples to show capability of the somapp for specific configurations.
-   More combinations could be made based on the options provided by somapp.
-   You can get detailed application options as following by invoking ./somapp --help.
+2. Additional configuration options for smartcam_aa1 invocation:
+   The example scripts and Jupyter notebook work as examples to show capability of the smartcam_aa1 for specific configurations.
+   More combinations could be made based on the options provided by smartcam_aa1.
+   You can get detailed application options as following by invoking ./smartcam_aa1 --help.
 
     Usage:
-      somapp [OPTION?] - Application for face detection on SOM board of Xilinx.
+      smartcam_aa1 [OPTION?] - Application for face detection on SOM board of Xilinx.
     
     Help Options:
-      -?, --help                        Show help options
+      -h, --help                        Show help options
       --help-all                        Show all help options
       --help-gst                        Show GStreamer Options
-    
+
     Application Options:
       -m, --mipi=media_ID               mipi media id, e.g. 1 for /dev/media1
       -u, --usb=video_ID                usb camera video device id, e.g. 2 for /dev/video2
       -f, --file=file path              location of h26x file as input
       -i, --infile-type=h264            input file type: [h264 | h265]
-      -w, --w=1920                      resolution w of the input
-      -h, --h=1080                      resolution h of the input
+      -W, --width=1920                  resolution w of the input
+      -H, --height=1080                 resolution h of the input
       -r, --framerate=30                framerate of the input
       -t, --target=dp                   [dp|rtsp|file]
       -o, --outmedia-type=h264          output file type: [h264 | h265]
       -p, --port=5000                   Port to listen on (default: 5000)
+      -a, --aitask                      select AI task to be run: [facedetect|ssd|refinedet]
       -n, --nodet                       no AI inference
+      -R, --report                      report fps
+      --ROI-off                         turn off ROI
+
 
    Example of supported combinations sorted by input are outlined below. If using command line to invoke
-   the somapp stop the process via CTLR-C prior to starting the next instance.
+   the smartcam_aa1 stop the process via CTLR-C prior to starting the next instance.
    Note some of the configurations have functional limitations in EA1.
    have limitations:
    A) input MIPI (IAS sensor input):
       output: RTSP
-        somapp  --mipi 0 -w 1920 -h 1080 --target rtsp >/dev/null 2>&1
+        smartcam_aa1  --mipi 0 -W 1920 -H 1080 --target rtsp >/dev/null 2>&1
       output: DP
-        somapp  --mipi 0 -w 1920 -h 1080 --target dp >/dev/null 2>&1
+        smartcam_aa1  --mipi 0 -W 1920 -H 1080 --target dp >/dev/null 2>&1
       output: file
-        somapp  --mipi 0 -w 1920 -h 1080 --target file >/dev/null 2>&1
+        smartcam_aa1  --mipi 0 -W 1920 -H 1080 --target file >/dev/null 2>&1
 
    B) input file (file on file system):
       output: RTSP [!Not functional in EA1]
-        somapp  --file ./test.h264 -i h264 -w 1920 -h 1080 -r 30 --target rtsp >/dev/null 2>&1 
+        smartcam_aa1  --file ./test.h264 -i h264 -W 1920 -H 1080 -r 30 --target rtsp >/dev/null 2>&1 
       output: DP [!Not functional in EA1]
-        somapp  --file ./test.h264 -i h264 -w 1920 -h 1080 -r 30 --target dp >/dev/null 2>&1
+        smartcam_aa1  --file ./test.h264 -i h264 -W 1920 -H 1080 -r 30 --target dp >/dev/null 2>&1
       output: file
-        somapp  --file ./test.h264 -i h264 -w 1920 -h 1080 -r 30 --target file >/dev/null 2>&1
+        smartcam_aa1  --file ./test.h264 -i h264 -W 1920 -H 1080 -r 30 --target file >/dev/null 2>&1
 
       *Note you must update the command to the specific file desired as input source.
 
    C) input USB (USB webcam): [!Detection limitation with USB3.0 cameras]
       output: RTSP
-        somapp  --usb 1 -w 1920 -h 1080 -r 30 --target rtsp >/dev/null 2>&1      
+        smartcam_aa1  --usb 1 -W 1920 -H 1080 -r 30 --target rtsp >/dev/null 2>&1      
       output: DP
-        somapp  --usb 1 -w 1920 -h 1080 -r 30 --target dp >/dev/null 2>&1
+        smartcam_aa1  --usb 1 -W 1920 -H 1080 -r 30 --target dp >/dev/null 2>&1
       output: file
-        somapp  --usb 1 -w 1920 -h 1080 -r 30 --target file >/dev/null 2>&1
+        smartcam_aa1  --usb 1 -W 1920 -H 1080 -r 30 --target file >/dev/null 2>&1
       
       *You must ensure the width/height/framerate defined are supported by your USB camera.
 
@@ -130,20 +134,20 @@ how to run the application, and an overview of the application file structure.
 3. File structure:
     The application is installed as:
         Binary File: => /opt/xilinx/bin
-                                        somapp                      main app
+                                        smartcam_aa1         main app
 
         Script File: => /opt/xilinx/bin/
-                                        setupmipi.sh         find mipi media number, to be used by somapp.
-                                        01.mipi-rtsp.sh      call somapp to run facedetction and send out rtsp stream.
-                                        02.mipi-dp.sh        call somapp to run facedetction and display on DP display.
-                                        03.file-file.sh      call somapp to run facedetction and display on input h264/5
+                                        setupmipi.sh         find mipi media number, to be used by smartcam_aa1.
+                                        01.mipi-rtsp.sh      call smartcam_aa1 to run facedetction and send out rtsp stream.
+                                        02.mipi-dp.sh        call smartcam_aa1 to run facedetction and display on DP display.
+                                        03.file-file.sh      call smartcam_aa1 to run facedetction and display on input h264/5
                                                                   file and generate output h264/5 with detection boxes.
         configuration File: => /opt/xilinx/share/ivas
                                         kernel_boundingbox_facedetect.json
                                         kernel_densebox_640_360.json
                                         kernel_xpp_pipeline.json
 
-    Jupyter notebook file:  => /usr/share/notebooks/somapp
+    Jupyter notebook file:  => /usr/share/notebooks/smartcam_aa1
                                         AA1.ipynb
                                                              Jupyter notebook file for MIPI->RTSP demo.
 
