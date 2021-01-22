@@ -597,14 +597,14 @@ proc create_hier_cell_vcu { parentCell nameHier } {
   # Create port connections
   connect_bd_net -net Din_1 [get_bd_pins Din] [get_bd_pins xlslice_1/Din]
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins s_axi_lite_aclk] [get_bd_pins vcu_0/s_axi_lite_aclk]
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ACLK] [get_bd_pins axi_interconnect_vcu_dec/ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ACLK] [get_bd_pins axi_interconnect_vcu_dec/M00_ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ACLK] [get_bd_pins axi_interconnect_vcu_dec/S00_ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ACLK] [get_bd_pins axi_interconnect_vcu_dec/S01_ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ACLK] [get_bd_pins axi_reg_slice_vdec/aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ACLK] [get_bd_pins axi_reg_slice_vmcu/aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ACLK] [get_bd_pins vcu_0/m_axi_dec_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ACLK] [get_bd_pins vcu_0/m_axi_mcu_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ACLK] [get_bd_pins axi_interconnect_vcu_dec/ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ACLK] [get_bd_pins axi_interconnect_vcu_dec/M00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ACLK] [get_bd_pins axi_interconnect_vcu_dec/S00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ACLK] [get_bd_pins axi_interconnect_vcu_dec/S01_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ACLK] [get_bd_pins axi_reg_slice_vdec/aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ACLK] [get_bd_pins axi_reg_slice_vmcu/aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ACLK] [get_bd_pins vcu_0/m_axi_dec_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ACLK] [get_bd_pins vcu_0/m_axi_mcu_aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_50M [get_bd_pins pll_ref_clk] [get_bd_pins vcu_0/pll_ref_clk]
   connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins ARESETN] [get_bd_pins axi_interconnect_vcu_dec/ARESETN]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins M00_ARESETN] [get_bd_pins axi_interconnect_vcu_dec/M00_ARESETN] -boundary_type upper
@@ -771,6 +771,7 @@ proc create_hier_cell_display_pipeline { parentCell nameHier } {
    CONFIG.GEN_VACTIVE_SIZE {1080} \
    CONFIG.VIDEO_MODE {1080p} \
    CONFIG.enable_detection {false} \
+   CONFIG.max_clocks_per_line {8192} \
  ] $v_tc_0
 
   # Create instance: xlconcat_0, and set properties
@@ -978,9 +979,9 @@ proc create_root_design { parentCell } {
    CONFIG.CLKOUT5_USED {true} \
    CONFIG.CLK_OUT1_PORT {clk_200M} \
    CONFIG.CLK_OUT2_PORT {clk_100M} \
-   CONFIG.CLK_OUT3_PORT {clk_300M} \
+   CONFIG.CLK_OUT3_PORT {clk_275M} \
    CONFIG.CLK_OUT4_PORT {clk_50M} \
-   CONFIG.CLK_OUT5_PORT {clk_600M} \
+   CONFIG.CLK_OUT5_PORT {clk_550M} \
    CONFIG.MMCM_CLKFBOUT_MULT_F {11.000} \
    CONFIG.MMCM_CLKOUT0_DIVIDE_F {5.500} \
    CONFIG.MMCM_CLKOUT1_DIVIDE {11} \
@@ -1000,11 +1001,11 @@ proc create_root_design { parentCell } {
   # Create instance: proc_sys_reset_100MHz, and set properties
   set proc_sys_reset_100MHz [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset proc_sys_reset_100MHz ]
 
-  # Create instance: proc_sys_reset_300MHz, and set properties
-  set proc_sys_reset_300MHz [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset proc_sys_reset_300MHz ]
+  # Create instance: proc_sys_reset_275MHz, and set properties
+  set proc_sys_reset_275MHz [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset proc_sys_reset_275MHz ]
 
-  # Create instance: proc_sys_reset_600MHz, and set properties
-  set proc_sys_reset_600MHz [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset proc_sys_reset_600MHz ]
+  # Create instance: proc_sys_reset_550MHz, and set properties
+  set proc_sys_reset_550MHz [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset proc_sys_reset_550MHz ]
 
   # Create instance: vcu
   create_hier_cell_vcu [current_bd_instance .] vcu
@@ -1048,22 +1049,22 @@ proc create_root_design { parentCell } {
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins display_pipeline/s_axi_aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins proc_sys_reset_100MHz/slowest_sync_clk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins ${::PS_INST}/maxihpm0_fpd_aclk] [get_bd_pins vcu/s_axi_lite_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxi_lpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihp0_fpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihp1_fpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihp2_fpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihp3_fpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihpc0_fpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihpc1_fpd_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl/ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl/M02_ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl/S00_ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins clk_wiz_0/clk_300M] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins display_pipeline/clk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins proc_sys_reset_300MHz/slowest_sync_clk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins vcu/ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxi_lpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihp0_fpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihp1_fpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihp2_fpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihp3_fpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihpc0_fpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins ${::PS_INST}/saxihpc1_fpd_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl/ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl/M02_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl/S00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins clk_wiz_0/clk_275M] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins display_pipeline/clk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins proc_sys_reset_275MHz/slowest_sync_clk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_250M [get_bd_pins ${::PS_INST}/maxihpm0_lpd_aclk] [get_bd_pins vcu/ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_50M [get_bd_pins clk_wiz_0/clk_50M] [get_bd_pins vcu/pll_ref_clk]
-  connect_bd_net -net clk_wiz_0_clk_600M [get_bd_pins clk_wiz_0/clk_600M] [get_bd_pins proc_sys_reset_600MHz/slowest_sync_clk]
+  connect_bd_net -net clk_wiz_0_clk_550M [get_bd_pins clk_wiz_0/clk_550M] [get_bd_pins proc_sys_reset_550MHz/slowest_sync_clk]
   connect_bd_net -net display_pipeline_interrupt [get_bd_pins display_pipeline/interrupt] [get_bd_pins xlconcat_0/In0]
   connect_bd_net -net display_pipeline_irq [get_bd_pins display_pipeline/irq] [get_bd_pins xlconcat_0/In1]
   connect_bd_net -net display_pipeline_vid_active_video [get_bd_pins ${::PS_INST}/dp_live_video_in_de] [get_bd_pins display_pipeline/vid_active_video]
@@ -1071,11 +1072,11 @@ proc create_root_design { parentCell } {
   connect_bd_net -net display_pipeline_vid_hsync [get_bd_pins ${::PS_INST}/dp_live_video_in_hsync] [get_bd_pins display_pipeline/vid_hsync]
   connect_bd_net -net display_pipeline_vid_vsync [get_bd_pins ${::PS_INST}/dp_live_video_in_vsync] [get_bd_pins display_pipeline/vid_vsync]
   connect_bd_net -net display_pipeline_video_clk [get_bd_pins ${::PS_INST}/dp_video_in_clk] [get_bd_pins display_pipeline/video_clk]
-  connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_interconnect_ctrl/ARESETN] [get_bd_pins proc_sys_reset_300MHz/interconnect_aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_interconnect_ctrl/ARESETN] [get_bd_pins proc_sys_reset_275MHz/interconnect_aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_interconnect_aresetn [get_bd_pins axi_interconnect_ctrl/ARESETN] [get_bd_pins vcu/ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M02_ARESETN] [get_bd_pins axi_interconnect_ctrl/S00_ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M02_ARESETN] [get_bd_pins display_pipeline/resetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M02_ARESETN] [get_bd_pins proc_sys_reset_300MHz/peripheral_aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M02_ARESETN] [get_bd_pins proc_sys_reset_275MHz/peripheral_aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl/M02_ARESETN] [get_bd_pins vcu/M00_ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins axi_ic_accel_ctrl/S00_ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_ic_accel_ctrl/M00_ARESETN] [get_bd_pins axi_interconnect_ctrl/M00_ARESETN] -boundary_type upper
@@ -1091,8 +1092,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins clk_wiz_0/resetn] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins display_pipeline/ext_reset_in] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins proc_sys_reset_100MHz/ext_reset_in] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins proc_sys_reset_300MHz/ext_reset_in] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins proc_sys_reset_600MHz/ext_reset_in] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins proc_sys_reset_275MHz/ext_reset_in] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins proc_sys_reset_550MHz/ext_reset_in] -boundary_type upper
 
   # Create address segments
   assign_bd_address -offset 0xA0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ${::PS_INST}/Data] [get_bd_addr_segs axi_vip_0/S_AXI/Reg] -force
@@ -1131,8 +1132,9 @@ proc create_root_design { parentCell } {
   set_property PFM_NAME {xilinx.com:kv260:kv260_aibox_4:1.0} [get_files [current_bd_design].bd]
   set_property PFM.AXI_PORT {S_AXI_HPC0_FPD {memport "S_AXI_HP" sptag "HPC0" memory "PS_0 HPC0_DDR_LOW"} S_AXI_HP1_FPD {memport "S_AXI_HP" sptag "HP1" memory "PS_0 HP1_DDR_LOW"} S_AXI_HP2_FPD {memport "S_AXI_HP" sptag "HP2" memory "PS_0 HP2_DDR_LOW"} S_AXI_LPD {memport "MIG" sptag "LPD" memory "PS_0 LPD_DDR_LOW"}} [get_bd_cells /PS_0]
   set_property PFM.IRQ {pl_ps_irq0 {id 0 range 7}} [get_bd_cells /PS_0]
-  set_property PFM.CLOCK {clk_100M {id "2" is_default "false" proc_sys_reset "/proc_sys_reset_100MHz" status "fixed"} clk_300M {id "0" is_default "true" proc_sys_reset "/proc_sys_reset_300MHz" status "fixed"} clk_600M {id "1" is_default "false" proc_sys_reset "/proc_sys_reset_600MHz" status "fixed"}} [get_bd_cells /clk_wiz_0]
+  set_property PFM.CLOCK {clk_100M {id "2" is_default "false" proc_sys_reset "/proc_sys_reset_100MHz" status "fixed"} clk_275M {id "0" is_default "true" proc_sys_reset "/proc_sys_reset_275MHz" status "fixed"} clk_550M {id "1" is_default "false" proc_sys_reset "/proc_sys_reset_550MHz" status "fixed"}} [get_bd_cells /clk_wiz_0]
   set_property PFM.AXI_PORT {M01_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M02_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M03_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M04_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M05_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M06_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M07_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M08_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M09_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M10_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M11_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M12_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M13_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M14_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""} M15_AXI {memport "M_AXI_GP" sptag "M_AXI_HPM0" memory ""}} [get_bd_cells /axi_ic_accel_ctrl]
+
 
 
   validate_bd_design
