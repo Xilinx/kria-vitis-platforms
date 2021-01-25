@@ -1,0 +1,43 @@
+/******************************************************************************
+* Copyright (C) 2010 - 2020 Xilinx, Inc. All rights reserved.
+* SPDX-License-Identifier: Apache-2.0
+******************************************************************************/
+
+
+1. File structure:
+    The application is installed as:
+        Binary File: => /opt/xilinx/bin
+                                        aibox_aa2                               main app
+
+        configuration File: => /opt/xilinx/share/aibox_aa2
+                                        ped_pp.json                 Config of preprocess for refinedet.
+                                        refinedet.json              Config of refinedet.
+                                        crop.json                   Config of cropping for reid.
+                                        reid.json                   Config of reid.
+                                        draw_reid.json              Config of final results drawing.
+
+2. How to run application:
+    0) Prerequisites:
+       a) Monitor:
+          Before booting the board, please connect the monitor to the board via either DP or HDMI port.
+
+    1) Setup RTSP server:
+       a) smartcam_aa1 can be used as the RTSP server, with -n option, which turn off the server side AI inference.
+          e.g. 
+            smartcam_aa1 -f /usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264 -W 1920 -H 1080 -r 30 -t rtsp -n &
+
+    2) Run AA2 application:
+       aibox_aa2 -t rtsp://192.168.33.123:5000/test
+
+3. Command Option:
+    aibox_aa2 [OPTION?] - AI Application of pedestrian + reid + tracking for multi RTSP streams, on SoM board of Xilinx.
+         
+         Help Options:
+           -h, --help                        Show help options
+           --help-all                        Show all help options
+           --help-gst                        Show GStreamer Options
+         
+         Application Options:
+           -t, --rtsp=rtsp uri, multiple     rtsp stream addr
+           -f, --file=file path              location of h26x file as input
+         
