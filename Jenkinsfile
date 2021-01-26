@@ -9,7 +9,7 @@ pipeline {
         rel_name="kv260_apps_${tool_release}"
     }
     triggers {
-        pollSCM('H/5 * * * *')
+        cron(BRANCH_NAME == tool_release ? 'H 24 * * *' : '')
     }
     stages {
         stage('Clone Helper Repo') {
