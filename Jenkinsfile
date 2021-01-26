@@ -3,6 +3,7 @@ pipeline {
         label 'Build_Master'
     }
     environment {
+        DEPLOYDIR="/wrk/paeg_builds/build-artifacts"
         PROOT="petalinux/xilinx-kv260-smartcamera-2020.2-final"
         tool_release="2020.2.2"
         auto_branch="2020.2"
@@ -162,13 +163,18 @@ pipeline {
 
                 sh label: 'create release zip file',
                 script: 'zip -r ${rel_name}.zip ${rel_name}'
-
-                sh label: 'deploy release zip file',
-                script: '''
-                    DST=/wrk/paeg_builds/build-artifacts/release-packages/${tool_release}/${rel_name}
-                    mkdir -p ${DST}
-                    cp ${rel_name}.zip ${DST}
-                '''
+            }
+            post {
+                success {
+                    sh label: 'deploy release zip file',
+                    script: '''
+                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                            DST=${DEPLOYDIR}/release-packages/${tool_release}/${rel_name}
+                            mkdir -p ${DST}
+                            cp ${rel_name}.zip ${DST}
+                        fi
+                    '''
+                }
             }
         }
     }
