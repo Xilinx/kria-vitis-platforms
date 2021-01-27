@@ -6,6 +6,7 @@ pipeline {
         DEPLOYDIR="/wrk/paeg_builds/build-artifacts"
         PROOT="petalinux/xilinx-kv260-smartcamera-2020.2-final"
         tool_release="2020.2.2"
+        tool_build="regression_latest"
         auto_branch="2020.2"
         rel_name="kv260_apps_${tool_release}"
     }
@@ -114,7 +115,7 @@ pipeline {
             steps {
                 sh label: 'build PetaLinux project',
                 script: '''
-                    source ./paeg-helper/env-setup.sh -r ${tool_release} -p
+                    source ./paeg-helper/env-setup.sh -p -r ${tool_release} -b ${tool_build}
                     cd ${rel_name}
                     # set TMPDIR
                     sed -i -e "s#CONFIG_TMP_DIR_LOCATION=.*#CONFIG_TMP_DIR_LOCATION=\\"${NEWTMPDIR}\\"#" \
