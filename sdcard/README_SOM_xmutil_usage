@@ -1,0 +1,78 @@
+/******************************************************************************
+
+* Copyright (C) 2010 - 2020 Xilinx, Inc.  All rights reserved.
+
+* SPDX-License-Identifier: MIT
+
+******************************************************************************/
+
+Xmutil is a wrapper scripts for the different som tools that are available
+
+here is a list of what will be supported:
+
+
+
+xmutil boardid
+
+	Reads all board EEPROM contents. Prints information summary in human readable structure to CLI.
+
+xmutil bootfw
+
+	Reads primary boot device information. Prints A/B status information, image IDs, and checksums to CLI.
+
+xmutil bootfwupd
+
+	Updates the primary boot device with a new boot.bin in the inactive partition (either A or B).
+
+xmutil getpkgs
+
+	Queries Xilinx package feeds and provides summary to CLI of relevant packages for active platform based on board ID information.
+
+xmutil listapps
+
+	Queries on target HW resource manager daemon of pre-built apps available on the platform and provides summary to CLI.
+
+xmutil loadapp
+
+	Loads integrated HW+SW application inclusive of bitstream and starts the corresponding pre-built app SW executable.
+
+xmutil unloadapp
+
+	Removes accelerated application inclusive of unloading its bitstream.
+
+xmutil perfmon
+
+	Reads and prints a summary of the following performance related information: 
+
+		CPU frequency & utilization statistics for each physical core
+		RAM utilization
+		DDR controller bandwidth & operational frequency
+		Temperature(s) reported by SysMon
+		SOM overall current & power utilization reported by SOM current monitor IC
+		SOM power supply data summary reported by PMICs & ZU+ SysMon sources
+xmutil ddrqos
+
+	Utility for changing configuration of PS DDR quality of service (QoS) settings including. Initial implementation focuses on PS DDR memory controller “traffic class” configuration.
+
+xmutil axiqos
+
+	Utility for changing configuration of PS/PL AXI interface quality of service (QoS) settings. Initial implementation focuses on AXI port read/write priority configurations.
+
+xmutil bist
+
+	Built in self-test utility for simple board diagnostics with pass/fail results for:
+
+		Board power checks
+		Read all PMIC measurements, compare to expected min/max
+		Read all SysMon power measurements, compare to expected min/max
+		Read SOM 5V current draw, compare to expected min/max
+		Clock frequency check
+		DDR4 memory test
+		QSPI memory test
+		eMMC/SD memory test
+		EEPROM contents valid check
+		I2C slave device checks (PS I2C bus only)
+		Temperature(s) reported by SysMon within expected values
+
+
+Help menu for each tool can be accessed with -h/--help
