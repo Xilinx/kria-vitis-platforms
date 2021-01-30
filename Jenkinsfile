@@ -42,7 +42,7 @@ pipeline {
                                 sh label: 'smartcamera-build',
                                 script: '''
                                     source ./paeg-helper/env-setup.sh -r ${tool_release}
-                                    ./paeg-helper/scripts/lsf make smartcamera
+                                    ./paeg-helper/scripts/lsf make platform PFM=kv260_smartcamera
                                 '''
                             }
                         }
@@ -51,7 +51,7 @@ pipeline {
                                 sh label: 'aa1-build',
                                 script: '''
                                     source ./paeg-helper/env-setup.sh -r ${tool_release}
-                                    ./paeg-helper/scripts/lsf make aa1
+                                    ./paeg-helper/scripts/lsf make accelerator AA=aa1
                                 '''
                             }
                         }
@@ -60,7 +60,7 @@ pipeline {
                                 sh label: 'aa1-import',
                                 script: '''
                                     source ./paeg-helper/env-setup.sh -r ${tool_release}
-                                    ./paeg-helper/scripts/lsf make aa1-import
+                                    ./paeg-helper/scripts/lsf make fw-import AA=aa1
                                 '''
                             }
                         }
@@ -73,7 +73,7 @@ pipeline {
                                 sh label: 'aibox-build',
                                 script: '''
                                     source ./paeg-helper/env-setup.sh -r ${tool_release}
-                                    ./paeg-helper/scripts/lsf make aibox
+                                    ./paeg-helper/scripts/lsf make platform PFM=kv260_aibox
                                 '''
                             }
                         }
@@ -82,7 +82,7 @@ pipeline {
                                 sh label: 'aa2-build',
                                 script: '''
                                     source ./paeg-helper/env-setup.sh -r ${tool_release}
-                                    ./paeg-helper/scripts/lsf make aa2
+                                    ./paeg-helper/scripts/lsf make accelerator AA=aa2
                                 '''
                             }
                         }
@@ -91,7 +91,7 @@ pipeline {
                                 sh label: 'aa2-import',
                                 script: '''
                                     source ./paeg-helper/env-setup.sh -r ${tool_release}
-                                    ./paeg-helper/scripts/lsf make aa2-import
+                                    ./paeg-helper/scripts/lsf make fw-import AA=aa2
                                 '''
                             }
                         }
