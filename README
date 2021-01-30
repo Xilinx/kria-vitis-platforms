@@ -3,53 +3,43 @@
 * SPDX-License-Identifier: MIT
 ******************************************************************************/
 
-Filename: kv260_smartcamera_aa1_2020.2_ea1.zip
-Version: 2020.2 EA1
+Filename: kv260_apps_2020.2.2_ea2.zip
+Version: 2020.2.2 EA2
 
 This reference design contains the following contents:
 
 1. accelerators
 
-   This folder contains the Vitis accelerator project for the Accelerated
-   Application 1 (AA1). It consists of the DPU inference engine IP and a
-   pre-processing kernel based on the Vitis Vision libraries. Follow the
+   This folder contains the Vitis accelerator projects for the Accelerated
+   Applications AA1 and AA2. Each AA consists of the DPU inference engine IP
+   and a pre-processing kernel based on the Vitis Vision libraries. Follow the
    README inside this folder for detailed build instructions.
 
-2. libraries
+2. Makefile
 
-   This folder contains the Intelligent Video Analytics SDK (IVAS) and Vitis AI
-   (VAI) software libraries. Follow the README files in the respective
-   sub-folders for build instructions.
-
-   Note: The libraries are included as prebuilt binaries inside the petalinux
-         BSP, therfore building this libraries from source is optional. If you
-         wish to build them from source, the PetaLinux SDK must be built first,
-         see PetaLinux README for instructions on bulding the SDK.
-
-3. Makefile
-
-   Top-level Makefile for building the AA1 Vitis accelerator project, importing
+   Top-level Makefile for building the Vitis accelerator projects, importing
    the resulting build artifacts into the Petalinux project, and building a
    complete SD card image using the Petalinux tool. Type make or make help to
    print the help text explaining the different make targets.
 
-4. petalinux
+3. petalinux
 
    This folder contains the PetaLinux project for the smartcamera platform. It
    is used to build the SD card image and Petalinux SDK, a complete cross-build
    environment. Follow the README inside this folder for build instructions.
 
-5. platforms
+4. platforms
 
-   This folder contains the KV260 smartcamera Vitis platform. Follow the REAMDE
-   for instructions on how to open the underlying Vivado hardware design.
+   This folder contains the KV260 smartcamera and KV260 aibox Vitis platforms.
+   Follow the REAMDE inside this folder for build instructions.
 
-6. README
+5. README
 
    This file.
 
-7. sdcard
+6. sdcard
 
    This folder contains a prebuilt SD card image, an xsdb tcl script for
-   selecting SD boot mode, and the AA1 application README file.
+   selecting SD boot mode, and the AA1, AA2, and xmutil application README
+   files.
 
