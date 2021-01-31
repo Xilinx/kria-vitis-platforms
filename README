@@ -17,10 +17,10 @@ This reference design contains the following contents:
 
 2. Makefile
 
-   Top-level Makefile for building the Vitis accelerator projects, importing
-   the resulting build artifacts into the Petalinux project, and building a
-   complete SD card image using the Petalinux tool. Type make or make help to
-   print the help text explaining the different make targets.
+   Top-level Makefile for building the Vitis platforms and accelerator projects,
+   importing the resulting build artifacts into the Petalinux project, and
+   building a complete SD card image using the Petalinux tool. Type 'make' or
+   'make help' to print the help text explaining the different make targets.
 
 3. petalinux
 
