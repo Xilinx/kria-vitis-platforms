@@ -19,15 +19,21 @@
 2. How to run application:
     0) Prerequisites:
        a) Monitor:
+          This application needs 4K monitor, so that up to 4 channels of 1080p video could be displayed.
           Before booting the board, please connect the monitor to the board via either DP or HDMI port.
+       b) Enable the 4K display:
+          Run following command in terminal:
+            modetest -M xlnx -D 80000000.v_mix -s 52@40:3840x2160@NV16
+          This step may remove later.
 
     1) Setup RTSP server:
        a) smartcam_aa1 can be used as the RTSP server, with -n option, which turn off the server side AI inference.
           e.g. 
-            smartcam_aa1 -f /usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264 -W 1920 -H 1080 -r 30 -t rtsp -n &
+            smartcam_aa1 -f /usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264 -W 1920 -H 1080 -r 30 -t rtsp -p 5000-n &
             console output example:
                 stream ready at:
                     rtsp://192.168.33.123:5000/test
+          To setup multiple servers you can use different "-p port" option to get different rtsp addresses.
 
     2) Run AA2 application:
        a) Run one channel with one process:
@@ -35,6 +41,8 @@
        b) Run multiple channels together with one process:
             aibox_aa2 -s rtsp://192.168.33.123:5000/test -t rtsp -p 2 
                       -s /usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264 -t file -p 1
+       c) Above 2 kinds of commands can be combined as your needs, such as starting and quiting channel one by one without affecting others or
+          starting and quitting multiple multiple channels together.
 
 
 3. Command Option:
@@ -45,11 +53,12 @@
      -h, --help                                       Show help options
      --help-all                                       Show all help options
      --help-gst                                       Show GStreamer Options
-   
+
    Application Options:
      -s, --src=[rtsp://server:port/id |file path]     URI of rtsp src, or location of h264|h265 video file. Must set. Can set up to 4 times
      -t, --srctype=[f|file, r|rtsp]                   Type of the input source: file (f)|rtsp (r). Optional. Can set up to 4 times.
      -e, --srcenc=[h264|h265]                         Encoding type of the input source. Optional. Can set up to 4 times.
-     -p, --pos=[0|1|2|3]                              Location of the display in the 4 grids of 4k monitor. Optional. 0: top left, 1: top right, 2: bottom left, 3: bottom right. Optional. Can set up to 4 times.
+     -p, --pos=[0|1|2|3]                              Location of the display in the 4 grids of 4k monitor. Optional. 
+                                                      0: top left, 1: top right, 2: bottom left, 3: bottom right. Optional. Can set up to 4 times.
      -R, --report                                     Report fps
         
