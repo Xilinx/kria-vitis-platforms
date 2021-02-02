@@ -15,6 +15,7 @@
                                         crop.json                   Config of cropping for reid.
                                         reid.json                   Config of reid.
                                         draw_reid.json              Config of final results drawing.
+        Example video files: => /usr/share/somapp/movies/AA2
 
 2. How to run application:
     0) Prerequisites:
@@ -29,7 +30,7 @@
     1) Setup RTSP server:
        a) smartcam_aa1 can be used as the RTSP server, with -n option, which turn off the server side AI inference.
           e.g. 
-            smartcam_aa1 -f /usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264 -W 1920 -H 1080 -r 30 -t rtsp -p 5000 -n &
+            smartcam_aa1 -f /usr/share/somapp/movies/AA2/AA2-park.nv12.30fps.1080p.h264 -W 1920 -H 1080 -r 30 -t rtsp -p 5000 -n &
             console output example:
                 stream ready at:
                     rtsp://192.168.33.123:5000/test
@@ -40,7 +41,7 @@
             aibox_aa2 -s rtsp://192.168.33.123:5000/test -t rtsp -p 0 
        b) Run multiple channels together with one process:
             aibox_aa2 -s rtsp://192.168.33.123:5000/test -t rtsp -p 2 
-                      -s /usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264 -t file -p 1
+                      -s /usr/share/somapp/movies/AA2/AA2-shop.nv12.30fps.1080p.h264 -t file -p 1
        c) Above 2 kinds of commands can be combined as your needs, such as starting and quiting channel one by one without affecting others or
           starting and quitting multiple multiple channels together.
 
