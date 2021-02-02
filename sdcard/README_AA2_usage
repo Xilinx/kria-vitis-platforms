@@ -29,7 +29,7 @@
     1) Setup RTSP server:
        a) smartcam_aa1 can be used as the RTSP server, with -n option, which turn off the server side AI inference.
           e.g. 
-            smartcam_aa1 -f /usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264 -W 1920 -H 1080 -r 30 -t rtsp -p 5000-n &
+            smartcam_aa1 -f /usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264 -W 1920 -H 1080 -r 30 -t rtsp -p 5000 -n &
             console output example:
                 stream ready at:
                     rtsp://192.168.33.123:5000/test
