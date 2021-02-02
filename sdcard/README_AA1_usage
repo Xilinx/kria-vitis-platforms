@@ -60,10 +60,10 @@ how to run the application, and an overview of the application file structure.
 
        c) File to File
          i) Invoking "03.file-to-file.sh"
-         ii) Read in the sample video file from "/usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264",
+         ii) Read in the sample video file from "/usr/share/somapp/movies/AA1/walking-people.nv12.30fps.1080p.h264",
             perform detection and generate video with detection bbox, save as ./out.h264
          iii) Checking:
-            Play the input video file "/usr/share/somapp/movies/walking-people.nv12.30fps.1080p.h264" and generated video file 
+            Play the input video file "/usr/share/somapp/movies/AA1/walking-people.nv12.30fps.1080p.h264" and generated video file 
             "./out.h264" with any media player you prefer, e.g. VLC, ffplay.
             You should be able to see in the output video file, there are blue boxes around the faces of walking people, and the boxes
             should follow the movement of the faces, while there's no such boxes with the input video file.
@@ -71,7 +71,7 @@ how to run the application, and an overview of the application file structure.
             
        d) File to DP
          i) Invoking "04.file-ssd-dp.sh"
-         ii) Read in the sample video file from "/usr/share/somapp/movies/Road-Adas.nv12.30fps.1080p.h264",
+         ii) Read in the sample video file from "/usr/share/somapp/movies/AA1/Road-Adas.nv12.30fps.1080p.h264",
             perform detection and generate video with detection bbox, and display onto moniter
          iii) Checking:
             You should be able to see a video of highway driving, with detection of vehicles in a bounding box.   
@@ -159,4 +159,4 @@ how to run the application, and an overview of the application file structure.
                                         AA1.ipynb
                                                              Jupyter notebook file for MIPI->RTSP demo.
 
-    Example video files: => /usr/share/somapp/movies
+    Example video files: => /usr/share/somapp/movies/AA1
