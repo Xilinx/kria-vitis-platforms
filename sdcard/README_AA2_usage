@@ -43,9 +43,12 @@
        b) Run multiple channels together with one process:
             aibox_aa2 -s rtsp://192.168.33.123:5000/test -t rtsp -p 2 
                       -s /usr/share/somapp/movies/AA2/AA2-shop.nv12.30fps.1080p.h264 -t file -p 1
-       c) Above 2 kinds of commands can be combined as your needs, such as starting and quiting channel one by one without affecting others or
-          starting and quitting multiple multiple channels together.
+       c) Only one aibox_aa2 process could be actually running, because it requires locked access to DPU, and there is just one in aibox platform.
 
+    3) Notice:
+       a) When you use smartcam_aa1 as file based RTSP server as 2.1).a) states or use file type source, because the video file is played in an infinite loop,
+          you may notice that when a new loop starts the tracking ID of the same person will change to a new one. This is not the algorithm issue or bug, but 
+          because the algorithm will take the motion trail of the object into account, so a sudden change of scene will cause the generation of the new ID.
 
 3. Command Option:
    Usage:
