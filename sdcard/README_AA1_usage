@@ -25,6 +25,7 @@ how to run the application, and an overview of the application file structure.
           On the client machine, to receive and play the RTSP stream, you need to install ffplay which is part of package FFmpeg.
             For Linux, you can install FFmpeg with the package manager of your distribution.
             For Windows, you can find install instructions on https://ffmpeg.org/download.html
+            You may experience a lag of <1s, which maybe bigger / smaller if you use other RTSP clients.
 
     B) Two methods of interacting with the application are provided. 
        a) A Juypter notebook. Use a web-browser (e.g. Chrome, Firefox) to interact with the platform.
