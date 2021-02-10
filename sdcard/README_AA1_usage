@@ -130,7 +130,7 @@ how to run the application, and an overview of the application file structure.
       *Note you must update the command to the specific file desired as input source.
 
    C) input USB (USB webcam): [!Detection limitation with USB3.0 cameras]
-      output: RTSP
+      output: RTSP (USB - RTSP currently does not work - to be fixed)
         smartcam_aa1  --usb 1 -W 1920 -H 1080 -r 30 --target rtsp >/dev/null 2>&1      
       output: DP
         smartcam_aa1  --usb 1 -W 1920 -H 1080 -r 30 --target dp >/dev/null 2>&1
