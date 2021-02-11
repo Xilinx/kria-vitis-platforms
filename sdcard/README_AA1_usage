@@ -27,7 +27,34 @@ how to run the application, and an overview of the application file structure.
             For Windows, you can find install instructions on https://ffmpeg.org/download.html
             You may experience a lag of <1s, which maybe bigger / smaller if you use other RTSP clients.
 
-    B) Two methods of interacting with the application are provided. 
+    B) The accelerated application (AA) firmware consiting of bitstream, device tree overlay (dtbo), and xclbin
+       file are loaded dynamically on user request once Linux is fully booted. The xmutil utility can be used
+       for that purpose.
+
+       a) To list the available AA applications, run:
+
+            xmutil listapps
+
+          You should see similar output to this:
+
+            Accelerator,     Type,   Active
+            kv260-aa2,       flat,   0
+            kv260-aa1,       flat,   0
+
+          The Active column shows which AA is currently loaded in the system. It will change to 1 after the
+          firmware is loaded.
+
+       b) To load the AA1 application firmware consisting of PL bitstream, device tree overlay and xclbin,
+          run the following command:
+
+            xmutil loadapp kv260-aa1
+
+       c) After you are done running the application, you can unload the curently loaded AA application
+          firmware by running:
+
+            xmutil unloadapp
+
+    C) Two methods of interacting with the application are provided.
        a) A Juypter notebook. Use a web-browser (e.g. Chrome, Firefox) to interact with the platform.
           i) The Jupyter notebook URL will be printed to the UART if the board is connected and allocated an IP address at boot. 
                 Example: http://<board_ip_addr>:8888
@@ -40,7 +67,7 @@ how to run the application, and an overview of the application file structure.
           the "smartcam_aa1" application. These are to be executed using the UART/debug interface. Example scripts and configuration definitions 
           are provided below.
 
-    C) Example scripts are provided on the system. For location see "File Structure"
+    D) Example scripts are provided on the system. For location see "File Structure"
 
        a) MIPI RTSP server:
          i) Invoking "01.mipi-rtsp.sh" will start rtsp server for mipi captured images
