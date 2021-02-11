@@ -35,8 +35,11 @@
             console output example:
                 stream ready at:
                     rtsp://192.168.33.123:5000/test
+          If using a direct connection (no DHCP) see AA1 read me on how to set IP address.
           To setup multiple servers you can use different "-p port" option to get different rtsp addresses.
-
+          * Please expect a video freeze after some time if you use this SOM as RTSP server and leave AA2 application running for 
+          extended period of time.
+       b) Alternatively, you may also use other RTSP sources, such as an IP camera. 
     2) Run AA2 application:
        a) Run one channel with one process:
             aibox_aa2 -s rtsp://192.168.33.123:5000/test -t rtsp -p 0 
