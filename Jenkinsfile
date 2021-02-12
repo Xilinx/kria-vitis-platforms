@@ -51,6 +51,8 @@ pipeline {
                                 sh label: 'aa1-build',
                                 script: '''
                                     source ./paeg-helper/env-setup.sh -r ${tool_release}
+                                    export PAEG_LSF_MEM=65536
+                                    export PAEG_LSF_QUEUE="long"
                                     ./paeg-helper/scripts/lsf make accelerator AA=aa1
                                 '''
                             }
@@ -82,6 +84,8 @@ pipeline {
                                 sh label: 'aa2-build',
                                 script: '''
                                     source ./paeg-helper/env-setup.sh -r ${tool_release}
+                                    export PAEG_LSF_MEM=65536
+                                    export PAEG_LSF_QUEUE="long"
                                     ./paeg-helper/scripts/lsf make accelerator AA=aa2
                                 '''
                             }
