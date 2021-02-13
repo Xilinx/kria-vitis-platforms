@@ -11,7 +11,7 @@ pipeline {
         rel_name="kv260_apps_${tool_release}"
     }
     triggers {
-        cron(BRANCH_NAME == env.tool_release ? 'H 23 * * *' : '')
+        cron(env.BRANCH_NAME == env.tool_release ? 'H 21 * * *' : '')
     }
     stages {
         stage('Clone Helper Repo') {
@@ -38,7 +38,16 @@ pipeline {
                 stage('KV260 Smartcamera') {
                     stages {
                         stage('KV260 Smartcamera Platform Build')  {
+                            when {
+                                anyOf {
+                                    changeset "**/platforms/vivado/kv260_smartcamera/*"
+                                    triggeredBy 'TimerTrigger'
+                                }
+                            }
                             steps {
+                                script {
+                                    env.BUILD_AA1 = '1'
+                                }
                                 sh label: 'smartcamera-build',
                                 script: '''
                                     source ./paeg-helper/env-setup.sh -r ${tool_release}
@@ -46,20 +55,23 @@ pipeline {
                                 '''
                             }
                         }
-                        stage('AA1 Build') {
+                        stage('AA1 Build & Import') {
+                            when {
+                                anyOf {
+                                    changeset "**/accelerators"
+                                    triggeredBy 'TimerTrigger'
+                                    environment name: 'BUILD_AA1', value: '1'
+                                }
+                            }
                             steps {
+                                script {
+                                    env.BUILD_PLNX = '1'
+                                }
                                 sh label: 'aa1-build',
                                 script: '''
                                     source ./paeg-helper/env-setup.sh -r ${tool_release}
-                                    ./paeg-helper/scripts/lsf make accelerator AA=aa1
-                                '''
-                            }
-                        }
-                        stage('AA1 Import') {
-                            steps {
-                                sh label: 'aa1-import',
-                                script: '''
-                                    source ./paeg-helper/env-setup.sh -r ${tool_release}
+                                    export PAEG_LSF_MEM=65536
+                                    export PAEG_LSF_QUEUE="long"
                                     ./paeg-helper/scripts/lsf make fw-import AA=aa1
                                 '''
                             }
@@ -69,7 +81,16 @@ pipeline {
                 stage('KV260 AI Box') {
                     stages {
                         stage('KV260 AI Box Platform Build')  {
+                            when {
+                                anyOf {
+                                    changeset "**/platforms/vivado/kv260_aibox/*"
+                                    triggeredBy 'TimerTrigger'
+                                }
+                            }
                             steps {
+                                script {
+                                    env.BUILD_AA2 = '1'
+                                }
                                 sh label: 'aibox-build',
                                 script: '''
                                     source ./paeg-helper/env-setup.sh -r ${tool_release}
@@ -77,20 +98,23 @@ pipeline {
                                 '''
                             }
                         }
-                        stage('AA2 Build') {
+                        stage('AA2 Build & Import') {
+                            when {
+                                anyOf {
+                                    changeset "**/accelerators"
+                                    triggeredBy 'TimerTrigger'
+                                    environment name: 'BUILD_AA2', value: '1'
+                                }
+                            }
                             steps {
+                                script {
+                                    env.BUILD_PLNX = '1'
+                                }
                                 sh label: 'aa2-build',
                                 script: '''
                                     source ./paeg-helper/env-setup.sh -r ${tool_release}
-                                    ./paeg-helper/scripts/lsf make accelerator AA=aa2
-                                '''
-                            }
-                        }
-                        stage('AA2 Import') {
-                            steps {
-                                sh label: 'aa2-import',
-                                script: '''
-                                    source ./paeg-helper/env-setup.sh -r ${tool_release}
+                                    export PAEG_LSF_MEM=65536
+                                    export PAEG_LSF_QUEUE="long"
                                     ./paeg-helper/scripts/lsf make fw-import AA=aa2
                                 '''
                             }
@@ -111,6 +135,13 @@ pipeline {
             }
             options {
                 skipDefaultCheckout true
+            }
+            when {
+                anyOf {
+                    changeset "**/petalinux/*"
+                    triggeredBy 'TimerTrigger'
+                    environment name: 'BUILD_PLNX', value: '1'
+                }
             }
             steps {
                 sh label: 'build PetaLinux project',
@@ -143,7 +174,10 @@ pipeline {
         }
         stage('Package and Deploy') {
             when {
-                branch tool_release
+                anyOf {
+                    branch tool_release
+                    triggeredBy 'TimerTrigger'
+                }
             }
             steps {
                 sh label: 'clean project',
