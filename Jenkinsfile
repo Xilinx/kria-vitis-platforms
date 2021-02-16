@@ -40,7 +40,7 @@ pipeline {
                         stage('KV260 Smartcamera Platform Build')  {
                             when {
                                 anyOf {
-                                    changeset "**/platforms/vivado/kv260_smartcamera/*"
+                                    changeset "**/platforms/vivado/kv260_smartcamera/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -83,7 +83,7 @@ pipeline {
                         stage('KV260 AI Box Platform Build')  {
                             when {
                                 anyOf {
-                                    changeset "**/platforms/vivado/kv260_aibox/*"
+                                    changeset "**/platforms/vivado/kv260_aibox/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -138,7 +138,7 @@ pipeline {
             }
             when {
                 anyOf {
-                    changeset "**/petalinux/*"
+                    changeset "**/petalinux/**"
                     triggeredBy 'TimerTrigger'
                     environment name: 'BUILD_PLNX', value: '1'
                 }
