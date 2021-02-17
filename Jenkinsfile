@@ -11,7 +11,7 @@ pipeline {
         rel_name="kv260_apps_${tool_release}"
     }
     triggers {
-        cron(env.BRANCH_NAME == env.tool_release ? 'H 21 * * *' : '')
+        cron(env.BRANCH_NAME == '2020.2.2' ? 'H 21 * * *' : '')
     }
     stages {
         stage('Clone Helper Repo') {
