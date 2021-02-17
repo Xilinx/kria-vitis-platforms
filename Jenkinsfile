@@ -219,10 +219,11 @@ pipeline {
                     git clean -dfx
                     cd -
                     find . -name "*.git*" | xargs rm -rf {}
-                    rm -rf paeg-helper
+                    rm -rf paeg-helper*
                     mkdir -p ${rel_name}
                     cp -rf ./* ${rel_name} || true
                     rm ${rel_name}/Jenkinsfile
+                    rmdir ${rel_name}/${rel_name}
                 '''
 
                 sh label: 'create release zip file',
