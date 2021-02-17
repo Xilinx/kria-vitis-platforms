@@ -10,12 +10,41 @@ pipeline {
         auto_branch="2020.2"
         rel_name="kv260_apps_${tool_release}"
     }
+    options {
+        // don't let the implicit checkout happen
+        skipDefaultCheckout true
+    }
     triggers {
         cron(env.BRANCH_NAME == '2020.2.2' ? 'H 21 * * *' : '')
     }
     stages {
-        stage('Clone Helper Repo') {
+        stage ('Fix Changelog') {
+            // only do this if there is no prior build
+            when {
+                expression {
+                    return !currentBuild.previousBuild
+                }
+            }
             steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: scm.branches,
+                    userRemoteConfigs: scm.userRemoteConfigs,
+                    // this extension builds the changesets from the compareTarget branch
+                    extensions:
+                    [
+                        [$class: 'ChangelogToBranch', options:
+                              [compareRemote: 'origin', compareTarget: env.tool_release]
+                        ]
+                    ]
+                ])
+            }
+        }
+        stage('Clone Repos') {
+            steps {
+                // checkout main repo
+                checkout scm
+                // checkout paeg-automation helper
                 checkout([
                     $class: 'GitSCM',
                     branches: [[name: auto_branch]],
