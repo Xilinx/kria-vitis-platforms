@@ -206,10 +206,12 @@ pipeline {
         }
         stage('Package and Deploy') {
             when {
-                anyOf {
+                allOf {
                     branch tool_release
-                    triggeredBy 'TimerTrigger'
-                    environment name: 'DEPLOY', value: '1'
+                    anyOf {
+                        triggeredBy 'TimerTrigger'
+                        environment name: 'DEPLOY', value: '1'
+                    }
                 }
             }
             steps {
