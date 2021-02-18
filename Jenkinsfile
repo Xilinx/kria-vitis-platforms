@@ -42,9 +42,15 @@ pipeline {
         }
         stage('Clone Repos') {
             steps {
-                // checkout main repo
-                checkout scm
-                // checkout paeg-automation helper
+                // checkout main source repo
+                checkout([
+                    $class: 'GitSCM',
+                    branches: scm.branches,
+                    doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
+                    extensions: scm.extensions + [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'src']],
+                    userRemoteConfigs: scm.userRemoteConfigs
+                ])
+                // checkout paeg-automation helper repo
                 checkout([
                     $class: 'GitSCM',
                     branches: [[name: auto_branch]],
@@ -79,12 +85,18 @@ pipeline {
                                 }
                                 sh label: 'smartcamera-build',
                                 script: '''
-                                    source ./paeg-helper/env-setup.sh -r ${tool_release}
-                                    ./paeg-helper/scripts/lsf make platform PFM=kv260_smartcamera
+                                    pushd src
+                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
+                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_smartcamera
+                                    popd
                                 '''
                             }
                         }
                         stage('AA1 Build & Import') {
+                            environment {
+                                PAEG_LSF_MEM=65536
+                                PAEG_LSF_QUEUE="long"
+                            }
                             when {
                                 anyOf {
                                     changeset "**/accelerators"
@@ -98,10 +110,10 @@ pipeline {
                                 }
                                 sh label: 'aa1-build',
                                 script: '''
-                                    source ./paeg-helper/env-setup.sh -r ${tool_release}
-                                    export PAEG_LSF_MEM=65536
-                                    export PAEG_LSF_QUEUE="long"
-                                    ./paeg-helper/scripts/lsf make fw-import AA=aa1
+                                    pushd src
+                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
+                                    ../paeg-helper/scripts/lsf make fw-import AA=aa1
+                                    popd
                                 '''
                             }
                         }
@@ -122,12 +134,18 @@ pipeline {
                                 }
                                 sh label: 'aibox-build',
                                 script: '''
-                                    source ./paeg-helper/env-setup.sh -r ${tool_release}
-                                    ./paeg-helper/scripts/lsf make platform PFM=kv260_aibox
+                                    pushd src
+                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
+                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_aibox
+                                    popd
                                 '''
                             }
                         }
                         stage('AA2 Build & Import') {
+                            environment {
+                                PAEG_LSF_MEM=65536
+                                PAEG_LSF_QUEUE="long"
+                            }
                             when {
                                 anyOf {
                                     changeset "**/accelerators"
@@ -141,10 +159,10 @@ pipeline {
                                 }
                                 sh label: 'aa2-build',
                                 script: '''
-                                    source ./paeg-helper/env-setup.sh -r ${tool_release}
-                                    export PAEG_LSF_MEM=65536
-                                    export PAEG_LSF_QUEUE="long"
-                                    ./paeg-helper/scripts/lsf make fw-import AA=aa2
+                                    pushd src
+                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
+                                    ../paeg-helper/scripts/lsf make fw-import AA=aa2
+                                    popd
                                 '''
                             }
                         }
@@ -178,8 +196,8 @@ pipeline {
                 }
                 sh label: 'build PetaLinux project',
                 script: '''
-                    source ./paeg-helper/env-setup.sh -p -r ${tool_release} -b ${tool_build}
-                    cd ${rel_name}
+                    pushd src
+                    source ../paeg-helper/env-setup.sh -p -r ${tool_release} -b ${tool_build}
                     # set TMPDIR
                     sed -i -e "s#CONFIG_TMP_DIR_LOCATION=.*#CONFIG_TMP_DIR_LOCATION=\\"${NEWTMPDIR}\\"#" \
                         ${PROOT}/project-spec/configs/config
@@ -192,10 +210,15 @@ pipeline {
                     # restore TMPDIR to default
                     sed -i -e "s#CONFIG_TMP_DIR_LOCATION=.*#CONFIG_TMP_DIR_LOCATION=\\"\\${PROOT}/build/tmp\\"#" \
                         ${PROOT}/project-spec/configs/config
+                    popd
                 '''
 
                 sh label: 'copy wic image',
-                script:'cp ${PROOT}/images/linux/petalinux-sdimage.wic.gz sdcard'
+                script:'''
+                    pushd src
+                    cp ${PROOT}/images/linux/petalinux-sdimage.wic.gz sdcard
+                    popd
+                '''
             }
             post {
                 cleanup {
@@ -206,15 +229,18 @@ pipeline {
         }
         stage('Package and Deploy') {
             when {
-                anyOf {
+                allOf {
                     branch tool_release
-                    triggeredBy 'TimerTrigger'
-                    environment name: 'DEPLOY', value: '1'
+                    anyOf {
+                        triggeredBy 'TimerTrigger'
+                        environment name: 'DEPLOY', value: '1'
+                    }
                 }
             }
             steps {
                 sh label: 'clean project',
                 script: '''
+                    pushd src
                     make clean
                     cd ${PROOT}
                     git clean -dfx
@@ -223,15 +249,15 @@ pipeline {
                     git clean -dfx
                     cd -
                     find . -name "*.git*" | xargs rm -rf {}
-                    rm -rf paeg-helper*
-                    mkdir -p ${rel_name}
-                    cp -rf ./* ${rel_name} || true
                     rm ${rel_name}/Jenkinsfile
-                    rmdir ${rel_name}/${rel_name}
+                    popd
                 '''
 
                 sh label: 'create release zip file',
-                script: 'zip -r ${rel_name}.zip ${rel_name}'
+                script: '''
+                    mv src ${rel_name}
+                    zip -r ${rel_name}.zip ${rel_name}
+                '''
             }
             post {
                 success {
