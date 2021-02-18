@@ -17,8 +17,8 @@
                                         draw_reid.json              Config of final results drawing.
         Example video files: => /usr/share/somapp/movies/AA2
 
-2. The accelerated application (AA) firmware consiting of bitstream, device tree overlay (dtbo), and xclbin
-   file are loaded dynamically on user request once Linux is fully booted. The xmutil utility can be used
+2. The accelerated application (AA) firmware consist of bitstream, device tree overlay (dtbo) and xclbin
+   file. The AA firmware is loaded dynamically on user request once Linux is fully booted. The xmutil utility can be used
    for that purpose.
 
    a) To list the available AA applications, run:
@@ -45,41 +45,46 @@
         xmutil unloadapp
 
 3. How to run application:
-    0) Prerequisites:
-       a) Monitor:
-          This application needs 4K monitor, so that up to 4 channels of 1080p video could be displayed.
-          Before booting the board, please connect the monitor to the board via either DP or HDMI port.
-       b) Enable the 4K display:
-          Run following command in terminal:
-            modetest -M xlnx -D 80000000.v_mix -s 52@40:3840x2160@NV16
-          This step may remove later.
+    a) Prerequisites:
+       i)  Monitor:
+           This application needs 4K monitor, so that up to 4 channels of 1080p video could be displayed.
+           Before booting the board, please connect the monitor to the board via either DP or HDMI port.
+       ii) Enable the 4K display:
+           Run following command in terminal:
+             modetest -M xlnx -D 80000000.v_mix -s 52@40:3840x2160@NV16
+           This step may be removed later.
 
-    1) Setup RTSP server:
-       a) If no RTSP server on hand, smartcam_aa1 can be used as the RTSP server on the AA2 platform, with -n option, which turn off 
-          the server side AI inference.
-          e.g. 
+    b) Setup RTSP server:
+       i)  If no RTSP server on hand, smartcam_aa1 can be used as the RTSP server on the AA2 platform, with -n option, which turn off 
+           the server side AI inference.
+           e.g. 
             smartcam_aa1 -f /usr/share/somapp/movies/AA2/AA2-park.nv12.30fps.1080p.h264 -W 1920 -H 1080 -r 30 -t rtsp -p 5000 -n &
             console output example:
                 stream ready at:
                     rtsp://192.168.33.123:5000/test
-          If using a direct connection (no DHCP) see AA1 read me on how to set IP address.
-          To setup multiple servers you can use different "-p port" option to get different rtsp addresses.
-          * Please expect a video freeze after some time if you use this SOM as RTSP server and leave AA2 application running for 
-          extended period of time.
-       b) Alternatively, you may also use other RTSP sources, such as an IP camera. 
-    2) Run AA2 application:
-       a) Run one channel with one process:
+           If using a direct connection (no DHCP) see AA1 read me on how to set IP address.
+           To setup multiple servers you can use different "-p port" option to get different rtsp addresses.
+       ii) You may also use other RTSP sources, such as an IP camera. 
+    c) Run AA2 application:
+       i)  Run one channel with one process:
             aibox_aa2 -s rtsp://192.168.33.123:5000/test -t rtsp -p 0 
-       b) Run multiple channels together with one process:
+       ii) Run multiple channels together with one process:
             aibox_aa2 -s rtsp://192.168.33.123:5000/test -t rtsp -p 2 
                       -s /usr/share/somapp/movies/AA2/AA2-shop.nv12.30fps.1080p.h264 -t file -p 1
-       c) Only one aibox_aa2 process could be actually running, because it requires locked access to DPU, and there is just one in aibox platform.
+       Only one aibox_aa2 process could be actually running, because it requires locked access to DPU, and there is just one in aibox platform.
 
-    3) Notice:
-       a) When you use smartcam_aa1 as file based RTSP server as 2.1).a) states or use file type source, because the video file is played in an infinite loop,
-          you may notice that when a new loop starts the tracking ID of the same person will change to a new one. This is not the algorithm issue or bug, but 
-          because the algorithm will take the motion trail of the object into account, so a sudden change of scene will cause the generation of the new ID.
-
+    d) Known Limitations or issues under debug:
+       i)   When you use smartcam_aa1 as file based RTSP server as 3.b)i) states or use file type source, because the video file is played in an infinite loop,
+            you may notice that when a new loop starts the tracking ID of the same person will change to a new one. This is not the algorithm issue or bug, but 
+            because the algorithm will take the motion trail of the object into account, so a sudden change of scene will cause the generation of the new ID.
+       ii)  Stream may freeze after some time if you use this SOM as RTSP server as 3.b)i) and leave AA2 application running for extended period of time.
+       iii) After loading AA2 bitstream and dtbo in step 3.a)ii), you should see blue screen on monitor. Sometimes the expected blue screen does not show. To fix 
+            this, unplug and replug the DP/HDMI cable.
+       iv)  There is a small memory leak when aibox_aa2 is running.
+       v)   When streaming from other RTSP sources (than the targen in 3.b)i)), you may notice some extra seconds of lag occassionally
+       vi)  When multiple streams are active, the image displayed can be laggy. 
+       
+       
 4. Command Option:
    Usage:
      aibox_aa2 [OPTION?] - AI Application of pedestrian + reid + tracking for multi RTSP streams, on SoM board of Xilinx.
@@ -96,4 +101,5 @@
      -p, --pos=[0|1|2|3]                              Location of the display in the 4 grids of 4k monitor. Optional. 
                                                       0: top left, 1: top right, 2: bottom left, 3: bottom right. Optional. Can set up to 4 times.
      -R, --report                                     Report fps
-        
+
+
