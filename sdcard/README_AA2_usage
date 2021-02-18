@@ -83,6 +83,7 @@
        iv)  There is a small memory leak when aibox_aa2 is running.
        v)   When streaming from other RTSP sources (than the targen in 3.b)i)), you may notice some extra seconds of lag occassionally
        vi)  When multiple streams are active, the image displayed can be laggy. 
+       vii) If using a 4k monitor that is wider than standard, you may observe blue strip on top of screen when AA2 app is streaming to P 0 and P 1 quadrant.
        
        
 4. Command Option:
