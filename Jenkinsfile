@@ -173,6 +173,9 @@ pipeline {
                 }
             }
             steps {
+                script {
+                    env.DEPLOY = '1'
+                }
                 sh label: 'build PetaLinux project',
                 script: '''
                     source ./paeg-helper/env-setup.sh -p -r ${tool_release} -b ${tool_build}
@@ -206,6 +209,7 @@ pipeline {
                 anyOf {
                     branch tool_release
                     triggeredBy 'TimerTrigger'
+                    environment name: 'DEPLOY', value: '1'
                 }
             }
             steps {
