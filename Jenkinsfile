@@ -249,7 +249,7 @@ pipeline {
                     git clean -dfx
                     cd -
                     find . -name "*.git*" | xargs rm -rf {}
-                    rm ${rel_name}/Jenkinsfile
+                    rm Jenkinsfile
                     popd
                 '''
 
