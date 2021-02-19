@@ -71,9 +71,12 @@ all: sdcard
 
 .PHONY: sdcard
 sdcard: $(PLNX_WIC)
-$(PLNX_WIC):
+$(PLNX_WIC): $(PLNX_DIR)
 	$(MAKE) -C $(PLNX_DIR) wic
 	@echo 'The PetaLinux wic image is available at $(PLNX_WIC)'
+
+$(PLNX_DIR):
+	$(MAKE) -C petalinux project
 
 .PHONY: fw-import
 fw-import: $(PLNX_FW_OBJS)
