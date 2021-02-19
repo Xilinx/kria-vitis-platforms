@@ -4,7 +4,8 @@ pipeline {
     }
     environment {
         DEPLOYDIR="/wrk/paeg_builds/build-artifacts"
-        PROOT="petalinux/xilinx-kv260-smartcamera-2020.2-final"
+        PNAME="xilinx-kv260-smartcamera-2020.2-final"
+        PROOT="petalinux/${PNAME}"
         tool_release="2020.2.2"
         tool_build="regression_latest"
         auto_branch="2020.2"
@@ -249,6 +250,10 @@ pipeline {
                     git clean -dfx
                     cd -
                     find . -name "*.git*" | xargs rm -rf {}
+                    cd petalinux
+                    tar cfvz ${PNAME}.bsp ${PNAME}
+                    rm -rf ${PNAME}
+                    cd -
                     rm Jenkinsfile
                     popd
                 '''
