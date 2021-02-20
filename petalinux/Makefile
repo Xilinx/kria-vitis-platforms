@@ -1,4 +1,4 @@
-PLNX_PROJ = xilinx-kv260-smartcamera-2020.2-final
+PLNX_PROJ = xilinx-kv260-apps-2020.2.2
 PLNX_BSP = $(PLNX_PROJ).bsp
 
 .PHONY: help

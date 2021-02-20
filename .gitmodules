@@ -2,7 +2,7 @@
 	path = accelerators
 	url = https://gitenterprise.xilinx.com/aisw/dpu_example
 	branch = aa2
-[submodule "petalinux/xilinx-kv260-smartcamera-2020.2-final"]
-	path = petalinux/xilinx-kv260-smartcamera-2020.2-final
+[submodule "petalinux/xilinx-kv260-apps-2020.2.2"]
+	path = petalinux/xilinx-kv260-apps-2020.2.2
 	url = https://gitenterprise.xilinx.com/PAEG/xilinx-kv260-smartcamera-2020.2-final
 	branch = 2020.2.2

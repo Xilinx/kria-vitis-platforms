@@ -24,8 +24,8 @@ This reference design contains the following contents:
 
 3. petalinux
 
-   This folder contains the PetaLinux project for the smartcamera platform. It
-   is used to build the SD card image and Petalinux SDK, a complete cross-build
+   This folder contains the PetaLinux application (apps) bsp. It is used to
+   build the SD card image and Petalinux SDK, a complete cross-build
    environment. Follow the README inside this folder for build instructions.
 
 4. platforms
