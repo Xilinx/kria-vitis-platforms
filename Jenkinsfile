@@ -4,7 +4,7 @@ pipeline {
     }
     environment {
         DEPLOYDIR="/wrk/paeg_builds/build-artifacts"
-        PNAME="xilinx-kv260-smartcamera-2020.2-final"
+        PNAME="xilinx-kv260-apps-2020.2.2"
         PROOT="petalinux/${PNAME}"
         tool_release="2020.2.2"
         tool_build="regression_latest"
@@ -186,7 +186,7 @@ pipeline {
             }
             when {
                 anyOf {
-                    changeset "**/petalinux/**"
+                    changeset "**/${PROOT}"
                     triggeredBy 'TimerTrigger'
                     environment name: 'BUILD_PLNX', value: '1'
                 }

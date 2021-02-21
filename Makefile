@@ -20,7 +20,7 @@ endif
 
 PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
 
-PLNX_DIR = petalinux/xilinx-kv260-smartcamera-2020.2-final
+PLNX_DIR = petalinux/xilinx-kv260-apps-2020.2.2
 PLNX_WIC = $(PLNX_DIR)/images/linux/petalinux-sdimage.wic
 
 PLNX_FW_NAME = kv260-$(AA)
