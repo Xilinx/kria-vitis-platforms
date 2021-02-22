@@ -40,16 +40,16 @@ xmutil unloadapp
 
 	Removes accelerated application inclusive of unloading its bitstream.
 
-xmutil perfmon
+xmutil platformstats
 
-	Reads and prints a summary of the following performance related information: 
+	Reads and prints a summary of the following performance related information:
+                CPU utilization for each configured CPU
+                RAM utilization
+                Swap memory utilization
+                SOM overall current, power, voltage utilization
+                SysMon Temperature(s)
+                SOM power supply data summary reported by PMICs & ZU+ SysMon sources
 
-		CPU frequency & utilization statistics for each physical core
-		RAM utilization
-		DDR controller bandwidth & operational frequency
-		Temperature(s) reported by SysMon
-		SOM overall current & power utilization reported by SOM current monitor IC
-		SOM power supply data summary reported by PMICs & ZU+ SysMon sources
 xmutil ddrqos
 
 	Utility for changing configuration of PS DDR quality of service (QoS) settings including. Initial implementation focuses on PS DDR memory controller “traffic class” configuration.
