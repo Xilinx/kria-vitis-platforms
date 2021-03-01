@@ -4,7 +4,7 @@ RM = rm -rf
 XSCT = $(XILINX_VITIS)/bin/xsct
 
 PLATFORM ?= kv260_smartcamera
-VERSION ?= 202020_1
+VERSION ?= 202022_1
 
 PFM_DIR = xilinx_$(PLATFORM)_$(VERSION)
 PFM_PRJ_DIR = ws/$(PLATFORM)/export/$(PLATFORM)
