@@ -77,6 +77,7 @@ pipeline {
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_smartcamera/**"
+                                    changeset "**/accelerators"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -126,6 +127,7 @@ pipeline {
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_aibox/**"
+                                    changeset "**/accelerators"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
