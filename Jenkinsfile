@@ -171,6 +171,56 @@ pipeline {
                         }
                     }
                 }
+                stage('KV260 Defect Detection') {
+                    stages {
+                        stage('KV260 Defect Detection Platform Build')  {
+                            when {
+                                anyOf {
+                                    changeset "**/platforms/vivado/kv260_defectdetect/**"
+                                    changeset "**/accelerators"
+                                    triggeredBy 'TimerTrigger'
+                                }
+                            }
+                            steps {
+                                script {
+                                    env.BUILD_AA4 = '1'
+                                }
+                                sh label: 'defectdetect-build',
+                                script: '''
+                                    pushd src
+                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
+                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_defectdetect
+                                    popd
+                                '''
+                            }
+                        }
+//                        stage('AA4 Build & Import') {
+//                            environment {
+//                                PAEG_LSF_MEM=65536
+//                                PAEG_LSF_QUEUE="long"
+//                            }
+//                            when {
+//                                anyOf {
+//                                    changeset "**/accelerators"
+//                                    triggeredBy 'TimerTrigger'
+//                                    environment name: 'BUILD_AA4', value: '1'
+//                                }
+//                            }
+//                            steps {
+//                                script {
+//                                    env.BUILD_PLNX = '1'
+//                                }
+//                                sh label: 'aa4-build',
+//                                script: '''
+//                                    pushd src
+//                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
+//                                    ../paeg-helper/scripts/lsf make fw-import AA=aa4
+//                                    popd
+//                                '''
+//                            }
+//                        }
+                    }
+                }
             }
         }
         stage('PetaLinux Build') {
