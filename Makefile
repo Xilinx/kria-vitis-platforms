@@ -7,8 +7,8 @@ PFM_DIR = $(PWD)/platforms
 PFM_VER = 202022_1
 
 # valid platforms / accelerators
-PFM_LIST = kv260_smartcamera kv260_aibox
-AA_LIST = aa1 aa2
+PFM_LIST = kv260_smartcamera kv260_aibox kv260_defectdetect
+AA_LIST = aa1 aa2 aa4
 
 # override platform name based on accelerator
 ifeq ($(AA),aa1)
@@ -16,6 +16,9 @@ ifeq ($(AA),aa1)
 endif
 ifeq ($(AA),aa2)
   override PFM = kv260_aibox
+endif
+ifeq ($(AA),aa4)
+  override PFM = kv260_defectdetect
 endif
 
 PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
