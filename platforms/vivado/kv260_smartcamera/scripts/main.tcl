@@ -1,9 +1,9 @@
 
 #Beta devices not enabled.  
-        
-create_project -name kv260_smartcamera -force -dir ./project -part xck26-sfvc784-2lv-c
 
-set part xck26-sfvc784-2lv-c
+set proj_board [get_board_parts "*:kv260:*" -latest_file_version]        
+create_project -name kv260_smartcamera -force -dir ./project -part [get_property PART_NAME [get_board_parts $proj_board]] 
+set_property board_part $proj_board [current_project]
         
 set proj_name kv260_smartcamera
 set proj_dir ./project
@@ -18,6 +18,8 @@ set src_repo_path {./src}
 	        
     
 import_files -fileset constrs_1 $xdc_list
+        
+set_property board_connections {som240_1_connector xilinx.com:som240:som240_1_connector:1.0}  [current_project]
         
     
 set_property ip_repo_paths $ip_repo_path [current_project] 

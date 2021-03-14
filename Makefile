@@ -8,7 +8,7 @@ PFM_VER = 202022_1
 
 # valid platforms / accelerators
 PFM_LIST = kv260_smartcamera kv260_aibox kv260_defectdetect
-AA_LIST = aa1 aa2
+AA_LIST = aa1 aa2 aa4
 
 # override platform name based on accelerator
 ifeq ($(AA),aa1)

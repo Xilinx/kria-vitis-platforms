@@ -32,10 +32,7 @@ Platform Interfaces supported:
               data ports.
 * Interrupts: pl_ps_irq0[7:0] for the accelerator to drive interrupt signals.
 
-S_AXI_HPC0_FPD S_AXI_HP1_FPD S_AXI_HP2_FPD S_AXI_LPD 
-
-For more information on how to setup Platform Interfaces refer to Section
-Declaring Platform (PFM) Interfaces and Properties in Xilinx Vitis Unified 
+For more information on how to setup Platform Interfaces refer to Xilinx Vitis Unified 
 Software Platform Documentation(UG1393)
 
 
