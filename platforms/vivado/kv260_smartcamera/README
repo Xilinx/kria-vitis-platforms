@@ -41,6 +41,21 @@ For more information on how to setup Platform Interfaces refer to Xilinx Vitis U
 Software Platform Documentation(UG1393)
 
 
+Set Board Preset:
+*****************
+
+To build platforms make sure to set the Vivado Board Preset using the 
+following steps 
+
+1. git clone https://github.com/Xilinx/XilinxBoardStore
+2. Add the following line to Vivado initialization script
+	set_param board.repoPaths {<path to the git repo>/boards/Xilinx}
+
+The initialization tcl script for Vivado can be found at:
+
+Linux: $HOME/.Xilinx/Vivado/Vivado_init.tcl
+Windows: %APPDATA%/Roaming/Xilinx/Vivado/Vivado_init.tcl
+
 Generate Extensible XSA :
 *************************
 An extensible XSA is required build a Vitis Platform which is in turn used to 
