@@ -23,16 +23,6 @@ endif
 
 PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
 
-PLNX_DIR = petalinux/xilinx-kv260-apps-2020.2.2
-PLNX_WIC = $(PLNX_DIR)/images/linux/petalinux-sdimage.wic
-
-PLNX_FW_NAME = kv260-$(AA)
-PLNX_FW_DIR = $(PLNX_DIR)/project-spec/meta-user/recipes-fw/$(PLNX_FW_NAME)/files
-PLNX_FW_BIT = $(PLNX_FW_DIR)/$(PLNX_FW_NAME).bit
-PLNX_FW_XCLBIN = $(PLNX_FW_DIR)/$(PLNX_FW_NAME).xclbin
-PLNX_FW_OBJS += $(PLNX_FW_BIT)
-PLNX_FW_OBJS += $(PLNX_FW_XCLBIN)
-
 VITIS_DIR = accelerators/examples
 VITIS_AA_DIR = $(VITIS_DIR)/som_$(AA)
 VITIS_AA_BIT = $(VITIS_AA_DIR)/binary_container_1/link/int/system.bit
@@ -43,17 +33,6 @@ VITIS_AA_OBJS += $(VITIS_AA_XCLBIN)
 .PHONY: help
 help:
 	@echo 'Usage:'
-	@echo ''
-	@echo '  make sdcard'
-	@echo '    Generate an SD card wic image using PetaLinux.'
-	@echo ''
-	@echo '    Note: The user has to manually run the fw-import rules (if desired) to'
-	@echo '          import previously generated AA firmware artifacts.'
-	@echo ''
-	@echo '  make fw-import AA=<val>'
-	@echo '    Import the AA bitstream and xclbin from the Vitis project into PetaLinux.'
-	@echo ''
-	@echo '    Valid options for AA: ${AA_LIST}'
 	@echo ''
 	@echo '  make accelerator AA=<val>'
 	@echo '    Build the Vitis accelerated application (AA) overlay.'
@@ -68,25 +47,6 @@ help:
 	@echo '  make clean'
 	@echo '    Clean runs'
 	@echo ''
-
-.PHONY: all
-all: sdcard
-
-.PHONY: sdcard
-sdcard: $(PLNX_WIC)
-$(PLNX_WIC): $(PLNX_DIR)
-	$(MAKE) -C $(PLNX_DIR) wic
-	@echo 'The PetaLinux wic image is available at $(PLNX_WIC)'
-
-$(PLNX_DIR):
-	$(MAKE) -C petalinux project
-
-.PHONY: fw-import
-fw-import: $(PLNX_FW_OBJS)
-$(PLNX_FW_OBJS): $(VITIS_AA_OBJS)
-	@echo 'Copy $(PLNX_FW_NAME) xclbin and bitstream into PetaLinux project'
-	@$(CP) $(VITIS_AA_BIT) $(PLNX_FW_BIT)
-	@$(CP) $(VITIS_AA_XCLBIN) $(PLNX_FW_XCLBIN)
 
 .PHONY: accelerator
 accelerator: $(VITIS_AA_OBJS)
@@ -123,6 +83,5 @@ $(PFM_XPFM):
 
 .PHONY: clean
 clean:
-	$(MAKE) -C $(PLNX_DIR) clean
 	$(foreach a, $(AA_LIST), $(MAKE) -C $(VITIS_DIR)/som_$(a) clean;)
 	$(foreach p, $(PFM_LIST), $(MAKE) -C $(PFM_DIR) clean PLATFORM=$(p) VERSION=$(PFM_VER);)
