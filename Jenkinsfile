@@ -72,7 +72,7 @@ pipeline {
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_smartcamera/**"
-                                    changeset "**/accelerators"
+                                    changeset "**/kernels/examples/som_aa1/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -96,7 +96,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/accelerators"
+                                    changeset "**/kernels/examples/som_aa1/**"
                                     triggeredBy 'TimerTrigger'
                                     environment name: 'BUILD_AA1', value: '1'
                                 }
@@ -106,7 +106,7 @@ pipeline {
                                 script: '''
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make accelerator AA=aa1
+                                    ../paeg-helper/scripts/lsf make kernel AA=aa1
                                     popd
                                 '''
                             }
@@ -119,7 +119,7 @@ pipeline {
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_aibox/**"
-                                    changeset "**/accelerators"
+                                    changeset "**/kernels/examples/som_aa2/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -143,7 +143,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/accelerators"
+                                    changeset "**/kernels/examples/som_aa2/**"
                                     triggeredBy 'TimerTrigger'
                                     environment name: 'BUILD_AA2', value: '1'
                                 }
@@ -153,7 +153,7 @@ pipeline {
                                 script: '''
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make accelerator AA=aa2
+                                    ../paeg-helper/scripts/lsf make kernel AA=aa2
                                     popd
                                 '''
                             }
@@ -166,7 +166,7 @@ pipeline {
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_defectdetect/**"
-                                    changeset "**/accelerators"
+                                    changeset "**/kernels/examples/som_aa4/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -190,7 +190,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/accelerators"
+                                    changeset "**/kernels/examples/som_aa4/**"
                                     triggeredBy 'TimerTrigger'
                                     environment name: 'BUILD_AA4', value: '1'
                                 }
@@ -200,7 +200,7 @@ pipeline {
                                 script: '''
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make accelerator AA=aa4
+                                    ../paeg-helper/scripts/lsf make kernel AA=aa4
                                     popd
                                 '''
                             }
