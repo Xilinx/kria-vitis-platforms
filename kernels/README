@@ -1,0 +1,58 @@
+/******************************************************************************
+
+* Copyright (C) 2010 - 2020 Xilinx, Inc.  All rights reserved.
+* SPDX-License-Identifier: Apache-2.0
+
+******************************************************************************/
+
+
+The moduel base on the Vitis AI 1.3 and Vitis Libraries.
+
+Vitis AI https://github.com/Xilinx/Vitis-AI)
+
+Vitis Libraries https://github.com/Xilinx/Vitis_Libraries)
+
+
+run steps:
+
+1 enable xck26 the device. The platform use the xck26 device which doesn't include in Vivado default.
+
+To enable Versal device support, you need to create two tcl initialization scripts, one for Vivado and one for HLS. Add the following line to each of the tcl scripts:
+
+	enable_beta_device *
+
+The initialization tcl script for Vivado shall be placed at:
+
+	Linux: $HOME/.Xilinx/Vivado/Vivado_init.tcl
+
+	Windows: %APPDATA%/Roaming/Xilinx/Vivado/Vivado_init.tcl
+
+Similarly, the initialization tcl script for HLS shall be placed at:
+
+	Linux: $HOME/.Xilinx/HLS_init.tcl
+
+	Windows: %APPDATA%/Roaming/Xilinx/HLS_init.tcl
+
+2 source the 2020.2 vitis and xrt setting
+
+	% source <vitis install path>/Vitis/2020.2/settings64.sh
+
+	% source opt/xilinx/xrt/setup.sh
+
+3 cd examples/somaa1 and set the platform path
+
+	% cd examples/somaa1
+
+	% export PLATFORM=<smartcamera platform path>/kv260_smartcamera_2020.2_ea1/platforms/xilinx_kv260_smartcamera_202022_1/kv260_smartcamera.xpfm
+
+Note: The user can get the platform this git.
+
+	4 Build project
+
+make all
+
+5 After compiled the whole project. The user can get the dpu.xsa and dpu.xclbin file. copy the dpu.xsa and xclbin to petalinux. generate the bootbin and system.
+
+get the dpu.xsa in som_aa1/ path
+
+get the xclbin in som_aar/binary_container_1/ path
