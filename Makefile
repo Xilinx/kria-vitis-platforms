@@ -26,9 +26,6 @@ PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
 VITIS_DIR = accelerators/examples
 VITIS_AA_DIR = $(VITIS_DIR)/som_$(AA)
 VITIS_AA_BIT = $(VITIS_AA_DIR)/binary_container_1/link/int/system.bit
-VITIS_AA_XCLBIN = $(VITIS_AA_DIR)/binary_container_1/dpu.xclbin
-VITIS_AA_OBJS += $(VITIS_AA_BIT)
-VITIS_AA_OBJS += $(VITIS_AA_XCLBIN)
 
 .PHONY: help
 help:
@@ -49,8 +46,8 @@ help:
 	@echo ''
 
 .PHONY: accelerator
-accelerator: $(VITIS_AA_OBJS)
-$(VITIS_AA_OBJS): $(PFM_XPFM)
+accelerator: $(VITIS_AA_BIT)
+$(VITIS_AA_BIT): $(PFM_XPFM)
 	@val=0; \
 	for a in $(AA_LIST); do \
 	  if [ "$$a" == "$(AA)" ]; then \
