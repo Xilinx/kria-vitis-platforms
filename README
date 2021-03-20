@@ -3,55 +3,36 @@
 * SPDX-License-Identifier: MIT
 ******************************************************************************/
 
-Filename: kv260_apps_2020.2.2_ea2.zip
-Version: 2020.2.2 EA2
-
 This reference design contains the following contents:
 
-1. accelerators
+1. kernels
 
-   This folder contains the Vitis accelerator projects for the Accelerated
-   Applications AA1 and AA2. Each AA consists of the DPU inference engine IP
-   and a pre-processing kernel based on the Vitis Vision libraries. Follow the
-   README inside this folder for detailed build instructions.
+   This folder contains the Vitis kernel projects which include the DPU
+   inference engine RTL kernel and HLS-based computer vision kernels based on
+   the Vitis Vision libraries. Follow the README inside this folder for detailed
+   build instructions.
 
 2. Makefile
 
-   Top-level Makefile for building the Vitis platforms and accelerator projects,
-   importing the resulting build artifacts into the Petalinux project, and
-   building a complete SD card image using the Petalinux tool. Type 'make' or
-   'make help' to print the help text explaining the different make targets.
+   Top-level Makefile for building the Vitis platforms and kernel projects.
+   Type 'make' or 'make help' to print the help text explaining the different
+   make targets.
 
-3. petalinux
+3. platforms
 
-   This folder contains the PetaLinux application (apps) bsp. It is used to
-   build the SD card image and Petalinux SDK, a complete cross-build
-   environment. Follow the README inside this folder for build instructions.
+   This folder contains the KV260 Vitis platforms. Follow the REAMDE inside this
+   folder for build instructions.
 
-4. platforms
+   Note: To build platforms make sure to set the Vivado Board Preset using the
+         following steps
 
-   This folder contains the KV260 smartcamera and KV260 aibox Vitis platforms.
-   Follow the REAMDE inside this folder for build instructions.
+         1. git clone https://github.com/Xilinx/XilinxBoardStore
+         2. Add the following line to Vivado initialization script
+            set_param board.repoPaths {<path to the git repo>/boards/Xilinx}
 
-5. README
+            The initialization tcl script for Vivado can be found at:
+            $HOME/.Xilinx/Vivado/Vivado_init.tcl
+
+4. README
 
    This file.
-
-6. sdcard
-
-   This folder contains a prebuilt SD card image, an xsdb tcl script for
-   selecting SD boot mode, and the AA1, AA2, and xmutil application README
-   files.
-
-Note: To build platforms make sure to set the Vivado Board Preset using the 
-following steps 
-
-1. git clone https://github.com/Xilinx/XilinxBoardStore
-2. Add the following line to Vivado initialization script
-	set_param board.repoPaths {<path to the git repo>/boards/Xilinx}
-
-The initialization tcl script for Vivado can be found at:
-
-Linux: $HOME/.Xilinx/Vivado/Vivado_init.tcl
-Windows: %APPDATA%/Roaming/Xilinx/Vivado/Vivado_init.tcl
-
