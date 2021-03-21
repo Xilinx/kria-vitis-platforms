@@ -1,8 +1,3 @@
-[submodule "accelerators"]
-	path = accelerators
-	url = https://gitenterprise.xilinx.com/SOM/dpu_example
-	branch = aa2
-[submodule "petalinux/xilinx-kv260-apps-2020.2.2"]
-	path = petalinux/xilinx-kv260-apps-2020.2.2
-	url = https://gitenterprise.xilinx.com/SOM/xilinx-kv260-smartcamera-2020.2-final
-	branch = 2020.2.2
+[submodule "kernels/Vitis_Libraries"]
+	path = kernels/Vitis_Libraries
+	url = https://github.com/Xilinx/Vitis_Libraries.git
