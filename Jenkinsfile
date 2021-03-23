@@ -122,6 +122,12 @@ pipeline {
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
                                     ../paeg-helper/scripts/lsf make kernel AA=aa1
+
+                                    pushd kernels/examples/som_aa1/binary_container_1/link/int
+                                    echo 'all: { system.bit }' > bootgen.bif
+                                    bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
+                                    popd
+
                                     popd
                                 '''
                             }
@@ -133,9 +139,10 @@ pipeline {
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/smartcam
                                             mkdir -p ${DST}
+
                                             cp -f kernels/examples/som_aa1/*.xsa \
                                                   kernels/examples/som_aa1/binary_container_1/*.xclbin \
-                                                  kernels/examples/som_aa1/binary_container_1/link/int/system.bit \
+                                                  kernels/examples/som_aa1/binary_container_1/link/int/system.bit* \
                                                   ${DST}
                                             popd
                                         fi
@@ -200,6 +207,12 @@ pipeline {
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
                                     ../paeg-helper/scripts/lsf make kernel AA=aa2
+
+                                    pushd kernels/examples/som_aa2/binary_container_1/link/int
+                                    echo 'all: { system.bit }' > bootgen.bif
+                                    bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
+                                    popd
+
                                     popd
                                 '''
                             }
@@ -211,9 +224,10 @@ pipeline {
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/aibox-reid
                                             mkdir -p ${DST}
+
                                             cp -f kernels/examples/som_aa2/*.xsa \
                                                   kernels/examples/som_aa2/binary_container_1/*.xclbin \
-                                                  kernels/examples/som_aa2/binary_container_1/link/int/system.bit \
+                                                  kernels/examples/som_aa2/binary_container_1/link/int/system.bit* \
                                                   ${DST}
                                             popd
                                         fi
@@ -278,6 +292,12 @@ pipeline {
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
                                     ../paeg-helper/scripts/lsf make kernel AA=aa4
+
+                                    pushd kernels/examples/som_aa4/binary_container_1/link/int
+                                    echo 'all: { system.bit }' > bootgen.bif
+                                    bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
+                                    popd
+
                                     popd
                                 '''
                             }
@@ -289,9 +309,10 @@ pipeline {
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/defect-detect
                                             mkdir -p ${DST}
+
                                             cp -f kernels/examples/som_aa4/*.xsa \
                                                   kernels/examples/som_aa4/binary_container_1/*.xclbin \
-                                                  kernels/examples/som_aa4/binary_container_1/link/int/system.bit \
+                                                  kernels/examples/som_aa4/binary_container_1/link/int/system.bit* \
                                                   ${DST}
                                             popd
                                         fi
