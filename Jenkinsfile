@@ -125,6 +125,23 @@ pipeline {
                                     popd
                                 '''
                             }
+                            post {
+                                success {
+                                    sh label: 'aa1-deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/smartcam
+                                            mkdir -p ${DST}
+                                            cp -f kernels/examples/som_aa1/*.xsa \
+                                                  kernels/examples/som_aa1/binary_container_1/*.xclbin \
+                                                  kernels/examples/som_aa1/binary_container_1/link/int/system.bit \
+                                                  ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
+                            }
                         }
                     }
                 }
@@ -186,6 +203,23 @@ pipeline {
                                     popd
                                 '''
                             }
+                            post {
+                                success {
+                                    sh label: 'aa2-deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/aibox-reid
+                                            mkdir -p ${DST}
+                                            cp -f kernels/examples/som_aa2/*.xsa \
+                                                  kernels/examples/som_aa2/binary_container_1/*.xclbin \
+                                                  kernels/examples/som_aa2/binary_container_1/link/int/system.bit \
+                                                  ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
+                            }
                         }
                     }
                 }
@@ -246,6 +280,23 @@ pipeline {
                                     ../paeg-helper/scripts/lsf make kernel AA=aa4
                                     popd
                                 '''
+                            }
+                            post {
+                                success {
+                                    sh label: 'aa4-deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/defect-detect
+                                            mkdir -p ${DST}
+                                            cp -f kernels/examples/som_aa4/*.xsa \
+                                                  kernels/examples/som_aa4/binary_container_1/*.xclbin \
+                                                  kernels/examples/som_aa4/binary_container_1/link/int/system.bit \
+                                                  ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
                             }
                         }
                     }
