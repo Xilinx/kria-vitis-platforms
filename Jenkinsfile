@@ -3,6 +3,7 @@ pipeline {
         label 'Build_Master'
     }
     environment {
+        DEPLOYDIR="/wrk/paeg_builds/build-artifacts"
         tool_release="2020.2.2"
         auto_branch="2020.2"
     }
@@ -88,6 +89,20 @@ pipeline {
                                     popd
                                 '''
                             }
+                            post {
+                                success {
+                                    sh label: 'smartcamera-deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
+                                            mkdir -p ${DST}
+                                            cp -rf platforms/xilinx_kv260_smartcamera* ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
+                            }
                         }
                         stage('AA1 Build') {
                             environment {
@@ -135,6 +150,20 @@ pipeline {
                                     popd
                                 '''
                             }
+                            post {
+                                success {
+                                    sh label: 'aibox-deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
+                                            mkdir -p ${DST}
+                                            cp -rf platforms/xilinx_kv260_aibox* ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
+                            }
                         }
                         stage('AA2 Build') {
                             environment {
@@ -181,6 +210,20 @@ pipeline {
                                     ../paeg-helper/scripts/lsf make platform PFM=kv260_defectdetect
                                     popd
                                 '''
+                            }
+                            post {
+                                success {
+                                    sh label: 'defectdetect-deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
+                                            mkdir -p ${DST}
+                                            cp -rf platforms/xilinx_kv260_defectdetect* ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
                             }
                         }
                         stage('AA4 Build') {
