@@ -3,6 +3,7 @@ pipeline {
         label 'Build_Master'
     }
     environment {
+        DEPLOYDIR="/wrk/paeg_builds/build-artifacts"
         tool_release="2020.2.2"
         auto_branch="2020.2"
     }
@@ -88,6 +89,20 @@ pipeline {
                                     popd
                                 '''
                             }
+                            post {
+                                success {
+                                    sh label: 'smartcamera-deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
+                                            mkdir -p ${DST}
+                                            cp -rf platforms/xilinx_kv260_smartcamera* ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
+                            }
                         }
                         stage('AA1 Build') {
                             environment {
@@ -107,8 +122,32 @@ pipeline {
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
                                     ../paeg-helper/scripts/lsf make kernel AA=aa1
+
+                                    pushd kernels/examples/som_aa1/binary_container_1/link/int
+                                    echo 'all: { system.bit }' > bootgen.bif
+                                    bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
+                                    popd
+
                                     popd
                                 '''
+                            }
+                            post {
+                                success {
+                                    sh label: 'aa1-deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/smartcam
+                                            mkdir -p ${DST}
+
+                                            cp -f kernels/examples/som_aa1/*.xsa \
+                                                  kernels/examples/som_aa1/binary_container_1/*.xclbin \
+                                                  kernels/examples/som_aa1/binary_container_1/link/int/system.bit* \
+                                                  ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
                             }
                         }
                     }
@@ -135,6 +174,20 @@ pipeline {
                                     popd
                                 '''
                             }
+                            post {
+                                success {
+                                    sh label: 'aibox-deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
+                                            mkdir -p ${DST}
+                                            cp -rf platforms/xilinx_kv260_aibox* ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
+                            }
                         }
                         stage('AA2 Build') {
                             environment {
@@ -154,8 +207,32 @@ pipeline {
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
                                     ../paeg-helper/scripts/lsf make kernel AA=aa2
+
+                                    pushd kernels/examples/som_aa2/binary_container_1/link/int
+                                    echo 'all: { system.bit }' > bootgen.bif
+                                    bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
+                                    popd
+
                                     popd
                                 '''
+                            }
+                            post {
+                                success {
+                                    sh label: 'aa2-deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/aibox-reid
+                                            mkdir -p ${DST}
+
+                                            cp -f kernels/examples/som_aa2/*.xsa \
+                                                  kernels/examples/som_aa2/binary_container_1/*.xclbin \
+                                                  kernels/examples/som_aa2/binary_container_1/link/int/system.bit* \
+                                                  ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
                             }
                         }
                     }
@@ -182,6 +259,20 @@ pipeline {
                                     popd
                                 '''
                             }
+                            post {
+                                success {
+                                    sh label: 'defectdetect-deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
+                                            mkdir -p ${DST}
+                                            cp -rf platforms/xilinx_kv260_defectdetect* ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
+                            }
                         }
                         stage('AA4 Build') {
                             environment {
@@ -201,8 +292,32 @@ pipeline {
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
                                     ../paeg-helper/scripts/lsf make kernel AA=aa4
+
+                                    pushd kernels/examples/som_aa4/binary_container_1/link/int
+                                    echo 'all: { system.bit }' > bootgen.bif
+                                    bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
+                                    popd
+
                                     popd
                                 '''
+                            }
+                            post {
+                                success {
+                                    sh label: 'aa4-deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/defect-detect
+                                            mkdir -p ${DST}
+
+                                            cp -f kernels/examples/som_aa4/*.xsa \
+                                                  kernels/examples/som_aa4/binary_container_1/*.xclbin \
+                                                  kernels/examples/som_aa4/binary_container_1/link/int/system.bit* \
+                                                  ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
                             }
                         }
                     }
