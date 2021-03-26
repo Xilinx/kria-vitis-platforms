@@ -1,3 +1,8 @@
+/*
+ * (C) Copyright 2020 - 2021 Xilinx, Inc.
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 pipeline {
     agent {
         label 'Build_Master'

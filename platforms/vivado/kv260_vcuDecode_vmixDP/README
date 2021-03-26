@@ -1,7 +1,5 @@
-/******************************************************************************
-* Copyright (C) 2020 Xilinx, Inc.  All rights reserved.
-* SPDX-License-Identifier: MIT
-******************************************************************************/
+(C) Copyright 2020 - 2021 Xilinx, Inc.
+SPDX-License-Identifier: Apache-2.0
 
 The kv260_vcuDecode_vmixDP Vivado project is generated in this directory.
 The kv260_vcuDecode_vmixDP design supports the following multimedia peripherals

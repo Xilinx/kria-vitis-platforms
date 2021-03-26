@@ -1,4 +1,5 @@
-# xsct sdx platform tcl script
+# (C) Copyright 2020 - 2021 Xilinx, Inc.
+# SPDX-License-Identifier: Apache-2.0
 
 # Help function
 proc help_proc { } {
