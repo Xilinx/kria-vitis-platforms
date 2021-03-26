@@ -3,6 +3,7 @@
 
 RM = rm -rf
 VIVADO = $(XILINX_VIVADO)/bin/vivado
+JOBS ?= 8
 
 VIV_DESIGN = kv260_ispMipiRx_vmixDP
 
@@ -25,7 +26,7 @@ all: xsa
 
 xsa: $(VIV_XSA)
 $(VIV_XSA): $(VIV_SRC)
-	$(VIVADO) -mode batch -notrace -source $(VIV_SRC)
+	$(VIVADO) -mode batch -notrace -source $(VIV_SRC) -tclargs -jobs $(JOBS)
 
 .PHONY: clean
 clean:

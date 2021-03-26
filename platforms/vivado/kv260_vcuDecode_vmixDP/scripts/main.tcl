@@ -14,6 +14,16 @@ set output {xsa}
 set xdc_list {./xdc/pin.xdc}
 set ip_repo_path {./ip}
 set src_repo_path {./src}
+set jobs 8
+
+# parse arguments
+for { set i 0 } { $i < $argc } { incr i } {
+  # jobs
+  if { [lindex $argv $i] == "-jobs" } {
+    incr i
+    set jobs [lindex $argv $i]
+  }
+}
 
 set proj_board [get_board_parts "*:kv260:*" -latest_file_version]
 create_project -name $proj_name -force -dir $proj_dir -part [get_property PART_NAME [get_board_parts $proj_board]]
