@@ -1,6 +1,9 @@
+# (C) Copyright 2020 - 2021 Xilinx, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
 #MIPI
 set_property DIFF_TERM_ADV TERM_100 [get_ports {mipi_phy_if_clk_p}]
-set_property DIFF_TERM_ADV TERM_100 [get_ports {mipi_phy_if_clk_n}] 
+set_property DIFF_TERM_ADV TERM_100 [get_ports {mipi_phy_if_clk_n}]
 set_property DIFF_TERM_ADV TERM_100 [get_ports {mipi_phy_if_data_p[*]}]
 set_property DIFF_TERM_ADV TERM_100 [get_ports {mipi_phy_if_data_n[*]}]
 

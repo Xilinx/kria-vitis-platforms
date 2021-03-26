@@ -1,3 +1,6 @@
+# (C) Copyright 2020 - 2021 Xilinx, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
 
 set ::PS_INST PS_0
 set PS_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e PS_0 ]
