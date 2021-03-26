@@ -7,7 +7,6 @@ VIVADO:=${VIVADO_ROOT}/bin/vivado
 KERNEL = pp_pipeline_accel
 KERNEL_XO = $(KERNEL)/$(KERNEL).xo
 TARGET = hw
-#PLATFORM = /proj/rdi/staff/jiaz/workspace/zu4ev/kv260_smartcamera_2020.2_ea1/platforms/xilinx_kv260_aibox_202020_1/kv260_aibox.xpfm 
 #---------------------------------------------------------------------
 # vitis common setup
 .PHONY: help
@@ -15,7 +14,7 @@ help::
 	@echo ""
 	@echo "Makefile Usage:"
 	@echo ""
-	@echo "make all PLATFORM=<FPGA platform>" 
+	@echo "make all PLATFORM=<FPGA platform>"
 	@echo "Command to generate the xclbin and bit"
 	@echo ""
 	@echo "make clean"
@@ -42,14 +41,14 @@ DPU_KERN_NAME = DPUCZDX8G
 dpu_xo = binary_container_1/dpu.xo
 
 XFOPENCV_INCDIR = ../../Vitis_Libraries/vision/L1/include/
-KERNEL_XO_FLAGS = -k $(KERNEL) -I$(XFOPENCV_INCDIR) -D__SDSVHLS__ -DHLS_NO_XIL_FPO_LIB --advanced.prop kernel.pp_pipeline_accel.kernel_flags="-std=c++0x" 
+KERNEL_XO_FLAGS = -k $(KERNEL) -I$(XFOPENCV_INCDIR) -D__SDSVHLS__ -DHLS_NO_XIL_FPO_LIB --advanced.prop kernel.pp_pipeline_accel.kernel_flags="-std=c++0x"
 JOBS = 32
 VPP_XO_FLAGS = -t hw --platform $(PLATFORM) \
 	--report_level estimate -j $(JOBS) $(KERNEL_XO_FLAGS)
 
-dpu_pp_xo = $(KERNEL_XO) $(dpu_xo) 
+dpu_pp_xo = $(KERNEL_XO) $(dpu_xo)
 
-#dpu_pp_xo = pp_pipeline_accel.xo 
+#dpu_pp_xo = pp_pipeline_accel.xo
 
 .PHONY: all clean package
 
@@ -81,6 +80,6 @@ package:
 clean:
 	-$(RM) $(KERNEL) *.log _x *.jou v++* *.xclbin *.ini *.xsa
 	-$(RM) binary_container_1
-	-$(RM) DPU_PP packaged* tmp_* 
+	-$(RM) DPU_PP packaged* tmp_*
 
 

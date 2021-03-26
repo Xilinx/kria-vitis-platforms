@@ -1,9 +1,9 @@
 
-set ::PS_INST PS_0 
-set PS_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e PS_0 ] 
+set ::PS_INST PS_0
+set PS_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e PS_0 ]
 
 
-apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_board_preset "1" }  [get_bd_cells PS_0] 
+apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_board_preset "1" }  [get_bd_cells PS_0]
 
 
 set_property -dict [ list \
@@ -38,7 +38,7 @@ CONFIG.PSU__USE__S_AXI_GP4  {1} \
 CONFIG.PSU__USE__S_AXI_GP5  {1} \
 CONFIG.PSU__USE__S_AXI_GP6  {1} \
 CONFIG.PSU__USE__VIDEO {1} \
-] $PS_0 
+] $PS_0
 
 
 
@@ -677,7 +677,7 @@ proc create_root_design { parentCell } {
   current_bd_instance $oldCurInst
 
   # Create PFM attributes
-  set_property PFM_NAME {xilinx.com:kv260:kv260_aibox_4:1.0} [get_files [current_bd_design].bd]
+  set_property PFM_NAME {xilinx.com:kv260:kv260_vcuDecode_vmixDP:1.0} [get_files [current_bd_design].bd]
   set_property PFM.AXI_PORT {S_AXI_HPC0_FPD {memport "S_AXI_HP" sptag "HPC0" memory "PS_0 HPC0_DDR_LOW"} S_AXI_HP1_FPD {memport "S_AXI_HP" sptag "HP1" memory "PS_0 HP1_DDR_LOW"} S_AXI_HP2_FPD {memport "S_AXI_HP" sptag "HP2" memory "PS_0 HP2_DDR_LOW"} S_AXI_LPD {memport "MIG" sptag "LPD" memory "PS_0 LPD_DDR_LOW"}} [get_bd_cells /PS_0]
   set_property PFM.IRQ {pl_ps_irq0 {id 0 range 7}} [get_bd_cells /PS_0]
   set_property PFM.CLOCK {clk_100M {id "2" is_default "false" proc_sys_reset "/proc_sys_reset_100MHz" status "fixed"} clk_275M {id "0" is_default "true" proc_sys_reset "/proc_sys_reset_275MHz" status "fixed"} clk_550M {id "1" is_default "false" proc_sys_reset "/proc_sys_reset_550MHz" status "fixed"}} [get_bd_cells /clk_wiz_0]

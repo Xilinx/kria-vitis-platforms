@@ -65,65 +65,65 @@ pipeline {
                 ])
             }
         }
-	stage('AA Builds') {
+	stage('Vitis builds') {
             parallel {
                 stage('KV260 Smartcamera') {
                     stages {
-                        stage('KV260 Smartcamera Platform Build')  {
+                        stage('kv260_ispMipiRx_vcu_DP platform build')  {
                             when {
                                 anyOf {
-                                    changeset "**/platforms/vivado/kv260_smartcamera/**"
-                                    changeset "**/kernels/examples/som_aa1/**"
+                                    changeset "**/platforms/vivado/kv260_ispMipiRx_vcu_DP/**"
+                                    changeset "**/overlays/examples/smartcam/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
                             steps {
                                 script {
-                                    env.BUILD_AA1 = '1'
+                                    env.BUILD_SMARTCAM = '1'
                                 }
-                                sh label: 'smartcamera-build',
+                                sh label: 'kv260_ispMipiRx_vcu_DP build',
                                 script: '''
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_smartcamera
+                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_ispMipiRx_vcu_DP
                                     popd
                                 '''
                             }
                             post {
                                 success {
-                                    sh label: 'smartcamera-deploy',
+                                    sh label: 'kv260_ispMipiRx_vcu_DP deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
                                             mkdir -p ${DST}
-                                            cp -rf platforms/xilinx_kv260_smartcamera* ${DST}
+                                            cp -rf platforms/xilinx_kv260_ispMipiRx_vcu_DP* ${DST}
                                             popd
                                         fi
                                     '''
                                 }
                             }
                         }
-                        stage('AA1 Build') {
+                        stage('smartcam overlay build') {
                             environment {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kernels/examples/som_aa1/**"
+                                    changeset "**/overlays/examples/smartcam/**"
                                     triggeredBy 'TimerTrigger'
-                                    environment name: 'BUILD_AA1', value: '1'
+                                    environment name: 'BUILD_SMARTCAM', value: '1'
                                 }
                             }
                             steps {
-                                sh label: 'aa1-build',
+                                sh label: 'smartcam build',
                                 script: '''
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make kernel AA=aa1
+                                    ../paeg-helper/scripts/lsf make overlay OVERLAY=smartcam
 
-                                    pushd kernels/examples/som_aa1/binary_container_1/link/int
+                                    pushd overlays/examples/smartcam/binary_container_1/link/int
                                     echo 'all: { system.bit }' > bootgen.bif
                                     bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
                                     popd
@@ -133,16 +133,16 @@ pipeline {
                             }
                             post {
                                 success {
-                                    sh label: 'aa1-deploy',
+                                    sh label: 'smartcam deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/smartcam
                                             mkdir -p ${DST}
 
-                                            cp -f kernels/examples/som_aa1/*.xsa \
-                                                  kernels/examples/som_aa1/binary_container_1/*.xclbin \
-                                                  kernels/examples/som_aa1/binary_container_1/link/int/system.bit* \
+                                            cp -f overlays/examples/smartcam/*.xsa \
+                                                  overlays/examples/smartcam/binary_container_1/*.xclbin \
+                                                  overlays/examples/smartcam/binary_container_1/link/int/system.bit* \
                                                   ${DST}
                                             popd
                                         fi
@@ -152,63 +152,63 @@ pipeline {
                         }
                     }
                 }
-                stage('KV260 AI Box') {
+                stage('kv260_vcuDecode_vmixDP') {
                     stages {
-                        stage('KV260 AI Box Platform Build')  {
+                        stage('kv260_vcuDecode_vmixDP platform build')  {
                             when {
                                 anyOf {
-                                    changeset "**/platforms/vivado/kv260_aibox/**"
-                                    changeset "**/kernels/examples/som_aa2/**"
+                                    changeset "**/platforms/vivado/kv260_vcuDecode_vmixDP/**"
+                                    changeset "**/overlays/examples/aibox-reid/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
                             steps {
                                 script {
-                                    env.BUILD_AA2 = '1'
+                                    env.BUILD_AIBOX_REID = '1'
                                 }
-                                sh label: 'aibox-build',
+                                sh label: 'kv260_vcuDecode_vmixDP build',
                                 script: '''
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_aibox
+                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_vcuDecode_vmixDP
                                     popd
                                 '''
                             }
                             post {
                                 success {
-                                    sh label: 'aibox-deploy',
+                                    sh label: 'kv260_vcuDecode_vmixDP deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
                                             mkdir -p ${DST}
-                                            cp -rf platforms/xilinx_kv260_aibox* ${DST}
+                                            cp -rf platforms/xilinx_kv260_vcuDecode_vmixDP* ${DST}
                                             popd
                                         fi
                                     '''
                                 }
                             }
                         }
-                        stage('AA2 Build') {
+                        stage('aibox-reid build') {
                             environment {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kernels/examples/som_aa2/**"
+                                    changeset "**/overlays/examples/aibox-reid/**"
                                     triggeredBy 'TimerTrigger'
-                                    environment name: 'BUILD_AA2', value: '1'
+                                    environment name: 'BUILD_AIBOX_REID', value: '1'
                                 }
                             }
                             steps {
-                                sh label: 'aa2-build',
+                                sh label: 'aibox-reid build',
                                 script: '''
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make kernel AA=aa2
+                                    ../paeg-helper/scripts/lsf make overlay OVERLAY=aibox-reid
 
-                                    pushd kernels/examples/som_aa2/binary_container_1/link/int
+                                    pushd overlays/examples/aibox-reid/binary_container_1/link/int
                                     echo 'all: { system.bit }' > bootgen.bif
                                     bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
                                     popd
@@ -218,16 +218,16 @@ pipeline {
                             }
                             post {
                                 success {
-                                    sh label: 'aa2-deploy',
+                                    sh label: 'aibox-reid deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/aibox-reid
                                             mkdir -p ${DST}
 
-                                            cp -f kernels/examples/som_aa2/*.xsa \
-                                                  kernels/examples/som_aa2/binary_container_1/*.xclbin \
-                                                  kernels/examples/som_aa2/binary_container_1/link/int/system.bit* \
+                                            cp -f overlays/examples/aibox-reid/*.xsa \
+                                                  overlays/examples/aibox-reid/binary_container_1/*.xclbin \
+                                                  overlays/examples/aibox-reid/binary_container_1/link/int/system.bit* \
                                                   ${DST}
                                             popd
                                         fi
@@ -237,63 +237,63 @@ pipeline {
                         }
                     }
                 }
-                stage('KV260 Defect Detection') {
+                stage('kv260_ispMipiRx_vmixDP') {
                     stages {
-                        stage('KV260 Defect Detection Platform Build')  {
+                        stage('kv260_ispMipiRx_vmixDP platform build')  {
                             when {
                                 anyOf {
-                                    changeset "**/platforms/vivado/kv260_defectdetect/**"
-                                    changeset "**/kernels/examples/som_aa4/**"
+                                    changeset "**/platforms/vivado/kv260_ispMipiRx_vmixDP/**"
+                                    changeset "**/overlays/examples/defect-detect/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
                             steps {
                                 script {
-                                    env.BUILD_AA4 = '1'
+                                    env.BUILD_DEFECT_DETECT = '1'
                                 }
-                                sh label: 'defectdetect-build',
+                                sh label: 'kv260_ispMipiRx_vmixDP build',
                                 script: '''
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_defectdetect
+                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_ispMipiRx_vmixDP
                                     popd
                                 '''
                             }
                             post {
                                 success {
-                                    sh label: 'defectdetect-deploy',
+                                    sh label: 'kv260_ispMipiRx_vmixDP deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
                                             mkdir -p ${DST}
-                                            cp -rf platforms/xilinx_kv260_defectdetect* ${DST}
+                                            cp -rf platforms/xilinx_kv260_ispMipiRx_vmixDP* ${DST}
                                             popd
                                         fi
                                     '''
                                 }
                             }
                         }
-                        stage('AA4 Build') {
+                        stage('defect-detect overlay build') {
                             environment {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kernels/examples/som_aa4/**"
+                                    changeset "**/overlays/examples/defect-detect/**"
                                     triggeredBy 'TimerTrigger'
-                                    environment name: 'BUILD_AA4', value: '1'
+                                    environment name: 'BUILD_DEFECT_DETECT', value: '1'
                                 }
                             }
                             steps {
-                                sh label: 'aa4-build',
+                                sh label: 'defect-detect build',
                                 script: '''
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make kernel AA=aa4
+                                    ../paeg-helper/scripts/lsf make overlay OVERLAY=defect-detect
 
-                                    pushd kernels/examples/som_aa4/binary_container_1/link/int
+                                    pushd overlays/examples/defect-detect/binary_container_1/link/int
                                     echo 'all: { system.bit }' > bootgen.bif
                                     bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
                                     popd
@@ -303,16 +303,16 @@ pipeline {
                             }
                             post {
                                 success {
-                                    sh label: 'aa4-deploy',
+                                    sh label: 'defect-detect deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/defect-detect
                                             mkdir -p ${DST}
 
-                                            cp -f kernels/examples/som_aa4/*.xsa \
-                                                  kernels/examples/som_aa4/binary_container_1/*.xclbin \
-                                                  kernels/examples/som_aa4/binary_container_1/link/int/system.bit* \
+                                            cp -f overlays/examples/defect-detect/*.xsa \
+                                                  overlays/examples/defect-detect/binary_container_1/*.xclbin \
+                                                  overlays/examples/defect-detect/binary_container_1/link/int/system.bit* \
                                                   ${DST}
                                             popd
                                         fi

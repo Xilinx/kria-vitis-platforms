@@ -3,8 +3,8 @@
 * SPDX-License-Identifier: MIT
 ******************************************************************************/
 
-The KV260 smartcamera Vivado project is generated in this directory. 
-The smartcamera design supports the following multimedia peripherals 
+The kv260_ispMipiRx_vcu_DP Vivado project is generated in this directory.
+The kv260_ispMipiRx_vcu_DP design supports the following multimedia peripherals
 and interfaces:
 
 1. MIPI CSI PL interface connected to the AR1335 IAS image sensor and  on-board
@@ -28,24 +28,24 @@ that acclerators can connect to.
 
 Platform Interfaces supported:
 ******************************
-* Clocks: clock_100M, clock_300M, and clock_600M  to drive clock inputs 
+* Clocks: clock_100M, clock_300M, and clock_600M  to drive clock inputs
           on the accelerator.
-* Master AXI: M01_AXI to M15 _AXI AXI Memory Mapped master ports on 
-              axi_ic_accel_ctrl Interconnect to drive the accelerator's 
+* Master AXI: M01_AXI to M15 _AXI AXI Memory Mapped master ports on
+              axi_ic_accel_ctrl Interconnect to drive the accelerator's
               control port.
-* Slave AXI:  S_AXI_HPC1_FPD, S_AXI_HP1_FPD and  S_AXI_LPD AXI Memory Mapped 
+* Slave AXI:  S_AXI_HPC1_FPD, S_AXI_HP1_FPD and  S_AXI_LPD AXI Memory Mapped
               slave ports driven by the accelerator's read/write data ports.
 * Interrupts: pl_ps_irq0[7:0] for the accelerator to drive interrupt signals.
 
-For more information on how to setup Platform Interfaces refer to Xilinx Vitis Unified 
+For more information on how to setup Platform Interfaces refer to Xilinx Vitis Unified
 Software Platform Documentation(UG1393)
 
 
 Set Board Preset:
 *****************
 
-To build platforms make sure to set the Vivado Board Preset using the 
-following steps 
+To build platforms make sure to set the Vivado Board Preset using the
+following steps
 
 1. git clone https://github.com/Xilinx/XilinxBoardStore
 2. Add the following line to Vivado initialization script
@@ -58,36 +58,36 @@ Windows: %APPDATA%/Roaming/Xilinx/Vivado/Vivado_init.tcl
 
 Generate Extensible XSA :
 *************************
-An extensible XSA is required build a Vitis Platform which is in turn used to 
-integrate accelerators into the platform. 
+An extensible XSA is required build a Vitis Platform which is in turn used to
+integrate accelerators into the platform.
 
 To build the XSA, run the following make command
 
 > make xsa
 
-The Makefile uses scripts/main.tcl file to create a vivado project, populate the 
-block design and finally build a XSA. 
+The Makefile uses scripts/main.tcl file to create a vivado project, populate the
+block design and finally build a XSA.
 
 The generated XSA will be located at:
 
-> ./project/kv260_smartcamera.xsa
+> ./project/kv260_ispMipiRx_vcu_DP.xsa
 
 
 Modify the Vivado design:
 *************************
 
-To open the Vivado project run the following command from the 
+To open the Vivado project run the following command from the
 Vivado tcl console:
 
-> open_project ./project/kv260_smartcamera.xpr
+> open_project ./project/kv260_ispMipiRx_vcu_DP.xpr
 
-The user can now modify the block design and run Vivado implementation 
+The user can now modify the block design and run Vivado implementation
 and bitstream generation in the Vivado cockpit.
 
-To write out a new extensible platform XSA file, run the following 
+To write out a new extensible platform XSA file, run the following
 command from the Vivado tcl console:
 
-> write_hw_platform -force -include_bit -file kv260_smartcamera.xsa
+> write_hw_platform -force -include_bit -file kv260_ispMipiRx_vcu_DP.xsa
 
 The new XSA file can now be used replacing the existing XSA file in the Vitis
 platform generation or as hardware handoff file inside the Petalinux project.
