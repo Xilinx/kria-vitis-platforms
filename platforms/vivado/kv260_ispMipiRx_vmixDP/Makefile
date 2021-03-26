@@ -1,7 +1,7 @@
 RM = rm -rf
 VIVADO = $(XILINX_VIVADO)/bin/vivado
 
-VIV_DESIGN = kv260_defectdetect
+VIV_DESIGN = kv260_ispMipiRx_vmixDP
 
 VIV_PRJ_DIR = project
 VIV_SCRIPTS_DIR = scripts

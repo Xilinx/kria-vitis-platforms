@@ -3,7 +3,7 @@ MKDIR = mkdir -p
 RM = rm -rf
 XSCT = $(XILINX_VITIS)/bin/xsct
 
-PLATFORM ?= kv260_smartcamera
+PLATFORM ?= kv260_ispMipiRx_vcu_DP
 VERSION ?= 202022_1
 
 PFM_DIR = xilinx_$(PLATFORM)_$(VERSION)

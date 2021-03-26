@@ -5,33 +5,23 @@
 
 This reference design contains the following contents:
 
-1. kernels
-
-   This folder contains the Vitis kernel projects which include the DPU
-   inference engine RTL kernel and HLS-based computer vision kernels based on
-   the Vitis Vision libraries. Follow the README inside this folder for detailed
-   build instructions.
-
-2. Makefile
-
-   Top-level Makefile for building the Vitis platforms and kernel projects.
-   Type 'make' or 'make help' to print the help text explaining the different
-   make targets.
-
-3. platforms
+1. platforms
 
    This folder contains the KV260 Vitis platforms. Follow the REAMDE inside this
    folder for build instructions.
 
-   Note: To build platforms make sure to set the Vivado Board Preset using the
-         following steps
+2. overlays
 
-         1. git clone https://github.com/Xilinx/XilinxBoardStore
-         2. Add the following line to Vivado initialization script
-            set_param board.repoPaths {<path to the git repo>/boards/Xilinx}
+   This folder contains the Vitis overlay projects which include the DPU
+   inference engine RTL kernel and HLS-based computer vision kernels based on
+   the Vitis Vision libraries. Follow the README inside this folder for detailed
+   build instructions.
 
-            The initialization tcl script for Vivado can be found at:
-            $HOME/.Xilinx/Vivado/Vivado_init.tcl
+3. Makefile
+
+   Top-level Makefile for building the Vitis platforms and overlay projects.
+   Type 'make' or 'make help' to print the help text explaining the different
+   make targets.
 
 4. README
 
