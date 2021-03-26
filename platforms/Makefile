@@ -2,6 +2,7 @@ CP = cp -rf
 MKDIR = mkdir -p
 RM = rm -rf
 XSCT = $(XILINX_VITIS)/bin/xsct
+JOBS ?= 8
 
 PLATFORM ?= kv260_ispMipiRx_vcu_DP
 VERSION ?= 202022_1
@@ -35,7 +36,7 @@ $(PFM_XPFM): $(VIV_XSA)
 	@echo 'Vitis platform available at $(PFM_DIR)'
 
 $(VIV_XSA):
-	make -C $(VIV_DIR) xsa
+	make -C $(VIV_DIR) xsa JOBS=$(JOBS)
 
 .PHONY: clean
 clean:

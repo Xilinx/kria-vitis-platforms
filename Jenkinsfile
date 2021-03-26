@@ -85,7 +85,7 @@ pipeline {
                                 script: '''
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_ispMipiRx_vcu_DP
+                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_ispMipiRx_vcu_DP JOBS=32
                                     popd
                                 '''
                             }
@@ -170,7 +170,7 @@ pipeline {
                                 script: '''
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_vcuDecode_vmixDP
+                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_vcuDecode_vmixDP JOBS=32
                                     popd
                                 '''
                             }
@@ -255,7 +255,7 @@ pipeline {
                                 script: '''
                                     pushd src
                                     source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_ispMipiRx_vmixDP
+                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_ispMipiRx_vmixDP JOBS=32
                                     popd
                                 '''
                             }
