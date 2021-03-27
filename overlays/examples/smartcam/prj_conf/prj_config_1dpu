@@ -45,7 +45,8 @@ param=compiler.addOutputTypes=hw_export
 #prop=run.impl_1.strategy=Performance_NetDelay_high
 #prop=run.impl_1.strategy=Performance_WLBlockPlacementFanoutOpt
 #prop=run.impl_1.strategy=Performance_WLBlockPlacement
-prop=run.impl_1.strategy=Performance_ExploreWithRemap
+#prop=run.impl_1.strategy=Performance_ExploreWithRemap
+prop=run.impl_1.strategy=Performance_ExplorePostRoutePhysOpt
 #prop=run.impl_1.strategy=Performance_ExtraTimingOpt
 #prop=run.impl_1.strategy=Performance_NetDelay_low
 #param=place.runPartPlacer=0
