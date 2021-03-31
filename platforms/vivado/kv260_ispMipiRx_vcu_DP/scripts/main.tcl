@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: Apache-2.0
 
 
-#Beta devices not enabled.
+#Set Board Preset 
+set_param board.repoPaths {../board_files} 
 
 set proj_name kv260_ispMipiRx_vcu_DP
 set proj_dir ./project
