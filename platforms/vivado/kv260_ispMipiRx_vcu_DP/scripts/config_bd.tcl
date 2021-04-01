@@ -284,8 +284,10 @@ proc create_hier_cell_capture_pipeline { parentCell nameHier } {
    CONFIG.DPHYRX_BOARD_INTERFACE {som240_1_connector_mipi_csi_isp} \
    CONFIG.CMN_NUM_PIXELS {2} \
    CONFIG.CMN_VC {0} \
-   CONFIG.C_CSI_FILTER_USERDATATYPE {true} \
    CONFIG.CSI_BUF_DEPTH {4096} \
+   CONFIG.C_CSI_FILTER_USERDATATYPE {true} \
+   CONFIG.C_HS_LINE_RATE {896} \
+   CONFIG.DPY_LINE_RATE {896} \
    CONFIG.SupportLevel {1} \
    ] $mipi_csi2_rx_subsyst_0
 
@@ -417,11 +419,11 @@ proc create_hier_cell_audio_ss_0 { parentCell nameHier } {
   # Create instance: audio_formatter_0, and set properties
   set audio_formatter_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:audio_formatter audio_formatter_0 ]
 
-  # Create instance: axi_clock_converter_0, and set properties
-  set axi_clock_converter_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_clock_converter axi_clock_converter_0 ]
+  # Create instance: axi_clock_converter_mm2s, and set properties
+  set axi_clock_converter_mm2s [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_clock_converter axi_clock_converter_mm2s ]
 
-  # Create instance: axi_clock_converter_1, and set properties
-  set axi_clock_converter_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_clock_converter axi_clock_converter_1 ]
+  # Create instance: axi_clock_converter_s2mm, and set properties
+  set axi_clock_converter_s2mm [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_clock_converter axi_clock_converter_s2mm ]
 
   # Create instance: clk_wiz_audio, and set properties
   set clk_wiz_audio [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_audio ]
@@ -468,11 +470,11 @@ proc create_hier_cell_audio_ss_0 { parentCell nameHier } {
   # Create interface connections
   connect_bd_intf_net -intf_net Conn5 [get_bd_intf_pins s_axi_ctrl_i2s_rx] [get_bd_intf_pins i2s_receiver_0/s_axi_ctrl]
   connect_bd_intf_net -intf_net Conn6 [get_bd_intf_pins s_axi_ctrl_i2s_tx] [get_bd_intf_pins i2s_transmitter_0/s_axi_ctrl]
-  connect_bd_intf_net -intf_net audio_formatter_0_m_axi_mm2s [get_bd_intf_pins audio_formatter_0/m_axi_mm2s] [get_bd_intf_pins axi_clock_converter_0/S_AXI]
-  connect_bd_intf_net -intf_net audio_formatter_0_m_axi_s2mm [get_bd_intf_pins audio_formatter_0/m_axi_s2mm] [get_bd_intf_pins axi_clock_converter_1/S_AXI]
+  connect_bd_intf_net -intf_net audio_formatter_0_m_axi_mm2s [get_bd_intf_pins audio_formatter_0/m_axi_mm2s] [get_bd_intf_pins axi_clock_converter_mm2s/S_AXI]
+  connect_bd_intf_net -intf_net audio_formatter_0_m_axi_s2mm [get_bd_intf_pins audio_formatter_0/m_axi_s2mm] [get_bd_intf_pins axi_clock_converter_s2mm/S_AXI]
   connect_bd_intf_net -intf_net audio_formatter_2_m_axis_mm2s [get_bd_intf_pins audio_formatter_0/m_axis_mm2s] [get_bd_intf_pins i2s_transmitter_0/s_axis_aud]
-  connect_bd_intf_net -intf_net axi_clock_converter_0_M_AXI [get_bd_intf_pins m_axi_mm2s_audio] [get_bd_intf_pins axi_clock_converter_0/M_AXI]
-  connect_bd_intf_net -intf_net axi_clock_converter_1_M_AXI [get_bd_intf_pins m_axi_s2mm_audio] [get_bd_intf_pins axi_clock_converter_1/M_AXI]
+  connect_bd_intf_net -intf_net axi_clock_converter_0_M_AXI [get_bd_intf_pins m_axi_mm2s_audio] [get_bd_intf_pins axi_clock_converter_mm2s/M_AXI]
+  connect_bd_intf_net -intf_net axi_clock_converter_1_M_AXI [get_bd_intf_pins m_axi_s2mm_audio] [get_bd_intf_pins axi_clock_converter_s2mm/M_AXI]
   connect_bd_intf_net -intf_net i2s_receiver_0_m_axis_aud [get_bd_intf_pins audio_formatter_0/s_axis_s2mm] [get_bd_intf_pins i2s_receiver_0/m_axis_aud]
   connect_bd_intf_net -intf_net s_axi_lite2_1 [get_bd_intf_pins s_axi_lite_audio_fmt] [get_bd_intf_pins audio_formatter_0/s_axi_lite]
 
@@ -481,7 +483,7 @@ proc create_hier_cell_audio_ss_0 { parentCell nameHier } {
   connect_bd_net -net clk_in2_1 [get_bd_pins pl_clk1] [get_bd_pins clk_wiz_audio/clk_in1]
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out_audio] [get_bd_pins audio_formatter_0/aud_mclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out_audio] [get_bd_pins audio_formatter_0/m_axis_mm2s_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out_audio] [get_bd_pins axi_clock_converter_0/s_axi_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out_audio] [get_bd_pins axi_clock_converter_mm2s/s_axi_aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out_audio] [get_bd_pins clk_wiz_audio/clk_out1] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out_audio] [get_bd_pins i2s_receiver_0/aud_mclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out_audio] [get_bd_pins i2s_transmitter_0/aud_mclk] -boundary_type upper
@@ -497,19 +499,19 @@ proc create_hier_cell_audio_ss_0 { parentCell nameHier } {
   connect_bd_net -net i2s_transmitter_0_lrclk_out [get_bd_pins lrclk_tx] [get_bd_pins i2s_transmitter_0/lrclk_out]
   connect_bd_net -net i2s_transmitter_0_sclk_out [get_bd_pins sclk_tx] [get_bd_pins i2s_transmitter_0/sclk_out]
   connect_bd_net -net i2s_transmitter_0_sdata_0_out [get_bd_pins sdata_tx] [get_bd_pins i2s_transmitter_0/sdata_0_out]
-  connect_bd_net -net m_axi_aclk_1 [get_bd_pins m_axi_aclk] [get_bd_pins axi_clock_converter_0/m_axi_aclk] -boundary_type upper
-  connect_bd_net -net m_axi_aclk_1 [get_bd_pins m_axi_aclk] [get_bd_pins axi_clock_converter_1/m_axi_aclk] -boundary_type upper
-  connect_bd_net -net m_axi_aresetn_1 [get_bd_pins m_axi_aresetn] [get_bd_pins axi_clock_converter_0/m_axi_aresetn] -boundary_type upper
-  connect_bd_net -net m_axi_aresetn_1 [get_bd_pins m_axi_aresetn] [get_bd_pins axi_clock_converter_1/m_axi_aresetn] -boundary_type upper
+  connect_bd_net -net m_axi_aclk_1 [get_bd_pins m_axi_aclk] [get_bd_pins axi_clock_converter_mm2s/m_axi_aclk] -boundary_type upper
+  connect_bd_net -net m_axi_aclk_1 [get_bd_pins m_axi_aclk] [get_bd_pins axi_clock_converter_s2mm/m_axi_aclk] -boundary_type upper
+  connect_bd_net -net m_axi_aresetn_1 [get_bd_pins m_axi_aresetn] [get_bd_pins axi_clock_converter_mm2s/m_axi_aresetn] -boundary_type upper
+  connect_bd_net -net m_axi_aresetn_1 [get_bd_pins m_axi_aresetn] [get_bd_pins axi_clock_converter_s2mm/m_axi_aresetn] -boundary_type upper
   connect_bd_net -net net_bdry_in_ACLK [get_bd_pins ACLK] [get_bd_pins audio_formatter_0/s_axi_lite_aclk] -boundary_type upper
   connect_bd_net -net net_bdry_in_ACLK [get_bd_pins ACLK] [get_bd_pins audio_formatter_0/s_axis_s2mm_aclk] -boundary_type upper
-  connect_bd_net -net net_bdry_in_ACLK [get_bd_pins ACLK] [get_bd_pins axi_clock_converter_1/s_axi_aclk] -boundary_type upper
+  connect_bd_net -net net_bdry_in_ACLK [get_bd_pins ACLK] [get_bd_pins axi_clock_converter_s2mm/s_axi_aclk] -boundary_type upper
   connect_bd_net -net net_bdry_in_ACLK [get_bd_pins ACLK] [get_bd_pins i2s_receiver_0/m_axis_aud_aclk] -boundary_type upper
   connect_bd_net -net net_bdry_in_ACLK [get_bd_pins ACLK] [get_bd_pins i2s_receiver_0/s_axi_ctrl_aclk] -boundary_type upper
   connect_bd_net -net net_bdry_in_ACLK [get_bd_pins ACLK] [get_bd_pins i2s_transmitter_0/s_axi_ctrl_aclk] -boundary_type upper
   connect_bd_net -net net_bdry_in_ARESETN [get_bd_pins ARESETN] [get_bd_pins audio_formatter_0/s_axi_lite_aresetn] -boundary_type upper
   connect_bd_net -net net_bdry_in_ARESETN [get_bd_pins ARESETN] [get_bd_pins audio_formatter_0/s_axis_s2mm_aresetn] -boundary_type upper
-  connect_bd_net -net net_bdry_in_ARESETN [get_bd_pins ARESETN] [get_bd_pins axi_clock_converter_1/s_axi_aresetn] -boundary_type upper
+  connect_bd_net -net net_bdry_in_ARESETN [get_bd_pins ARESETN] [get_bd_pins axi_clock_converter_s2mm/s_axi_aresetn] -boundary_type upper
   connect_bd_net -net net_bdry_in_ARESETN [get_bd_pins ARESETN] [get_bd_pins i2s_receiver_0/m_axis_aud_aresetn] -boundary_type upper
   connect_bd_net -net net_bdry_in_ARESETN [get_bd_pins ARESETN] [get_bd_pins i2s_receiver_0/s_axi_ctrl_aresetn] -boundary_type upper
   connect_bd_net -net net_bdry_in_ARESETN [get_bd_pins ARESETN] [get_bd_pins i2s_transmitter_0/s_axi_ctrl_aresetn] -boundary_type upper
@@ -518,7 +520,7 @@ proc create_hier_cell_audio_ss_0 { parentCell nameHier } {
   connect_bd_net -net proc_sys_reset [get_bd_pins pl_rstn1] [get_bd_pins clk_wiz_audio/resetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset [get_bd_pins pl_rstn1] [get_bd_pins proc_sys_reset_18MHz/ext_reset_in] -boundary_type upper
   connect_bd_net -net proc_sys_reset_3_peripheral_aresetn [get_bd_pins peripheral_aresetn] [get_bd_pins audio_formatter_0/m_axis_mm2s_aresetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_3_peripheral_aresetn [get_bd_pins peripheral_aresetn] [get_bd_pins axi_clock_converter_0/s_axi_aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_3_peripheral_aresetn [get_bd_pins peripheral_aresetn] [get_bd_pins axi_clock_converter_mm2s/s_axi_aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_3_peripheral_aresetn [get_bd_pins peripheral_aresetn] [get_bd_pins i2s_transmitter_0/s_axis_aud_aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_3_peripheral_aresetn [get_bd_pins peripheral_aresetn] [get_bd_pins proc_sys_reset_18MHz/peripheral_aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_3_peripheral_reset [get_bd_pins audio_formatter_0/aud_mreset] [get_bd_pins i2s_receiver_0/aud_mrst] -boundary_type upper
@@ -720,8 +722,8 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M01_AXI [get_bd_intf_pins axi_ic_ctrl_100/M01_AXI] [get_bd_intf_pins vcu/S_AXI_LITE]
   connect_bd_intf_net -intf_net capture_pipeline_m_axi_mm_video [get_bd_intf_pins ${::PS_INST}/S_AXI_HP0_FPD] [get_bd_intf_pins capture_pipeline/m_axi_mm_video]
   connect_bd_intf_net -intf_net mipi_phy_if_1 [get_bd_intf_ports mipi_phy_if] [get_bd_intf_pins capture_pipeline/mipi_phy_if]
-  connect_bd_intf_net -intf_net smartconnect_vcu_M00_AXI [get_bd_intf_pins ${::PS_INST}/S_AXI_HPC0_FPD] [get_bd_intf_pins vcu/M00_AXI_VCU_EN]
-  connect_bd_intf_net -intf_net vcu_M00_AXI [get_bd_intf_pins ${::PS_INST}/S_AXI_HP2_FPD] [get_bd_intf_pins vcu/M00_AXI_VCU_DEC]
+  connect_bd_intf_net -intf_net vcu_M00_AXI_VCU_DEC [get_bd_intf_pins ${::PS_INST}/S_AXI_HPC0_FPD] [get_bd_intf_pins vcu/M00_AXI_VCU_DEC]
+  connect_bd_intf_net -intf_net vcu_M00_AXI_VCU_EN [get_bd_intf_pins ${::PS_INST}/S_AXI_HP2_FPD] [get_bd_intf_pins vcu/M00_AXI_VCU_EN]
   connect_bd_intf_net -intf_net vcu_M_AXI_VCU_MCU [get_bd_intf_pins axi_ic_audio_mcu/S00_AXI] [get_bd_intf_pins vcu/M_AXI_VCU_MCU]
 
   # Create port connections
@@ -836,10 +838,10 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces audio_ss_0/audio_formatter_0/m_axi_mm2s] [get_bd_addr_segs ${::PS_INST}/SAXIGP6/LPD_DDR_LOW] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces audio_ss_0/audio_formatter_0/m_axi_s2mm] [get_bd_addr_segs ${::PS_INST}/SAXIGP6/LPD_DDR_LOW] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces capture_pipeline/v_frmbuf_wr_0/Data_m_axi_mm_video] [get_bd_addr_segs ${::PS_INST}/SAXIGP2/HP0_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/DecData0] [get_bd_addr_segs ${::PS_INST}/SAXIGP4/HP2_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/DecData1] [get_bd_addr_segs ${::PS_INST}/SAXIGP4/HP2_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/EncData1] [get_bd_addr_segs ${::PS_INST}/SAXIGP0/HPC0_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/EncData0] [get_bd_addr_segs ${::PS_INST}/SAXIGP0/HPC0_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/EncData0] [get_bd_addr_segs ${::PS_INST}/SAXIGP4/HP2_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/EncData1] [get_bd_addr_segs ${::PS_INST}/SAXIGP4/HP2_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/DecData0] [get_bd_addr_segs ${::PS_INST}/SAXIGP0/HPC0_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/DecData1] [get_bd_addr_segs ${::PS_INST}/SAXIGP0/HPC0_DDR_LOW] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/Code] [get_bd_addr_segs ${::PS_INST}/SAXIGP6/LPD_DDR_LOW] -force
 
    # Restore current instance
