@@ -1,3 +1,6 @@
+# (C) Copyright 2020 - 2021 Xilinx, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
 DIR_PRJ = $(shell pwd)
 RM = rm -rf
 VIVADO_ROOT := $(XILINX_VIVADO)

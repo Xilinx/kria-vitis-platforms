@@ -13,6 +13,7 @@ Options for <platform_name> are
    - kv260_ispMipiRx_vcu_DP
    - kv260_vcuDecode_vmixDP
    - kv260_ispMipiRx_vmixDP
+   - kv260_ispMipiRx_DP
 
 The Makefile uses the XSA from the vivado project to generate a platform.
 The generated platform will be located at:
