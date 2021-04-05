@@ -287,6 +287,7 @@ proc create_hier_cell_capture_pipeline { parentCell nameHier } {
    CONFIG.CSI_BUF_DEPTH {4096} \
    CONFIG.C_CSI_FILTER_USERDATATYPE {true} \
    CONFIG.C_HS_LINE_RATE {896} \
+   CONFIG.C_HS_SETTLE_NS {146} \
    CONFIG.DPY_LINE_RATE {896} \
    CONFIG.SupportLevel {1} \
    ] $mipi_csi2_rx_subsyst_0
