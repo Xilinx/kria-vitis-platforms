@@ -327,6 +327,91 @@ pipeline {
                         }
                     }
                 }
+                stage('kv260_ispMipiRx_DP') {
+                    stages {
+                        stage('kv260_ispMipiRx_DP platform build')  {
+                            when {
+                                anyOf {
+                                    changeset "**/platforms/vivado/kv260_ispMipiRx_DP/**"
+                                    changeset "**/overlays/examples/nlp-smartvision/**"
+                                    triggeredBy 'TimerTrigger'
+                                }
+                            }
+                            steps {
+                                script {
+                                    env.BUILD_NLP_SMARTVISION = '1'
+                                }
+                                sh label: 'kv260_ispMipiRx_DP build',
+                                script: '''
+                                    pushd src
+                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
+                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_ispMipiRx_DP JOBS=32
+                                    popd
+                                '''
+                            }
+                            post {
+                                success {
+                                    sh label: 'kv260_ispMipiRx_DP deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
+                                            mkdir -p ${DST}
+                                            cp -rf platforms/xilinx_kv260_ispMipiRx_DP* ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
+                            }
+                        }
+                        stage('nlp-smartvision overlay build') {
+                            environment {
+                                PAEG_LSF_MEM=65536
+                                PAEG_LSF_QUEUE="long"
+                            }
+                            when {
+                                anyOf {
+                                    changeset "**/overlays/examples/nlp-smartvision/**"
+                                    triggeredBy 'TimerTrigger'
+                                    environment name: 'BUILD_NLP_SMARTVISION', value: '1'
+                                }
+                            }
+                            steps {
+                                sh label: 'nlp-smartvision build',
+                                script: '''
+                                    pushd src
+                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
+                                    ../paeg-helper/scripts/lsf make overlay OVERLAY=nlp-smartvision
+
+                                    pushd overlays/examples/nlp-smartvision/binary_container_1/link/int
+                                    echo 'all: { system.bit }' > bootgen.bif
+                                    bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
+                                    popd
+
+                                    popd
+                                '''
+                            }
+                            post {
+                                success {
+                                    sh label: 'nlp-smartvision deploy',
+                                    script: '''
+                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                            pushd src
+                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/nlp-smartvision
+                                            mkdir -p ${DST}
+
+                                            cp -f overlays/examples/nlp-smartvision/*.xsa \
+                                                  overlays/examples/nlp-smartvision/binary_container_1/*.xclbin \
+                                                  overlays/examples/nlp-smartvision/binary_container_1/link/int/system.bit* \
+                                                  ${DST}
+                                            popd
+                                        fi
+                                    '''
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
