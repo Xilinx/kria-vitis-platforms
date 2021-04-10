@@ -17,7 +17,7 @@ pipeline {
         skipDefaultCheckout true
     }
     triggers {
-        cron(env.BRANCH_NAME == '2020.2.2' ? 'H 21 * * *' : '')
+        cron(env.BRANCH_NAME == 'release-2020.2.2_k26' ? 'H 21 * * *' : '')
     }
     stages {
         stage ('Fix Changelog') {
