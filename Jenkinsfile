@@ -9,7 +9,7 @@ pipeline {
     }
     environment {
         DEPLOYDIR="/wrk/paeg_builds/build-artifacts"
-        tool_release="2020.2.2"
+        tool_release="2021.1"
         auto_branch="2020.2"
     }
     options {
@@ -17,7 +17,7 @@ pipeline {
         skipDefaultCheckout true
     }
     triggers {
-        cron(env.BRANCH_NAME == '2020.2.2' ? 'H 21 * * *' : '')
+        cron(env.BRANCH_NAME == '2021.1' ? 'H 21 * * *' : '')
     }
     stages {
         stage ('Fix Changelog') {
