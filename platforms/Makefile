@@ -8,7 +8,7 @@ XSCT = $(XILINX_VITIS)/bin/xsct
 JOBS ?= 8
 
 PLATFORM ?= kv260_ispMipiRx_vcu_DP
-VERSION ?= 202022_1
+VERSION ?= 202110_1
 
 PFM_DIR = xilinx_$(PLATFORM)_$(VERSION)
 PFM_PRJ_DIR = ws/$(PLATFORM)/export/$(PLATFORM)
