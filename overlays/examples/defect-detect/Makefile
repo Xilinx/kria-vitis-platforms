@@ -5,6 +5,8 @@ DIR_PRJ = $(shell pwd)
 RM = rm -rf
 VIVADO_ROOT := $(XILINX_VIVADO)
 VIVADO:=${VIVADO_ROOT}/bin/vivado
+XBU = xclbinutil
+XBU_FLAGS = --remove-section BITSTREAM --force
 CONFIG_FILE = system.cfg
 
 # Kernel name
@@ -75,6 +77,8 @@ $(EDGE_KERNEL_XO): xf_edgetracing_accel.cpp
 
 binary_container_1/defect-detect.xclbin: $(defect_detect_xo)
 	$(VPP) $(XOCC_OPTS) -l --temp_dir binary_container_1 --log_dir binary_container_1/logs --remote_ip_cache binary_container_1/ip_cache -o "$@" $(+)
+	$(XBU) $(XBU_FLAGS) --input $@ --output strip.xclbin
+	@mv strip.xclbin $@
 
 package:
 	-@mkdir -p binary_container_1/sd_card
