@@ -5,6 +5,8 @@ DIR_PRJ = $(shell pwd)
 RM = rm -rf
 VIVADO_ROOT := $(XILINX_VIVADO)
 VIVADO:=${VIVADO_ROOT}/bin/vivado
+XBU = xclbinutil
+XBU_FLAGS = --remove-section BITSTREAM --force
 
 # Kernel name
 KERNEL = pp_pipeline_accel
@@ -71,6 +73,8 @@ binary_container_1/dpu.xo: $(dpu_HDLSRCS)
 
 binary_container_1/dpu.xclbin: $(dpu_pp_xo)
 	$(VPP) $(XOCC_OPTS) -l --temp_dir binary_container_1 --log_dir binary_container_1/logs --remote_ip_cache binary_container_1/ip_cache -o "$@" $(+)
+	$(XBU) $(XBU_FLAGS) --input $@ --output strip.xclbin
+	@mv strip.xclbin $@
 
 package:
 	-@mkdir -p binary_container_1/sd_card
