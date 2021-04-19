@@ -93,7 +93,7 @@ foreach ip [get_ips] {
 close $fd
 
 set_property synth_checkpoint_mode Hierarchical [get_files $proj_dir/${proj_name}.srcs/sources_1/bd/$proj_name/${proj_name}.bd]
-launch_runs synth_1 -jobs 32
+launch_runs synth_1 -jobs $jobs
 wait_on_run synth_1
 
 set_property platform.board_id $proj_name [current_project]
