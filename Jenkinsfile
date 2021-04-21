@@ -9,6 +9,7 @@ pipeline {
     }
     environment {
         DEPLOYDIR="/wrk/paeg_builds/build-artifacts"
+        deploy_branch="release-2020.2.2_k26"
         tool_release="2020.2.2"
         auto_branch="2020.2"
     }
@@ -98,7 +99,7 @@ pipeline {
                                 success {
                                     sh label: 'kv260_ispMipiRx_vcu_DP deploy',
                                     script: '''
-                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
                                             mkdir -p ${DST}
@@ -140,7 +141,7 @@ pipeline {
                                 success {
                                     sh label: 'smartcam deploy',
                                     script: '''
-                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/smartcam
                                             mkdir -p ${DST}
@@ -183,7 +184,7 @@ pipeline {
                                 success {
                                     sh label: 'kv260_vcuDecode_vmixDP deploy',
                                     script: '''
-                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
                                             mkdir -p ${DST}
@@ -225,7 +226,7 @@ pipeline {
                                 success {
                                     sh label: 'aibox-reid deploy',
                                     script: '''
-                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/aibox-reid
                                             mkdir -p ${DST}
@@ -268,7 +269,7 @@ pipeline {
                                 success {
                                     sh label: 'kv260_ispMipiRx_vmixDP deploy',
                                     script: '''
-                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
                                             mkdir -p ${DST}
@@ -310,7 +311,7 @@ pipeline {
                                 success {
                                     sh label: 'defect-detect deploy',
                                     script: '''
-                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/defect-detect
                                             mkdir -p ${DST}
@@ -353,7 +354,7 @@ pipeline {
                                 success {
                                     sh label: 'kv260_ispMipiRx_DP deploy',
                                     script: '''
-                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
                                             mkdir -p ${DST}
@@ -395,7 +396,7 @@ pipeline {
                                 success {
                                     sh label: 'nlp-smartvision deploy',
                                     script: '''
-                                        if [ "${BRANCH_NAME}" == "${tool_release}" ]; then
+                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
                                             DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/nlp-smartvision
                                             mkdir -p ${DST}
