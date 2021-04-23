@@ -40,7 +40,7 @@ help:
 	@echo '  make overlay OVERLAY=<val>'
 	@echo '    Build the Vitis application overlay.'
 	@echo ''
-	@echo '    Valid options for OVELRAY: ${OVERLAY_LIST}'
+	@echo '    Valid options for OVERLAY: ${OVERLAY_LIST}'
 	@echo ''
 	@echo '  make platform PFM=<val> JOBS=<n>'
 	@echo '    Build the Vitis platform.'
