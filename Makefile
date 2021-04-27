@@ -55,35 +55,36 @@ help:
 .PHONY: overlay
 overlay: $(VITIS_OVERLAY_BIT)
 $(VITIS_OVERLAY_BIT): $(PFM_XPFM)
-	@val=0; \
+	@valid=0; \
 	for o in $(OVERLAY_LIST); do \
-	  if [ "$$o" == "$(OVERLAY)" ]; then \
-	    echo 'Build $(OVERLAY) Vitis overlay using platform $(PFM)'; \
-	    $(MAKE) -C $(VITIS_OVERLAY_DIR) all PLATFORM=$(PFM_XPFM); \
-	    val=1; \
+	  if [ "$$o" = "$(OVERLAY)" ]; then \
+	    valid=1; \
+	    break; \
 	  fi \
 	done; \
-	if [ "$$val" -ne 1 ]; then \
+	if [ "$$valid" -ne 1 ]; then \
 	  echo 'Invalid parameter OVERLAY=$(OVERLAY). Choose one of: $(OVERLAY_LIST)'; \
-	  false; \
-	fi
-
+	  exit 1; \
+	fi; \
+	echo 'Build $(OVERLAY) Vitis overlay using platform $(PFM)'; \
+	$(MAKE) -C $(VITIS_OVERLAY_DIR) all PLATFORM=$(PFM_XPFM)
 
 .PHONY: platform
 platform: $(PFM_XPFM)
 $(PFM_XPFM):
-	@val=0; \
+	@valid=0; \
 	for p in $(PFM_LIST); do \
-	  if [ "$$p" == "$(PFM)" ]; then \
-	    echo 'Create Vitis platform $(PFM)'; \
-	    $(MAKE) -C $(PFM_DIR) platform PLATFORM=$(PFM) VERSION=$(PFM_VER); \
-	    val=1; \
+	  if [ "$$p" = "$(PFM)" ]; then \
+	    valid=1; \
+	    break; \
 	  fi \
 	done; \
-	if [ "$$val" -ne 1 ]; then \
+	if [ "$$valid" -ne 1 ]; then \
 	  echo 'Invalid parameter PFM=$(PFM). Choose one of: $(PFM_LIST)'; \
-	  false; \
-	fi
+	  exit 1; \
+	fi; \
+	echo 'Create Vitis platform $(PFM)'; \
+	$(MAKE) -C $(PFM_DIR) platform PLATFORM=$(PFM) VERSION=$(PFM_VER)
 
 .PHONY: clean
 clean:
