@@ -8,10 +8,14 @@ pipeline {
         label 'Build_Master'
     }
     environment {
-        DEPLOYDIR="/wrk/paeg_builds/build-artifacts"
         deploy_branch="2021.1"
         tool_release="2021.1"
-        auto_branch="2020.2"
+        tool_build="daily_latest"
+        auto_branch="2021.1"
+        pfm_ver="202110_1"
+        setup="${WORKSPACE}/paeg-helper/env-setup.sh"
+        lsf="${WORKSPACE}/paeg-helper/scripts/lsf"
+        DEPLOYDIR="/wrk/paeg_builds/build-artifacts/kv260-vitis/${tool_release}"
     }
     options {
         // don't let the implicit checkout happen
@@ -73,13 +77,18 @@ pipeline {
         }
 	stage('Vitis builds') {
             parallel {
-                stage('KV260 Smartcamera') {
+                stage('kv260_ispMipiRx_vcu_DP') {
+                    environment {
+                        pfm_base="kv260_ispMipiRx_vcu_DP"
+                        pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        pfm_dir="${WORKSPACE}/src/platforms/${pfm}"
+                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                    }
                     stages {
                         stage('kv260_ispMipiRx_vcu_DP platform build')  {
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_ispMipiRx_vcu_DP/**"
-                                    changeset "**/overlays/examples/smartcam/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -87,23 +96,22 @@ pipeline {
                                 script {
                                     env.BUILD_SMARTCAM = '1'
                                 }
-                                sh label: 'kv260_ispMipiRx_vcu_DP build',
+                                sh label: 'platform build',
                                 script: '''
                                     pushd src
-                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_ispMipiRx_vcu_DP JOBS=32
+                                    source ${setup} -r ${tool_release} && set -e
+                                    ${lsf} make platform PFM=${pfm_base} JOBS=32
                                     popd
                                 '''
                             }
                             post {
                                 success {
-                                    sh label: 'kv260_ispMipiRx_vcu_DP deploy',
+                                    sh label: 'platform deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
-                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
-                                            mkdir -p ${DST}
-                                            cp -rf platforms/xilinx_kv260_ispMipiRx_vcu_DP* ${DST}
+                                            mkdir -p ${DEPLOYDIR}
+                                            cp -rf platforms/${pfm} ${DEPLOYDIR}
                                             popd
                                         fi
                                     '''
@@ -114,6 +122,8 @@ pipeline {
                             environment {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
+                                overlay="smartcam"
+                                example_dir="overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
@@ -123,13 +133,24 @@ pipeline {
                                 }
                             }
                             steps {
-                                sh label: 'smartcam build',
+                                sh label: 'overlay build',
                                 script: '''
                                     pushd src
-                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make overlay OVERLAY=smartcam
 
-                                    pushd overlays/examples/smartcam/binary_container_1/link/int
+                                    if [ -d platforms/${pfm} ]; then
+                                        echo "Using platform from local build"
+                                    elif [ -d ${DEPLOYDIR}/${pfm} ]; then
+                                        echo "Using platform from build artifacts"
+                                        ln -s ${DEPLOYDIR}/${pfm} platforms/
+                                    else
+                                        echo "No valid platform found: ${pfm}"
+                                        exit 1
+                                    fi
+
+                                    source ${setup} -r ${tool_release} && set -e
+                                    ${lsf} make overlay OVERLAY=${overlay}
+
+                                    pushd ${example_dir}/binary_container_1/link/int
                                     echo 'all: { system.bit }' > bootgen.bif
                                     bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
                                     popd
@@ -139,16 +160,16 @@ pipeline {
                             }
                             post {
                                 success {
-                                    sh label: 'smartcam deploy',
+                                    sh label: 'overlay deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
-                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/smartcam
+                                            DST=${DEPLOYDIR}/${overlay}
                                             mkdir -p ${DST}
 
-                                            cp -f overlays/examples/smartcam/*.xsa \
-                                                  overlays/examples/smartcam/binary_container_1/*.xclbin \
-                                                  overlays/examples/smartcam/binary_container_1/link/int/system.bit* \
+                                            cp -f ${example_dir}/*.xsa \
+                                                  ${example_dir}/binary_container_1/*.xclbin \
+                                                  ${example_dir}/binary_container_1/link/int/system.bit* \
                                                   ${DST}
                                             popd
                                         fi
@@ -159,12 +180,17 @@ pipeline {
                     }
                 }
                 stage('kv260_vcuDecode_vmixDP') {
+                    environment {
+                        pfm_base="kv260_vcuDecode_vmixDP"
+                        pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        pfm_dir="${WORKSPACE}/src/platforms/${pfm}"
+                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                    }
                     stages {
                         stage('kv260_vcuDecode_vmixDP platform build')  {
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_vcuDecode_vmixDP/**"
-                                    changeset "**/overlays/examples/aibox-reid/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -172,33 +198,34 @@ pipeline {
                                 script {
                                     env.BUILD_AIBOX_REID = '1'
                                 }
-                                sh label: 'kv260_vcuDecode_vmixDP build',
+                                sh label: 'platform build',
                                 script: '''
                                     pushd src
-                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_vcuDecode_vmixDP JOBS=32
+                                    source ${setup} -r ${tool_release} && set -e
+                                    ${lsf} make platform PFM=${pfm_base} JOBS=32
                                     popd
                                 '''
                             }
                             post {
                                 success {
-                                    sh label: 'kv260_vcuDecode_vmixDP deploy',
+                                    sh label: 'platform deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
-                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
-                                            mkdir -p ${DST}
-                                            cp -rf platforms/xilinx_kv260_vcuDecode_vmixDP* ${DST}
+                                            mkdir -p ${DEPLOYDIR}
+                                            cp -rf platforms/${pfm} ${DEPLOYDIR}
                                             popd
                                         fi
                                     '''
                                 }
                             }
                         }
-                        stage('aibox-reid build') {
+                        stage('aibox-reid overlay build') {
                             environment {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
+                                overlay="aibox-reid"
+                                example_dir="overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
@@ -208,13 +235,24 @@ pipeline {
                                 }
                             }
                             steps {
-                                sh label: 'aibox-reid build',
+                                sh label: 'overlay build',
                                 script: '''
                                     pushd src
-                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make overlay OVERLAY=aibox-reid
 
-                                    pushd overlays/examples/aibox-reid/binary_container_1/link/int
+                                    if [ -d platforms/${pfm} ]; then
+                                        echo "Using platform from local build"
+                                    elif [ -d ${DEPLOYDIR}/${pfm} ]; then
+                                        echo "Using platform from build artifacts"
+                                        ln -s ${DEPLOYDIR}/${pfm} platforms/
+                                    else
+                                        echo "No valid platform found: ${pfm}"
+                                        exit 1
+                                    fi
+
+                                    source ${setup} -r ${tool_release} && set -e
+                                    ${lsf} make overlay OVERLAY=${overlay}
+
+                                    pushd ${example_dir}/binary_container_1/link/int
                                     echo 'all: { system.bit }' > bootgen.bif
                                     bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
                                     popd
@@ -224,16 +262,16 @@ pipeline {
                             }
                             post {
                                 success {
-                                    sh label: 'aibox-reid deploy',
+                                    sh label: 'overlay deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
-                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/aibox-reid
+                                            DST=${DEPLOYDIR}/${overlay}
                                             mkdir -p ${DST}
 
-                                            cp -f overlays/examples/aibox-reid/*.xsa \
-                                                  overlays/examples/aibox-reid/binary_container_1/*.xclbin \
-                                                  overlays/examples/aibox-reid/binary_container_1/link/int/system.bit* \
+                                            cp -f ${example_dir}/*.xsa \
+                                                  ${example_dir}/binary_container_1/*.xclbin \
+                                                  ${example_dir}/binary_container_1/link/int/system.bit* \
                                                   ${DST}
                                             popd
                                         fi
@@ -244,12 +282,17 @@ pipeline {
                     }
                 }
                 stage('kv260_ispMipiRx_vmixDP') {
+                    environment {
+                        pfm_base="kv260_ispMipiRx_vmixDP"
+                        pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        pfm_dir="${WORKSPACE}/src/platforms/${pfm}"
+                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                    }
                     stages {
                         stage('kv260_ispMipiRx_vmixDP platform build')  {
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_ispMipiRx_vmixDP/**"
-                                    changeset "**/overlays/examples/defect-detect/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -257,23 +300,22 @@ pipeline {
                                 script {
                                     env.BUILD_DEFECT_DETECT = '1'
                                 }
-                                sh label: 'kv260_ispMipiRx_vmixDP build',
+                                sh label: 'platform build',
                                 script: '''
                                     pushd src
-                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_ispMipiRx_vmixDP JOBS=32
+                                    source ${setup} -r ${tool_release} && set -e
+                                    ${lsf} make platform PFM=${pfm_base} JOBS=32
                                     popd
                                 '''
                             }
                             post {
                                 success {
-                                    sh label: 'kv260_ispMipiRx_vmixDP deploy',
+                                    sh label: 'platform deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
-                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
-                                            mkdir -p ${DST}
-                                            cp -rf platforms/xilinx_kv260_ispMipiRx_vmixDP* ${DST}
+                                            mkdir -p ${DEPLOYDIR}
+                                            cp -rf platforms/${pfm} ${DEPLOYDIR}
                                             popd
                                         fi
                                     '''
@@ -284,6 +326,8 @@ pipeline {
                             environment {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
+                                overlay="defect-detect"
+                                example_dir="overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
@@ -293,13 +337,24 @@ pipeline {
                                 }
                             }
                             steps {
-                                sh label: 'defect-detect build',
+                                sh label: 'overlay build',
                                 script: '''
                                     pushd src
-                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make overlay OVERLAY=defect-detect
 
-                                    pushd overlays/examples/defect-detect/binary_container_1/link/int
+                                    if [ -d platforms/${pfm} ]; then
+                                        echo "Using platform from local build"
+                                    elif [ -d ${DEPLOYDIR}/${pfm} ]; then
+                                        echo "Using platform from build artifacts"
+                                        ln -s ${DEPLOYDIR}/${pfm} platforms/
+                                    else
+                                        echo "No valid platform found: ${pfm}"
+                                        exit 1
+                                    fi
+
+                                    source ${setup} -r ${tool_release} && set -e
+                                    ${lsf} make overlay OVERLAY=${overlay}
+
+                                    pushd ${example_dir}/binary_container_1/link/int
                                     echo 'all: { system.bit }' > bootgen.bif
                                     bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
                                     popd
@@ -309,16 +364,16 @@ pipeline {
                             }
                             post {
                                 success {
-                                    sh label: 'defect-detect deploy',
+                                    sh label: 'overlay deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
-                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/defect-detect
+                                            DST=${DEPLOYDIR}/${overlay}
                                             mkdir -p ${DST}
 
-                                            cp -f overlays/examples/defect-detect/*.xsa \
-                                                  overlays/examples/defect-detect/binary_container_1/*.xclbin \
-                                                  overlays/examples/defect-detect/binary_container_1/link/int/system.bit* \
+                                            cp -f ${example_dir}/*.xsa \
+                                                  ${example_dir}/binary_container_1/*.xclbin \
+                                                  ${example_dir}/binary_container_1/link/int/system.bit* \
                                                   ${DST}
                                             popd
                                         fi
@@ -329,12 +384,17 @@ pipeline {
                     }
                 }
                 stage('kv260_ispMipiRx_DP') {
+                    environment {
+                        pfm_base="kv260_ispMipiRx_DP"
+                        pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        pfm_dir="${WORKSPACE}/src/platforms/${pfm}"
+                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                    }
                     stages {
                         stage('kv260_ispMipiRx_DP platform build')  {
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_ispMipiRx_DP/**"
-                                    changeset "**/overlays/examples/nlp-smartvision/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -342,23 +402,22 @@ pipeline {
                                 script {
                                     env.BUILD_NLP_SMARTVISION = '1'
                                 }
-                                sh label: 'kv260_ispMipiRx_DP build',
+                                sh label: 'platform build',
                                 script: '''
                                     pushd src
-                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make platform PFM=kv260_ispMipiRx_DP JOBS=32
+                                    source ${setup} -r ${tool_release} && set -e
+                                    ${lsf} make platform PFM=${pfm_base} JOBS=32
                                     popd
                                 '''
                             }
                             post {
                                 success {
-                                    sh label: 'kv260_ispMipiRx_DP deploy',
+                                    sh label: 'platform deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
-                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}
-                                            mkdir -p ${DST}
-                                            cp -rf platforms/xilinx_kv260_ispMipiRx_DP* ${DST}
+                                            mkdir -p ${DEPLOYDIR}
+                                            cp -rf platforms/${pfm} ${DEPLOYDIR}
                                             popd
                                         fi
                                     '''
@@ -369,6 +428,8 @@ pipeline {
                             environment {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
+                                overlay="nlp-smartvision"
+                                example_dir="overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
@@ -378,13 +439,24 @@ pipeline {
                                 }
                             }
                             steps {
-                                sh label: 'nlp-smartvision build',
+                                sh label: 'overlay build',
                                 script: '''
                                     pushd src
-                                    source ../paeg-helper/env-setup.sh -r ${tool_release}
-                                    ../paeg-helper/scripts/lsf make overlay OVERLAY=nlp-smartvision
 
-                                    pushd overlays/examples/nlp-smartvision/binary_container_1/link/int
+                                    if [ -d platforms/${pfm} ]; then
+                                        echo "Using platform from local build"
+                                    elif [ -d ${DEPLOYDIR}/${pfm} ]; then
+                                        echo "Using platform from build artifacts"
+                                        ln -s ${DEPLOYDIR}/${pfm} platforms/
+                                    else
+                                        echo "No valid platform found: ${pfm}"
+                                        exit 1
+                                    fi
+
+                                    source ${setup} -r ${tool_release} && set -e
+                                    ${lsf} make overlay OVERLAY=${overlay}
+
+                                    pushd ${example_dir}/binary_container_1/link/int
                                     echo 'all: { system.bit }' > bootgen.bif
                                     bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
                                     popd
@@ -394,16 +466,16 @@ pipeline {
                             }
                             post {
                                 success {
-                                    sh label: 'nlp-smartvision deploy',
+                                    sh label: 'overlay deploy',
                                     script: '''
                                         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
                                             pushd src
-                                            DST=${DEPLOYDIR}/kv260-vitis/${tool_release}/nlp-smartvision
+                                            DST=${DEPLOYDIR}/${overlay}
                                             mkdir -p ${DST}
 
-                                            cp -f overlays/examples/nlp-smartvision/*.xsa \
-                                                  overlays/examples/nlp-smartvision/binary_container_1/*.xclbin \
-                                                  overlays/examples/nlp-smartvision/binary_container_1/link/int/system.bit* \
+                                            cp -f ${example_dir}/*.xsa \
+                                                  ${example_dir}/binary_container_1/*.xclbin \
+                                                  ${example_dir}/binary_container_1/link/int/system.bit* \
                                                   ${DST}
                                             popd
                                         fi
