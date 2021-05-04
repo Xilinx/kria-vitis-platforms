@@ -1100,6 +1100,7 @@ proc create_root_design { parentCell } {
   set axi_iic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic axi_iic_0 ]
   set_property -dict [ list \
    CONFIG.IIC_BOARD_INTERFACE {som240_1_connector_hda_iic_switch} \
+   CONFIG.IIC_FREQ_KHZ {400} \
  ] $axi_iic_0
 
   # Create instance: axi_interconnect_ctrl_100, and set properties
