@@ -1,7 +1,13 @@
-(C) Copyright 2020 - 2021 Xilinx, Inc.
-SPDX-License-Identifier: Apache-2.0
+# Instructions
 
-This reference design contains the following contents:
+This repo contains submodules. To clone this repo, run:
+```
+git clone --recursive https://github.com/Xilinx/kv260-vitis.git
+```
+
+# Contents
+
+This reference design contains the following:
 
 1. platforms
 
@@ -24,3 +30,13 @@ This reference design contains the following contents:
 4. README
 
    This file.
+
+# Documentation
+
+For additional documentation including architecture information and build
+tutorials, visit: https://xilinx.github.io/kria-apps-docs/
+
+# License
+
+(C) Copyright 2020 - 2021 Xilinx, Inc.\
+SPDX-License-Identifier: Apache-2.0
