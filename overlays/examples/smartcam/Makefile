@@ -29,7 +29,7 @@ help::
 # # v++ flags
 VPP ?= v++
 
-XOCC_OPTS = -t ${TARGET} --platform ${PLATFORM} --save-temps --config ${DIR_PRJ}/prj_conf/prj_config_1dpu --xp param:compiler.userPostSysLinkOverlayTcl=${DIR_PRJ}/prj_conf/strip_interconnects.tcl --vivado.param board.repoPaths=${DIR_PRJ}/../../../platforms/vivado/board_files
+XOCC_OPTS = -t ${TARGET} --platform ${PLATFORM} --save-temps --config ${DIR_PRJ}/prj_conf/prj_config_1dpu --xp param:compiler.userPostSysLinkOverlayTcl=${DIR_PRJ}/prj_conf/strip_interconnects.tcl 
 
 dpu_HDLSRCS=kernel_xml/dpu/kernel.xml\
 	     scripts/package_dpu_kernel.tcl\

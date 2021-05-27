@@ -1,10 +1,6 @@
 # (C) Copyright 2020 - 2021 Xilinx, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-
-#Set Board Preset 
-set_param board.repoPaths {../board_files} 
-
 set proj_name kv260_ispMipiRx_DP
 set proj_dir ./project
 set proj_board [get_board_parts "*:kv260:*" -latest_file_version]
