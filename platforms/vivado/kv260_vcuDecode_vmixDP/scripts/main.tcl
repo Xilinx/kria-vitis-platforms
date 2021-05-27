@@ -1,10 +1,6 @@
 # (C) Copyright 2020 - 2021 Xilinx, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-
-#Set Board Preset 
-set_param board.repoPaths {../board_files} 
-
 set proj_name kv260_vcuDecode_vmixDP
 set proj_dir ./project
 set bd_tcl_dir ./scripts
