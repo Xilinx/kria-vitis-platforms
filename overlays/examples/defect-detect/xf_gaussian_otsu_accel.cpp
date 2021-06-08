@@ -17,43 +17,43 @@
 #include "xf_threshold_config.h"
 
 extern "C" {
-void canny_accel(ap_uint<INPUT_PTR_WIDTH>* img_inp,
-                 ap_uint<OUTPUT_PTR_WIDTH>* img_out,
-                 int rows,
-                 int cols,
-                 int low_threshold,
-                 int high_threshold) {
+void gaussian_otsu_accel(
+    ap_uint<GAUSSIAN_INPUT_PTR_WIDTH>* img_inp, ap_uint<GAUSSIAN_OUTPUT_PTR_WIDTH>* img_out, int rows, int cols, float sigma, unsigned char* Otsuval) {
 // clang-format off
     #pragma HLS INTERFACE m_axi     port=img_inp  offset=slave bundle=gmem1
     #pragma HLS INTERFACE m_axi     port=img_out  offset=slave bundle=gmem2
-
-// clang-format on
-
-// clang-format off
+	#pragma HLS INTERFACE m_axi     port=Otsuval  offset=slave bundle=gmem3
+    #pragma HLS INTERFACE s_axilite port=sigma     
     #pragma HLS INTERFACE s_axilite port=rows     
     #pragma HLS INTERFACE s_axilite port=cols     
-    #pragma HLS INTERFACE s_axilite port=low_threshold     
-    #pragma HLS INTERFACE s_axilite port=high_threshold     
     #pragma HLS INTERFACE s_axilite port=return
     // clang-format on
 
-    xf::cv::Mat<XF_8UC1, HEIGHT, WIDTH, INTYPE> in_mat(rows, cols);
+    xf::cv::Mat<TYPE, HEIGHT, WIDTH, NPC1> in_mat(rows, cols);
 // clang-format off
     #pragma HLS stream variable=in_mat.data depth=2
     // clang-format on
+    xf::cv::Mat<TYPE, HEIGHT, WIDTH, NPC1> out_mat(rows, cols);
 
-    xf::cv::Mat<XF_2UC1, HEIGHT, WIDTH, XF_NPPC32> dst_mat(rows, cols);
+	xf::cv::Mat<TYPE, HEIGHT, WIDTH, NPC1> out_mat_otsu(rows, cols);
+	xf::cv::Mat<TYPE, HEIGHT, WIDTH, NPC1> out_mat_ret(rows, cols);
+
 // clang-format off
-    #pragma HLS stream variable=dst_mat.data depth=2
+    #pragma HLS stream variable=out_mat.data depth=2
 // clang-format on
 
 // clang-format off
     #pragma HLS DATAFLOW
     // clang-format on
 
-    xf::cv::Array2xfMat<INPUT_PTR_WIDTH, XF_8UC1, HEIGHT, WIDTH, INTYPE>(img_inp, in_mat);
-    xf::cv::Canny<FILTER_WIDTH, NORM_TYPE, XF_8UC1, XF_2UC1, HEIGHT, WIDTH, INTYPE, XF_NPPC32, XF_USE_URAM>(
-        in_mat, dst_mat, low_threshold, high_threshold);
-    xf::cv::xfMat2Array<OUTPUT_PTR_WIDTH, XF_2UC1, HEIGHT, WIDTH, XF_NPPC32>(dst_mat, img_out);
+    xf::cv::Array2xfMat<GAUSSIAN_INPUT_PTR_WIDTH, TYPE, HEIGHT, WIDTH, NPC1>(img_inp, in_mat);
+
+    xf::cv::GaussianBlur<FILTER_WIDTH, XF_BORDER_CONSTANT, TYPE, HEIGHT, WIDTH, NPC1>(in_mat, out_mat, sigma);
+
+	xf::cv::duplicateMat<TYPE, HEIGHT, WIDTH, NPC1>(out_mat, out_mat_otsu, out_mat_ret);
+
+	xf::cv::OtsuThreshold<OTSU_PIXEL_TYPE, HEIGHT, WIDTH, NPC1>(out_mat_otsu, *Otsuval);
+
+    xf::cv::xfMat2Array<GAUSSIAN_OUTPUT_PTR_WIDTH, TYPE, HEIGHT, WIDTH, NPC1>(out_mat_ret, img_out);
 }
 }

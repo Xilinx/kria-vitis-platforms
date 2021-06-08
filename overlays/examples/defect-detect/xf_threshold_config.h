@@ -28,8 +28,10 @@
 
 #include "imgproc/xf_median_blur.hpp" 
 
-#include "imgproc/xf_canny.hpp" 
-#include "imgproc/xf_edge_tracing.hpp"
+#include "imgproc/xf_gaussian_filter.hpp"
+#include "imgproc/xf_otsuthreshold.hpp"
+#include "imgproc/xf_extra_utility.h"
+#include "imgproc/xf_cca_custom.hpp"
 
 typedef ap_uint<8> ap_uint8_t;
 typedef ap_uint<64> ap_uint64_t;

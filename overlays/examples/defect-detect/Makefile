@@ -10,12 +10,13 @@ XBU_FLAGS = --remove-section BITSTREAM --force
 CONFIG_FILE = system.cfg
 
 # Kernel name
+GAUSSIAN_KERNEL = gaussian_otsu_accel
 KERNEL = preprocess_accel
-CANNY_KERNEL = canny_accel
-EDGE_KERNEL = edgetracing_accel
+CCA_KERNEL = cca_custom_accel
+
+GAUSSIAN_KERNEL_XO = $(GAUSSIAN_KERNEL).xo
 KERNEL_XO = $(KERNEL)/$(KERNEL).xo
-CANNY_KERNEL_XO = $(CANNY_KERNEL).xo
-EDGE_KERNEL_XO = $(EDGE_KERNEL).xo
+CCA_KERNEL_XO = $(CCA_KERNEL).xo
 TARGET = hw
 
 #---------------------------------------------------------------------
@@ -35,7 +36,7 @@ help::
 # # v++ flags
 VPP ?= v++
 
-XOCC_OPTS = -t ${TARGET} --platform ${PLATFORM} --save-temps --config $(CONFIG_FILE)
+XOCC_OPTS = -t ${TARGET} --platform ${PLATFORM} --save-temps --config $(CONFIG_FILE) --config ${DIR_PRJ}/system.cfg
 
 XFOPENCV_INCDIR = ../../Vitis_Libraries/L1/include/
 KERNEL_XO_FLAGS =  -I$(XFOPENCV_INCDIR) -D__SDSVHLS__ -DHLS_NO_XIL_FPO_LIB --advanced.prop kernel.preprocess_accel.kernel_flags="-std=c++0x"
@@ -45,15 +46,22 @@ VPP_XO_FLAGS = -t hw --platform $(PLATFORM) \
 				-j $(JOBS) $(KERNEL_XO_FLAGS)
 
 
-defect_detect_xo = $(KERNEL_XO)
-defect_detect_xo += $(CANNY_KERNEL_XO)
-defect_detect_xo += $(EDGE_KERNEL_XO)
+defect_detect_xo = $(GAUSSIAN_KERNEL_XO)
+defect_detect_xo += $(KERNEL_XO)
+defect_detect_xo += $(CCA_KERNEL_XO)
 
 .PHONY: all clean package
 
 all : binary_container_1/defect-detect.xclbin package
 
 # 	# Rules
+$(GAUSSIAN_KERNEL_XO): xf_gaussian_otsu_accel.cpp
+	@echo "Compiling Kernel: gaussian_otsu_accel"
+	@mkdir -p $(@D)
+	-@$(RM) $@
+	$(VPP) -k $(GAUSSIAN_KERNEL) $(VPP_XO_FLAGS) -o '$@' '$<'
+	-@$(RM) .Xil
+
 $(KERNEL_XO): xf_preprocess_accel.cpp
 	@echo "Compiling Kernel: pre-process_accel"
 	@mkdir -p $(@D)
@@ -61,24 +69,16 @@ $(KERNEL_XO): xf_preprocess_accel.cpp
 	$(VPP) -k $(KERNEL) $(VPP_XO_FLAGS) -o '$@' '$<'
 	-@$(RM) .Xil
 
-$(CANNY_KERNEL_XO): xf_canny_accel.cpp
-	@echo "Compiling Kernel: canny_accel"
+$(CCA_KERNEL_XO): xf_cca_custom_accel.cpp
+	@echo "Compiling Kernel: cca_accel"
 	@mkdir -p $(@D)
 	-@$(RM) $@
-	$(VPP) -k $(CANNY_KERNEL) $(VPP_XO_FLAGS) -o '$@' '$<'
-	-@$(RM) .Xil
-
-$(EDGE_KERNEL_XO): xf_edgetracing_accel.cpp
-	@echo "Compiling Kernel: edge_tracing_accel"
-	@mkdir -p $(@D)
-	-@$(RM) $@
-	$(VPP) -D__SDA_MEM_MAP__ -k $(EDGE_KERNEL) $(VPP_XO_FLAGS) -o '$@' '$<'
+	$(VPP) -k $(CCA_KERNEL) $(VPP_XO_FLAGS) -o '$@' '$<'
 	-@$(RM) .Xil
 
 binary_container_1/defect-detect.xclbin: $(defect_detect_xo)
 	$(VPP) $(XOCC_OPTS) -l --temp_dir binary_container_1 --log_dir binary_container_1/logs --remote_ip_cache binary_container_1/ip_cache -o "$@" $(+)
 	$(XBU) $(XBU_FLAGS) --input $@ --output strip.xclbin
-	@mv strip.xclbin $@
 
 package:
 	-@mkdir -p binary_container_1/sd_card
@@ -89,6 +89,6 @@ package:
 #.PHONY: clean
 clean:
 	-$(RM) $(KERNEL) *.log _x *.jou v++* *.xclbin *.ini *.xsa
-	-$(RM) $(CANNY_KERNEL_XO) $(EDGE_KERNEL_XO) *.compile_summary
+	-$(RM) $(GAUSSIAN_KERNEL_XO) *.compile_summary
 	-$(RM) binary_container_1
 	-$(RM) packaged* tmp_*

@@ -18,7 +18,7 @@
 #define RO 0 // Resource Optimized
 
 /*  set the type of thresholding*/
-#define THRESH_TYPE XF_THRESHOLD_TYPE_BINARY
+#define THRESH_TYPE XF_THRESHOLD_TYPE_BINARY_INV
 
 #define INPUT_PTR_WIDTH    64
 #define OUTPUT_PTR_WIDTH   64
@@ -36,3 +36,16 @@
 
 #define RGB 0
 #define GRAY 1
+
+/* Gaussian filter params */
+#define FILTER_SIZE_3 1
+#define FILTER_SIZE_5 0
+#define FILTER_SIZE_7 0
+
+#define GAUSSIAN_INPUT_PTR_WIDTH	8
+#define GAUSSIAN_OUTPUT_PTR_WIDTH	8
+/* Gaussian filter Param ends  */
+
+/* OTSU kernel params */
+// Set the pixel depth:
+#define OTSU_PIXEL_TYPE XF_8UC1
