@@ -403,17 +403,24 @@ proc create_hier_cell_capture_pipeline { parentCell nameHier } {
 
   # Create instance: mipi_csi2_rx_subsyst_0, and set properties
   set mipi_csi2_rx_subsyst_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mipi_csi2_rx_subsystem mipi_csi2_rx_subsyst_0 ]
-  set_property -dict [list \
-   CONFIG.DPHYRX_BOARD_INTERFACE {som240_1_connector_mipi_csi_isp} \
+  set_property -dict [ list \
+   CONFIG.CMN_NUM_LANES {1} \
    CONFIG.CMN_NUM_PIXELS {2} \
    CONFIG.CMN_PXL_FORMAT {YUV422_8bit} \
    CONFIG.CMN_VC {0} \
    CONFIG.CSI_BUF_DEPTH {4096} \
-   CONFIG.C_HS_SETTLE_NS {146} \
-   CONFIG.C_HS_LINE_RATE {896} \
-   CONFIG.DPY_LINE_RATE {896} \
+   CONFIG.C_DPHY_LANES {1} \
+   CONFIG.C_HS_LINE_RATE {1088} \
+   CONFIG.C_HS_SETTLE_NS {144} \
+   CONFIG.DPHYRX_BOARD_INTERFACE {som240_1_connector_mipi_csi_isp} \
+   CONFIG.DPY_LINE_RATE {1088} \
    CONFIG.SupportLevel {1} \
  ] $mipi_csi2_rx_subsyst_0
+
+set_property -dict [ list \
+   CONFIG.CMN_NUM_LANES {1} \
+   CONFIG.C_DPHY_LANES {1} 
+  ] $mipi_csi2_rx_subsyst_0
 
   # Create instance: v_frmbuf_wr_0, and set properties
   set v_frmbuf_wr_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_frmbuf_wr v_frmbuf_wr_0 ]
