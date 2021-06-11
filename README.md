@@ -1,5 +1,8 @@
 # Instructions
 
+
+**NOTE: Vitis Unified Software Platform 2020.2.2 is required for building this repository. Download it from [here](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2020-2.html).**
+
 This repo contains submodules. To clone this repo, run:
 ```
 git clone --recursive https://github.com/Xilinx/kv260-vitis.git
