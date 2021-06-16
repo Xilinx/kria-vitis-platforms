@@ -11,7 +11,7 @@ PLATFORM ?= kv260_ispMipiRx_vcu_DP
 VERSION ?= 202110_1
 
 PFM_DIR = xilinx_$(PLATFORM)_$(VERSION)
-PFM_PRJ_DIR = ws/$(PLATFORM)/export/$(PLATFORM)
+PFM_PRJ_DIR = xsct/$(PLATFORM)/$(PLATFORM)/export/$(PLATFORM)
 PFM_SCRIPTS_DIR = scripts
 
 PFM_TCL = $(PFM_SCRIPTS_DIR)/pfm.tcl

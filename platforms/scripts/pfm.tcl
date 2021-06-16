@@ -19,6 +19,8 @@ for { set i 0 } { $i < $argc } { incr i } {
   if { [lindex $argv $i] == "-xsa" } {
     incr i
     set xsafile [lindex $argv $i]
+    set ws [file rootname [file tail $xsafile]]
+    set ws "xsct/$ws"
   # processor
   } elseif { [lindex $argv $i] == "-proc" } {
     incr i
@@ -45,7 +47,7 @@ set f [open $biffile a]
 close $f
 
 # Set workspace
-setws ws
+setws $ws
 
 # Create platform
 platform create \
