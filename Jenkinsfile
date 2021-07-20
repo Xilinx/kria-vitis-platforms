@@ -3,6 +3,72 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+def buildPlatform() {
+    sh label: 'platform build',
+    script: '''
+        pushd src
+        source ${setup} -r ${tool_release} && set -e
+        ${lsf} make platform PFM=${pfm_base} JOBS=32
+        popd
+    '''
+}
+
+def deployPlatform() {
+    sh label: 'platform deploy',
+    script: '''
+        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
+            pushd src
+            mkdir -p ${DEPLOYDIR}
+            cp -rf platforms/${pfm} ${DEPLOYDIR}
+            popd
+        fi
+    '''
+}
+
+def buildOverlay() {
+    sh label: 'overlay build',
+    script: '''
+        pushd src
+
+        if [ -d platforms/${pfm} ]; then
+            echo "Using platform from local build"
+        elif [ -d ${DEPLOYDIR}/${pfm} ]; then
+            echo "Using platform from build artifacts"
+            ln -s ${DEPLOYDIR}/${pfm} platforms/
+        else
+            echo "No valid platform found: ${pfm}"
+            exit 1
+        fi
+
+        source ${setup} -r ${tool_release} && set -e
+        ${lsf} make overlay OVERLAY=${overlay}
+
+        pushd ${example_dir}/binary_container_1/link/int
+        echo 'all: { system.bit }' > bootgen.bif
+        bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
+        popd
+
+        popd
+    '''
+}
+
+def deployOverlay() {
+    sh label: 'overlay deploy',
+    script: '''
+        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
+            pushd src
+            DST=${DEPLOYDIR}/${overlay}
+            mkdir -p ${DST}
+
+            cp -f ${example_dir}/*.xsa \
+                    ${example_dir}/binary_container_1/*.xclbin \
+                    ${example_dir}/binary_container_1/link/int/system.bit* \
+                    ${DST}
+            popd
+        fi
+    '''
+}
+
 pipeline {
     agent {
         label 'Build_Master'
@@ -96,25 +162,11 @@ pipeline {
                                 script {
                                     env.BUILD_SMARTCAM = '1'
                                 }
-                                sh label: 'platform build',
-                                script: '''
-                                    pushd src
-                                    source ${setup} -r ${tool_release} && set -e
-                                    ${lsf} make platform PFM=${pfm_base} JOBS=32
-                                    popd
-                                '''
+                                buildPlatform()
                             }
                             post {
                                 success {
-                                    sh label: 'platform deploy',
-                                    script: '''
-                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-                                            pushd src
-                                            mkdir -p ${DEPLOYDIR}
-                                            cp -rf platforms/${pfm} ${DEPLOYDIR}
-                                            popd
-                                        fi
-                                    '''
+                                    deployPlatform()
                                 }
                             }
                         }
@@ -133,47 +185,11 @@ pipeline {
                                 }
                             }
                             steps {
-                                sh label: 'overlay build',
-                                script: '''
-                                    pushd src
-
-                                    if [ -d platforms/${pfm} ]; then
-                                        echo "Using platform from local build"
-                                    elif [ -d ${DEPLOYDIR}/${pfm} ]; then
-                                        echo "Using platform from build artifacts"
-                                        ln -s ${DEPLOYDIR}/${pfm} platforms/
-                                    else
-                                        echo "No valid platform found: ${pfm}"
-                                        exit 1
-                                    fi
-
-                                    source ${setup} -r ${tool_release} && set -e
-                                    ${lsf} make overlay OVERLAY=${overlay}
-
-                                    pushd ${example_dir}/binary_container_1/link/int
-                                    echo 'all: { system.bit }' > bootgen.bif
-                                    bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
-                                    popd
-
-                                    popd
-                                '''
+                                buildOverlay()
                             }
                             post {
                                 success {
-                                    sh label: 'overlay deploy',
-                                    script: '''
-                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-                                            pushd src
-                                            DST=${DEPLOYDIR}/${overlay}
-                                            mkdir -p ${DST}
-
-                                            cp -f ${example_dir}/*.xsa \
-                                                  ${example_dir}/binary_container_1/*.xclbin \
-                                                  ${example_dir}/binary_container_1/link/int/system.bit* \
-                                                  ${DST}
-                                            popd
-                                        fi
-                                    '''
+                                    deployOverlay()
                                 }
                             }
                         }
@@ -198,25 +214,11 @@ pipeline {
                                 script {
                                     env.BUILD_AIBOX_REID = '1'
                                 }
-                                sh label: 'platform build',
-                                script: '''
-                                    pushd src
-                                    source ${setup} -r ${tool_release} && set -e
-                                    ${lsf} make platform PFM=${pfm_base} JOBS=32
-                                    popd
-                                '''
+                                buildPlatform()
                             }
                             post {
                                 success {
-                                    sh label: 'platform deploy',
-                                    script: '''
-                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-                                            pushd src
-                                            mkdir -p ${DEPLOYDIR}
-                                            cp -rf platforms/${pfm} ${DEPLOYDIR}
-                                            popd
-                                        fi
-                                    '''
+                                    deployPlatform()
                                 }
                             }
                         }
@@ -235,47 +237,11 @@ pipeline {
                                 }
                             }
                             steps {
-                                sh label: 'overlay build',
-                                script: '''
-                                    pushd src
-
-                                    if [ -d platforms/${pfm} ]; then
-                                        echo "Using platform from local build"
-                                    elif [ -d ${DEPLOYDIR}/${pfm} ]; then
-                                        echo "Using platform from build artifacts"
-                                        ln -s ${DEPLOYDIR}/${pfm} platforms/
-                                    else
-                                        echo "No valid platform found: ${pfm}"
-                                        exit 1
-                                    fi
-
-                                    source ${setup} -r ${tool_release} && set -e
-                                    ${lsf} make overlay OVERLAY=${overlay}
-
-                                    pushd ${example_dir}/binary_container_1/link/int
-                                    echo 'all: { system.bit }' > bootgen.bif
-                                    bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
-                                    popd
-
-                                    popd
-                                '''
+                                buildOverlay()
                             }
                             post {
                                 success {
-                                    sh label: 'overlay deploy',
-                                    script: '''
-                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-                                            pushd src
-                                            DST=${DEPLOYDIR}/${overlay}
-                                            mkdir -p ${DST}
-
-                                            cp -f ${example_dir}/*.xsa \
-                                                  ${example_dir}/binary_container_1/*.xclbin \
-                                                  ${example_dir}/binary_container_1/link/int/system.bit* \
-                                                  ${DST}
-                                            popd
-                                        fi
-                                    '''
+                                    deployOverlay()
                                 }
                             }
                         }
@@ -300,25 +266,11 @@ pipeline {
                                 script {
                                     env.BUILD_DEFECT_DETECT = '1'
                                 }
-                                sh label: 'platform build',
-                                script: '''
-                                    pushd src
-                                    source ${setup} -r ${tool_release} && set -e
-                                    ${lsf} make platform PFM=${pfm_base} JOBS=32
-                                    popd
-                                '''
+                                buildPlatform()
                             }
                             post {
                                 success {
-                                    sh label: 'platform deploy',
-                                    script: '''
-                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-                                            pushd src
-                                            mkdir -p ${DEPLOYDIR}
-                                            cp -rf platforms/${pfm} ${DEPLOYDIR}
-                                            popd
-                                        fi
-                                    '''
+                                    deployPlatform()
                                 }
                             }
                         }
@@ -337,47 +289,11 @@ pipeline {
                                 }
                             }
                             steps {
-                                sh label: 'overlay build',
-                                script: '''
-                                    pushd src
-
-                                    if [ -d platforms/${pfm} ]; then
-                                        echo "Using platform from local build"
-                                    elif [ -d ${DEPLOYDIR}/${pfm} ]; then
-                                        echo "Using platform from build artifacts"
-                                        ln -s ${DEPLOYDIR}/${pfm} platforms/
-                                    else
-                                        echo "No valid platform found: ${pfm}"
-                                        exit 1
-                                    fi
-
-                                    source ${setup} -r ${tool_release} && set -e
-                                    ${lsf} make overlay OVERLAY=${overlay}
-
-                                    pushd ${example_dir}/binary_container_1/link/int
-                                    echo 'all: { system.bit }' > bootgen.bif
-                                    bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
-                                    popd
-
-                                    popd
-                                '''
+                                buildOverlay()
                             }
                             post {
                                 success {
-                                    sh label: 'overlay deploy',
-                                    script: '''
-                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-                                            pushd src
-                                            DST=${DEPLOYDIR}/${overlay}
-                                            mkdir -p ${DST}
-
-                                            cp -f ${example_dir}/*.xsa \
-                                                  ${example_dir}/binary_container_1/*.xclbin \
-                                                  ${example_dir}/binary_container_1/link/int/system.bit* \
-                                                  ${DST}
-                                            popd
-                                        fi
-                                    '''
+                                    deployOverlay()
                                 }
                             }
                         }
@@ -402,25 +318,11 @@ pipeline {
                                 script {
                                     env.BUILD_NLP_SMARTVISION = '1'
                                 }
-                                sh label: 'platform build',
-                                script: '''
-                                    pushd src
-                                    source ${setup} -r ${tool_release} && set -e
-                                    ${lsf} make platform PFM=${pfm_base} JOBS=32
-                                    popd
-                                '''
+                                buildPlatform()
                             }
                             post {
                                 success {
-                                    sh label: 'platform deploy',
-                                    script: '''
-                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-                                            pushd src
-                                            mkdir -p ${DEPLOYDIR}
-                                            cp -rf platforms/${pfm} ${DEPLOYDIR}
-                                            popd
-                                        fi
-                                    '''
+                                    deployPlatform()
                                 }
                             }
                         }
@@ -439,47 +341,11 @@ pipeline {
                                 }
                             }
                             steps {
-                                sh label: 'overlay build',
-                                script: '''
-                                    pushd src
-
-                                    if [ -d platforms/${pfm} ]; then
-                                        echo "Using platform from local build"
-                                    elif [ -d ${DEPLOYDIR}/${pfm} ]; then
-                                        echo "Using platform from build artifacts"
-                                        ln -s ${DEPLOYDIR}/${pfm} platforms/
-                                    else
-                                        echo "No valid platform found: ${pfm}"
-                                        exit 1
-                                    fi
-
-                                    source ${setup} -r ${tool_release} && set -e
-                                    ${lsf} make overlay OVERLAY=${overlay}
-
-                                    pushd ${example_dir}/binary_container_1/link/int
-                                    echo 'all: { system.bit }' > bootgen.bif
-                                    bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
-                                    popd
-
-                                    popd
-                                '''
+                                buildOverlay()
                             }
                             post {
                                 success {
-                                    sh label: 'overlay deploy',
-                                    script: '''
-                                        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-                                            pushd src
-                                            DST=${DEPLOYDIR}/${overlay}
-                                            mkdir -p ${DST}
-
-                                            cp -f ${example_dir}/*.xsa \
-                                                  ${example_dir}/binary_container_1/*.xclbin \
-                                                  ${example_dir}/binary_container_1/link/int/system.bit* \
-                                                  ${DST}
-                                            popd
-                                        fi
-                                    '''
+                                    deployOverlay()
                                 }
                             }
                         }
