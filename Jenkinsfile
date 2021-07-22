@@ -193,6 +193,29 @@ pipeline {
                                 }
                             }
                         }
+                        stage('benchmark overlay build') {
+                            environment {
+                                PAEG_LSF_MEM=65536
+                                PAEG_LSF_QUEUE="long"
+                                overlay="benchmark"
+                                example_dir="overlays/examples/${overlay}"
+                            }
+                            when {
+                                anyOf {
+                                    changeset "**/overlays/examples/benchmark/**"
+                                    triggeredBy 'TimerTrigger'
+                                    environment name: 'BUILD_SMARTCAM', value: '1'
+                                }
+                            }
+                            steps {
+                                buildOverlay()
+                            }
+                            post {
+                                success {
+                                    deployOverlay()
+                                }
+                            }
+                        }
                     }
                 }
                 stage('kv260_vcuDecode_vmixDP') {

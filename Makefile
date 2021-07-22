@@ -11,7 +11,7 @@ PFM_VER = 202110_1
 
 # valid platforms / overlays
 PFM_LIST = kv260_ispMipiRx_vcu_DP kv260_vcuDecode_vmixDP kv260_ispMipiRx_vmixDP kv260_ispMipiRx_DP
-OVERLAY_LIST = smartcam aibox-reid defect-detect nlp-smartvision
+OVERLAY_LIST = smartcam aibox-reid defect-detect nlp-smartvision benchmark
 
 # override platform name based on overlay
 ifeq ($(OVERLAY),smartcam)
@@ -25,6 +25,9 @@ ifeq ($(OVERLAY),defect-detect)
 endif
 ifeq ($(OVERLAY),nlp-smartvision)
   override PFM = kv260_ispMipiRx_DP
+endif
+ifeq ($(OVERLAY),benchmark)
+  override PFM = kv260_ispMipiRx_vcu_DP
 endif
 
 PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
