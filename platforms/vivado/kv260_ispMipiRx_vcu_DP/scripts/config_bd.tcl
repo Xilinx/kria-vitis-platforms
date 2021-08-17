@@ -724,8 +724,8 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M01_AXI [get_bd_intf_pins axi_ic_ctrl_100/M01_AXI] [get_bd_intf_pins vcu/S_AXI_LITE]
   connect_bd_intf_net -intf_net capture_pipeline_m_axi_mm_video [get_bd_intf_pins ${::PS_INST}/S_AXI_HP0_FPD] [get_bd_intf_pins capture_pipeline/m_axi_mm_video]
   connect_bd_intf_net -intf_net mipi_phy_if_1 [get_bd_intf_ports mipi_phy_if] [get_bd_intf_pins capture_pipeline/mipi_phy_if]
-  connect_bd_intf_net -intf_net vcu_M00_AXI_VCU_DEC [get_bd_intf_pins ${::PS_INST}/S_AXI_HPC0_FPD] [get_bd_intf_pins vcu/M00_AXI_VCU_DEC]
-  connect_bd_intf_net -intf_net vcu_M00_AXI_VCU_EN [get_bd_intf_pins ${::PS_INST}/S_AXI_HP2_FPD] [get_bd_intf_pins vcu/M00_AXI_VCU_EN]
+  connect_bd_intf_net -intf_net vcu_M00_AXI_VCU_DEC [get_bd_intf_pins ${::PS_INST}/S_AXI_HPC0_FPD] [get_bd_intf_pins vcu/M00_AXI_VCU_EN]
+  connect_bd_intf_net -intf_net vcu_M00_AXI_VCU_EN [get_bd_intf_pins ${::PS_INST}/S_AXI_HP2_FPD] [get_bd_intf_pins vcu/M00_AXI_VCU_DEC]
   connect_bd_intf_net -intf_net vcu_M_AXI_VCU_MCU [get_bd_intf_pins axi_ic_audio_mcu/S00_AXI] [get_bd_intf_pins vcu/M_AXI_VCU_MCU]
 
   # Create port connections
@@ -840,10 +840,10 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces audio_ss_0/audio_formatter_0/m_axi_mm2s] [get_bd_addr_segs ${::PS_INST}/SAXIGP6/LPD_DDR_LOW] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces audio_ss_0/audio_formatter_0/m_axi_s2mm] [get_bd_addr_segs ${::PS_INST}/SAXIGP6/LPD_DDR_LOW] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces capture_pipeline/v_frmbuf_wr_0/Data_m_axi_mm_video] [get_bd_addr_segs ${::PS_INST}/SAXIGP2/HP0_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/EncData0] [get_bd_addr_segs ${::PS_INST}/SAXIGP4/HP2_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/EncData1] [get_bd_addr_segs ${::PS_INST}/SAXIGP4/HP2_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/DecData0] [get_bd_addr_segs ${::PS_INST}/SAXIGP0/HPC0_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/DecData1] [get_bd_addr_segs ${::PS_INST}/SAXIGP0/HPC0_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/DecData0] [get_bd_addr_segs ${::PS_INST}/SAXIGP4/HP2_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/DeccData1] [get_bd_addr_segs ${::PS_INST}/SAXIGP4/HP2_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/EncData0] [get_bd_addr_segs ${::PS_INST}/SAXIGP0/HPC0_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/EncData1] [get_bd_addr_segs ${::PS_INST}/SAXIGP0/HPC0_DDR_LOW] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces vcu/vcu_0/Code] [get_bd_addr_segs ${::PS_INST}/SAXIGP6/LPD_DDR_LOW] -force
 
    # Restore current instance
