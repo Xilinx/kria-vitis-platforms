@@ -45,7 +45,7 @@ dpu_TCL=scripts/gen_dpu_xo.tcl
 DPU_KERN_NAME = DPUCZDX8G
 dpu_xo = binary_container_1/dpu.xo
 
-XFOPENCV_INCDIR = ../../Vitis_Libraries/L1/include/
+XFOPENCV_INCDIR = ../../Vitis_Libraries/vision/L1/include/
 KERNEL_XO_FLAGS = -k $(KERNEL) -I$(XFOPENCV_INCDIR) -D__SDSVHLS__ -DHLS_NO_XIL_FPO_LIB --advanced.prop kernel.pp_pipeline_accel.kernel_flags="-std=c++0x"
 JOBS = 32
 VPP_XO_FLAGS = -t hw --platform $(PLATFORM) \
