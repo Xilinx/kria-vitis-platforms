@@ -74,11 +74,11 @@ pipeline {
         label 'Build_Master'
     }
     environment {
-        deploy_branch="2021.1"
-        tool_release="2021.1"
+        deploy_branch="release-2021.2"
+        tool_release="2021.2"
         tool_build="daily_latest"
-        auto_branch="2021.1"
-        pfm_ver="202110_1"
+        auto_branch="2021.2"
+        pfm_ver="202120_1"
         setup="${WORKSPACE}/paeg-helper/env-setup.sh"
         lsf="${WORKSPACE}/paeg-helper/scripts/lsf"
         DEPLOYDIR="/wrk/paeg_builds/build-artifacts/kv260-vitis/${tool_release}"
@@ -88,7 +88,7 @@ pipeline {
         skipDefaultCheckout true
     }
     triggers {
-        cron(env.BRANCH_NAME == '2021.1' ? 'H 21 * * *' : '')
+        cron(env.BRANCH_NAME == 'release-2021.2' ? 'H 21 * * *' : '')
     }
     stages {
         stage ('Fix Changelog') {
