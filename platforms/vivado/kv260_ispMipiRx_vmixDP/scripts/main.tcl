@@ -23,14 +23,13 @@ for { set i 0 } { $i < $argc } { incr i } {
   }
 }
 
-set proj_board [get_board_parts "*:kv260:*" -latest_file_version]
+set proj_board [get_board_parts "*:kv260_som:*" -latest_file_version]
 create_project -name $proj_name -force -dir $proj_dir -part [get_property PART_NAME [get_board_parts $proj_board]]
 set_property board_part $proj_board [current_project]
 
 import_files -fileset constrs_1 $xdc_list
 
-set_property board_connections {som240_1_connector xilinx.com:som240:som240_1_connector:1.0}  [current_project]
-
+set_property board_connections {som240_1_connector xilinx.com:kv260_carrier:som240_1_connector:1.0}  [current_project]
 
 set_property ip_repo_paths $ip_repo_path [current_project]
 update_ip_catalog

@@ -3,7 +3,7 @@
 
 set proj_name kv260_ispMipiRx_vcu_DP
 set proj_dir ./project
-set proj_board [get_board_parts "*:kv260:*" -latest_file_version]
+set proj_board [get_board_parts "*:kv260_som:*" -latest_file_version]
 set bd_tcl_dir ./scripts
 set board vision_som
 set device k26
@@ -28,7 +28,7 @@ set_property board_part $proj_board [current_project]
 
 import_files -fileset constrs_1 $xdc_list
 
-set_property board_connections {som240_1_connector xilinx.com:som240:som240_1_connector:1.0}  [current_project]
+set_property board_connections {som240_1_connector xilinx.com:kv260_carrier:som240_1_connector:1.0}  [current_project]
 
 
 set_property ip_repo_paths $ip_repo_path [current_project]
