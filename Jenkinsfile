@@ -87,9 +87,6 @@ pipeline {
         // don't let the implicit checkout happen
         skipDefaultCheckout true
     }
-    triggers {
-        cron(env.BRANCH_NAME == '2021.1' ? 'H 21 * * *' : '')
-    }
     stages {
         stage ('Fix Changelog') {
             // only do this if there is no prior build
