@@ -28,7 +28,7 @@ set_property board_part $proj_board [current_project]
 
 import_files -fileset constrs_1 $xdc_list
 
-set_property board_connections {som240_1_connector xilinx.com:kv260_carrier:som240_1_connector:1.0}  [current_project]
+set_property board_connections {som240_1_connector xilinx.com:kv260_carrier:som240_1_connector:1.2}  [current_project]
 
 set_property ip_repo_paths $ip_repo_path [current_project]
 update_ip_catalog
