@@ -5,6 +5,15 @@ This repo contains submodules. To clone this repo, run:
 git clone --recursive https://github.com/Xilinx/kv260-vitis.git
 ```
 
+# Tools Version
+
+The supported Xilinx tools release is 2021.1.
+
+Install y2k22_patch for Vivado HLS and Vitis HLS tools to avoid 'Y2K22 Overflow Issue'.
+Refer to the following Answer Record for obtaining the patch.
+
+https://support.xilinx.com/s/article/76960?language=en_US
+
 # Contents
 
 This reference design contains the following:
