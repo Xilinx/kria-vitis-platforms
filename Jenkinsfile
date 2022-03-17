@@ -60,7 +60,7 @@ def deployOverlay() {
             DST=${DEPLOYDIR}/${overlay}
             mkdir -p ${DST}
 
-            cp -f ${example_dir}/*.xsa \
+            cp -f ${example_dir}/binary_container_1/*.xsa \
                     ${example_dir}/binary_container_1/*.xclbin \
                     ${example_dir}/binary_container_1/link/int/system.bit* \
                     ${DST}
