@@ -1,6 +1,6 @@
 
 # Loading additional proc with user specified bodies to compute parameter values.
-source [file join [file dirname [file dirname [info script]]] gui/DPUCZDX8G_v3_3.gtcl]
+source [file join [file dirname [file dirname [info script]]] gui/dpuczdx8g_v3_4.gtcl]
 
 # Definitional proc to organize widgets for parameters.
 proc init_gui { IPINST } {
