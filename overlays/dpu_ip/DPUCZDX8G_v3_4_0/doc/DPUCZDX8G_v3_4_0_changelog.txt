@@ -1,16 +1,30 @@
+2021.2:
+ * Version 3.4
+ * Vitis AI v2.0
+ * Updated IP name
+ * Updated interrupt connection
+
+2021.1:
+ * Version 3.3
+ * Vitis AI v1.4
+ * No functional changes
+
 2020.2:
  * Version 3.3
+ * Vitis AI v1.3
  * Supported range of conv stride from 4 to 8
  * Supported Pool MaxReduce
  * Supported Elew Multiply
 
 2020.1:
  * Version 3.2
+ * Vitis AI v1.2
  * Updated IP Name
  * No functional changes
 
 2019.2:
  * Version 3.2
+ * Vitis AI v1.1
  * Upgraded Target Version to v1.4.1
  * Supported Bias-right-shift.
  * Upgraded address bit-width of INSTR AXI_MM interface from 32bits to 40bits.
@@ -18,6 +32,7 @@
 
 2019.1:
  * Version 3.1
+ * Vitis AI v1.0
  * Integrated with Vitis flow
  * Fixed several bugs in logic and GUI.
 

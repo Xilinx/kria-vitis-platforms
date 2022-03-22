@@ -2,8 +2,8 @@
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <spirit:vendor>xilinx.com</spirit:vendor>
   <spirit:library>ip</spirit:library>
-  <spirit:name>DPUCZDX8G</spirit:name>
-  <spirit:version>3.3</spirit:version>
+  <spirit:name>dpuczdx8g</spirit:name>
+  <spirit:version>3.4</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
       <spirit:name>s_axi_aclk</spirit:name>
@@ -7785,7 +7785,7 @@
       </spirit:vendorExtensions>
     </spirit:busInterface>
     <spirit:busInterface>
-      <spirit:name>dpu_interrupt</spirit:name>
+      <spirit:name>dpu0_interrupt</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="interrupt" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="interrupt_rtl" spirit:version="1.0"/>
       <spirit:master/>
@@ -7795,14 +7795,80 @@
             <spirit:name>INTERRUPT</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>dpu_interrupt</spirit:name>
+            <spirit:name>dpu0_interrupt</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
       <spirit:parameters>
         <spirit:parameter>
           <spirit:name>SENSITIVITY</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.DPU_INTERRUPT.SENSITIVITY" spirit:choiceRef="choice_list_9ca20931">LEVEL_HIGH</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.DPU0_INTERRUPT.SENSITIVITY" spirit:choiceRef="choice_list_9ca20931">LEVEL_HIGH</spirit:value>
+        </spirit:parameter>
+      </spirit:parameters>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>dpu1_interrupt</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="interrupt" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="interrupt_rtl" spirit:version="1.0"/>
+      <spirit:master/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>INTERRUPT</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>dpu1_interrupt</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>SENSITIVITY</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.DPU1_INTERRUPT.SENSITIVITY" spirit:choiceRef="choice_list_9ca20931">LEVEL_HIGH</spirit:value>
+        </spirit:parameter>
+      </spirit:parameters>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>dpu2_interrupt</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="interrupt" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="interrupt_rtl" spirit:version="1.0"/>
+      <spirit:master/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>INTERRUPT</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>dpu2_interrupt</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>SENSITIVITY</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.DPU2_INTERRUPT.SENSITIVITY" spirit:choiceRef="choice_list_9ca20931">LEVEL_HIGH</spirit:value>
+        </spirit:parameter>
+      </spirit:parameters>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>dpu3_interrupt</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="interrupt" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="interrupt_rtl" spirit:version="1.0"/>
+      <spirit:master/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>INTERRUPT</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>dpu3_interrupt</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>SENSITIVITY</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.DPU3_INTERRUPT.SENSITIVITY" spirit:choiceRef="choice_list_9ca20931">LEVEL_HIGH</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -7832,118 +7898,141 @@
   <spirit:addressSpaces>
     <spirit:addressSpace>
       <spirit:name>DPU0_M_AXI_DATA0</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU0_M_AXI_DATA0</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU0_M_AXI_DATA1</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU0_M_AXI_DATA1</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU0_M_AXI_DATA2</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU0_M_AXI_DATA2</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU0_M_AXI_DATA3</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU0_M_AXI_DATA3</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU0_M_AXI_INSTR</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="user">32</spirit:width>
+      <spirit:displayName>DPU0_M_AXI_INSTR</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long">32</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU1_M_AXI_DATA0</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU1_M_AXI_DATA0</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU1_M_AXI_DATA1</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU1_M_AXI_DATA1</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU1_M_AXI_DATA2</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU1_M_AXI_DATA2</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU1_M_AXI_DATA3</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU1_M_AXI_DATA3</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU1_M_AXI_INSTR</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="user">32</spirit:width>
+      <spirit:displayName>DPU1_M_AXI_INSTR</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long">32</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU2_M_AXI_DATA0</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU2_M_AXI_DATA0</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU2_M_AXI_DATA1</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU2_M_AXI_DATA1</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU2_M_AXI_DATA2</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU2_M_AXI_DATA2</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU2_M_AXI_DATA3</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU2_M_AXI_DATA3</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU2_M_AXI_INSTR</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="user">32</spirit:width>
+      <spirit:displayName>DPU2_M_AXI_INSTR</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long">32</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU3_M_AXI_DATA0</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU3_M_AXI_DATA0</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU3_M_AXI_DATA1</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU3_M_AXI_DATA1</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU3_M_AXI_DATA2</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU3_M_AXI_DATA2</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU3_M_AXI_DATA3</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) + 1">64</spirit:width>
+      <spirit:displayName>DPU3_M_AXI_DATA3</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.HP_DATA_BW&apos;)) - 1) - 0 + 1">64</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>DPU3_M_AXI_INSTR</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">1099511627776</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="user">32</spirit:width>
+      <spirit:displayName>DPU3_M_AXI_INSTR</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long">32</spirit:width>
     </spirit:addressSpace>
     <spirit:addressSpace>
       <spirit:name>SFM_M_AXI</spirit:name>
-      <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">4294967296</spirit:range>
-      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.SFM_HP_DATA_BW&apos;)) - 1) + 1">128</spirit:width>
+      <spirit:displayName>SFM_M_AXI</spirit:displayName>
+      <spirit:range spirit:format="bitString" spirit:bitStringLength="41" spirit:minimum="4096" spirit:rangeType="long">0x10000000000</spirit:range>
+      <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.SFM_HP_DATA_BW&apos;)) - 1) - 0 + 1">128</spirit:width>
     </spirit:addressSpace>
   </spirit:addressSpaces>
   <spirit:memoryMaps>
     <spirit:memoryMap>
       <spirit:name>S_AXI</spirit:name>
+      <spirit:displayName>S_AXI</spirit:displayName>
       <spirit:addressBlock>
         <spirit:name>reg0</spirit:name>
-        <spirit:baseAddress spirit:format="bitString" spirit:resolve="user" spirit:bitStringLength="32">0</spirit:baseAddress>
-        <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">16777216</spirit:range>
-        <spirit:width spirit:format="long" spirit:resolve="user">32</spirit:width>
+        <spirit:displayName>reg0</spirit:displayName>
+        <spirit:baseAddress spirit:format="bitString" spirit:bitStringLength="1">0x0</spirit:baseAddress>
+        <spirit:range spirit:format="long" spirit:minimum="4096" spirit:rangeType="long">16777216</spirit:range>
+        <spirit:width spirit:format="long">32</spirit:width>
         <spirit:usage>register</spirit:usage>
       </spirit:addressBlock>
     </spirit:memoryMap>
@@ -7955,7 +8044,7 @@
         <spirit:displayName>Synthesis</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:synthesis</spirit:envIdentifier>
         <spirit:language>SystemVerilog</spirit:language>
-        <spirit:modelName>DPUCZDX8G_v3_3_0</spirit:modelName>
+        <spirit:modelName>DPUCZDX8G_v3_4_0</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagesynthesis_xilinx_com_ip_floating_point_7_1__ref_view_fileset</spirit:localName>
         </spirit:fileSetRef>
@@ -7965,7 +8054,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>89044fa1</spirit:value>
+            <spirit:value>7843876b</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -7974,7 +8063,7 @@
         <spirit:displayName>Simulation</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:simulation</spirit:envIdentifier>
         <spirit:language>SystemVerilog</spirit:language>
-        <spirit:modelName>DPUCZDX8G_v3_3_0</spirit:modelName>
+        <spirit:modelName>DPUCZDX8G_v3_4_0</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagebehavioralsimulation_xilinx_com_ip_floating_point_7_1__ref_view_fileset</spirit:localName>
         </spirit:fileSetRef>
@@ -7984,7 +8073,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>02dc1956</spirit:value>
+            <spirit:value>a943fc44</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -7992,7 +8081,7 @@
         <spirit:name>xilinx_implementation</spirit:name>
         <spirit:displayName>Implementation</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:implementation</spirit:envIdentifier>
-        <spirit:modelName>DPUCZDX8G_v3_3_0</spirit:modelName>
+        <spirit:modelName>DPUCZDX8G_v3_4_0</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_implementation_xilinx_com_ip_floating_point_7_1__ref_view_fileset</spirit:localName>
         </spirit:fileSetRef>
@@ -8016,7 +8105,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>1fb84e40</spirit:value>
+            <spirit:value>0643888d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -8292,21 +8381,84 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>dpu_interrupt</spirit:name>
+        <spirit:name>dpu0_interrupt</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
-          <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.VER_DPU_NUM&apos;)) - 1)">0</spirit:left>
-            <spirit:right spirit:format="long">0</spirit:right>
-          </spirit:vector>
           <spirit:wireTypeDefs>
             <spirit:wireTypeDef>
-              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:typeName>std_logic</spirit:typeName>
               <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
               <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
             </spirit:wireTypeDef>
           </spirit:wireTypeDefs>
         </spirit:wire>
+        <spirit:vendorExtensions>
+          <xilinx:portInfo>
+            <xilinx:enablement>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.dpu0_interrupt" xilinx:dependency="$VER_DPU_NUM>0">true</xilinx:isEnabled>
+            </xilinx:enablement>
+          </xilinx:portInfo>
+        </spirit:vendorExtensions>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>dpu1_interrupt</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+        <spirit:vendorExtensions>
+          <xilinx:portInfo>
+            <xilinx:enablement>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.dpu1_interrupt" xilinx:dependency="$VER_DPU_NUM>1">false</xilinx:isEnabled>
+            </xilinx:enablement>
+          </xilinx:portInfo>
+        </spirit:vendorExtensions>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>dpu2_interrupt</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+        <spirit:vendorExtensions>
+          <xilinx:portInfo>
+            <xilinx:enablement>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.dpu2_interrupt" xilinx:dependency="$VER_DPU_NUM>2">false</xilinx:isEnabled>
+            </xilinx:enablement>
+          </xilinx:portInfo>
+        </spirit:vendorExtensions>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>dpu3_interrupt</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+        <spirit:vendorExtensions>
+          <xilinx:portInfo>
+            <xilinx:enablement>
+              <xilinx:isEnabled xilinx:resolve="dependent" xilinx:id="PORT_ENABLEMENT.dpu3_interrupt" xilinx:dependency="$VER_DPU_NUM>3">false</xilinx:isEnabled>
+            </xilinx:enablement>
+          </xilinx:portInfo>
+        </spirit:vendorExtensions>
       </spirit:port>
       <spirit:port>
         <spirit:name>sfm_interrupt</spirit:name>
@@ -22680,7 +22832,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long">39</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -22886,7 +23038,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long">39</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -23475,7 +23627,7 @@
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>SYS_IP_VER</spirit:name>
         <spirit:displayName>Sys Ip Ver</spirit:displayName>
-        <spirit:value spirit:format="bitString" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.SYS_IP_VER" spirit:bitStringLength="8">0x33</spirit:value>
+        <spirit:value spirit:format="bitString" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.SYS_IP_VER" spirit:bitStringLength="8">0x34</spirit:value>
         <spirit:vendorExtensions>
           <xilinx:parameterInfo>
             <xilinx:enablement>
@@ -23548,7 +23700,7 @@
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>GIT_COMMIT_ID</spirit:name>
         <spirit:displayName>Git Commit Id</spirit:displayName>
-        <spirit:value spirit:format="bitString" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.GIT_COMMIT_ID" spirit:bitStringLength="32">0x0df4d0c7</spirit:value>
+        <spirit:value spirit:format="bitString" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.GIT_COMMIT_ID" spirit:bitStringLength="32">0x025ceabf</spirit:value>
         <spirit:vendorExtensions>
           <xilinx:parameterInfo>
             <xilinx:enablement>
@@ -23560,7 +23712,7 @@
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>GIT_COMMIT_TIME</spirit:name>
         <spirit:displayName>Git Commit Time</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.GIT_COMMIT_TIME">2106071910</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.GIT_COMMIT_TIME">2022020314</spirit:value>
         <spirit:vendorExtensions>
           <xilinx:parameterInfo>
             <xilinx:enablement>
@@ -24215,27 +24367,32 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
       <spirit:file>
         <spirit:name>xci/sfm/fp_exp/fp_exp.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/g_dd4c6d01[0].fp_exp_inst/fp_exp</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_1c8ceb0e.u_42e87e90/u_9f06c571/g_24612ba6[0].fp_exp_inst/fp_exp</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_convert/fp_convert.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/g_dd4c6d01[0].fp_convert_inst/fp_convert</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_1c8ceb0e.u_42e87e90/u_9f06c571/g_24612ba6[0].fp_convert_inst/fp_convert</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_div/fp_div.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/fp_div_inst_0/fp_div</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_1c8ceb0e.u_42e87e90/u_9f06c571/fp_div_inst_0/fp_div</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_acc/fp_acc.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/fp_acc_inst/fp_acc</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_1c8ceb0e.u_42e87e90/u_9f06c571/fp_acc_inst/fp_acc</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_add/fp_add.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/fp_add_inst_0/fp_add</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_1c8ceb0e.u_42e87e90/u_9f06c571/fp_add_inst_0/fp_add</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>inc/arch_para.vh</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:isIncludeFile>true</spirit:isIncludeFile>
       </spirit:file>
       <spirit:file>
         <spirit:name>inc/function.vh</spirit:name>
@@ -24248,16 +24405,11 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
         <spirit:isIncludeFile>true</spirit:isIncludeFile>
       </spirit:file>
       <spirit:file>
-        <spirit:name>inc/arch_para.vh</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:isIncludeFile>true</spirit:isIncludeFile>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/DPUCZDX8G_v3_3_0_vl_dpu.sv</spirit:name>
+        <spirit:name>hdl/DPUCZDX8G_v3_4_0_vl_dpu.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/DPUCZDX8G_v3_3_0_vl_sfm.sv</spirit:name>
+        <spirit:name>hdl/DPUCZDX8G_v3_4_0_vl_sfm.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -24265,9 +24417,9 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
         <spirit:userFileType>ttcl</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/DPUCZDX8G_v3_3_0_vl_top.sv</spirit:name>
+        <spirit:name>hdl/DPUCZDX8G_v3_4_0_vl_top.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_f888e0c8</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_63341b00</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -24301,27 +24453,32 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
       <spirit:file>
         <spirit:name>xci/sfm/fp_exp/fp_exp.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/g_dd4c6d01[0].fp_exp_inst/fp_exp</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_1c8ceb0e.u_42e87e90/u_9f06c571/g_24612ba6[0].fp_exp_inst/fp_exp</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_convert/fp_convert.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/g_dd4c6d01[0].fp_convert_inst/fp_convert</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_1c8ceb0e.u_42e87e90/u_9f06c571/g_24612ba6[0].fp_convert_inst/fp_convert</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_div/fp_div.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/fp_div_inst_0/fp_div</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_1c8ceb0e.u_42e87e90/u_9f06c571/fp_div_inst_0/fp_div</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_acc/fp_acc.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/fp_acc_inst/fp_acc</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_1c8ceb0e.u_42e87e90/u_9f06c571/fp_acc_inst/fp_acc</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>xci/sfm/fp_add/fp_add.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
-        <spirit:userFileType>CELL_NAME_g_4e3c5998.u_f162305b/u_edfff871/fp_add_inst_0/fp_add</spirit:userFileType>
+        <spirit:userFileType>CELL_NAME_g_1c8ceb0e.u_42e87e90/u_9f06c571/fp_add_inst_0/fp_add</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>inc/arch_para.vh</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:isIncludeFile>true</spirit:isIncludeFile>
       </spirit:file>
       <spirit:file>
         <spirit:name>inc/function.vh</spirit:name>
@@ -24334,16 +24491,11 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
         <spirit:isIncludeFile>true</spirit:isIncludeFile>
       </spirit:file>
       <spirit:file>
-        <spirit:name>inc/arch_para.vh</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:isIncludeFile>true</spirit:isIncludeFile>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/DPUCZDX8G_v3_3_0_vl_dpu.sv</spirit:name>
+        <spirit:name>hdl/DPUCZDX8G_v3_4_0_vl_dpu.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/DPUCZDX8G_v3_3_0_vl_sfm.sv</spirit:name>
+        <spirit:name>hdl/DPUCZDX8G_v3_4_0_vl_sfm.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -24351,7 +24503,7 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
         <spirit:userFileType>ttcl</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/DPUCZDX8G_v3_3_0_vl_top.sv</spirit:name>
+        <spirit:name>hdl/DPUCZDX8G_v3_4_0_vl_top.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
     </spirit:fileSet>
@@ -24389,9 +24541,9 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/DPUCZDX8G_v3_3.tcl</spirit:name>
+        <spirit:name>xgui/dpuczdx8g_v3_4.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_1fb84e40</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_0643888d</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -24405,21 +24557,21 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
     <spirit:fileSet>
       <spirit:name>xilinx_versioninformation_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>doc/DPUCZDX8G_v3_3_0_changelog.txt</spirit:name>
+        <spirit:name>doc/DPUCZDX8G_v3_4_0_changelog.txt</spirit:name>
         <spirit:userFileType>text</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_productguide_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>https://www.xilinx.com/cgi-bin/docs/ipdoc?c=dpu;v=v3_3;d=pg338-dpu.pdf</spirit:name>
+        <spirit:name>https://www.xilinx.com/cgi-bin/docs/ipdoc?c=dpu;v=v3_4;d=pg338-dpu.pdf</spirit:name>
         <spirit:userFileType>pdf</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_utilityxitfiles_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>gui/DPUCZDX8G_v3_3.gtcl</spirit:name>
+        <spirit:name>gui/dpuczdx8g_v3_4.gtcl</spirit:name>
         <spirit:userFileType>GTCL</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -24545,7 +24697,7 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
     <spirit:parameter>
       <spirit:name>SYS_IP_VER</spirit:name>
       <spirit:displayName>IP Version</spirit:displayName>
-      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.SYS_IP_VER" spirit:bitStringLength="8">0x33</spirit:value>
+      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.SYS_IP_VER" spirit:bitStringLength="8">0x34</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
@@ -24618,7 +24770,7 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
     <spirit:parameter>
       <spirit:name>GIT_COMMIT_ID</spirit:name>
       <spirit:displayName>ID </spirit:displayName>
-      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.GIT_COMMIT_ID" spirit:bitStringLength="32">0x0df4d0c7</spirit:value>
+      <spirit:value spirit:format="bitString" spirit:resolve="user" spirit:id="PARAM_VALUE.GIT_COMMIT_ID" spirit:bitStringLength="32">0x025ceabf</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
@@ -24630,7 +24782,7 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
     <spirit:parameter>
       <spirit:name>GIT_COMMIT_TIME</spirit:name>
       <spirit:displayName>Time </spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.GIT_COMMIT_TIME">2106071910</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.GIT_COMMIT_TIME">2022020314</spirit:value>
       <spirit:vendorExtensions>
         <xilinx:parameterInfo>
           <xilinx:enablement>
@@ -25116,7 +25268,7 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">DPUCZDX8G_v3_3_0_v1_0</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">DPUCZDX8G_v3_4_0_v1_0</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>GIT_COMMIT_USER</spirit:name>
@@ -25431,19 +25583,19 @@ Width:2;DSP Slice Count:145;Ultra-RAM Count:0;Block-RAM Count:117.5</spirit:valu
       <xilinx:designToolContexts>
         <xilinx:designToolContext>IPI</xilinx:designToolContext>
       </xilinx:designToolContexts>
-      <xilinx:vendorURL>https://www.xilinx.com/products/design-tools/deephi.html</xilinx:vendorURL>
+      <xilinx:vendorURL>https://www.xilinx.com/products/design-tools/vitis/vitis-ai.html</xilinx:vendorURL>
       <xilinx:coreRevision>0</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2021-06-07T11:17:55Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2022-03-18T03:05:47Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
-      <xilinx:xilinxVersion>2021.1</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="c831beff"/>
-      <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="3c1ec388"/>
-      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="92742ca9"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="633ded73"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="dd98cb45"/>
-      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="6e548d0d"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="57c1e75c"/>
+      <xilinx:xilinxVersion>2022.1</xilinx:xilinxVersion>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="4457c493"/>
+      <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="409268af"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="3c68f283"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="83b75d7a"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="d0833962"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="ec9c34e0"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="06763c30"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

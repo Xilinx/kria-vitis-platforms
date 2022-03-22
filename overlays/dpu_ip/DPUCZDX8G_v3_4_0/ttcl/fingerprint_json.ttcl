@@ -17,9 +17,10 @@
 <:   {2_8_8}      {set TM_ARCH 10}  :>
 <:   default      {set TM_ARCH 15}  :>
 <: } :>
+<: set TM_POOL_PARALLEL [expr {([getIntValue DWCV_PARALLEL]=={0})?(1):([getIntValue ARCH_PP]=={2})?(2):([getIntValue ARCH_PP]/2)}] :>
 <: set fp 0 :>
 <: set fp [expr $fp + 2** 0 * $TM_ARCH] :>
-<: set fp [expr $fp + 2** 8 * [getIntValue  ARCH_PP ] /2     ] :>
+<: set fp [expr $fp + 2** 8 * $TM_POOL_PARALLEL              ] :>
 <: set fp [expr $fp + 2**12 * [getIntValue  DWCV_PARALLEL   ]] :>
 <: set fp [expr $fp + 2**16 * [getIntValue  ELEW_PARALLEL   ]] :>
 <: set fp [expr $fp + 2**24 * [getIntValue  ARCH_IMG_BKGRP  ]] :>
