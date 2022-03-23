@@ -10,16 +10,18 @@ apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_boar
 
 
 set_property -dict [ list \
-            CONFIG.PSU__CRF_APB__DPLL_FRAC_CFG__ENABLED  {1} \
+CONFIG.PSU__CRF_APB__DPLL_FRAC_CFG__ENABLED  {1} \
 CONFIG.PSU__CRF_APB__VPLL_FRAC_CFG__ENABLED  {1} \
 CONFIG.PSU__CRL_APB__USB3__ENABLE {1} \
 CONFIG.PSU__FPGA_PL0_ENABLE {1} \
 CONFIG.PSU__GPIO_EMIO__PERIPHERAL__ENABLE {1} \
 CONFIG.PSU__GPIO_EMIO__PERIPHERAL__IO {92} \
+CONFIG.PSU__TTC0__WAVEOUT__ENABLE {1} \
+CONFIG.PSU__TTC0__WAVEOUT__IO {EMIO} \
 CONFIG.PSU__MAXIGP0__DATA_WIDTH {32} \
 CONFIG.PSU__MAXIGP1__DATA_WIDTH {32} \
 CONFIG.PSU__MAXIGP2__DATA_WIDTH {32} \
-CONFIG.PSU__NUM_FABRIC_RESETS {4} \
+CONFIG.PSU__NUM_FABRIC_RESETS {1} \
 CONFIG.PSU__SAXIGP0__DATA_WIDTH {128} \
 CONFIG.PSU__SAXIGP1__DATA_WIDTH {128} \
 CONFIG.PSU__SAXIGP2__DATA_WIDTH {64} \
@@ -624,6 +626,15 @@ proc create_root_design { parentCell } {
    CONFIG.DOUT_WIDTH {1} \
  ] $xlslice_2
 
+  # Create instance: xlslice_ttc_0, and set properties
+  set xlslice_ttc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_ttc_0 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {2} \
+   CONFIG.DIN_TO {2} \
+   CONFIG.DIN_WIDTH {3} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_ttc_0
+
   # Create interface connections
   connect_bd_intf_net -intf_net ${::PS_INST}_M_AXI_HPM0_FPD [get_bd_intf_pins ${::PS_INST}/M_AXI_HPM0_FPD] [get_bd_intf_pins axi_ic_accel_ctrl/S00_AXI]
   connect_bd_intf_net -intf_net ${::PS_INST}_M_AXI_HPM1_FPD [get_bd_intf_pins ${::PS_INST}/M_AXI_HPM1_FPD] [get_bd_intf_pins axi_ic_ctrl_275Mhz/S00_AXI]
@@ -707,8 +718,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_ic_ctrl_100Mhz/M00_ARESETN] [get_bd_pins display_pipeline/s_axi_aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_ic_ctrl_100Mhz/M00_ARESETN] [get_bd_pins proc_sys_reset_100MHz/peripheral_aresetn] -boundary_type upper
   connect_bd_net -net xlconcat_0_dout [get_bd_pins ${::PS_INST}/pl_ps_irq1] [get_bd_pins xlconcat_0/dout]
-  connect_bd_net -net xlconstant_0_fan_en_b_dout [get_bd_ports ap1302_standby] [get_bd_ports fan_en_b] -boundary_type upper
-  connect_bd_net -net xlconstant_0_fan_en_b_dout [get_bd_ports ap1302_standby] [get_bd_pins xlconstant_0/dout] -boundary_type upper
+  connect_bd_net -net xlconstant_0_ap1302_standby [get_bd_ports ap1302_standby] [get_bd_pins xlconstant_0/dout] -boundary_type upper
   connect_bd_net -net xlslice_3_Dout [get_bd_ports ap1302_rst_b] [get_bd_pins xlslice_2/Dout]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ${::PS_INST}/pl_clk0] [get_bd_pins clk_wiz_0/clk_in1]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins clk_wiz_0/resetn] -boundary_type upper
@@ -716,6 +726,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins proc_sys_reset_100MHz/ext_reset_in] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins proc_sys_reset_275MHz/ext_reset_in] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins proc_sys_reset_550MHz/ext_reset_in] -boundary_type upper
+  connect_bd_net -net xlslice_ttc_0_Dout [get_bd_ports fan_en_b] [get_bd_pins xlslice_ttc_0/Dout]
+  connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins xlslice_ttc_0/Din] [get_bd_pins ${::PS_INST}/emio_ttc0_wave_o]
 
   # Create address segments
   assign_bd_address -offset 0x80040000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ${::PS_INST}/Data] [get_bd_addr_segs axi_iic_0/S_AXI/Reg] -force

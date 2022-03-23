@@ -16,6 +16,8 @@ CONFIG.PSU__CRL_APB__USB3__ENABLE {1} \
 CONFIG.PSU__FPGA_PL0_ENABLE {1} \
 CONFIG.PSU__GPIO_EMIO__PERIPHERAL__ENABLE {1} \
 CONFIG.PSU__GPIO_EMIO__PERIPHERAL__IO {92} \
+CONFIG.PSU__TTC0__WAVEOUT__ENABLE {1} \
+CONFIG.PSU__TTC0__WAVEOUT__IO {EMIO} \
 CONFIG.PSU__MAXIGP0__DATA_WIDTH {32} \
 CONFIG.PSU__MAXIGP1__DATA_WIDTH {32} \
 CONFIG.PSU__MAXIGP2__DATA_WIDTH {32} \
@@ -391,6 +393,15 @@ proc create_hier_cell_display_pipeline { parentCell nameHier } {
    CONFIG.DOUT_WIDTH {8} \
  ] $xlslice_7to0
 
+  # Create instance: xlslice_ttc_0, and set properties
+  set xlslice_ttc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_ttc_0 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {2} \
+   CONFIG.DIN_TO {2} \
+   CONFIG.DIN_WIDTH {3} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_ttc_0
+
   # Create interface connections
   connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins ctrl] [get_bd_intf_pins v_tc_0/ctrl]
   connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins s_axi_CTRL] [get_bd_intf_pins v_mix_0/s_axi_CTRL]
@@ -460,6 +471,8 @@ proc create_hier_cell_display_pipeline { parentCell nameHier } {
   connect_bd_net -net xlslice_0_Dout [get_bd_pins v_mix_0/ap_rst_n] [get_bd_pins xlslice_0/Dout]
   connect_bd_net -net xlslice_15to8_Dout [get_bd_pins xlconcat_0/In3] [get_bd_pins xlslice_15to8/Dout]
   connect_bd_net -net xlslice_7to0_Dout [get_bd_pins xlconcat_0/In1] [get_bd_pins xlslice_7to0/Dout]
+  connect_bd_net -net xlslice_ttc_0_Dout [get_bd_ports fan_en_b] [get_bd_pins xlslice_ttc_0/Dout]
+  connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins xlslice_ttc_0/Din] [get_bd_pins ${::PS_INST}/emio_ttc0_wave_o]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -588,11 +601,15 @@ proc create_root_design { parentCell } {
    CONFIG.NUM_PORTS {3} \
  ] $xlconcat_0
 
-  # Create instance: xlconstant_0_fan_en_b, and set properties
-  set xlconstant_0_fan_en_b [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_0_fan_en_b ]
+  # Create instance: xlslice_ttc_0, and set properties
+  set xlslice_ttc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_ttc_0 ]
   set_property -dict [ list \
-   CONFIG.CONST_VAL {0} \
- ] $xlconstant_0_fan_en_b
+   CONFIG.DIN_FROM {2} \
+   CONFIG.DIN_TO {2} \
+   CONFIG.DIN_WIDTH {3} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_ttc_0
+
 
   # Create interface connections
   connect_bd_intf_net -intf_net ${::PS_INST}_M_AXI_HPM0_FPD [get_bd_intf_pins ${::PS_INST}/M_AXI_HPM0_FPD] [get_bd_intf_pins axi_ic_accel_ctrl/S00_AXI]
@@ -665,13 +682,14 @@ proc create_root_design { parentCell } {
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_ic_ctrl_0/M00_ARESETN] [get_bd_pins proc_sys_reset_100MHz/peripheral_aresetn] -boundary_type upper
   connect_bd_net -net vcu_vcu_host_interrupt [get_bd_pins vcu/vcu_host_interrupt] [get_bd_pins xlconcat_0/In2]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins ${::PS_INST}/pl_ps_irq1] [get_bd_pins xlconcat_0/dout]
-  connect_bd_net -net xlconstant_0_fan_en_b_dout [get_bd_ports fan_en_b] [get_bd_pins xlconstant_0_fan_en_b/dout]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ${::PS_INST}/pl_clk0] [get_bd_pins clk_wiz_0/clk_in1]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins clk_wiz_0/resetn] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins display_pipeline/ext_reset_in] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins proc_sys_reset_100MHz/ext_reset_in] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins proc_sys_reset_275MHz/ext_reset_in] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ${::PS_INST}/pl_resetn0] [get_bd_pins proc_sys_reset_550MHz/ext_reset_in] -boundary_type upper
+  connect_bd_net -net xlslice_ttc_0_Dout [get_bd_ports fan_en_b] [get_bd_pins xlslice_ttc_0/Dout]
+  connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins xlslice_ttc_0/Din] [get_bd_pins ${::PS_INST}/emio_ttc0_wave_o]
 
   # Create address segments
   assign_bd_address -offset 0xA0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ${::PS_INST}/Data] [get_bd_addr_segs axi_vip_0/S_AXI/Reg] -force
