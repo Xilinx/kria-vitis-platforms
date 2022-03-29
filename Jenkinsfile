@@ -6,7 +6,7 @@
 def buildPlatform() {
     sh label: 'platform build',
     script: '''
-        pushd src
+        pushd ${root_dir}
         source ${setup} -r ${tool_release} && set -e
         ${lsf} make platform PFM=${pfm_base} JOBS=32
         popd
@@ -17,7 +17,7 @@ def deployPlatform() {
     sh label: 'platform deploy',
     script: '''
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            pushd src
+            pushd ${root_dir}
             mkdir -p ${DEPLOYDIR}
             cp -rf platforms/${pfm} ${DEPLOYDIR}
             popd
@@ -28,7 +28,7 @@ def deployPlatform() {
 def buildOverlay() {
     sh label: 'overlay build',
     script: '''
-        pushd src
+        pushd ${root_dir}
 
         if [ -d platforms/${pfm} ]; then
             echo "Using platform from local build"
@@ -56,7 +56,7 @@ def deployOverlay() {
     sh label: 'overlay deploy',
     script: '''
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            pushd src
+            pushd ${root_dir}
             DST=${DEPLOYDIR}/${overlay}
             mkdir -p ${DST}
 
@@ -141,13 +141,14 @@ pipeline {
                 ])
             }
         }
-	stage('Vitis builds') {
+        stage('Vitis Builds') {
             parallel {
                 stage('kv260_ispMipiRx_vcu_DP') {
                     environment {
+                        root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_ispMipiRx_vcu_DP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        pfm_dir="${WORKSPACE}/src/platforms/${pfm}"
+                        pfm_dir="${root_dir}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
@@ -158,7 +159,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/platforms/vivado/kv260_ispMipiRx_vcu_DP/**"
+                                    changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_vcu_DP/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -179,11 +180,11 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="smartcam"
-                                example_dir="overlays/examples/${overlay}"
+                                example_dir="${root_dir}/overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/overlays/examples/smartcam/**"
+                                    changeset "**/kv260/overlays/examples/smartcam/**"
                                     triggeredBy 'TimerTrigger'
                                     environment name: 'BUILD_SMARTCAM', value: '1'
                                 }
@@ -202,11 +203,11 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="benchmark"
-                                example_dir="overlays/examples/${overlay}"
+                                example_dir="${root_dir}/overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/overlays/examples/benchmark/**"
+                                    changeset "**/kv260/overlays/examples/benchmark/**"
                                     triggeredBy 'TimerTrigger'
                                     environment name: 'BUILD_SMARTCAM', value: '1'
                                 }
@@ -224,9 +225,10 @@ pipeline {
                 }
                 stage('kv260_vcuDecode_vmixDP') {
                     environment {
+                        root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_vcuDecode_vmixDP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        pfm_dir="${WORKSPACE}/src/platforms/${pfm}"
+                        pfm_dir="${root_dir}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
@@ -237,7 +239,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/platforms/vivado/kv260_vcuDecode_vmixDP/**"
+                                    changeset "**/kv260/platforms/vivado/kv260_vcuDecode_vmixDP/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -258,11 +260,11 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="aibox-reid"
-                                example_dir="overlays/examples/${overlay}"
+                                example_dir="${root_dir}/overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/overlays/examples/aibox-reid/**"
+                                    changeset "**/kv260/overlays/examples/aibox-reid/**"
                                     triggeredBy 'TimerTrigger'
                                     environment name: 'BUILD_AIBOX_REID', value: '1'
                                 }
@@ -280,9 +282,10 @@ pipeline {
                 }
                 stage('kv260_ispMipiRx_vmixDP') {
                     environment {
+                        root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_ispMipiRx_vmixDP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        pfm_dir="${WORKSPACE}/src/platforms/${pfm}"
+                        pfm_dir="${root_dir}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
@@ -293,7 +296,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/platforms/vivado/kv260_ispMipiRx_vmixDP/**"
+                                    changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_vmixDP/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -314,11 +317,11 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="defect-detect"
-                                example_dir="overlays/examples/${overlay}"
+                                example_dir="${root_dir}/overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/overlays/examples/defect-detect/**"
+                                    changeset "**/kv260/overlays/examples/defect-detect/**"
                                     triggeredBy 'TimerTrigger'
                                     environment name: 'BUILD_DEFECT_DETECT', value: '1'
                                 }
@@ -336,9 +339,10 @@ pipeline {
                 }
                 stage('kv260_ispMipiRx_DP') {
                     environment {
+                        root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_ispMipiRx_DP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        pfm_dir="${WORKSPACE}/src/platforms/${pfm}"
+                        pfm_dir="${root_dir}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
@@ -349,7 +353,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/platforms/vivado/kv260_ispMipiRx_DP/**"
+                                    changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_DP/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }
@@ -370,11 +374,11 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="nlp-smartvision"
-                                example_dir="overlays/examples/${overlay}"
+                                example_dir="${root_dir}/overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/overlays/examples/nlp-smartvision/**"
+                                    changeset "**/kv260/overlays/examples/nlp-smartvision/**"
                                     triggeredBy 'TimerTrigger'
                                     environment name: 'BUILD_NLP_SMARTVISION', value: '1'
                                 }
@@ -385,6 +389,37 @@ pipeline {
                             post {
                                 success {
                                     deployOverlay()
+                                }
+                            }
+                        }
+                    }
+                }
+                stage('kr260_tsn_rs485pmod') {
+                    environment {
+                        root_dir="${WORKSPACE}/src/kr260"
+                        pfm_base="kr260_tsn_rs485pmod"
+                        pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        pfm_dir="${root_dir}/platforms/${pfm}"
+                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                    }
+                    stages {
+                        stage('kr260_tsn_rs485pmod platform build')  {
+                            environment {
+                                PAEG_LSF_MEM=65536
+                                PAEG_LSF_QUEUE="long"
+                            }
+                            when {
+                                anyOf {
+                                    changeset "**/kr260/platforms/vivado/kr260_tsn_rs485pmod/**"
+                                    triggeredBy 'TimerTrigger'
+                                }
+                            }
+                            steps {
+                                buildPlatform()
+                            }
+                            post {
+                                success {
+                                    deployPlatform()
                                 }
                             }
                         }

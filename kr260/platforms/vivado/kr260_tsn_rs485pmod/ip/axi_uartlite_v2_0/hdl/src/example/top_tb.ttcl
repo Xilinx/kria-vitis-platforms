@@ -1,0 +1,225 @@
+<: ;#Component and file information :>
+<: set ComponentName [getComponentNameString] :>
+<: setOutputDirectory [ttcl_string_concat $ComponentName "/example_design"] :>
+<: setFileName [ttcl_string_concat $ComponentName "_exdes_tb"] :>
+<: set baud [getIntValue "C_BAUDRATE"] :>
+<: set freq [getIntValue "C_S_AXI_ACLK_FREQ_HZ"] :>
+<: set dbits [getIntValue "C_DATA_BITS"] :>
+<: setFileExtension ".vhd" :>
+<: set per [expr {1000000000.0 / $freq}] :>
+
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use ieee.std_logic_misc.all;
+use ieee.std_logic_unsigned.all;
+use ieee.std_logic_textio.all;
+
+library std;
+use std.textio.all;
+
+
+
+entity <=: $ComponentName :>_exdes_tb is
+
+end entity;
+
+architecture tb of <=: $ComponentName :>_exdes_tb is
+
+component <=: $ComponentName :>_exdes 
+   port (
+         clk_in1_p : in std_logic;
+         clk_in1_n : in std_logic;
+         reset : in std_logic;
+         start : in std_logic;
+         rx : in std_logic;
+         tx : out std_logic;
+         clk_out : out std_logic;
+         lck_out : out std_logic);
+end component;
+
+--COMPONENT clk_wiz_tb
+--  PORT (
+--    clk_in1_p : IN STD_LOGIC;
+--    clk_in1_n : IN STD_LOGIC;
+--    clk_out1 : OUT STD_LOGIC;
+--    reset : IN STD_LOGIC;
+--    locked : OUT STD_LOGIC
+--  );
+--END COMPONENT;
+
+constant clk_per : time := 5 ns;
+constant freq_per : time := <=:$per:> ns;
+--constant RATIO             : integer := <=:$freq :> / (16 * <=:$baud :>); 
+ function CALC_RATIO ( C_S_AXI_ACLK_FREQ_HZ : integer;
+                          C_BAUDRATE         : integer ) return Integer is
+                          
+       constant C_BAUDRATE_16_BY_2: integer := (16 * C_BAUDRATE) / 2;
+       constant REMAINDER         : integer := 
+                                    C_S_AXI_ACLK_FREQ_HZ rem (16 * C_BAUDRATE);
+       constant RATIO             : integer := 
+                                     C_S_AXI_ACLK_FREQ_HZ / (16 * C_BAUDRATE);   
+
+    begin
+        if (C_BAUDRATE_16_BY_2 < REMAINDER) then
+            return (RATIO + 1);
+        else  
+            return RATIO;
+        end if;
+    end function CALC_RATIO;
+
+   
+    constant RATIO : integer := CALC_RATIO(<=:$freq :> ,<=:$baud :>);
+
+constant dft_val :std_logic_vector(7 downto 0) := "00000000";
+signal clock : std_logic := '0';
+signal clock_n : std_logic := '1';
+signal reset : std_logic := '1';
+signal start : std_logic := '0';
+signal status : std_logic := '0';
+signal test : std_logic := '0';
+signal done : std_logic := '0';
+signal rx, tx : std_logic := '0';
+signal tx_reg : std_logic_vector(<=:$dbits :> -1 downto 0) := dft_val(<=:$dbits :> -1 downto 0);
+signal count : natural range 0 to RATIO -1 ;
+signal count_16 : std_logic_vector(3 downto 0) := "0000";
+signal count_8 : std_logic_vector(4 downto 0) := "00000";
+signal EN_16x_Baud : std_logic := '0';
+signal div : std_logic := '0';
+signal clock_lite : std_logic := '0';
+signal locked : std_logic := '0';
+
+                                     
+
+begin
+
+process
+begin
+    wait for (clk_per/2);
+    clock <= not clock;
+    clock_n <= not clock_n;
+
+end process;
+--CLOCK_GEN_TB : clk_wiz_tb 
+--         port map (
+--           clk_in1_p => clock,
+--           clk_in1_n => clock_n,
+--           reset    => reset,
+--           locked   => locked,  
+--           clk_out1 => clock_lite
+--           );      
+
+
+ reset <= '0' after 1500 ns;
+  
+
+start <= '1' after 100 ns;
+
+
+DUT_TB: <=: $ComponentName :>_exdes
+      port map (
+      clk_in1_p => clock,
+      clk_in1_n => clock_n,
+      reset => reset,
+      start => start,
+      rx => rx,
+      tx => tx,
+      clk_out => clock_lite,
+      lck_out => locked
+      );
+
+-- TB should monitor rx, tx 
+
+process (done)
+    procedure simtimeprint is
+      variable outline : line;
+    begin
+      write(outline, string'("## SYSTEM_CYCLE_COUNTER "));
+      write(outline, NOW/clk_per);
+      write(outline, string'(" ns"));
+      writeline(output,outline);
+    end simtimeprint;
+begin
+
+if (status = '1' and done = '1') then
+ simtimeprint;
+ report "Test Completed Successfully" severity failure;
+elsif (status = '0' and done = '1') then
+ simtimeprint;
+ report "Test Failed !!!" severity failure;
+end if;
+end process;
+
+
+process (div) is
+begin
+if(div'event and div='1') then
+tx_reg <= tx & tx_reg(<=:$dbits :> -1 downto 1) ;
+count_8 <= count_8 + '1';
+end if;
+end process;
+
+COUNTER_PROCESS : process (clock_lite) is
+        begin
+            if clock_lite'event and clock_lite = '1' then  -- rising clock edge
+                if (locked = '0') then
+                    count       <= 0;
+                    EN_16x_Baud <= '0';
+                else
+                    if (count = 0) then
+                        count       <= RATIO -1;
+                        EN_16x_Baud <= '1';
+                    else
+                        count       <= count - 1;
+                        EN_16x_Baud <= '0';
+                    end if;
+                end if;
+            if EN_16x_Baud ='1' then
+               if count_16 = "1111" then
+               count_16 <= "0000" ;
+               else
+               count_16 <= count_16 + '1' ;
+            end if;
+            end if;
+           end if;
+    end process COUNTER_PROCESS;
+
+
+process (count_16) is 
+begin
+if(count_16 = "1111") then
+div <= '1' ;
+else 
+div <= '0' ;
+end if;
+end process;
+
+process (count_8) is 
+begin
+case count_8 is
+<: if {$dbits == 8} { :>
+when "01010" => if (tx_reg = "01000001") then
+<: } elseif {$dbits == 7} { :>
+when "01001" => if (tx_reg = "1000001") then
+<: } elseif {$dbits == 6} { :>
+when "01000" => if (tx_reg = "000001") then
+<: } elseif {$dbits == 5} { :>
+when "00111" => if (tx_reg = "00001") then
+<: } :>
+             report "Recieved Character A";
+             report "Test Completed Successfully" severity failure ;
+          else
+             report "Test Failed!!!" severity failure;
+          end if;
+when others => report "No Char received, Run more";
+end case;
+end process;
+
+process
+begin
+     wait for 1000000000 ns;
+     report "Test Failed !! Test Timed Out" severity failure;
+end process;
+
+end tb;

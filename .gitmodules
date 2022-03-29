@@ -1,4 +1,4 @@
 [submodule "overlays/Vitis_Libraries"]
-	path = overlays/Vitis_Libraries
+	path = kv260/overlays/Vitis_Libraries
 	url = https://gitenterprise.xilinx.com/FaaSApps/xf_opencv.git
 	branch = next
