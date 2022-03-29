@@ -13,6 +13,8 @@ set_property -dict [list \
   CONFIG.PSU__USE__S_AXI_GP2 {1} \
   CONFIG.PSU__USE__IRQ0 {1} \
   CONFIG.PSU__USE__IRQ1 {1} \
+  CONFIG.PSU__TTC0__WAVEOUT__ENABLE {1} \
+  CONFIG.PSU__TTC0__WAVEOUT__IO {EMIO} \
 ] $PS_0
 ##################################################################
 # DESIGN PROCs
@@ -329,6 +331,7 @@ proc create_root_design { parentCell } {
   set UART_0_rxen [ create_bd_port -dir O UART_0_rxen ]
   set UART_0_txd [ create_bd_port -dir O UART_0_txd ]
   set UART_0_txen [ create_bd_port -dir O UART_0_txen ]
+  set fan_en_b [ create_bd_port -dir O -from 0 -to 0 fan_en_b ]
   set l1_rxs [ create_bd_port -dir O l1_rxs ]
   set l2_rxb [ create_bd_port -dir O l2_rxb ]
   set l3_rxx [ create_bd_port -dir O l3_rxx ]
@@ -694,6 +697,15 @@ proc create_root_design { parentCell } {
    CONFIG.DOUT_WIDTH {1} \
  ] $xlslice_trdy_1
 
+  # Create instance: xlslice_ttc_0, and set properties
+  set xlslice_ttc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_ttc_0 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {2} \
+   CONFIG.DIN_TO {2} \
+   CONFIG.DIN_WIDTH {3} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_ttc_0
+
   # Create interface connections
   connect_bd_intf_net -intf_net PS_0_M_AXI_HPM0_LPD [get_bd_intf_pins PS_0/M_AXI_HPM0_LPD] [get_bd_intf_pins ps8_0_axi_periph/S00_AXI]
   connect_bd_intf_net -intf_net axi_mcdma_0_M_AXIS_MM2S [get_bd_intf_pins axi_mcdma_0/M_AXIS_MM2S] [get_bd_intf_pins my_tsn_ip/tx_axis_be]
@@ -720,6 +732,7 @@ proc create_root_design { parentCell } {
   # Create port connections
   connect_bd_net -net Op2_1 [get_bd_pins my_tsn_ip/tx_axis_st_tready] [get_bd_pins ta_dma_0/m_axis_st_tready] -boundary_type upper
   connect_bd_net -net Op2_1 [get_bd_pins my_tsn_ip/tx_axis_st_tready] [get_bd_pins tx_s/tready] -boundary_type upper
+  connect_bd_net -net PS_0_emio_ttc0_wave_o [get_bd_pins PS_0/emio_ttc0_wave_o] [get_bd_pins xlslice_ttc_0/Din]
   connect_bd_net -net axi_intc_0_irq [get_bd_pins PS_0/pl_ps_irq0] [get_bd_pins axi_intc_0/irq]
   connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tlast [get_bd_pins axi_mcdma_0/m_axis_mm2s_tlast] [get_bd_pins my_tsn_ip/tx_axis_be_tlast] -boundary_type upper
   connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tlast [get_bd_pins axi_mcdma_0/m_axis_mm2s_tlast] [get_bd_pins tx_b/tlast] -boundary_type upper
@@ -869,6 +882,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net xlslice_16_Dout [get_bd_pins ta_dma_0/cycle_start] [get_bd_pins xlslice_16/Dout]
   connect_bd_net -net xlslice_17_Dout [get_bd_pins my_tsn_ip/rx_axis_be_tready] [get_bd_pins rx_b/tready] -boundary_type upper
   connect_bd_net -net xlslice_17_Dout [get_bd_pins my_tsn_ip/rx_axis_be_tready] [get_bd_pins xlslice_trdy_1/Dout] -boundary_type upper
+  connect_bd_net -net xlslice_ttc_0_Dout [get_bd_ports fan_en_b] [get_bd_pins xlslice_ttc_0/Dout]
 
   # Create address segments
   assign_bd_address -offset 0x80020000 -range 0x00001000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_intc_0/S_AXI/Reg] -force
