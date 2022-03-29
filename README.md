@@ -2,34 +2,16 @@
 
 This repo contains submodules. To clone this repo, run:
 ```
-git clone --recursive https://github.com/Xilinx/kv260-vitis.git
+git clone --recursive https://github.com/Xilinx/kria-vitis-platforms.git
 ```
 
 # Contents
 
-This reference design contains the following:
+Please refer to the starter kit specific directories for more details. The
+following kits are supported:
 
-1. platforms
-
-   This folder contains the KV260 Vitis platforms. Follow the REAMDE inside this
-   folder for build instructions.
-
-2. overlays
-
-   This folder contains the Vitis overlay projects which include the DPU
-   inference engine RTL kernel and HLS-based computer vision kernels based on
-   the Vitis Vision libraries. Follow the README inside this folder for detailed
-   build instructions.
-
-3. Makefile
-
-   Top-level Makefile for building the Vitis platforms and overlay projects.
-   Type 'make' or 'make help' to print the help text explaining the different
-   make targets.
-
-4. README
-
-   This file.
+1. KV260
+2. KR260
 
 # Documentation
 
