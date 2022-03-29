@@ -152,6 +152,10 @@ pipeline {
                     }
                     stages {
                         stage('kv260_ispMipiRx_vcu_DP platform build')  {
+                            environment {
+                                PAEG_LSF_MEM=65536
+                                PAEG_LSF_QUEUE="long"
+                            }
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_ispMipiRx_vcu_DP/**"
@@ -227,6 +231,10 @@ pipeline {
                     }
                     stages {
                         stage('kv260_vcuDecode_vmixDP platform build')  {
+                            environment {
+                                PAEG_LSF_MEM=65536
+                                PAEG_LSF_QUEUE="long"
+                            }
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_vcuDecode_vmixDP/**"
@@ -279,6 +287,10 @@ pipeline {
                     }
                     stages {
                         stage('kv260_ispMipiRx_vmixDP platform build')  {
+                            environment {
+                                PAEG_LSF_MEM=65536
+                                PAEG_LSF_QUEUE="long"
+                            }
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_ispMipiRx_vmixDP/**"
@@ -331,6 +343,10 @@ pipeline {
                     }
                     stages {
                         stage('kv260_ispMipiRx_DP platform build')  {
+                            environment {
+                                PAEG_LSF_MEM=65536
+                                PAEG_LSF_QUEUE="long"
+                            }
                             when {
                                 anyOf {
                                     changeset "**/platforms/vivado/kv260_ispMipiRx_DP/**"
