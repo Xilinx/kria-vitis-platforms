@@ -1,0 +1,357 @@
+diff -u -r axi_uartlite_v2_0/component.xml rs485_uartlite_v2_0/component.xml
+--- axi_uartlite_v2_0/component.xml	2019-05-25 01:50:49.000000000 +0200
++++ rs485_uartlite_v2_0/component.xml	2020-03-22 18:48:53.968977718 +0100
+@@ -246,6 +246,14 @@
+             <spirit:name>tx</spirit:name>
+           </spirit:physicalPort>
+         </spirit:portMap>
++        <spirit:portMap>
++          <spirit:logicalPort>
++            <spirit:name>TxEn</spirit:name>
++          </spirit:logicalPort>
++          <spirit:physicalPort>
++            <spirit:name>txen</spirit:name>
++          </spirit:physicalPort>
++        </spirit:portMap>
+       </spirit:portMaps>
+       <spirit:parameters>
+         <spirit:parameter>
+@@ -1073,6 +1081,19 @@
+           </spirit:wireTypeDefs>
+         </spirit:wire>
+       </spirit:port>
++      <spirit:port>
++        <spirit:name>txen</spirit:name>
++        <spirit:wire>
++          <spirit:direction>out</spirit:direction>
++          <spirit:wireTypeDefs>
++            <spirit:wireTypeDef>
++              <spirit:typeName>std_logic</spirit:typeName>
++              <spirit:viewNameRef>xilinx_vhdlsynthesis</spirit:viewNameRef>
++              <spirit:viewNameRef>xilinx_vhdlbehavioralsimulation</spirit:viewNameRef>
++            </spirit:wireTypeDef>
++          </spirit:wireTypeDefs>
++        </spirit:wire>
++      </spirit:port>
+     </spirit:ports>
+     <spirit:modelParameters>
+       <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="string">
+@@ -1105,6 +1126,11 @@
+         <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_DATA_BITS" spirit:minimum="5" spirit:maximum="8" spirit:rangeType="long">8</spirit:value>
+       </spirit:modelParameter>
+       <spirit:modelParameter spirit:dataType="integer">
++        <spirit:name>C_TXEN_DELAY</spirit:name>
++        <spirit:displayName>TXEN Delay</spirit:displayName>
++        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_TXEN_DELAY" spirit:minimum="0" spirit:rangeType="long">0</spirit:value>
++      </spirit:modelParameter>
++      <spirit:modelParameter spirit:dataType="integer">
+         <spirit:name>C_USE_PARITY</spirit:name>
+         <spirit:displayName>Use Parity</spirit:displayName>
+         <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_USE_PARITY" spirit:minimum="0" spirit:maximum="1" spirit:rangeType="long">0</spirit:value>
+@@ -1404,6 +1430,12 @@
+   <spirit:description>Generic UART (Universal Asynchronous Receiver/Transmitter) for AXI Interface</spirit:description>
+   <spirit:parameters>
+     <spirit:parameter>
++      <spirit:name>C_TXEN_DELAY</spirit:name>
++      <spirit:displayName>TXEN Delay</spirit:displayName>
++      <spirit:description>The number of bit times to delay the initial startbit after transmit enable.</spirit:description>
++      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.C_TXEN_DELAY" spirit:order="1500" spirit:minimum="0" spirit:rangeType="long">0</spirit:value>
++    </spirit:parameter>
++    <spirit:parameter>
+       <spirit:name>C_DATA_BITS</spirit:name>
+       <spirit:displayName>Data Bits</spirit:displayName>
+       <spirit:description>The number of data bits in the serial frame.</spirit:description>
+diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd
+--- axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd	2019-05-25 01:50:49.000000000 +0200
++++ rs485_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd	2020-03-23 10:27:28.529251948 +0100
+@@ -38,7 +38,7 @@
+ -- ** expressly prohibited.                                               **
+ -- **                                                                     **
+ -- ** Any modifications that are made to the Source Code are              **
+--- ** done at the user’s sole risk and will be unsupported.               **
++-- ** done at the userï¿½s sole risk and will be unsupported.               **
+ -- ** The Xilinx Support Hotline does not have access to source           **
+ -- ** code and therefore cannot answer specific questions related         **
+ -- ** to source HDL. The Xilinx Hotline support of original source        **
+@@ -358,6 +358,8 @@
+ --  C_USE_PARITY    -- Determines whether parity is used or not
+ --  C_ODD_PARITY    -- If parity is used determines whether parity
+ --                     is even or odd
++--  C_TXEN_DELAY    -- Determines the number of bit times to delay
++--                     the initial startbit after transmit enable
+ -- System generics
+ --  C_FAMILY        -- Xilinx FPGA Family
+ -------------------------------------------------------------------------------
+@@ -369,6 +371,7 @@
+ --  Rst               --  Reset signal
+ -- UART Lite interface
+ --  TX                --  Transmit Data
++--  TXEN              --  Transmit Enable
+ -- Internal UART interface signals
+ --  EN_16x_Baud       --  Enable signal which is 16x times baud rate
+ --  Write_TX_FIFO     --  Write transmit FIFO
+@@ -386,7 +389,8 @@
+     C_FAMILY        : string               := "virtex7";
+     C_DATA_BITS     : integer range 5 to 8 := 8;
+     C_USE_PARITY    : integer range 0 to 1 := 0;
+-    C_ODD_PARITY    : integer range 0 to 1 := 0
++    C_ODD_PARITY    : integer range 0 to 1 := 0;
++    C_TXEN_DELAY    : integer              := 0
+    );
+   port
+    (
+@@ -394,6 +398,7 @@
+     Reset           : in  std_logic;
+     EN_16x_Baud     : in  std_logic;
+     TX              : out std_logic;
++    TXEN            : out std_logic;
+     Write_TX_FIFO   : in  std_logic;
+     Reset_TX_FIFO   : in  std_logic;
+     TX_Data         : in  std_logic_vector(0 to C_DATA_BITS-1);
+@@ -428,8 +433,11 @@
+     signal data_to_transfer  : std_logic_vector(0 to C_DATA_BITS-1);
+     signal div16             : std_logic;
+     signal tx_Data_Enable    : std_logic;
++    signal tx_Enable         : std_logic;
++    signal start_Enable      : std_logic;
+     signal tx_Start          : std_logic;
+     signal tx_DataBits       : std_logic;
++    signal tx_Stop           : std_logic;
+     signal tx_Run            : std_logic;
+     signal mux_sel           : std_logic_vector(0 to 2);
+     signal mux_sel_is_zero   : std_logic;
+@@ -449,6 +457,7 @@
+     signal fifo_rd           : std_logic;
+     signal tx_buffer_full_i  : std_logic;
+     signal TX_FIFO_Reset     : std_logic;
++    signal txen_delay        : integer range 0 to C_TXEN_DELAY := C_TXEN_DELAY;
+     signal data_shift : std_logic_vector(15 downto 0);
+ 
+ begin  -- architecture IMP
+@@ -522,7 +531,7 @@
+                 tx_Start <= '0';
+             else 
+                 tx_Start <= (not(tx_Run) and (tx_Start or 
+-                               (fifo_Data_Present and tx_Data_Enable)));
++                               (fifo_Data_Present and tx_Data_Enable and start_Enable)));
+             end if;
+         end if;
+     end process TX_START_DFF;
+@@ -542,6 +551,78 @@
+         end if;
+     end process TX_DATA_DFF;
+ 
++    ------------------------------------------------------------------------
++    -- TX_STOP_DFF : tx_stop is '1' for the stop bit in a transmission
++    ------------------------------------------------------------------------
++    TX_STOP_DFF : process (Clk) is
++    begin
++        if Clk'event and Clk = '1' then -- rising clock edge
++            if Reset = '1' then         -- synchronous reset (active high)
++                tx_Stop <= '0';
++            else 
++                tx_Stop <= (not(tx_Data_Enable) and (fifo_Read or tx_Stop));
++            end if;
++        end if;
++    end process TX_STOP_DFF;
++
++    ------------------------------------------------------------------------
++    -- TX_EN_DELAY : counter for delaying the first start bit
++    ------------------------------------------------------------------------
++    TXEN_DELAY_IS_NONZERO : if (C_TXEN_DELAY /= 0) generate
++        TX_EN_DELAY : process (Clk) is
++        begin
++            if Clk'event and Clk = '1' then -- rising clock edge
++                if Reset = '1' then         -- synchronous reset (active high)
++                    txen_delay <= C_TXEN_DELAY;
++                else
++                    if tx_Enable = '0' then
++                        txen_delay <= C_TXEN_DELAY;
++                    elsif (tx_Data_Enable = '1') and (start_Enable = '0') then
++                        txen_delay <= txen_delay - 1;
++                    end if;
++                end if;
++            end if;
++        end process TX_EN_DELAY;
++    end generate TXEN_DELAY_IS_NONZERO;
++
++    ------------------------------------------------------------------------
++    -- START_EN_DFF : start_Enable is '1' after C_TXEN_DELAY bits and until
++    --                the end of a transmission
++    ------------------------------------------------------------------------
++    START_EN_DFF : process (Clk) is
++    begin
++        if Clk'event and Clk = '1' then -- rising clock edge
++            if Reset = '1' then         -- synchronous reset (active high)
++                start_Enable <= '0';
++            elsif txen_delay = 0 then
++                start_Enable <= '1';
++            else
++                start_Enable <= '0';
++            end if;
++        end if;
++    end process START_EN_DFF;
++
++    ------------------------------------------------------------------------
++    -- TX_EN_DFF : tx_Enable is '1' from TXEN_DELAY bits before upto the
++    --             end of a transmission
++    ------------------------------------------------------------------------
++    TX_EN_DFF : process (Clk) is
++    begin
++        if Clk'event and Clk = '1' then -- rising clock edge
++            if Reset = '1' then         -- synchronous reset (active high)
++                tx_Enable <= '0';
++--                start_Enable <= '0';
++--            elsif txen_delay_is_0 then
++            elsif start_Enable = '1' then
++                tx_Enable <= (tx_Start or tx_DataBits or tx_Stop or fifo_Data_Present);
++--                start_Enable <= '1';
++            else
++                tx_Enable <= fifo_Data_Present;
++--                start_Enable <= '0';
++            end if;
++        end if;
++    end process TX_EN_DFF;
++
+     -------------------------------------------------------------------------
+     -- COUNTER : If mux_sel is zero then reload with the init value else if 
+     --           tx_DataBits = '1', decrement
+@@ -664,8 +745,10 @@
+         if Clk'event and Clk = '1' then -- rising clock edge
+             if Reset = '1' then         -- synchronous reset (active high)
+                 TX <= '1';
++                TXEN <= '0';
+             else 
+                 TX <= (not(tx_Run) or serial_Data) and (not(tx_Start));
++                TXEN <= tx_Enable;
+             end if;
+         end if;
+     end process SERIAL_OUT_DFF;
+@@ -1589,6 +1672,8 @@
+ --  C_USE_PARITY          -- Determines whether parity is used or not
+ --  C_ODD_PARITY          -- If parity is used determines whether parity
+ --                           is even or odd
++--  C_TXEN_DELAY          -- Determines the number of bit times to delay
++--                           the initial startbit after transmit enable
+ -- System generics
+ --  C_FAMILY              -- Xilinx FPGA Family
+ -------------------------------------------------------------------------------
+@@ -1609,6 +1694,7 @@
+ -- UART Lite interface
+ --  RX                    --  Receive Data
+ --  TX                    --  Transmit Data
++--  TXEN                  --  Transmit Enable
+ --  Interrupt             --  UART Interrupt
+ -------------------------------------------------------------------------------
+ -------------------------------------------------------------------------------
+@@ -1622,7 +1708,8 @@
+     C_BAUDRATE          : integer              := 9600;
+     C_DATA_BITS         : integer range 5 to 8 := 8;
+     C_USE_PARITY        : integer range 0 to 1 := 0;
+-    C_ODD_PARITY        : integer range 0 to 1 := 0
++    C_ODD_PARITY        : integer range 0 to 1 := 0;
++    C_TXEN_DELAY        : integer              := 0
+    );
+   port
+    (
+@@ -1640,6 +1727,7 @@
+     -- UART signals
+     RX           : in  std_logic;
+     TX           : out std_logic;
++    TXEN         : out std_logic;
+     Interrupt    : out std_logic
+    );
+ end entity uartlite_core;
+@@ -1958,7 +2046,8 @@
+         C_FAMILY        => C_FAMILY,
+         C_DATA_BITS     => C_DATA_BITS,
+         C_USE_PARITY    => C_USE_PARITY,
+-        C_ODD_PARITY    => C_ODD_PARITY
++        C_ODD_PARITY    => C_ODD_PARITY,
++        C_TXEN_DELAY    => C_TXEN_DELAY
+        )
+       port map
+        (
+@@ -1966,6 +2055,7 @@
+         Reset           => Reset,
+         EN_16x_Baud     => en_16x_Baud,
+         TX              => TX,
++        TXEN            => TXEN,
+         Write_TX_FIFO   => bus2ip_wrce(1),
+         Reset_TX_FIFO   => reset_TX_FIFO,
+         TX_Data         => bus2ip_data(8-C_DATA_BITS to 7),
+@@ -2092,6 +2182,8 @@
+ --  C_USE_PARITY          -- Determines whether parity is used or not
+ --  C_ODD_PARITY          -- If parity is used determines whether parity
+ --                           is even or odd
++--  C_TXEN_DELAY          -- Determines the number of bit times to delay
++--                           the initial startbit after transmit enable
+ -------------------------------------------------------------------------------
+ -------------------------------------------------------------------------------
+ -- Definition of Ports :
+@@ -2121,6 +2213,7 @@
+ --UARTLite Interface Signals
+ --  rx                   --  Receive Data
+ --  tx                   --  Transmit Data
++--  txen                 --  Transmit Enable
+ -------------------------------------------------------------------------------
+ -------------------------------------------------------------------------------
+ --                  Entity Section
+@@ -2138,7 +2231,8 @@
+     C_BAUDRATE            : integer                       := 9600;
+     C_DATA_BITS           : integer range 5 to 8          := 8;
+     C_USE_PARITY          : integer range 0 to 1          := 0;
+-    C_ODD_PARITY          : integer range 0 to 1          := 0
++    C_ODD_PARITY          : integer range 0 to 1          := 0;
++    C_TXEN_DELAY          : integer                       := 0
+    );
+   port
+    (
+@@ -2174,7 +2268,8 @@
+ 
+ -- UARTLite Interface Signals
+       rx                    : in  std_logic;
+-      tx                    : out std_logic
++      tx                    : out std_logic;
++      txen                  : out std_logic
+    );
+ 
+ -------------------------------------------------------------------------------
+@@ -2264,7 +2359,8 @@
+         C_BAUDRATE           => C_BAUDRATE,
+         C_DATA_BITS          => C_DATA_BITS,
+         C_USE_PARITY         => C_USE_PARITY,
+-        C_ODD_PARITY         => C_ODD_PARITY
++        C_ODD_PARITY         => C_ODD_PARITY,
++        C_TXEN_DELAY         => C_TXEN_DELAY
+        )
+       port map
+        (
+@@ -2280,6 +2376,7 @@
+         SIn_DBus     => ip2bus_data(7 downto 0),
+         RX           => rx,
+         TX           => tx,
++        TXEN         => txen,
+         Interrupt    => Interrupt
+        );
+ 
+diff -u -r axi_uartlite_v2_0/xgui/axi_uartlite_v2_0.tcl rs485_uartlite_v2_0/xgui/axi_uartlite_v2_0.tcl
+--- axi_uartlite_v2_0/xgui/axi_uartlite_v2_0.tcl	2019-05-25 01:50:49.000000000 +0200
++++ rs485_uartlite_v2_0/xgui/axi_uartlite_v2_0.tcl	2020-03-22 18:47:24.700977718 +0100
+@@ -13,6 +13,8 @@
+ 	set C_BAUDRATE [ipgui::add_param $IPINST -parent $panel1 -name C_BAUDRATE -widget comboBox]
+ 	ipgui::add_row $IPINST -parent $panel1 	
+ 	set C_DATA_BITS [ipgui::add_param $IPINST -parent $panel1 -name C_DATA_BITS ]
++	ipgui::add_row $IPINST -parent $panel1 	
++	set C_TXEN_DELAY [ipgui::add_param $IPINST -parent $panel1 -name C_TXEN_DELAY ]
+ 	set PARITY [ipgui::add_param $IPINST -parent $Page0 -name PARITY -widget radioGroup -layout horizontal]
+ 
+ 	set C_USE_PARITY [ipgui::add_param $IPINST -name C_USE_PARITY]
+@@ -29,6 +31,7 @@
+ 	set_property tooltip "Baud rate of the AXI UART Lite in bits per second." $C_BAUDRATE
+ 	set_property display_name "Data Bits" $C_DATA_BITS
+ 	set_property tooltip "The number of data bits in the serial frame." $C_DATA_BITS
++	set_property tooltip "The number of bit times to delay the initial startbit after transmit enable." $C_TXEN_DELAY
+ 	set_property tooltip "Determines whether parity is used or not. If used whether parity is odd or even." $PARITY
+ 
+ }

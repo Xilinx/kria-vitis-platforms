@@ -1,0 +1,50 @@
+<: ;#Component and file information :>
+<: set ComponentName [getComponentNameString] :>
+<: set aclk_freq [getIntValue "C_S_AXI_ACLK_FREQ_HZ"] :>
+<: set axi_clk_mhz [expr {$aclk_freq/1000000.0}] :>
+<: set min [format "%3.3f" $axi_clk_mhz] :>
+<: set family [getStringValue "C_FAMILY"] :>
+<: setOutputDirectory "./" :>
+<: setFileName "top_set" :>
+<: setFileExtension ".tcl" :>
+<: set wd [ file dirname [ get_property xml_file_name [ current_ipbom ] ] ] :>
+<: if {([string first "versal" $family] == -1) && ([string first "everest" $family] == -1)} { :>
+create_ip -name clk_wiz  -vendor xilinx.com -library ip -module_name clk_wiz_0
+set_property -dict [list CONFIG.PRIM_IN_FREQ {200.000} CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {<=:$min:>}] [get_ips clk_wiz_0]
+generate_target all [get_ips clk_wiz_0]
+<: } else { :>
+create_ip -name clk_wizard -vendor xilinx.com -library ip -module_name clk_wiz_0
+set_property -dict [list CONFIG.USE_RESET {true} CONFIG.USE_LOCKED {true} CONFIG.PRIM_IN_FREQ {200.000} CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} CONFIG.CLKOUT_USED {true,false,false,false,false,false,false} CONFIG.CLKOUT_PORT {clk_out1,clk_out2,clk_out3,clk_out4,clk_out5,clk_out6,clk_out7} CONFIG.CLKOUT_REQUESTED_OUT_FREQUENCY {<=:$min:>,50.000,60.000,100.000,100.000,100.000,100.000}] [get_ips clk_wiz_0]
+generate_target all [get_ips clk_wiz_0]
+<: } :>
+create_ip -name axi_traffic_gen -vendor xilinx.com -library ip -module_name axi_traffic_gen_0
+set coe1 [lindex [get_property name [get_files *atg_addr.coe]] 0 ]
+set coe2 [lindex [get_property name [get_files *atg_mask.coe]] 0 ]
+set coe3 [lindex [get_property name [get_files *atg_ctrl.coe]] 0 ]
+set coe4 [lindex [get_property name [get_files *atg_data.coe]] 0 ]
+
+set_property -dict [list CONFIG.C_ATG_MODE {AXI4-Lite} CONFIG.C_ATG_SYSTEM_INIT_ADDR_MIF $coe1 CONFIG.C_ATG_SYSTEM_INIT_MASK_MIF $coe2 CONFIG.C_ATG_SYSTEM_INIT_CTRL_MIF $coe3 CONFIG.C_ATG_SYSTEM_INIT_DATA_MIF $coe4 CONFIG.C_ATG_SYSINIT_MODES {System_Test} CONFIG.C_ATG_SYSTEM_TEST_MAX_CLKS {2147483647} CONFIG.C_ATG_MIF_DATA_DEPTH {16}] [get_ips axi_traffic_gen_0]
+generate_target all [get_ips axi_traffic_gen_0]
+
+##create_ip -name clk_wiz  -vendor xilinx.com -library ip -module_name clk_wiz_tb
+##set_property -dict [list CONFIG.PRIM_IN_FREQ {200.000} CONFIG.PRIM_SOURCE {Differential_clock_capable_pin} CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {<=:$min:>}] [get_ips clk_wiz_tb]
+##generate_target all [get_ips clk_wiz_tb]
+##create_fileset -blockset clk_wiz_tb 
+##set_property top clk_wiz_tb [get_fileset clk_wiz_tb]
+##move_files -fileset [get_fileset clk_wiz_tb] [get_files -of_objects [get_fileset sources_1] *clk_wiz_tb.xci]
+##launch_run  clk_wiz_tb_synth_1
+##wait_on_run clk_wiz_tb_synth_1
+##import_files -fileset sim_1 [get_files -all -of_objects [get_files *clk_wiz_tb.xci] -filter {USED_IN=~"*sim*"&&NAME=~"*clk_wiz_tb*sim*"&&USED_IN_SYNTHESIS==0}]
+##set_property used_in_synthesis false [get_files *clk_wiz_tb.xci]
+##set_property used_in_implementation false [get_files *clk_wiz_tb.xci]
+##set_property used_in_simulation false [get_files *clk_wiz_tb.xci]
+##file delete -force *clk_wiz_tb
+##remove_files -fileset clk_wiz_tb *clk_wiz_tb.xci
+##delete_fileset clk_wiz_tb
+set_property top <=: $ComponentName :>_exdes [current_fileset]
+update_compile_order -fileset sources_1
+set_property top <=: $ComponentName :>_exdes_tb [get_filesets sim_1]
+set_property top_lib {} [get_filesets sim_1]
+set_property top_arch {} [get_filesets sim_1]
+set_property top_file {} [get_filesets sim_1]
+update_compile_order -fileset sim_1
