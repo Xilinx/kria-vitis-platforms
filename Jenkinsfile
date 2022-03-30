@@ -81,7 +81,7 @@ pipeline {
         pfm_ver="202210_1"
         setup="${WORKSPACE}/paeg-helper/env-setup.sh"
         lsf="${WORKSPACE}/paeg-helper/scripts/lsf"
-        DEPLOYDIR="/wrk/paeg_builds/build-artifacts/kv260-vitis/${tool_release}"
+        DEPLOYDIR="/wrk/paeg_builds/build-artifacts/kria-vitis-platforms/${tool_release}"
     }
     options {
         // don't let the implicit checkout happen
