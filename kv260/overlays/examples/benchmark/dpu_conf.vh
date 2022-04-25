@@ -1,19 +1,3 @@
-/*                                                                         
-* Copyright 2019 Xilinx Inc.                                               
-*                                                                          
-* Licensed under the Apache License, Version 2.0 (the "License");          
-* you may not use this file except in compliance with the License.         
-* You may obtain a copy of the License at                                  
-*                                                                          
-*    http://www.apache.org/licenses/LICENSE-2.0                            
-*                                                                          
-* Unless required by applicable law or agreed to in writing, software      
-* distributed under the License is distributed on an "AS IS" BASIS,        
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-* See the License for the specific language governing permissions and      
-* limitations under the License.                                           
-*/                                                                         
-
 //Setting the arch of DPU, For more details, Please read the PG338 
 
 
@@ -39,7 +23,7 @@
 // | `define B4096                 
 // |------------------------------------------------------|
 
-`define B4096
+`define B3136 
 
 // |------------------------------------------------------|
 // | If the FPGA has Uram. You can define URAM_EN parameter               
@@ -50,7 +34,7 @@
 // | for zcu102 : `define URAM_DISABLE                 
 // |------------------------------------------------------|
 
-`define URAM_ENABLE
+`define URAM_ENABLE 
 
 //config URAM
 `ifdef URAM_ENABLE
@@ -67,14 +51,14 @@
 // | You can use DRAM if FPGA has extra LUTs               
 // | if change, Don't need update model
 // +------------------------------------------------------+
-// | Enable DRAM  : `define URAM_ENABLE               
+// | Enable DRAM  : `define DRAM_ENABLE               
 // +------------------------------------------------------+
-// | Disable DRAM : `define URAM_DISABLE                 
+// | Disable DRAM : `define DRAM_DISABLE                 
 // |------------------------------------------------------|
 
 `define DRAM_DISABLE 
 
-//config URAM
+//config DRAM
 `ifdef DRAM_ENABLE
     `define def_DBANK_IMG_N          1 
     `define def_DBANK_WGT_N          1
@@ -119,37 +103,43 @@
 `define DWCV_ENABLE
 
 // |------------------------------------------------------|
-// | Pool Average Configuration
+// | ALU parallel Configuration
 // | It relates to model. if change, must update model
 // +------------------------------------------------------+
-// | Enable  : `define POOL_AVG_ENABLE              
+// | setting 0  : `define ALU_PARALLEL_DEFAULT              
 // +------------------------------------------------------+
-// | Disable : `define POOL_AVG_DISABLE                
+// | setting 1  : `define ALU_PARALLEL_1                
+// |------------------------------------------------------|
+// | setting 2  : `define ALU_PARALLEL_2                
+// |------------------------------------------------------|
+// | setting 3  : `define ALU_PARALLEL_4                
+// |------------------------------------------------------|
+// | setting 4  : `define ALU_PARALLEL_8                
 // |------------------------------------------------------|
 
-`define POOL_AVG_ENABLE
+`define ALU_PARALLEL_DEFAULT 
 
-// |------------------------------------------------------|
-// | support multiplication of two feature maps
+// +------------------------------------------------------+
+// | CONV RELU Type Configuration
 // | It relates to model. if change, must update model
 // +------------------------------------------------------+
-// | Enable  : `define ELEW_MULT_ENABLE           
+// | `define CONV_RELU_RELU6
 // +------------------------------------------------------+
-// | Disable : `define ELEW_MULT_DISABLE               
+// | `define CONV_RELU_LEAKYRELU_RELU6
 // |------------------------------------------------------|
 
-`define ELEW_MULT_DISABLE
+`define CONV_RELU_LEAKYRELU_RELU6
 
 // +------------------------------------------------------+
-// | RELU Type Configuration
+// | ALU RELU Type Configuration
 // | It relates to model. if change, must update model
 // +------------------------------------------------------+
-// | `define RELU_RELU6
+// | `define ALU_RELU_RELU6
 // +------------------------------------------------------+
-// | `define RELU_LEAKYRELU_RELU6
+// | `define ALU_RELU_LEAKYRELU_RELU6
 // |------------------------------------------------------|
 
-`define RELU_LEAKYRELU_RELU6
+`define ALU_RELU_RELU6
 
 // |------------------------------------------------------|
 // | DSP48 Usage Configuration  

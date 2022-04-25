@@ -44,11 +44,9 @@ set_property sdx_kernel true [ipx::current_core]
 set_property sdx_kernel_type rtl [ipx::current_core]
 set_property type ttcl [ipx::get_files src/*.ttcl -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis            -of_objects [ipx::current_core]]]
 set_property type ttcl [ipx::get_files src/*.ttcl -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+bip_set_bus_interfaces
+bip_set_bus_enablement_dependency
 ipx::create_xgui_files [ipx::current_core]
-ipx::associate_bus_interfaces -busif M_AXI_GP0 -clock aclk [ipx::current_core]
-ipx::associate_bus_interfaces -busif M_AXI_HP0 -clock aclk [ipx::current_core]
-ipx::associate_bus_interfaces -busif M_AXI_HP2 -clock aclk [ipx::current_core]
-ipx::associate_bus_interfaces -busif S_AXI_CONTROL -clock aclk [ipx::current_core]
 ipx::infer_bus_interface ap_clk_2 xilinx.com:signal:clock_rtl:1.0 [ipx::current_core]
 ipx::infer_bus_interface ap_rst_n_2 xilinx.com:signal:reset_rtl:1.0 [ipx::current_core]
 set_property xpm_libraries {XPM_CDC XPM_MEMORY XPM_FIFO} [ipx::current_core]

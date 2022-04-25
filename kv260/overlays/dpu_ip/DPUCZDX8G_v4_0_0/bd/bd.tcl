@@ -30,7 +30,6 @@ proc init {cellpath otherInfo} {
     set_property "CONFIG.CONV_DSP_CASC_MAX"       {4}           $ip
   }
   set_property "CONFIG.ARCH"                      {4096}        $ip
-  set_property "CONFIG.DWCV_ENA"                  {1}           $ip
 
 }
 
