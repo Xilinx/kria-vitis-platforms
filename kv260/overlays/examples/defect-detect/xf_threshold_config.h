@@ -30,8 +30,8 @@
 
 #include "imgproc/xf_gaussian_filter.hpp"
 #include "imgproc/xf_otsuthreshold.hpp"
-#include "imgproc/xf_extra_utility.h"
 #include "imgproc/xf_cca_custom.hpp"
+#include "imgproc/xf_duplicateimage.hpp"
 
 typedef ap_uint<8> ap_uint8_t;
 typedef ap_uint<64> ap_uint64_t;
@@ -87,12 +87,5 @@ typedef ap_uint<64> ap_uint64_t;
 #else
 #define TYPE XF_8UC3
 #endif
- 
-
-
-void threshold_accel(xf::cv::Mat<XF_8UC1, HEIGHT, WIDTH, NPIX>& _src,
-                     xf::cv::Mat<XF_8UC1, HEIGHT, WIDTH, NPIX>& _dst,
-                     unsigned char thresh,
-                     unsigned char maxval);
 
 #endif // end of _XF_THRESHOLD_CONFIG_H_
