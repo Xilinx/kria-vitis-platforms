@@ -15,10 +15,6 @@
 # */
 
 # delete the fifo in the axi interconnect
-set_property -dict [list CONFIG.STRATEGY {0} CONFIG.M00_HAS_REGSLICE {0} CONFIG.M00_HAS_DATA_FIFO {0} CONFIG.S00_HAS_REGSLICE {0} CONFIG.S01_HAS_REGSLICE {0} CONFIG.S00_HAS_DATA_FIFO {0} CONFIG.S01_HAS_DATA_FIFO {0}] [get_bd_cells axi_ic_PS_0_S_AXI_HP1_FPD]
-set_property -dict [list CONFIG.STRATEGY {0} CONFIG.M00_HAS_REGSLICE {0} CONFIG.M00_HAS_DATA_FIFO {0} CONFIG.S00_HAS_REGSLICE {0} CONFIG.S01_HAS_REGSLICE {0} CONFIG.S02_HAS_REGSLICE {0} CONFIG.S00_HAS_DATA_FIFO {0} CONFIG.S01_HAS_DATA_FIFO {0} CONFIG.S02_HAS_DATA_FIFO {0}] [get_bd_cells axi_ic_PS_0_S_AXI_HP2_FPD]
-set_property -dict [list CONFIG.STRATEGY {0} CONFIG.M00_HAS_REGSLICE {0} CONFIG.M00_HAS_DATA_FIFO {0} CONFIG.S00_HAS_REGSLICE {0} CONFIG.S01_HAS_REGSLICE {0} CONFIG.S00_HAS_DATA_FIFO {0} CONFIG.S01_HAS_DATA_FIFO {0}] [get_bd_cells axi_ic_PS_0_S_AXI_HPC1_FPD]
-#set_property -dict [list CONFIG.S00_HAS_REGSLICE {1} CONFIG.S01_HAS_REGSLICE {1}] [get_bd_cells vcu/axi_ic_vcu_enc]
 set ps_cell [get_bd_cells * -hierarchical -quiet -filter {VLNV =~ "xilinx.com:ip:zynq_ultra_ps_e:*"}]
 if {$ps_cell ne ""} {
 	set pfm_ports_dict [get_property PFM.AXI_PORT $ps_cell]
@@ -48,5 +44,3 @@ if {$intr_cell ne ""} {
 		set_property -dict [list CONFIG.M[format %02d $i]_HAS_REGSLICE {0} CONFIG.M[format %02d $i]_HAS_DATA_FIFO {0}] $intr_cell
 	}
 }
-
-
