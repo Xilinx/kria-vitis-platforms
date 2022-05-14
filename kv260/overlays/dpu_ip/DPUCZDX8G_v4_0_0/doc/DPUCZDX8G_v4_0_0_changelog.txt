@@ -1,3 +1,18 @@
+2022.1:
+ * Version 4.0
+ * Vitis AI v2.5
+ * New ALU engine to replace Pool engine and Dwcv engine
+ * ALU: Supported large-kernel-size MaxPool and AveragePool
+ * ALU: Supported rectangle-kernel-size AveragePool
+ * ALU: Supported 16bit const weights
+ * ALU: Supported HardSigmoid and HardSwish
+ * ALU: Supported DepthWiseConv + LeakyReLU
+ * ALU: Unlocked the parallelism configuration
+ * ALU: Always enabled AveragePool
+ * ALU: Always enabled DepthWiseConv
+ * ALU: Always enabled Elew-Multiply
+ * Optimized resources and timing
+
 2021.2:
  * Version 3.4
  * Vitis AI v2.0

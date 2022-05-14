@@ -1,6 +1,6 @@
 
 # Loading additional proc with user specified bodies to compute parameter values.
-source [file join [file dirname [file dirname [info script]]] gui/dpuczdx8g_v3_4.gtcl]
+source [file join [file dirname [file dirname [info script]]] gui/dpuczdx8g_v4_0.gtcl]
 
 # Definitional proc to organize widgets for parameters.
 proc init_gui { IPINST } {
@@ -13,16 +13,23 @@ proc init_gui { IPINST } {
   set_property tooltip {Select whether more on-chip RAMs are used} ${ARCH_IMG_BKGRP}
   set LOAD_AUGM [ipgui::add_param $IPINST -name "LOAD_AUGM" -parent ${Arch} -widget comboBox]
   set_property tooltip {Enablement of Channel Augmentation} ${LOAD_AUGM}
-  set DWCV_ENA [ipgui::add_param $IPINST -name "DWCV_ENA" -parent ${Arch} -widget comboBox]
-  set_property tooltip {Enablement of DepthWiseConv} ${DWCV_ENA}
-  set ELEW_MULT_EN [ipgui::add_param $IPINST -name "ELEW_MULT_EN" -parent ${Arch} -widget comboBox]
-  set_property tooltip {Enablement of ElementWise Multiply} ${ELEW_MULT_EN}
-  set POOL_AVERAGE [ipgui::add_param $IPINST -name "POOL_AVERAGE" -parent ${Arch} -widget comboBox]
-  set_property tooltip {Enablement of AveragePool} ${POOL_AVERAGE}
   #Adding Group
   set CONV [ipgui::add_group $IPINST -name "CONV" -parent ${Arch} -display_name {Conv}]
   set CONV_RELU_ADDON [ipgui::add_param $IPINST -name "CONV_RELU_ADDON" -parent ${CONV} -widget comboBox]
   set_property tooltip {Select the ReLU Type of Conv.} ${CONV_RELU_ADDON}
+
+  #Adding Group
+  set ALU [ipgui::add_group $IPINST -name "ALU" -parent ${Arch} -display_name {Alu}]
+  set ALU_PARALLEL_USER [ipgui::add_param $IPINST -name "ALU_PARALLEL_USER" -parent ${ALU} -widget comboBox]
+  set_property tooltip {Alu Parallel. Should not be larger than Conv} ${ALU_PARALLEL_USER}
+  set ALU_PARALLEL [ipgui::add_param $IPINST -name "ALU_PARALLEL" -parent ${ALU} -widget comboBox]
+  set_property tooltip {Alu Parallel. Should not be larger than Conv} ${ALU_PARALLEL}
+  set ELEW_MULT_EN [ipgui::add_param $IPINST -name "ELEW_MULT_EN" -parent ${ALU} -widget comboBox]
+  set_property tooltip {Enablement of ElementWise Multiply} ${ELEW_MULT_EN}
+  set POOL_AVERAGE [ipgui::add_param $IPINST -name "POOL_AVERAGE" -parent ${ALU} -widget comboBox]
+  set_property tooltip {Enablement of AveragePool} ${POOL_AVERAGE}
+  set ALU_LEAKYRELU [ipgui::add_param $IPINST -name "ALU_LEAKYRELU" -parent ${ALU} -widget comboBox]
+  set_property tooltip {Select the ReLU Type of Alu.} ${ALU_LEAKYRELU}
 
   #Adding Group
   set SFM [ipgui::add_group $IPINST -name "SFM" -parent ${Arch} -display_name {Softmax}]
@@ -63,6 +70,38 @@ proc init_gui { IPINST } {
   ipgui::add_param $IPINST -name "SUM_BRAM_N" -parent ${Summary}
 
 
+}
+
+proc update_PARAM_VALUE.ALU_DSP_NUM { PARAM_VALUE.ALU_DSP_NUM PARAM_VALUE.ALU_PARALLEL PARAM_VALUE.ARCH_ICP } {
+	# Procedure called to update ALU_DSP_NUM when any of the dependent parameters in the arguments change
+	
+	set ALU_DSP_NUM ${PARAM_VALUE.ALU_DSP_NUM}
+	set ALU_PARALLEL ${PARAM_VALUE.ALU_PARALLEL}
+	set ARCH_ICP ${PARAM_VALUE.ARCH_ICP}
+	set values(ALU_PARALLEL) [get_property value $ALU_PARALLEL]
+	set values(ARCH_ICP) [get_property value $ARCH_ICP]
+	set_property value [gen_USERPARAMETER_ALU_DSP_NUM_VALUE $values(ALU_PARALLEL) $values(ARCH_ICP)] $ALU_DSP_NUM
+}
+
+proc validate_PARAM_VALUE.ALU_DSP_NUM { PARAM_VALUE.ALU_DSP_NUM } {
+	# Procedure called to validate ALU_DSP_NUM
+	return true
+}
+
+proc update_PARAM_VALUE.ALU_PARALLEL { PARAM_VALUE.ALU_PARALLEL PARAM_VALUE.ALU_PARALLEL_USER PARAM_VALUE.ARCH_PP } {
+	# Procedure called to update ALU_PARALLEL when any of the dependent parameters in the arguments change
+	
+	set ALU_PARALLEL ${PARAM_VALUE.ALU_PARALLEL}
+	set ALU_PARALLEL_USER ${PARAM_VALUE.ALU_PARALLEL_USER}
+	set ARCH_PP ${PARAM_VALUE.ARCH_PP}
+	set values(ALU_PARALLEL_USER) [get_property value $ALU_PARALLEL_USER]
+	set values(ARCH_PP) [get_property value $ARCH_PP]
+	set_property value [gen_USERPARAMETER_ALU_PARALLEL_VALUE $values(ALU_PARALLEL_USER) $values(ARCH_PP)] $ALU_PARALLEL
+}
+
+proc validate_PARAM_VALUE.ALU_PARALLEL { PARAM_VALUE.ALU_PARALLEL } {
+	# Procedure called to validate ALU_PARALLEL
+	return true
 }
 
 proc update_PARAM_VALUE.ARCH_ICP { PARAM_VALUE.ARCH_ICP PARAM_VALUE.ARCH } {
@@ -277,7 +316,7 @@ proc validate_PARAM_VALUE.CONV_RELU6 { PARAM_VALUE.CONV_RELU6 } {
 	return true
 }
 
-proc update_PARAM_VALUE.DNNDK_PRINT { PARAM_VALUE.DNNDK_PRINT PARAM_VALUE.VER_DPU_NUM PARAM_VALUE.ARCH PARAM_VALUE.ARCH_IMG_BKGRP PARAM_VALUE.LOAD_AUGM PARAM_VALUE.DWCV_ENA PARAM_VALUE.POOL_AVERAGE PARAM_VALUE.CONV_RELU_ADDON PARAM_VALUE.SFM_ENA PARAM_VALUE.S_AXI_CLK_INDEPENDENT PARAM_VALUE.CLK_GATING_ENA PARAM_VALUE.CONV_DSP_CASC_MAX PARAM_VALUE.CONV_DSP_ACCU_ENA PARAM_VALUE.URAM_N_USER PARAM_VALUE.TIMESTAMP_ENA PARAM_VALUE.SUM_VER_TARGET PARAM_VALUE.SUM_AXI_PROTOCOL PARAM_VALUE.SUM_S_AXI_DATA_BW PARAM_VALUE.SUM_GP_DATA_BW PARAM_VALUE.SUM_HP_DATA_BW PARAM_VALUE.SUM_SFM_HP_DATA_BW PARAM_VALUE.GP_ID_BW PARAM_VALUE.SUM_DSP_NUM PARAM_VALUE.SUM_URAM_N PARAM_VALUE.SUM_BRAM_N } {
+proc update_PARAM_VALUE.DNNDK_PRINT { PARAM_VALUE.DNNDK_PRINT PARAM_VALUE.VER_DPU_NUM PARAM_VALUE.ARCH PARAM_VALUE.ARCH_IMG_BKGRP PARAM_VALUE.LOAD_AUGM PARAM_VALUE.CONV_RELU_ADDON PARAM_VALUE.SFM_ENA PARAM_VALUE.S_AXI_CLK_INDEPENDENT PARAM_VALUE.CLK_GATING_ENA PARAM_VALUE.CONV_DSP_CASC_MAX PARAM_VALUE.CONV_DSP_ACCU_ENA PARAM_VALUE.URAM_N_USER PARAM_VALUE.TIMESTAMP_ENA PARAM_VALUE.SUM_VER_TARGET PARAM_VALUE.SUM_AXI_PROTOCOL PARAM_VALUE.SUM_S_AXI_DATA_BW PARAM_VALUE.SUM_GP_DATA_BW PARAM_VALUE.SUM_HP_DATA_BW PARAM_VALUE.SUM_SFM_HP_DATA_BW PARAM_VALUE.GP_ID_BW PARAM_VALUE.SUM_DSP_NUM PARAM_VALUE.SUM_URAM_N PARAM_VALUE.SUM_BRAM_N } {
 	# Procedure called to update DNNDK_PRINT when any of the dependent parameters in the arguments change
 	
 	set DNNDK_PRINT ${PARAM_VALUE.DNNDK_PRINT}
@@ -285,8 +324,6 @@ proc update_PARAM_VALUE.DNNDK_PRINT { PARAM_VALUE.DNNDK_PRINT PARAM_VALUE.VER_DP
 	set ARCH ${PARAM_VALUE.ARCH}
 	set ARCH_IMG_BKGRP ${PARAM_VALUE.ARCH_IMG_BKGRP}
 	set LOAD_AUGM ${PARAM_VALUE.LOAD_AUGM}
-	set DWCV_ENA ${PARAM_VALUE.DWCV_ENA}
-	set POOL_AVERAGE ${PARAM_VALUE.POOL_AVERAGE}
 	set CONV_RELU_ADDON ${PARAM_VALUE.CONV_RELU_ADDON}
 	set SFM_ENA ${PARAM_VALUE.SFM_ENA}
 	set S_AXI_CLK_INDEPENDENT ${PARAM_VALUE.S_AXI_CLK_INDEPENDENT}
@@ -309,8 +346,6 @@ proc update_PARAM_VALUE.DNNDK_PRINT { PARAM_VALUE.DNNDK_PRINT PARAM_VALUE.VER_DP
 	set values(ARCH) [get_property value $ARCH]
 	set values(ARCH_IMG_BKGRP) [get_property value $ARCH_IMG_BKGRP]
 	set values(LOAD_AUGM) [get_property value $LOAD_AUGM]
-	set values(DWCV_ENA) [get_property value $DWCV_ENA]
-	set values(POOL_AVERAGE) [get_property value $POOL_AVERAGE]
 	set values(CONV_RELU_ADDON) [get_property value $CONV_RELU_ADDON]
 	set values(SFM_ENA) [get_property value $SFM_ENA]
 	set values(S_AXI_CLK_INDEPENDENT) [get_property value $S_AXI_CLK_INDEPENDENT]
@@ -329,7 +364,7 @@ proc update_PARAM_VALUE.DNNDK_PRINT { PARAM_VALUE.DNNDK_PRINT PARAM_VALUE.VER_DP
 	set values(SUM_DSP_NUM) [get_property value $SUM_DSP_NUM]
 	set values(SUM_URAM_N) [get_property value $SUM_URAM_N]
 	set values(SUM_BRAM_N) [get_property value $SUM_BRAM_N]
-	set_property value [gen_USERPARAMETER_DNNDK_PRINT_VALUE $values(VER_DPU_NUM) $values(ARCH) $values(ARCH_IMG_BKGRP) $values(LOAD_AUGM) $values(DWCV_ENA) $values(POOL_AVERAGE) $values(CONV_RELU_ADDON) $values(SFM_ENA) $values(S_AXI_CLK_INDEPENDENT) $values(CLK_GATING_ENA) $values(CONV_DSP_CASC_MAX) $values(CONV_DSP_ACCU_ENA) $values(URAM_N_USER) $values(TIMESTAMP_ENA) $values(SUM_VER_TARGET) $values(SUM_AXI_PROTOCOL) $values(SUM_S_AXI_DATA_BW) $values(SUM_GP_DATA_BW) $values(SUM_HP_DATA_BW) $values(SUM_SFM_HP_DATA_BW) $values(GP_ID_BW) $values(SUM_DSP_NUM) $values(SUM_URAM_N) $values(SUM_BRAM_N)] $DNNDK_PRINT
+	set_property value [gen_USERPARAMETER_DNNDK_PRINT_VALUE $values(VER_DPU_NUM) $values(ARCH) $values(ARCH_IMG_BKGRP) $values(LOAD_AUGM) $values(CONV_RELU_ADDON) $values(SFM_ENA) $values(S_AXI_CLK_INDEPENDENT) $values(CLK_GATING_ENA) $values(CONV_DSP_CASC_MAX) $values(CONV_DSP_ACCU_ENA) $values(URAM_N_USER) $values(TIMESTAMP_ENA) $values(SUM_VER_TARGET) $values(SUM_AXI_PROTOCOL) $values(SUM_S_AXI_DATA_BW) $values(SUM_GP_DATA_BW) $values(SUM_HP_DATA_BW) $values(SUM_SFM_HP_DATA_BW) $values(GP_ID_BW) $values(SUM_DSP_NUM) $values(SUM_URAM_N) $values(SUM_BRAM_N)] $DNNDK_PRINT
 }
 
 proc validate_PARAM_VALUE.DNNDK_PRINT { PARAM_VALUE.DNNDK_PRINT } {
@@ -799,53 +834,17 @@ proc validate_PARAM_VALUE.DPU3_UBANK_WGT_N { PARAM_VALUE.DPU3_UBANK_WGT_N } {
 	return true
 }
 
-proc update_PARAM_VALUE.DWCV_DSP_NUM { PARAM_VALUE.DWCV_DSP_NUM PARAM_VALUE.DWCV_PARALLEL PARAM_VALUE.ARCH_ICP PARAM_VALUE.DWCV_ENA } {
-	# Procedure called to update DWCV_DSP_NUM when any of the dependent parameters in the arguments change
+proc update_PARAM_VALUE.ELEW_PARALLEL { PARAM_VALUE.ELEW_PARALLEL PARAM_VALUE.ALU_PARALLEL } {
+	# Procedure called to update ELEW_PARALLEL when any of the dependent parameters in the arguments change
 	
-	set DWCV_DSP_NUM ${PARAM_VALUE.DWCV_DSP_NUM}
-	set DWCV_PARALLEL ${PARAM_VALUE.DWCV_PARALLEL}
-	set ARCH_ICP ${PARAM_VALUE.ARCH_ICP}
-	set DWCV_ENA ${PARAM_VALUE.DWCV_ENA}
-	set values(DWCV_PARALLEL) [get_property value $DWCV_PARALLEL]
-	set values(ARCH_ICP) [get_property value $ARCH_ICP]
-	set values(DWCV_ENA) [get_property value $DWCV_ENA]
-	set_property value [gen_USERPARAMETER_DWCV_DSP_NUM_VALUE $values(DWCV_PARALLEL) $values(ARCH_ICP) $values(DWCV_ENA)] $DWCV_DSP_NUM
+	set ELEW_PARALLEL ${PARAM_VALUE.ELEW_PARALLEL}
+	set ALU_PARALLEL ${PARAM_VALUE.ALU_PARALLEL}
+	set values(ALU_PARALLEL) [get_property value $ALU_PARALLEL]
+	set_property value [gen_USERPARAMETER_ELEW_PARALLEL_VALUE $values(ALU_PARALLEL)] $ELEW_PARALLEL
 }
 
-proc validate_PARAM_VALUE.DWCV_DSP_NUM { PARAM_VALUE.DWCV_DSP_NUM } {
-	# Procedure called to validate DWCV_DSP_NUM
-	return true
-}
-
-proc update_PARAM_VALUE.DWCV_PARALLEL { PARAM_VALUE.DWCV_PARALLEL PARAM_VALUE.DWCV_ENA PARAM_VALUE.ARCH_PP } {
-	# Procedure called to update DWCV_PARALLEL when any of the dependent parameters in the arguments change
-	
-	set DWCV_PARALLEL ${PARAM_VALUE.DWCV_PARALLEL}
-	set DWCV_ENA ${PARAM_VALUE.DWCV_ENA}
-	set ARCH_PP ${PARAM_VALUE.ARCH_PP}
-	set values(DWCV_ENA) [get_property value $DWCV_ENA]
-	set values(ARCH_PP) [get_property value $ARCH_PP]
-	set_property value [gen_USERPARAMETER_DWCV_PARALLEL_VALUE $values(DWCV_ENA) $values(ARCH_PP)] $DWCV_PARALLEL
-}
-
-proc validate_PARAM_VALUE.DWCV_PARALLEL { PARAM_VALUE.DWCV_PARALLEL } {
-	# Procedure called to validate DWCV_PARALLEL
-	return true
-}
-
-proc update_PARAM_VALUE.DWCV_RELU6 { PARAM_VALUE.DWCV_RELU6 PARAM_VALUE.DWCV_ENA PARAM_VALUE.CONV_RELU6 } {
-	# Procedure called to update DWCV_RELU6 when any of the dependent parameters in the arguments change
-	
-	set DWCV_RELU6 ${PARAM_VALUE.DWCV_RELU6}
-	set DWCV_ENA ${PARAM_VALUE.DWCV_ENA}
-	set CONV_RELU6 ${PARAM_VALUE.CONV_RELU6}
-	set values(DWCV_ENA) [get_property value $DWCV_ENA]
-	set values(CONV_RELU6) [get_property value $CONV_RELU6]
-	set_property value [gen_USERPARAMETER_DWCV_RELU6_VALUE $values(DWCV_ENA) $values(CONV_RELU6)] $DWCV_RELU6
-}
-
-proc validate_PARAM_VALUE.DWCV_RELU6 { PARAM_VALUE.DWCV_RELU6 } {
-	# Procedure called to validate DWCV_RELU6
+proc validate_PARAM_VALUE.ELEW_PARALLEL { PARAM_VALUE.ELEW_PARALLEL } {
+	# Procedure called to validate ELEW_PARALLEL
 	return true
 }
 
@@ -1019,25 +1018,25 @@ proc validate_PARAM_VALUE.SUM_BRAM_N { PARAM_VALUE.SUM_BRAM_N } {
 	return true
 }
 
-proc update_PARAM_VALUE.SUM_DSP_NUM { PARAM_VALUE.SUM_DSP_NUM PARAM_VALUE.LOAD_DSP_NUM PARAM_VALUE.SAVE_DSP_NUM PARAM_VALUE.CONV_DSP_NUM PARAM_VALUE.DWCV_DSP_NUM PARAM_VALUE.VER_DPU_NUM PARAM_VALUE.SFM_ENA PARAM_VALUE.SFM_DSP_NUM } {
+proc update_PARAM_VALUE.SUM_DSP_NUM { PARAM_VALUE.SUM_DSP_NUM PARAM_VALUE.LOAD_DSP_NUM PARAM_VALUE.SAVE_DSP_NUM PARAM_VALUE.CONV_DSP_NUM PARAM_VALUE.ALU_DSP_NUM PARAM_VALUE.VER_DPU_NUM PARAM_VALUE.SFM_ENA PARAM_VALUE.SFM_DSP_NUM } {
 	# Procedure called to update SUM_DSP_NUM when any of the dependent parameters in the arguments change
 	
 	set SUM_DSP_NUM ${PARAM_VALUE.SUM_DSP_NUM}
 	set LOAD_DSP_NUM ${PARAM_VALUE.LOAD_DSP_NUM}
 	set SAVE_DSP_NUM ${PARAM_VALUE.SAVE_DSP_NUM}
 	set CONV_DSP_NUM ${PARAM_VALUE.CONV_DSP_NUM}
-	set DWCV_DSP_NUM ${PARAM_VALUE.DWCV_DSP_NUM}
+	set ALU_DSP_NUM ${PARAM_VALUE.ALU_DSP_NUM}
 	set VER_DPU_NUM ${PARAM_VALUE.VER_DPU_NUM}
 	set SFM_ENA ${PARAM_VALUE.SFM_ENA}
 	set SFM_DSP_NUM ${PARAM_VALUE.SFM_DSP_NUM}
 	set values(LOAD_DSP_NUM) [get_property value $LOAD_DSP_NUM]
 	set values(SAVE_DSP_NUM) [get_property value $SAVE_DSP_NUM]
 	set values(CONV_DSP_NUM) [get_property value $CONV_DSP_NUM]
-	set values(DWCV_DSP_NUM) [get_property value $DWCV_DSP_NUM]
+	set values(ALU_DSP_NUM) [get_property value $ALU_DSP_NUM]
 	set values(VER_DPU_NUM) [get_property value $VER_DPU_NUM]
 	set values(SFM_ENA) [get_property value $SFM_ENA]
 	set values(SFM_DSP_NUM) [get_property value $SFM_DSP_NUM]
-	set_property value [gen_USERPARAMETER_SUM_DSP_NUM_VALUE $values(LOAD_DSP_NUM) $values(SAVE_DSP_NUM) $values(CONV_DSP_NUM) $values(DWCV_DSP_NUM) $values(VER_DPU_NUM) $values(SFM_ENA) $values(SFM_DSP_NUM)] $SUM_DSP_NUM
+	set_property value [gen_USERPARAMETER_SUM_DSP_NUM_VALUE $values(LOAD_DSP_NUM) $values(SAVE_DSP_NUM) $values(CONV_DSP_NUM) $values(ALU_DSP_NUM) $values(VER_DPU_NUM) $values(SFM_ENA) $values(SFM_DSP_NUM)] $SUM_DSP_NUM
 }
 
 proc validate_PARAM_VALUE.SUM_DSP_NUM { PARAM_VALUE.SUM_DSP_NUM } {
@@ -1223,6 +1222,24 @@ proc validate_PARAM_VALUE.UBANK_WGT_N_USER { PARAM_VALUE.UBANK_WGT_N_USER } {
 	return true
 }
 
+proc update_PARAM_VALUE.ALU_LEAKYRELU { PARAM_VALUE.ALU_LEAKYRELU } {
+	# Procedure called to update ALU_LEAKYRELU when any of the dependent parameters in the arguments change
+}
+
+proc validate_PARAM_VALUE.ALU_LEAKYRELU { PARAM_VALUE.ALU_LEAKYRELU } {
+	# Procedure called to validate ALU_LEAKYRELU
+	return true
+}
+
+proc update_PARAM_VALUE.ALU_PARALLEL_USER { PARAM_VALUE.ALU_PARALLEL_USER } {
+	# Procedure called to update ALU_PARALLEL_USER when any of the dependent parameters in the arguments change
+}
+
+proc validate_PARAM_VALUE.ALU_PARALLEL_USER { PARAM_VALUE.ALU_PARALLEL_USER } {
+	# Procedure called to validate ALU_PARALLEL_USER
+	return true
+}
+
 proc update_PARAM_VALUE.ARCH { PARAM_VALUE.ARCH } {
 	# Procedure called to update ARCH when any of the dependent parameters in the arguments change
 }
@@ -1340,15 +1357,6 @@ proc validate_PARAM_VALUE.DSP48_VER { PARAM_VALUE.DSP48_VER } {
 	return true
 }
 
-proc update_PARAM_VALUE.DWCV_ALU_MODE { PARAM_VALUE.DWCV_ALU_MODE } {
-	# Procedure called to update DWCV_ALU_MODE when any of the dependent parameters in the arguments change
-}
-
-proc validate_PARAM_VALUE.DWCV_ALU_MODE { PARAM_VALUE.DWCV_ALU_MODE } {
-	# Procedure called to validate DWCV_ALU_MODE
-	return true
-}
-
 proc update_PARAM_VALUE.DWCV_ENA { PARAM_VALUE.DWCV_ENA } {
 	# Procedure called to update DWCV_ENA when any of the dependent parameters in the arguments change
 }
@@ -1364,15 +1372,6 @@ proc update_PARAM_VALUE.ELEW_MULT_EN { PARAM_VALUE.ELEW_MULT_EN } {
 
 proc validate_PARAM_VALUE.ELEW_MULT_EN { PARAM_VALUE.ELEW_MULT_EN } {
 	# Procedure called to validate ELEW_MULT_EN
-	return true
-}
-
-proc update_PARAM_VALUE.ELEW_PARALLEL { PARAM_VALUE.ELEW_PARALLEL } {
-	# Procedure called to update ELEW_PARALLEL when any of the dependent parameters in the arguments change
-}
-
-proc validate_PARAM_VALUE.ELEW_PARALLEL { PARAM_VALUE.ELEW_PARALLEL } {
-	# Procedure called to validate ELEW_PARALLEL
 	return true
 }
 
@@ -2037,19 +2036,14 @@ proc update_MODELPARAM_VALUE.ELEW_MULT_EN { MODELPARAM_VALUE.ELEW_MULT_EN PARAM_
 	set_property value [get_property value ${PARAM_VALUE.ELEW_MULT_EN}] ${MODELPARAM_VALUE.ELEW_MULT_EN}
 }
 
-proc update_MODELPARAM_VALUE.DWCV_ALU_MODE { MODELPARAM_VALUE.DWCV_ALU_MODE PARAM_VALUE.DWCV_ALU_MODE } {
+proc update_MODELPARAM_VALUE.ALU_LEAKYRELU { MODELPARAM_VALUE.ALU_LEAKYRELU PARAM_VALUE.ALU_LEAKYRELU } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
-	set_property value [get_property value ${PARAM_VALUE.DWCV_ALU_MODE}] ${MODELPARAM_VALUE.DWCV_ALU_MODE}
+	set_property value [get_property value ${PARAM_VALUE.ALU_LEAKYRELU}] ${MODELPARAM_VALUE.ALU_LEAKYRELU}
 }
 
-proc update_MODELPARAM_VALUE.DWCV_RELU6 { MODELPARAM_VALUE.DWCV_RELU6 PARAM_VALUE.DWCV_RELU6 } {
+proc update_MODELPARAM_VALUE.ALU_PARALLEL { MODELPARAM_VALUE.ALU_PARALLEL PARAM_VALUE.ALU_PARALLEL } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
-	set_property value [get_property value ${PARAM_VALUE.DWCV_RELU6}] ${MODELPARAM_VALUE.DWCV_RELU6}
-}
-
-proc update_MODELPARAM_VALUE.DWCV_PARALLEL { MODELPARAM_VALUE.DWCV_PARALLEL PARAM_VALUE.DWCV_PARALLEL } {
-	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
-	set_property value [get_property value ${PARAM_VALUE.DWCV_PARALLEL}] ${MODELPARAM_VALUE.DWCV_PARALLEL}
+	set_property value [get_property value ${PARAM_VALUE.ALU_PARALLEL}] ${MODELPARAM_VALUE.ALU_PARALLEL}
 }
 
 proc update_MODELPARAM_VALUE.MISC_WR_PARALLEL { MODELPARAM_VALUE.MISC_WR_PARALLEL PARAM_VALUE.MISC_WR_PARALLEL } {

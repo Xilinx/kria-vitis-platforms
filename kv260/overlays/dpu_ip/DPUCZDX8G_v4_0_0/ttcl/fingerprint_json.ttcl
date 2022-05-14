@@ -15,21 +15,22 @@
 <:   {4_4_4}      {set TM_ARCH 8 }  :>
 <:   {2_6_6}      {set TM_ARCH 9 }  :>
 <:   {2_8_8}      {set TM_ARCH 10}  :>
+<:   {2_4_4}      {set TM_ARCH 11}  :>
 <:   default      {set TM_ARCH 15}  :>
 <: } :>
-<: set TM_POOL_PARALLEL [expr {([getIntValue DWCV_PARALLEL]=={0})?(1):([getIntValue ARCH_PP]=={2})?(2):([getIntValue ARCH_PP]/2)}] :>
+<: set TM_LDP_I      [expr int(log([getIntValue LOAD_PARALLEL     ])/log(2))] :>
+<: set TM_CV_WP_SET  [expr int(log([getIntValue CONV_WR_PARALLEL  ])/log(2))] :>
+<: set TM_ALU_WP_SET [expr int(log([getIntValue MISC_WR_PARALLEL  ])/log(2))] :>
 <: set fp 0 :>
 <: set fp [expr $fp + 2** 0 * $TM_ARCH] :>
-<: set fp [expr $fp + 2** 8 * $TM_POOL_PARALLEL              ] :>
-<: set fp [expr $fp + 2**12 * [getIntValue  DWCV_PARALLEL   ]] :>
-<: set fp [expr $fp + 2**16 * [getIntValue  ELEW_PARALLEL   ]] :>
+<: set fp [expr $fp + 2** 8 * [getIntValue  ALU_PARALLEL    ]] :>
+<: set fp [expr $fp + 2**16 * $TM_LDP_I                      ] :>
 <: set fp [expr $fp + 2**24 * [getIntValue  ARCH_IMG_BKGRP  ]] :>
 <: set fp [expr $fp + 2**26 * [getIntValue  LOAD_AUGM       ]] :>
 <: set fp [expr $fp + 2**28 * [getIntValue  CONV_LEAKYRELU  ]] :>
-<: set fp [expr $fp + 2**29 * [getIntValue  CONV_RELU6      ]] :>
-<: set fp [expr $fp + 2**30 * [getIntValue  POOL_AVERAGE    ]] :>
-<: set fp [expr $fp + 2**31 * [getIntValue  DWCV_RELU6      ]] :>
-<: set fp [expr $fp + 2**36 * [getIntValue  ELEW_MULT_EN    ]] :>
-<: set fp [expr $fp + 2**37 * 1                              ] :>
+<: set fp [expr $fp + 2**29 * [getIntValue  ALU_LEAKYRELU   ]] :>
+<: set fp [expr $fp + 2**32 * $TM_CV_WP_SET                  ] :>
+<: set fp [expr $fp + 2**34 * $TM_ALU_WP_SET                 ] :>
+<: set fp [expr $fp + 2**48 * 1                              ] :>
 <: set fp [expr $fp + 2**56 * 1                              ] :>
 {"fingerprint":"0x<=: [dec2hex $fp] :>"}
