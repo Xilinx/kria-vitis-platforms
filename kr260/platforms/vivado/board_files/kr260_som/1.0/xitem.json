@@ -3,10 +3,10 @@
     "items": [
       {
         "infra": {
-          "name": "k26c", 
-          "display": "Kria K26C SOM", 
-          "revision": "1.3", 
-          "description": "Kria K26C SOM", 
+          "name": "kr260_som", 
+          "display": "Kria KR260 Robotics Starter Kit", 
+          "revision": "1.0", 
+          "description": "Kria KR260 Robotics Starter Kit", 
           "company": "xilinx.com", 
           "company_display": "Xilinx", 
           "author": "Vanitha", 

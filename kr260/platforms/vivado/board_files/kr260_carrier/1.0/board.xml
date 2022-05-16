@@ -1806,7 +1806,7 @@
 						<pin_map port_index="0" component_pin="som240_2_c52"/> 
 						</pin_maps>
 					</port_map>
-					<port_map logical_port="IO3_I" physical_port="pmod4_pin4" dir="inout"> 
+					<port_map logical_port="IO3_T" physical_port="pmod4_pin4" dir="inout"> 
 						<pin_maps>
 						<pin_map port_index="0" component_pin="som240_2_c52"/> 
 						</pin_maps>
@@ -1821,7 +1821,7 @@
 						<pin_map port_index="0" component_pin="som240_2_b44"/> 
 						</pin_maps>
 					</port_map>
-					<port_map logical_port="SS_I" physical_port="pmod4_pin5" dir="inout"> 
+					<port_map logical_port="SS_T" physical_port="pmod4_pin5" dir="inout"> 
 						<pin_maps>
 						<pin_map port_index="0" component_pin="som240_2_b44"/> 
 						</pin_maps>
@@ -1868,45 +1868,7 @@
 				</port_maps>
 				</interface>
 			
-				<interface mode="master" name="RPi_Expansion_Header" type="xilinx.com:interface:gpio_rtl:1.0" of_component="RPi_Expansion_Header" preset_proc="rpi_gpio_preset">
-				<preferred_ips>
-					<preferred_ip vendor="xilinx.com" library="ip" name="axi_gpio" order="0"/>
-				</preferred_ips>
-				<port_maps>
-					<port_map logical_port="TRI_I" physical_port="rpi_gpio_tri_i" dir="out" left="27" right="0"> 
-					<pin_maps>
-						<pin_map port_index="0"  component_pin="som240_2_d52"/> 
-						<pin_map port_index="1"  component_pin="som240_2_d53"/> 
-						<pin_map port_index="2"  component_pin="som240_2_d54"/>
-						<pin_map port_index="3"  component_pin="som240_2_d56"/> 
-						<pin_map port_index="4"  component_pin="som240_2_d57"/>
-						<pin_map port_index="5"  component_pin="som240_2_d58"/>				
-						<pin_map port_index="6"  component_pin="som240_2_c54"/> 
-						<pin_map port_index="7"  component_pin="som240_2_c55"/> 
-						<pin_map port_index="8"  component_pin="som240_2_c56"/>
-						<pin_map port_index="9"  component_pin="som240_2_c58"/>
-						<pin_map port_index="10" component_pin="som240_2_c59"/>
-						<pin_map port_index="11" component_pin="som240_2_c60"/>			
-						<pin_map port_index="12" component_pin="som240_2_b52"/>
-						<pin_map port_index="13" component_pin="som240_2_b53"/>
-						<pin_map port_index="14" component_pin="som240_2_b54"/>
-						<pin_map port_index="15" component_pin="som240_2_b56"/>	
-						<pin_map port_index="16" component_pin="som240_2_b57"/>
-						<pin_map port_index="17" component_pin="som240_2_b58"/>
-						<pin_map port_index="18" component_pin="som240_2_a54"/> 
-						<pin_map port_index="19" component_pin="som240_2_a55"/>
-						<pin_map port_index="20" component_pin="som240_2_a56"/>
-						<pin_map port_index="21" component_pin="som240_2_a58"/> 
-						<pin_map port_index="22" component_pin="som240_2_a59"/>
-						<pin_map port_index="23" component_pin="som240_2_a60"/>
-						<pin_map port_index="24" component_pin="som240_2_a48"/>
-						<pin_map port_index="25" component_pin="som240_2_a50"/>
-						<pin_map port_index="26" component_pin="som240_2_a51"/>
-						<pin_map port_index="27" component_pin="som240_2_a52"/>
-					</pin_maps>                                             
-					</port_map>
-				</port_maps>
-				</interface>		
+		
 		
 		   </interfaces>
 		
@@ -2091,9 +2053,7 @@
 		<description>I2C channel for MSP430 and Switch  </description>
 		</component>	
 
-		<component name="RPi_Expansion_Header" display_name="RPi Expansion Header" type="chip" sub_type="switch" major_group="General Purpose Input or Output">
-		<description>Raspberry Pi Expansion Header</description>
-		</component>	
+	
 	
 	
 	</components>
@@ -2232,37 +2192,8 @@
 		  <connection_map name="som240_1_connector_iic_main_1" typical_delay="5" c1_st_index="196" c1_end_index="196" c2_st_index="1" c2_end_index="1"/>
 		</connection>
 
-		<connection name="som240_2_RPi_gpio" component1="som240_2_connector" component2="RPi_Expansion_Header">
-		  <connection_map name="som240_2_d52_RPi_gpio_0"  typical_delay="5" c1_st_index="232" c1_end_index="232" c2_st_index="0"  c2_end_index="0"/>
-		  <connection_map name="som240_2_d53_RPi_gpio_1"  typical_delay="5" c1_st_index="233" c1_end_index="233" c2_st_index="1"  c2_end_index="1"/>
-		  <connection_map name="som240_2_d54_RPi_gpio_2"  typical_delay="5" c1_st_index="234" c1_end_index="234" c2_st_index="2"  c2_end_index="2"/>
-		  <connection_map name="som240_2_d56_RPi_gpio_3"  typical_delay="5" c1_st_index="236" c1_end_index="236" c2_st_index="3"  c2_end_index="3"/>
-		  <connection_map name="som240_2_d57_RPi_gpio_4"  typical_delay="5" c1_st_index="237" c1_end_index="237" c2_st_index="4"  c2_end_index="4"/>
-		  <connection_map name="som240_2_d58_RPi_gpio_5"  typical_delay="5" c1_st_index="238" c1_end_index="238" c2_st_index="5"  c2_end_index="5"/>
-		  <connection_map name="som240_2_c54_RPi_gpio_6"  typical_delay="5" c1_st_index="174" c1_end_index="174" c2_st_index="6"  c2_end_index="6"/>
-		  <connection_map name="som240_2_c55_RPi_gpio_7"  typical_delay="5" c1_st_index="175" c1_end_index="175" c2_st_index="7"  c2_end_index="7"/>
-		  <connection_map name="som240_2_c56_RPi_gpio_8"  typical_delay="5" c1_st_index="176" c1_end_index="176" c2_st_index="8"  c2_end_index="8"/>
-		  <connection_map name="som240_2_c58_RPi_gpio_9"  typical_delay="5" c1_st_index="178" c1_end_index="178" c2_st_index="9"  c2_end_index="9"/>
-		  <connection_map name="som240_2_c59_RPi_gpio_10" typical_delay="5" c1_st_index="179" c1_end_index="179" c2_st_index="10" c2_end_index="10"/>
-		  <connection_map name="som240_2_c60_RPi_gpio_11" typical_delay="5" c1_st_index="180" c1_end_index="180" c2_st_index="11" c2_end_index="11"/>
-		  <connection_map name="som240_2_b52_RPi_gpio_12" typical_delay="5" c1_st_index="112" c1_end_index="112" c2_st_index="12" c2_end_index="12"/>
-		  <connection_map name="som240_2_b53_RPi_gpio_13" typical_delay="5" c1_st_index="113" c1_end_index="113" c2_st_index="13" c2_end_index="13"/>
-		  <connection_map name="som240_2_b54_RPi_gpio_14" typical_delay="5" c1_st_index="114" c1_end_index="114" c2_st_index="14" c2_end_index="14"/>
-		  <connection_map name="som240_2_b56_RPi_gpio_15" typical_delay="5" c1_st_index="116" c1_end_index="116" c2_st_index="15" c2_end_index="15"/>
-		  <connection_map name="som240_2_b57_RPi_gpio_16" typical_delay="5" c1_st_index="117" c1_end_index="117" c2_st_index="16" c2_end_index="16"/>
-		  <connection_map name="som240_2_b58_RPi_gpio_17" typical_delay="5" c1_st_index="118" c1_end_index="118" c2_st_index="17" c2_end_index="17"/>
-		  <connection_map name="som240_2_a54_RPi_gpio_18" typical_delay="5" c1_st_index="54" c1_end_index="54" c2_st_index="18" c2_end_index="18"/>
-		  <connection_map name="som240_2_a55_RPi_gpio_19" typical_delay="5" c1_st_index="55" c1_end_index="55" c2_st_index="19" c2_end_index="19"/>
-		  <connection_map name="som240_2_a56_RPi_gpio_20" typical_delay="5" c1_st_index="56" c1_end_index="56" c2_st_index="20" c2_end_index="20"/>
-		  <connection_map name="som240_2_a58_RPi_gpio_21" typical_delay="5" c1_st_index="58" c1_end_index="58" c2_st_index="21" c2_end_index="21"/>
-		  <connection_map name="som240_2_a59_RPi_gpio_22" typical_delay="5" c1_st_index="59" c1_end_index="59" c2_st_index="22" c2_end_index="22"/>
-		  <connection_map name="som240_2_a60_RPi_gpio_23" typical_delay="5" c1_st_index="60" c1_end_index="60" c2_st_index="23" c2_end_index="23"/>
-		  <connection_map name="som240_2_a48_RPi_gpio_24" typical_delay="5" c1_st_index="48" c1_end_index="48" c2_st_index="24" c2_end_index="24"/>
-		  <connection_map name="som240_2_a50_RPi_gpio_25" typical_delay="5" c1_st_index="50" c1_end_index="50" c2_st_index="25" c2_end_index="25"/>
-		  <connection_map name="som240_2_a51_RPi_gpio_26" typical_delay="5" c1_st_index="51" c1_end_index="51" c2_st_index="26" c2_end_index="26"/>
-		  <connection_map name="som240_2_a52_RPi_gpio_27" typical_delay="5" c1_st_index="52" c1_end_index="52" c2_st_index="27" c2_end_index="27"/>
-		</connection>                                     
-                              
+
+		
 	</connections>                                        
 	
 	
