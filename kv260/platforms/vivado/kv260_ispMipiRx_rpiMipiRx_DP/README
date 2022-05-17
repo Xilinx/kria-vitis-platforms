@@ -47,7 +47,7 @@ block design and finally build a XSA.
 
 The generated XSA will be located at:
 
-> ./project/kv260_nlp.xsa
+> ./project/kv260_ispMipiRx_rpiMipiRx_DP.xsa
 
 
 Modify the Vivado design:
@@ -56,7 +56,7 @@ Modify the Vivado design:
 To open the Vivado project run the following command from the 
 Vivado tcl console:
 
-> open_project ./project/kv260_nlp.xpr
+> open_project ./project/kv260_ispMipiRx_rpiMipiRx_DP.xpr
 
 The user can now modify the block design and run Vivado implementation 
 and bitstream generation in the Vivado cockpit.
@@ -64,7 +64,7 @@ and bitstream generation in the Vivado cockpit.
 To write out a new extensible platform XSA file, run the following 
 command from the Vivado tcl console:
 
-> write_hw_platform -force -include_bit -file kv260_nlp.xsa
+> write_hw_platform -force -include_bit -file kv260_ispMipiRx_rpiMipiRx_DP.xsa
 
 The new XSA file can now be used replacing the existing XSA file in the Vitis
 platform generation or as hardware handoff file inside the Petalinux project.
