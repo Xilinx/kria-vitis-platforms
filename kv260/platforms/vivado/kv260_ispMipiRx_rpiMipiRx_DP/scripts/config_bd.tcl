@@ -1,4 +1,4 @@
-# (C) Copyright 2020 - 2021 Xilinx, Inc.
+# (C) Copyright 2020 - 2022 Xilinx, Inc.
 # SPDX-License-Identifier: Apache-2.0
 ################################################################
 # This is a generated script based on design: kv260_ispMipiRx_rpiMipiRx_DP

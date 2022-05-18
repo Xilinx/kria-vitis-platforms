@@ -29,5 +29,5 @@ tutorials, visit: https://xilinx.github.io/kria-apps-docs/
 
 # License
 
-(C) Copyright 2020 - 2021 Xilinx, Inc.\
+(C) Copyright 2020 - 2022 Xilinx, Inc.\
 SPDX-License-Identifier: Apache-2.0

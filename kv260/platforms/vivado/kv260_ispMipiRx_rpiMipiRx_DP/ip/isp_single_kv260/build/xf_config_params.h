@@ -1,4 +1,4 @@
-// (C) Copyright 2020 - 2021 Xilinx, Inc.
+// (C) Copyright 2020 - 2022 Xilinx, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 #define XF_NPPC XF_NPPC1 // XF_NPPC1 --1PIXEL , XF_NPPC2--2PIXEL ,XF_NPPC4--4 and XF_NPPC8--8PIXEL
