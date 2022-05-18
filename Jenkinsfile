@@ -337,23 +337,23 @@ pipeline {
                         }
                     }
                 }
-                stage('kv260_ispMipiRx_DP') {
+                stage('kv260_ispMipiRx_rpiMipiRx_DP') {
                     environment {
                         root_dir="${WORKSPACE}/src/kv260"
-                        pfm_base="kv260_ispMipiRx_DP"
+                        pfm_base="kv260_ispMipiRx_rpiMipiRx_DP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
                         pfm_dir="${root_dir}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
-                        stage('kv260_ispMipiRx_DP platform build')  {
+                        stage('kv260_ispMipiRx_rpiMipiRx_DP platform build')  {
                             environment {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_DP/**"
+                                    changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_rpiMipiRx_DP/**"
                                     triggeredBy 'TimerTrigger'
                                 }
                             }

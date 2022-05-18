@@ -1,7 +1,7 @@
 # (C) Copyright 2020 - 2021 Xilinx, Inc.
 # SPDX-License-Identifier: Apache-2.0
 ################################################################
-# This is a generated script based on design: kv260_ispMipiRx_DP
+# This is a generated script based on design: kv260_ispMipiRx_rpiMipiRx_DP
 #
 # Though there are limitations about the generated script,
 # the main purpose of this utility is to make learning
@@ -35,7 +35,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 ################################################################
 
 # To test this script, run the following commands from Vivado Tcl console:
-# source kv260_ispMipiRx_DP_script.tcl
+# source kv260_ispMipiRx_rpiMipiRx_DP_script.tcl
 
 # If there is no project opened, this script will create a
 # project, but make sure you do not have an existing project
@@ -50,7 +50,7 @@ if { $list_projs eq "" } {
 
 # CHANGE DESIGN NAME HERE
 variable design_name
-set design_name kv260_ispMipiRx_DP
+set design_name kv260_ispMipiRx_rpiMipiRx_DP
 
 # If you do not already have an existing IP Integrator design open,
 # you can create a design using the following command:
@@ -1598,7 +1598,7 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   current_bd_instance $oldCurInst
 
   # Create PFM attributes
-  set_property PFM_NAME {xilinx:kv260_ispMipiRx_DP:kv260_ispMipiRx_DP:1.0} [get_files [current_bd_design].bd]
+  set_property PFM_NAME {xilinx:kv260_ispMipiRx_rpiMipiRx_DP:kv260_ispMipiRx_rpiMipiRx_DP:1.0} [get_files [current_bd_design].bd]
   set_property PFM.AXI_PORT {M_AXI_HPM0_FPD { memport "M_AXI_GP" sptag "" memory "" is_range "false" } S_AXI_HP1_FPD { memport "S_AXI_HP" sptag "HP1" memory "PS_0 HP1_DDR_LOW" is_range "false" } S_AXI_HP3_FPD { memport "S_AXI_HP" sptag "HP3" memory "PS_0 HP3_DDR_LOW" is_range "false" } S_AXI_HPC1_FPD { memport "S_AXI_HPC" sptag "HPC1" memory "PS_0 HPC1_DDR_LOW" is_range "false" } } [get_bd_cells /PS_0]
   set_property PFM.IRQ {pl_ps_irq0 {id 0 range 7}} [get_bd_cells /PS_0]
   set_property PFM.CLOCK {clk_100M {id "2" is_default "false" proc_sys_reset "/proc_sys_reset_100MHz" status "fixed" freq_hz "99999000"} clk_300M {id "0" is_default "true" proc_sys_reset "/proc_sys_reset_300MHz" status "fixed" freq_hz "299997000"} clk_600M {id "1" is_default "false" proc_sys_reset "/proc_sys_reset_600MHz" status "fixed" freq_hz "599994000"}} [get_bd_cells /clk_wiz_0]
