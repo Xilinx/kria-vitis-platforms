@@ -1,4 +1,4 @@
-(C) Copyright 2020 - 2021 Xilinx, Inc.
+i(C) Copyright 2020 - 2022 Xilinx, Inc.
 SPDX-License-Identifier: Apache-2.0
 
 The Makefile in this folder creates a KR260 Vitis platform.
@@ -11,7 +11,6 @@ To create the Vitis platform, run the following command:
 
 Options for <platform_name> are
    - kr260_tsn_rs485pmod
-   - kr260_slvsec_10Gv_DP
 
 The Makefile uses the XSA from the vivado project to generate a platform.
 The generated platform will be located at:

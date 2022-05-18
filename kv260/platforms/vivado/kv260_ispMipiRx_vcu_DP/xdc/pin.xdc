@@ -1,4 +1,4 @@
-# (C) Copyright 2020 - 2021 Xilinx, Inc.
+# (C) Copyright 2020 - 2022 Xilinx, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
 #MIPI
@@ -76,5 +76,7 @@ set_property DRIVE 4 [get_ports sclk_rx]
 
 set_property PACKAGE_PIN B11 [get_ports sdata_rx]
 set_property IOSTANDARD LVCMOS33 [get_ports sdata_rx]
+set_property SLEW SLOW [get_ports sdata_rx]
+set_property DRIVE 4 [get_ports sdata_rx]
 
 set_property BITSTREAM.CONFIG.OVERTEMPSHUTDOWN ENABLE [current_design]
