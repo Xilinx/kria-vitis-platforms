@@ -25,9 +25,9 @@ freqHz=600000000:DPUCZDX8G_1.ap_clk_2
 
 [connectivity]
 
-sp=DPUCZDX8G_1.M_AXI_GP0:HP1
+sp=DPUCZDX8G_1.M_AXI_GP0:HPC1
 sp=DPUCZDX8G_1.M_AXI_HP0:HP1
-sp=DPUCZDX8G_1.M_AXI_HP2:HPC1
+sp=DPUCZDX8G_1.M_AXI_HP2:HP3
 
 [advanced]
 misc=:solution_name=link
