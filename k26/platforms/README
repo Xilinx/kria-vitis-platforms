@@ -1,0 +1,28 @@
+(C) Copyright 2022 Xilinx, Inc.
+SPDX-License-Identifier: Apache-2.0
+
+The Makefile in this folder creates a K26 Vitis platform.
+
+Create a Vitis Extensible Platform:
+***********************************
+To create the Vitis platform, run the following command:
+
+> make platform PLATFORM=<platform_name>
+
+Options for <platform_name> are
+   - k26_base_starter_kit
+
+The Makefile uses the XSA from the vivado project to generate a platform.
+The generated platform will be located at:
+
+> ./xilinx_<platform_name>_<version_num>
+
+The xpfm file in the above directory  will be used as input
+when building the Vitis accelerator projects. It exposes all
+the essential Platform Interfaces like Clock, Interrupts, Master
+AXI interfaces and Slave AXI interfaces for the accelerator to
+connect to.
+
+Note: The software components (boot, smp_linux etc) in this platform
+      are empty. The software components will be generated later when
+      building Petalinux.
