@@ -425,6 +425,37 @@ pipeline {
                         }
                     }
                 }
+	        stage('k26_base_starter_kit') {
+                    environment {
+                        root_dir="${WORKSPACE}/src/k26"
+                        pfm_base="k26_base_starter_kit"
+                        pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        pfm_dir="${root_dir}/platforms/${pfm}"
+                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                    }
+                    stages {
+                        stage('k26_base_starter_kit platform build')  {
+                            environment {
+                                PAEG_LSF_MEM=65536
+                                PAEG_LSF_QUEUE="long"
+                            }
+                            when {
+                                anyOf {
+                                    changeset "**/k26/platforms/vivado/k26_base_starter_kit/**"
+                                    triggeredBy 'TimerTrigger'
+                                }
+                            }
+                            steps {
+                                buildPlatform()
+                            }
+                            post {
+                                success {
+                                    deployPlatform()
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
