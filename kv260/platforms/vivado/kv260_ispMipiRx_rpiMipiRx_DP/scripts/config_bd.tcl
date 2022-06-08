@@ -258,7 +258,7 @@ proc create_hier_cell_capture_pipeline_raspi { parentCell nameHier } {
   set_property -dict [ list \
    CONFIG.DIN_FROM {4} \
    CONFIG.DIN_TO {4} \
-   CONFIG.DIN_WIDTH {92} \
+   CONFIG.DIN_WIDTH {95} \
    CONFIG.DOUT_WIDTH {1} \
  ] $xlslice_4
 
@@ -267,7 +267,7 @@ proc create_hier_cell_capture_pipeline_raspi { parentCell nameHier } {
   set_property -dict [ list \
    CONFIG.DIN_FROM {5} \
    CONFIG.DIN_TO {5} \
-   CONFIG.DIN_WIDTH {92} \
+   CONFIG.DIN_WIDTH {95} \
    CONFIG.DOUT_WIDTH {1} \
  ] $xlslice_5
 
@@ -276,7 +276,7 @@ proc create_hier_cell_capture_pipeline_raspi { parentCell nameHier } {
   set_property -dict [ list \
    CONFIG.DIN_FROM {6} \
    CONFIG.DIN_TO {6} \
-   CONFIG.DIN_WIDTH {92} \
+   CONFIG.DIN_WIDTH {95} \
    CONFIG.DOUT_WIDTH {1} \
  ] $xlslice_6
 
@@ -451,7 +451,7 @@ proc create_hier_cell_capture_pipeline_isp { parentCell nameHier } {
   set_property -dict [ list \
    CONFIG.DIN_FROM {0} \
    CONFIG.DIN_TO {0} \
-   CONFIG.DIN_WIDTH {92} \
+   CONFIG.DIN_WIDTH {95} \
    CONFIG.DOUT_WIDTH {1} \
  ] $xlslice_0
 
@@ -460,7 +460,7 @@ proc create_hier_cell_capture_pipeline_isp { parentCell nameHier } {
   set_property -dict [ list \
    CONFIG.DIN_FROM {7} \
    CONFIG.DIN_TO {7} \
-   CONFIG.DIN_WIDTH {92} \
+   CONFIG.DIN_WIDTH {95} \
    CONFIG.DOUT_WIDTH {1} \
  ] $xlslice_7
 
