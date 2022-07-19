@@ -8,7 +8,7 @@ XSCT = $(XILINX_VITIS)/bin/xsct
 JOBS ?= 8
 
 PLATFORM ?= kr260_tsn_rs485pmod
-VERSION ?= 202210_1
+VERSION ?= 202220_1
 
 PFM_DIR = xilinx_$(PLATFORM)_$(VERSION)
 PFM_PRJ_DIR = xsct/$(PLATFORM)/$(PLATFORM)/export/$(PLATFORM)
