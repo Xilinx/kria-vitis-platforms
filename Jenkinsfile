@@ -74,11 +74,11 @@ pipeline {
         label 'Build_Master'
     }
     environment {
-        deploy_branch="release-2022.1"
-        tool_release="2022.1"
+        deploy_branch="master"
+        tool_release="2022.2"
         tool_build="daily_latest"
         auto_branch="2022.1"
-        pfm_ver="202210_1"
+        pfm_ver="202220_1"
         setup="${WORKSPACE}/paeg-helper/env-setup.sh"
         lsf="${WORKSPACE}/paeg-helper/scripts/lsf"
         DEPLOYDIR="/wrk/paeg_builds/build-artifacts/kria-vitis-platforms/${tool_release}"
@@ -88,7 +88,7 @@ pipeline {
         skipDefaultCheckout true
     }
     triggers {
-        cron(env.BRANCH_NAME == 'release-2022.1' ? 'H 21 * * *' : '')
+        cron(env.BRANCH_NAME == 'master' ? 'H 21 * * *' : '')
     }
     stages {
         stage ('Fix Changelog') {
