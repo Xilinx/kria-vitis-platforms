@@ -1389,7 +1389,8 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
    CONFIG.PSU__TSU__BUFG_PORT_PAIR {0} \
    CONFIG.PSU__TTC0__CLOCK__ENABLE {0} \
    CONFIG.PSU__TTC0__PERIPHERAL__ENABLE {1} \
-   CONFIG.PSU__TTC0__WAVEOUT__ENABLE {0} \
+   CONFIG.PSU__TTC0__WAVEOUT__ENABLE {1} \
+   CONFIG.PSU__TTC0__WAVEOUT__IO {EMIO} \
    CONFIG.PSU__TTC1__CLOCK__ENABLE {0} \
    CONFIG.PSU__TTC1__PERIPHERAL__ENABLE {1} \
    CONFIG.PSU__TTC1__WAVEOUT__ENABLE {0} \
@@ -1535,6 +1536,15 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
    CONFIG.DOUT_WIDTH {1} \
  ] $xlslice_0
 
+  # Create instance: xlslice_ttc_0, and set properties
+  set xlslice_ttc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_ttc_0 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {2} \
+   CONFIG.DIN_TO {2} \
+   CONFIG.DIN_WIDTH {3} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_ttc_0
+
   # Create interface connections
   connect_bd_intf_net -intf_net PS_0_M_AXI_HPM1_FPD [get_bd_intf_pins PS_0/M_AXI_HPM1_FPD] [get_bd_intf_pins axi_interconnect_ctrl_300/S00_AXI]
   connect_bd_intf_net -intf_net S00_AXI_1 [get_bd_intf_pins PS_0/M_AXI_HPM0_LPD] [get_bd_intf_pins axi_interconnect_ctrl_100/S00_AXI]
@@ -1575,8 +1585,11 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_iic_0/s_axi_aresetn] [get_bd_pins axi_interconnect_ctrl_100/ARESETN] [get_bd_pins axi_interconnect_ctrl_100/M00_ARESETN] [get_bd_pins axi_interconnect_ctrl_100/M01_ARESETN] [get_bd_pins axi_interconnect_ctrl_100/M02_ARESETN] [get_bd_pins axi_interconnect_ctrl_100/S00_ARESETN] [get_bd_pins capture_pipeline_isp/lite_aresetn] [get_bd_pins capture_pipeline_raspi/lite_aresetn] [get_bd_pins proc_sys_reset_100MHz/peripheral_aresetn]
   connect_bd_net -net xlconcat_0_0_dout [get_bd_pins PS_0/pl_ps_irq1] [get_bd_pins xlconcat_irq1/dout]
   connect_bd_net -net xlconstant_0_dout [get_bd_ports imx_standby] [get_bd_pins xlconstant_0/dout]
-  connect_bd_net -net xlconstant_1_dout [get_bd_ports ap1302_standby] [get_bd_ports fan_en_b] [get_bd_pins xlconstant_1/dout]
+  connect_bd_net -net xlconstant_1_dout [get_bd_ports ap1302_standby] [get_bd_pins xlconstant_1/dout]
   connect_bd_net -net xlslice_0_Dout [get_bd_ports ap1302_rst_b] [get_bd_pins xlslice_0/Dout]
+  connect_bd_net -net xlslice_ttc_0_Dout [get_bd_ports fan_en_b] [get_bd_pins xlslice_ttc_0/Dout]
+  connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins xlslice_ttc_0/Din] [get_bd_pins PS_0/emio_ttc0_wave_o]
+
 
   # Create address segments
   assign_bd_address -offset 0xB0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs capture_pipeline_raspi/ISPPipeline_accel_0/s_axi_CTRL/Reg] -force
