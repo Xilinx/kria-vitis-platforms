@@ -119,8 +119,8 @@ pipeline {
                 checkout([
                     $class: 'GitSCM',
                     branches: scm.branches,
-                    doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
-                    extensions: scm.extensions + [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'src']],
+                    extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'src'],
+                                 [$class: 'SubmoduleOption',recursiveSubmodules: false,trackingSubmodules: false]],
                     userRemoteConfigs: scm.userRemoteConfigs
                 ])
                 // checkout paeg-automation helper repo
