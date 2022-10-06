@@ -119,7 +119,7 @@ launch_runs impl_1 -to_step write_bitstream
             
 wait_on_run impl_1
 
-write_hw_platform -force -file $proj_dir/${proj_name}.xsa
+write_hw_platform -force -include_bit  -file $proj_dir/${proj_name}.xsa
 validate_hw_platform -verbose $proj_dir/${proj_name}.xsa
 
 exit
