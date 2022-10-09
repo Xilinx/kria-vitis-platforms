@@ -41,8 +41,8 @@ param=compiler.addOutputTypes=hw_export
 #param=compiler.skipTimingCheckAndFrequencyScaling=1
 
 [vivado]
-#prop=run.impl_1.strategy=Performance_Explore
-prop=run.impl_1.strategy=Congestion_SpreadLogic_high
+prop=run.impl_1.strategy=Performance_Explore
+#prop=run.impl_1.strategy=Congestion_SpreadLogic_high
 #prop=run.impl_1.strategy=Performance_NetDelay_high
 #prop=run.impl_1.strategy=Performance_WLBlockPlacementFanoutOpt
 #prop=run.impl_1.strategy=Performance_WLBlockPlacement
