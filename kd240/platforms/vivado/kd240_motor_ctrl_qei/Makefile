@@ -1,0 +1,40 @@
+# Copyright (C) 2022, Advanced Micro Devices, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+RM = rm -rf
+VIVADO = $(XILINX_VIVADO)/bin/vivado
+JOBS ?= 8
+
+VIV_DESIGN = kd240_motor_ctrl_qei
+
+VIV_PRJ_DIR = project
+VIV_SCRIPTS_DIR = scripts
+
+VIV_XSA = $(VIV_PRJ_DIR)/$(VIV_DESIGN).xsa
+VIV_SRC = $(VIV_SCRIPTS_DIR)/main.tcl
+QEI_DIR= ../ip/qei
+QEI_IP = $(QEI_DIR)/hls_qei.prj/sol1/impl/export.zip
+
+
+.PHONY: help
+help:
+	@echo 'Usage:'
+	@echo ''
+	@echo '  make xsa'
+	@echo '    Generate extensible xsa for platform generation'
+	@echo ''
+
+.PHONY: all
+all: xsa
+
+xsa: $(VIV_XSA)
+$(VIV_XSA): $(VIV_SRC) $(QEI_IP)
+	$(VIVADO) -mode batch -notrace -source $(VIV_SRC) -tclargs -jobs $(JOBS)
+
+$(QEI_IP):
+	make -C $(QEI_DIR) ip 
+
+.PHONY: clean
+clean:
+	$(RM) $(VIV_PRJ_DIR) vivado* *dynamic* *.log *.xpe
+
