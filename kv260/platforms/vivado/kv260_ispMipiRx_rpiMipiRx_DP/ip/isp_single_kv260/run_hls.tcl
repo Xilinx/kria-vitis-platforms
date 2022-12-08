@@ -3,8 +3,7 @@
 
 source settings.tcl 
 
-#set VITIS_LIBS ../../../../../overlays/Vitis_Libraries/vision/
-set VITIS_LIBS ../../../../../overlays/Vitis_Libraries/
+set VITIS_LIBS ../../../../../overlays/Vitis_Libraries/vision/
 
 set PROJ "isppipeline.prj"
 set SOLN "sol1"
