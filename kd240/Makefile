@@ -10,7 +10,7 @@ PFM_DIR = $(PWD)/platforms
 PFM_VER = 202310_1
 
 # valid platforms
-PFM_LIST = kd240_motor_ctrl_qei
+PFM_LIST = kd240_motor_ctrl_qei kd240_bist
 
 PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
 
