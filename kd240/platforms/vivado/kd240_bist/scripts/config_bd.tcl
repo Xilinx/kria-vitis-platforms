@@ -193,7 +193,7 @@ proc create_hier_cell_ethernet_subsystem { parentCell nameHier } {
   set clk_wiz [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz ]
   set_property -dict [list \
     CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {125} \
-    CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {300} \
+    CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {333.33333} \
     CONFIG.CLKOUT2_USED {true} \
     CONFIG.NUM_OUT_CLKS {2} \
     CONFIG.PRIM_IN_FREQ {25} \
@@ -696,7 +696,7 @@ proc create_root_design { parentCell } {
    CONFIG.PSU__GPIO_EMIO__PERIPHERAL__ENABLE {1}  \
    CONFIG.PSU__TTC0__WAVEOUT__ENABLE {1} \
    CONFIG.PSU__TTC0__WAVEOUT__IO {EMIO} \
-   
+
  ] $zynq_ultra_ps_e_0
 
   # Create interface connections
