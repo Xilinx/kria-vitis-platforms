@@ -821,9 +821,7 @@ proc create_root_design { parentCell } {
   # Create interface ports
   set GPIO [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 GPIO ]
 
-  set PMOD_IN [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 PMOD_IN ]
-
-  set PMOD_OUT [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 PMOD_OUT ]
+  set PMOD_GPIO [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 PMOD_GPIO ]
 
   set iic [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 iic ]
 
@@ -845,22 +843,14 @@ proc create_root_design { parentCell } {
    CONFIG.C_GPIO_WIDTH {4} \
  ] $axi_gpio_0
 
-  # Create instance: axi_gpio_pmod_in, and set properties
-  set axi_gpio_pmod_in [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_pmod_in ]
-  set_property -dict [ list \
-   CONFIG.C_ALL_INPUTS {1} \
-   CONFIG.C_GPIO_WIDTH {4} \
-   CONFIG.C_IS_DUAL {0} \
- ] $axi_gpio_pmod_in
 
-  # Create instance: axi_gpio_pmod_out, and set properties
-  set axi_gpio_pmod_out [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_pmod_out ]
+  # Create instance: axi_gpio_1, and set properties
+  set axi_gpio_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_1 ]
   set_property -dict [ list \
    CONFIG.C_ALL_INPUTS {0} \
-   CONFIG.C_ALL_OUTPUTS {1} \
-   CONFIG.C_GPIO_WIDTH {4} \
+    CONFIG.C_GPIO_WIDTH {8} \
    CONFIG.C_IS_DUAL {0} \
- ] $axi_gpio_pmod_out
+ ] $axi_gpio_1
 
   # Create instance: axi_iic_0, and set properties
   set axi_iic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic axi_iic_0 ]
@@ -873,7 +863,7 @@ proc create_root_design { parentCell } {
   set axi_interconnect_ctrl_100 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_interconnect_ctrl_100 ]
   set_property -dict [ list \
    CONFIG.ENABLE_ADVANCED_OPTIONS {1} \
-   CONFIG.NUM_MI {8} \
+   CONFIG.NUM_MI {7} \
  ] $axi_interconnect_ctrl_100
 
   # Create instance: axi_interconnect_ctrl_300, and set properties
@@ -980,24 +970,22 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net PS_0_M_AXI_HPM1_FPD [get_bd_intf_pins PS_0/M_AXI_HPM1_FPD] [get_bd_intf_pins axi_interconnect_ctrl_300/S00_AXI]
   connect_bd_intf_net -intf_net S00_AXI_1 [get_bd_intf_pins PS_0/M_AXI_HPM0_LPD] [get_bd_intf_pins axi_interconnect_ctrl_100/S00_AXI]
   connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports GPIO] [get_bd_intf_pins axi_gpio_0/GPIO]
-  connect_bd_intf_net -intf_net axi_gpio_pmod_in_GPIO [get_bd_intf_ports PMOD_IN] [get_bd_intf_pins axi_gpio_pmod_in/GPIO]
-  connect_bd_intf_net -intf_net axi_gpio_pmod_out_GPIO [get_bd_intf_ports PMOD_OUT] [get_bd_intf_pins axi_gpio_pmod_out/GPIO]
+  connect_bd_intf_net -intf_net axi_gpio_pmod_in_GPIO [get_bd_intf_ports PMOD_GPIO] [get_bd_intf_pins axi_gpio_1/GPIO]
   connect_bd_intf_net -intf_net axi_iic_0_IIC [get_bd_intf_ports iic] [get_bd_intf_pins axi_iic_0/IIC]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_interconnect_ctrl_100/M00_AXI] [get_bd_intf_pins capture_pipeline_isp/csirxss_s_axi]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI1 [get_bd_intf_pins axi_interconnect_ctrl_300/M00_AXI] [get_bd_intf_pins capture_pipeline_isp/s_axi_ctrl_frmbuf]
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M01_AXI [get_bd_intf_pins axi_interconnect_ctrl_100/M01_AXI] [get_bd_intf_pins vcu/S_AXI_LITE]
-  connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M02_AXI [get_bd_intf_pins axi_gpio_pmod_in/S_AXI] [get_bd_intf_pins axi_interconnect_ctrl_100/M02_AXI]
-  connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M03_AXI [get_bd_intf_pins axi_gpio_pmod_out/S_AXI] [get_bd_intf_pins axi_interconnect_ctrl_100/M03_AXI]
+  connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M02_AXI [get_bd_intf_pins axi_gpio_1/S_AXI] [get_bd_intf_pins axi_interconnect_ctrl_100/M02_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M04_AXI [get_bd_intf_pins axi_iic_0/S_AXI] [get_bd_intf_pins axi_interconnect_ctrl_100/M04_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M05_AXI [get_bd_intf_pins axi_gpio_0/S_AXI] [get_bd_intf_pins axi_interconnect_ctrl_100/M05_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M06_AXI [get_bd_intf_pins axi_interconnect_ctrl_100/M06_AXI] [get_bd_intf_pins capture_pipeline_ias/csirxss_s_axi]
-  connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M07_AXI [get_bd_intf_pins axi_interconnect_ctrl_100/M07_AXI] [get_bd_intf_pins capture_pipeline_raspi/csirxss_s_axi]
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_300_M01_AXI [get_bd_intf_pins axi_interconnect_ctrl_300/M01_AXI] [get_bd_intf_pins capture_pipeline_ias/s_axi_ctrl_frmbuf]
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_300_M02_AXI [get_bd_intf_pins axi_interconnect_ctrl_300/M02_AXI] [get_bd_intf_pins capture_pipeline_ias/s_axi_ctrl_dem]
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_300_M03_AXI [get_bd_intf_pins axi_interconnect_ctrl_300/M03_AXI] [get_bd_intf_pins capture_pipeline_ias/s_axi_ctrl_vpss]
   connect_bd_intf_net -intf_net capture_pipeline_ias_m_axi_mm_video [get_bd_intf_pins capture_pipeline_ias/m_axi_mm_video] [get_bd_intf_pins smartconnect_cap/S01_AXI]
   connect_bd_intf_net -intf_net capture_pipeline_m_axi_mm_video [get_bd_intf_pins capture_pipeline_isp/m_axi_mm_video] [get_bd_intf_pins smartconnect_cap/S00_AXI]
   connect_bd_intf_net -intf_net capture_pipeline_raspi_m_axi_mm_video [get_bd_intf_pins capture_pipeline_raspi/m_axi_mm_video] [get_bd_intf_pins smartconnect_cap/S02_AXI]
+  connect_bd_intf_net -intf_net csirxss_s_axi_1 [get_bd_intf_pins axi_interconnect_ctrl_100/M03_AXI] [get_bd_intf_pins capture_pipeline_raspi/csirxss_s_axi]
   connect_bd_intf_net -intf_net mipi_phy_if_0_1 [get_bd_intf_ports mipi_phy_if_ias] [get_bd_intf_pins capture_pipeline_ias/mipi_phy_if]
   connect_bd_intf_net -intf_net mipi_phy_if_0_2 [get_bd_intf_ports mipi_phy_if_raspi] [get_bd_intf_pins capture_pipeline_raspi/mipi_phy_if]
   connect_bd_intf_net -intf_net mipi_phy_if_1 [get_bd_intf_ports mipi_phy_if_isp] [get_bd_intf_pins capture_pipeline_isp/mipi_phy_if]
@@ -1030,8 +1018,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net capture_pipeline_raspi_dem_irq [get_bd_pins capture_pipeline_raspi/dem_irq] [get_bd_pins xlconcat_irq0/In5]
   connect_bd_net -net capture_pipeline_raspi_frm_buf_irq [get_bd_pins capture_pipeline_raspi/frm_buf_irq] [get_bd_pins xlconcat_irq0/In4]
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_gpio_0/s_axi_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_gpio_pmod_in/s_axi_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_gpio_pmod_out/s_axi_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_gpio_1/s_axi_aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_iic_0/s_axi_aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl_100/ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl_100/M00_ACLK] -boundary_type upper
@@ -1041,7 +1028,6 @@ proc create_root_design { parentCell } {
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl_100/M04_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl_100/M05_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl_100/M06_ACLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl_100/M07_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_interconnect_ctrl_100/S00_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins capture_pipeline_ias/lite_aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins capture_pipeline_isp/lite_aclk] -boundary_type upper
@@ -1092,8 +1078,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl_300/M00_ARESETN] [get_bd_pins proc_sys_reset_300MHz/peripheral_aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl_300/M00_ARESETN] [get_bd_pins smartconnect_cap/aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl_300/M00_ARESETN] [get_bd_pins vcu/aresetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_gpio_pmod_in/s_axi_aresetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_gpio_pmod_out/s_axi_aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_gpio_1/s_axi_aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_iic_0/s_axi_aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_interconnect_ctrl_100/ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_interconnect_ctrl_100/M00_ARESETN] -boundary_type upper
@@ -1103,7 +1088,6 @@ proc create_root_design { parentCell } {
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_interconnect_ctrl_100/M04_ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_interconnect_ctrl_100/M05_ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_interconnect_ctrl_100/M06_ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_interconnect_ctrl_100/M07_ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_interconnect_ctrl_100/S00_ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins capture_pipeline_ias/lite_aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins capture_pipeline_isp/lite_aresetn] -boundary_type upper
@@ -1117,8 +1101,7 @@ proc create_root_design { parentCell } {
 
   # Create address segments
   assign_bd_address -offset 0x80080000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] -force
-  assign_bd_address -offset 0x80020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_gpio_pmod_in/S_AXI/Reg] -force
-  assign_bd_address -offset 0x80040000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_gpio_pmod_out/S_AXI/Reg] -force
+  assign_bd_address -offset 0x80020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_gpio_1/S_AXI/Reg] -force
   assign_bd_address -offset 0x80030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_iic_0/S_AXI/Reg] -force
   assign_bd_address -offset 0x80000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs capture_pipeline_isp/mipi_csi2_rx_subsyst_0/csirxss_s_axi/Reg] -force
   assign_bd_address -offset 0x80010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs capture_pipeline_ias/mipi_csi2_rx_subsyst_0/csirxss_s_axi/Reg] -force
