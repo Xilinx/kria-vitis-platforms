@@ -510,9 +510,7 @@ proc create_root_design { parentCell } {
 
 
   # Create interface ports
-  set GPIO_IN [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 GPIO_IN ]
-
-  set GPIO_OUT [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 GPIO_OUT ]
+  set GPIO [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 GPIO ]
 
   set gem1_mdio [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:mdio_rtl:1.0 gem1_mdio ]
 
@@ -563,11 +561,9 @@ proc create_root_design { parentCell } {
   set axi_gpio_pmod [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_pmod ]
   set_property -dict [list \
     CONFIG.C_ALL_INPUTS {0} \
-    CONFIG.C_ALL_INPUTS_2 {1} \
-    CONFIG.C_ALL_OUTPUTS {1} \
-    CONFIG.C_GPIO2_WIDTH {4} \
-    CONFIG.C_GPIO_WIDTH {4} \
-    CONFIG.C_IS_DUAL {1} \
+    CONFIG.C_ALL_OUTPUTS {0} \
+    CONFIG.C_GPIO_WIDTH {8} \
+    CONFIG.C_IS_DUAL {0} \
   ] $axi_gpio_pmod
 
   # Create instance: axi_interconnect_cntrl, and set properties
@@ -701,8 +697,7 @@ proc create_root_design { parentCell } {
 
   # Create interface connections
   connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_LPD [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM0_LPD] [get_bd_intf_pins ethernet_subsystem/S00_AXI]
-  connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports GPIO_OUT] [get_bd_intf_pins axi_gpio_pmod/GPIO]
-  connect_bd_intf_net -intf_net axi_gpio_0_GPIO2 [get_bd_intf_ports GPIO_IN] [get_bd_intf_pins axi_gpio_pmod/GPIO2]
+  connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports GPIO] [get_bd_intf_pins axi_gpio_pmod/GPIO]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins ADC/S_AXI] [get_bd_intf_pins axi_interconnect_cntrl/M00_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_cntrl_M01_AXI [get_bd_intf_pins axi_interconnect_cntrl/M01_AXI] [get_bd_intf_pins hls_qei_top_0/s_axi_qei_args]
   connect_bd_intf_net -intf_net axi_interconnect_cntrl_M02_AXI [get_bd_intf_pins axi_gpio_pmod/S_AXI] [get_bd_intf_pins axi_interconnect_cntrl/M02_AXI]
