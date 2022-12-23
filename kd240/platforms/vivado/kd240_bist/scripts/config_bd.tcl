@@ -556,15 +556,18 @@ proc create_root_design { parentCell } {
   # Create instance: ADC
   create_hier_cell_ADC [current_bd_instance .] ADC
 
-
-  # Create instance: axi_gpio_pmod, and set properties
-  set axi_gpio_pmod [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_pmod ]
+  # Create instance: axi_gpio_0, and set properties
+  set axi_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio axi_gpio_0 ]
   set_property -dict [list \
     CONFIG.C_ALL_INPUTS {0} \
+    CONFIG.C_ALL_INPUTS_2 {0} \
     CONFIG.C_ALL_OUTPUTS {0} \
+    CONFIG.C_ALL_OUTPUTS_2 {1} \
+    CONFIG.C_GPIO2_WIDTH {3} \
     CONFIG.C_GPIO_WIDTH {8} \
-    CONFIG.C_IS_DUAL {0} \
-  ] $axi_gpio_pmod
+    CONFIG.C_IS_DUAL {1} \
+  ] $axi_gpio_0
+
 
   # Create instance: axi_interconnect_cntrl, and set properties
   set axi_interconnect_cntrl [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_interconnect_cntrl ]
@@ -651,7 +654,11 @@ proc create_root_design { parentCell } {
 
   # Create instance: xlslice_gpio_0, and set properties
   set xlslice_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_gpio_0 ]
-  set_property CONFIG.DIN_WIDTH {94} $xlslice_gpio_0
+  set_property -dict [list \
+    CONFIG.DIN_FROM {0} \
+    CONFIG.DIN_TO {0} \
+    CONFIG.DIN_WIDTH {3} \
+  ] $xlslice_gpio_0
 
 
   # Create instance: xlslice_gpio_1, and set properties
@@ -659,7 +666,7 @@ proc create_root_design { parentCell } {
   set_property -dict [list \
     CONFIG.DIN_FROM {1} \
     CONFIG.DIN_TO {1} \
-    CONFIG.DIN_WIDTH {94} \
+    CONFIG.DIN_WIDTH {3} \
   ] $xlslice_gpio_1
 
 
@@ -668,7 +675,7 @@ proc create_root_design { parentCell } {
   set_property -dict [list \
     CONFIG.DIN_FROM {2} \
     CONFIG.DIN_TO {2} \
-    CONFIG.DIN_WIDTH {94} \
+    CONFIG.DIN_WIDTH {3} \
   ] $xlslice_gpio_2
 
   # Create instance: zynq_ultra_ps_e_0, and set properties
@@ -689,7 +696,6 @@ proc create_root_design { parentCell } {
    #CONFIG.PSU__SAXIGP3__DATA_WIDTH {128} \
    CONFIG.PSU__FPGA_PL1_ENABLE {1} \
    CONFIG.PSU__CRL_APB__PL1_REF_CTRL__FREQMHZ {20} \
-   CONFIG.PSU__GPIO_EMIO__PERIPHERAL__ENABLE {1}  \
    CONFIG.PSU__TTC0__WAVEOUT__ENABLE {1} \
    CONFIG.PSU__TTC0__WAVEOUT__IO {EMIO} \
 
@@ -697,10 +703,10 @@ proc create_root_design { parentCell } {
 
   # Create interface connections
   connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_LPD [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM0_LPD] [get_bd_intf_pins ethernet_subsystem/S00_AXI]
-  connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports GPIO] [get_bd_intf_pins axi_gpio_pmod/GPIO]
+  connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports GPIO] [get_bd_intf_pins axi_gpio_0/GPIO]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins ADC/S_AXI] [get_bd_intf_pins axi_interconnect_cntrl/M00_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_cntrl_M01_AXI [get_bd_intf_pins axi_interconnect_cntrl/M01_AXI] [get_bd_intf_pins hls_qei_top_0/s_axi_qei_args]
-  connect_bd_intf_net -intf_net axi_interconnect_cntrl_M02_AXI [get_bd_intf_pins axi_gpio_pmod/S_AXI] [get_bd_intf_pins axi_interconnect_cntrl/M02_AXI]
+  connect_bd_intf_net -intf_net axi_interconnect_cntrl_M02_AXI [get_bd_intf_pins axi_gpio_0/S_AXI] [get_bd_intf_pins axi_interconnect_cntrl/M02_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_cntrl_M03_AXI [get_bd_intf_pins axi_interconnect_cntrl/M03_AXI] [get_bd_intf_pins axi_quad_spi_0/AXI_LITE]
   connect_bd_intf_net -intf_net ethernet_subsystem_M00_AXI [get_bd_intf_pins zynq_ultra_ps_e_0/S_AXI_HP0_FPD] [get_bd_intf_pins ethernet_subsystem/M00_AXI]
   connect_bd_intf_net -intf_net ethernet_subsystem_gem2_mdio [get_bd_intf_ports gem1_mdio] [get_bd_intf_pins ethernet_subsystem/gem1_mdio]
@@ -760,7 +766,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_lpd_aclk] -boundary_type upper
   connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0] -boundary_type upper
   connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins zynq_ultra_ps_e_0/saxihp0_fpd_aclk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_gpio_pmod/s_axi_aclk] -boundary_type upper
+  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_gpio_0/s_axi_aclk] -boundary_type upper
   connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/ACLK] -boundary_type upper
   connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M00_ACLK] -boundary_type upper
   connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M01_ACLK] -boundary_type upper
@@ -787,12 +793,12 @@ proc create_root_design { parentCell } {
   connect_bd_net -net xlslice_1_Dout [get_bd_ports dc_link_adc_cs_n] [get_bd_pins xlslice_1/Dout]
   connect_bd_net -net xlslice_gpio_1_Dout [get_bd_ports brake_cntrl] [get_bd_pins xlslice_gpio_1/Dout]
   connect_bd_net -net xlslice_gpio_2_Dout [get_bd_ports one_wire] [get_bd_pins xlslice_gpio_2/Dout]
-  connect_bd_net -net zynq_ultra_ps_e_0_emio_gpio_o [get_bd_pins zynq_ultra_ps_e_0/emio_gpio_o] [get_bd_pins xlslice_gpio_0/Din] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_emio_gpio_o [get_bd_pins zynq_ultra_ps_e_0/emio_gpio_o] [get_bd_pins xlslice_gpio_1/Din] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_emio_gpio_o [get_bd_pins zynq_ultra_ps_e_0/emio_gpio_o] [get_bd_pins xlslice_gpio_2/Din] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_emio_gpio_o [get_bd_pins axi_gpio_0/gpio2_io_o] [get_bd_pins xlslice_gpio_0/Din] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_emio_gpio_o [get_bd_pins axi_gpio_0/gpio2_io_o] [get_bd_pins xlslice_gpio_1/Din] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_emio_gpio_o [get_bd_pins axi_gpio_0/gpio2_io_o] [get_bd_pins xlslice_gpio_2/Din] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins zynq_ultra_ps_e_0/emio_ttc0_wave_o] [get_bd_pins gate_driver/ttc] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins zynq_ultra_ps_e_0/emio_ttc0_wave_o] [get_bd_pins xlslice_fan/Din] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins axi_gpio_pmod/s_axi_aresetn] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins axi_gpio_0/s_axi_aresetn] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins axi_interconnect_cntrl/M00_ARESETN] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins axi_interconnect_cntrl/M01_ARESETN] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins axi_interconnect_cntrl/M02_ARESETN] -boundary_type upper
@@ -812,7 +818,7 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0x80010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ethernet_subsystem/axi_dma_1/S_AXI_LITE/Reg] -force
   assign_bd_address -offset 0x80040000 -range 0x00040000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ethernet_subsystem/axi_ethernet_0/s_axi/Reg0] -force
   assign_bd_address -offset 0x80080000 -range 0x00040000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ethernet_subsystem/axi_ethernet_1/s_axi/Reg0] -force
-  assign_bd_address -offset 0xA0020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_gpio_pmod/S_AXI/Reg] -force
+  assign_bd_address -offset 0xA0020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] -force
   assign_bd_address -offset 0xA0030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_quad_spi_0/AXI_LITE/Reg] -force
   assign_bd_address -offset 0xA0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs hls_qei_top_0/s_axi_qei_args/Reg] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_0/Data_MM2S] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
