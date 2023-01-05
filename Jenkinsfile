@@ -92,12 +92,6 @@ pipeline {
     }
     stages {
         stage ('Fix Changelog') {
-            // only do this if there is no prior build
-            when {
-                expression {
-                    return !currentBuild.previousBuild
-                }
-            }
             steps {
                 checkout([
                     $class: 'GitSCM',
