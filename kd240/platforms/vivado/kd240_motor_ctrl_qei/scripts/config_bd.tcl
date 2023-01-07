@@ -1415,7 +1415,7 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net hls_foc_periodic_top_0_Va [get_bd_intf_pins hls_foc_periodic_top_0/Va_cmd] [get_bd_intf_pins ip_svpwm_0/strm_Va_cmd]
   connect_bd_intf_net -intf_net hls_foc_periodic_top_0_Vb [get_bd_intf_pins hls_foc_periodic_top_0/Vb_cmd] [get_bd_intf_pins ip_svpwm_0/strm_Vb_cmd]
   connect_bd_intf_net -intf_net hls_foc_periodic_top_0_Vc [get_bd_intf_pins hls_foc_periodic_top_0/Vc_cmd] [get_bd_intf_pins ip_svpwm_0/strm_Vc_cmd]
-  connect_bd_intf_net -intf_net hls_qei_top_0_qei_RPM_THETA_m [get_bd_intf_pins hls_foc_periodic_top_0/FOC_RPM_THETA_m] [get_bd_intf_pins hls_qei_top_0/qei_RPM_THETA_m]
+  connect_bd_intf_net -intf_net hls_qei_top_0_qei_RPM_THETA_m [get_bd_intf_pins hls_foc_periodic_top_0/SPEED_THETA_m] [get_bd_intf_pins hls_qei_top_0/qei_RPM_THETA_m]
   connect_bd_intf_net -intf_net tsn_endpoint_ethernet_mac_0_mdio_external1 [get_bd_intf_ports mdio] [get_bd_intf_pins TSN_subsystem/mdio]
   connect_bd_intf_net -intf_net tsn_endpoint_ethernet_mac_0_mdio_external2 [get_bd_intf_ports mdio2] [get_bd_intf_pins TSN_subsystem/mdio2]
   connect_bd_intf_net -intf_net tsn_endpoint_ethernet_mac_0_rgmii1 [get_bd_intf_ports rgmii] [get_bd_intf_pins TSN_subsystem/rgmii]
