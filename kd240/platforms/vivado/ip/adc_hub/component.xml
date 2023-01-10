@@ -1511,7 +1511,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>1fef5570</spirit:value>
+            <spirit:value>ff0c71cf</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1525,7 +1525,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>f77dd642</spirit:value>
+            <spirit:value>5d78c61b</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1540,7 +1540,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>348f7885</spirit:value>
+            <spirit:value>94affbe1</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1555,7 +1555,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>348f7885</spirit:value>
+            <spirit:value>94affbe1</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1584,7 +1584,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>80c3b24e</spirit:value>
+            <spirit:value>6e9f0049</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1599,7 +1599,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>80c3b24e</spirit:value>
+            <spirit:value>6e9f0049</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1636,7 +1636,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -1698,7 +1698,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -1778,7 +1778,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -1858,7 +1858,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -1938,7 +1938,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2018,7 +2018,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2098,7 +2098,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2178,7 +2178,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2258,7 +2258,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2338,7 +2338,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2418,7 +2418,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2498,7 +2498,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2578,7 +2578,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2658,7 +2658,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2738,7 +2738,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2818,7 +2818,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.QSCALE_MAX_BITS&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -4066,6 +4066,11 @@
         <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S_AXI_ADDR_WIDTH">12</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>QSCALE_MAX_BITS</spirit:name>
+        <spirit:displayName>Don&apos;t Dispay</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.QSCALE_MAX_BITS">24</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>L0_ADC_BITS</spirit:name>
         <spirit:displayName>Lane 0 ADC Bit Width</spirit:displayName>
         <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.L0_ADC_BITS">12</spirit:value>
@@ -4510,19 +4515,13 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>src/adc_hub_axi_cntrl.v</spirit:name>
+        <spirit:name>hdl/adc_hub_v1_0_rfs.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
         <spirit:logicalName>xil_defaultlib</spirit:logicalName>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/motor_fault_gen.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>src/qscaler_q15_16_v.ttcl</spirit:name>
+        <spirit:name>src/qscaler_v.ttcl</spirit:name>
         <spirit:userFileType>ttcl</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -4545,17 +4544,12 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>src/adc_hub_axi_cntrl.v</spirit:name>
+        <spirit:name>hdl/adc_hub_v1_0_rfs.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:logicalName>xil_defaultlib</spirit:logicalName>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/motor_fault_gen.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:logicalName>xil_defaultlib</spirit:logicalName>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>src/qscaler_q15_16_v.ttcl</spirit:name>
+        <spirit:name>src/qscaler_v.ttcl</spirit:name>
         <spirit:userFileType>ttcl</spirit:userFileType>
       </spirit:file>
       <spirit:file>
@@ -4642,324 +4636,329 @@
       <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.C_S_AXI_ADDR_WIDTH" spirit:choiceRef="choice_list_99bdd7f4" spirit:order="4">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
+      <spirit:name>QSCALE_MAX_BITS</spirit:name>
+      <spirit:displayName>Don&apos;t Display</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.QSCALE_MAX_BITS" spirit:order="5">24</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
       <spirit:name>L0_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 0 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L0_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="5">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L0_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="6">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L1_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 1 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L1_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="6">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L1_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="7">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L2_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 2 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L2_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="7">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L2_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="8">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L3_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 3 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L3_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="8">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L3_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="9">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L4_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 4 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L4_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="9">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L4_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="10">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L5_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 5 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L5_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="10">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L5_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="11">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L6_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 6 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L6_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="11">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L6_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="12">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L7_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 7 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L7_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="12">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L7_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="13">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L8_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 8 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L8_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="13">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L8_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="14">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L9_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 9 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L9_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="14">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L9_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="15">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L10_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 10 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L10_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="15">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L10_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="16">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L11_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 11 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L11_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="16">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L11_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="17">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L12_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 12 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L12_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="17">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L12_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="18">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L13_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 13 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L13_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="18">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L13_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="19">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L14_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 14 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L14_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="19">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L14_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="20">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L15_ADC_BITS</spirit:name>
       <spirit:displayName>Lane 15 ADC Bit Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L15_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="20">12</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.L15_ADC_BITS" spirit:choiceRef="choice_list_1b150469" spirit:order="21">12</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L0_USE_DSP</spirit:name>
       <spirit:displayName>Lane 0 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L0_USE_DSP" spirit:order="21">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L0_USE_DSP" spirit:order="22">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L1_USE_DSP</spirit:name>
       <spirit:displayName>Lane 1 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L1_USE_DSP" spirit:order="22">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L1_USE_DSP" spirit:order="23">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L2_USE_DSP</spirit:name>
       <spirit:displayName>Lane 2 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L2_USE_DSP" spirit:order="23">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L2_USE_DSP" spirit:order="24">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L3_USE_DSP</spirit:name>
       <spirit:displayName>Lane 3 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L3_USE_DSP" spirit:order="24">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L3_USE_DSP" spirit:order="25">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L4_USE_DSP</spirit:name>
       <spirit:displayName>Lane 4 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L4_USE_DSP" spirit:order="25">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L4_USE_DSP" spirit:order="26">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L5_USE_DSP</spirit:name>
       <spirit:displayName>Lane 5 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L5_USE_DSP" spirit:order="26">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L5_USE_DSP" spirit:order="27">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L6_USE_DSP</spirit:name>
       <spirit:displayName>Lane 6 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L6_USE_DSP" spirit:order="27">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L6_USE_DSP" spirit:order="28">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L7_USE_DSP</spirit:name>
       <spirit:displayName>Lane 7 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L7_USE_DSP" spirit:order="28">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L7_USE_DSP" spirit:order="29">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L8_USE_DSP</spirit:name>
       <spirit:displayName>Lane 8 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L8_USE_DSP" spirit:order="29">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L8_USE_DSP" spirit:order="30">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L9_USE_DSP</spirit:name>
       <spirit:displayName>Lane 9 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L9_USE_DSP" spirit:order="30">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L9_USE_DSP" spirit:order="31">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L10_USE_DSP</spirit:name>
       <spirit:displayName>Lane 10 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L10_USE_DSP" spirit:order="31">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L10_USE_DSP" spirit:order="32">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L11_USE_DSP</spirit:name>
       <spirit:displayName>Lane 11 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L11_USE_DSP" spirit:order="32">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L11_USE_DSP" spirit:order="33">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L12_USE_DSP</spirit:name>
       <spirit:displayName>Lane 12 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L12_USE_DSP" spirit:order="33">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L12_USE_DSP" spirit:order="34">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L13_USE_DSP</spirit:name>
       <spirit:displayName>Lane 13 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L13_USE_DSP" spirit:order="34">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L13_USE_DSP" spirit:order="35">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L14_USE_DSP</spirit:name>
       <spirit:displayName>Lane 14 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L14_USE_DSP" spirit:order="35">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L14_USE_DSP" spirit:order="36">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L15_USE_DSP</spirit:name>
       <spirit:displayName>Lane 15 Use DSPs for Multipliers</spirit:displayName>
-      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L15_USE_DSP" spirit:order="36">true</spirit:value>
+      <spirit:value spirit:format="bool" spirit:resolve="user" spirit:id="PARAM_VALUE.L15_USE_DSP" spirit:order="37">true</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L0_CODE</spirit:name>
       <spirit:displayName>Lane 0 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L0_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="37">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L0_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="38">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L1_CODE</spirit:name>
       <spirit:displayName>Lane 1 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L1_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="38">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L1_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="39">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L2_CODE</spirit:name>
       <spirit:displayName>Lane 2 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L2_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="39">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L2_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="40">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L3_CODE</spirit:name>
       <spirit:displayName>Lane 3 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L3_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="40">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L3_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="41">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L4_CODE</spirit:name>
       <spirit:displayName>Lane 4 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L4_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="41">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L4_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="42">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L5_CODE</spirit:name>
       <spirit:displayName>Lane 5 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L5_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="42">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L5_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="43">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L6_CODE</spirit:name>
       <spirit:displayName>Lane 6 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L6_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="43">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L6_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="44">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L7_CODE</spirit:name>
       <spirit:displayName>Lane 7 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L7_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="44">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L7_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="45">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L8_CODE</spirit:name>
       <spirit:displayName>Lane 8 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L8_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="45">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L8_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="46">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L9_CODE</spirit:name>
       <spirit:displayName>Lane 9 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L9_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="46">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L9_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="47">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L10_CODE</spirit:name>
       <spirit:displayName>Lane 10 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L10_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="47">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L10_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="48">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L11_CODE</spirit:name>
       <spirit:displayName>Lane 11 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L11_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="48">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L11_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="49">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L12_CODE</spirit:name>
       <spirit:displayName>Lane 12 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L12_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="49">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L12_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="50">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L13_CODE</spirit:name>
       <spirit:displayName>Lane 13 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L13_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="50">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L13_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="51">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L14_CODE</spirit:name>
       <spirit:displayName>Lane 14 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L14_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="51">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L14_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="52">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L15_CODE</spirit:name>
       <spirit:displayName>Lane 15 Hub Encoding</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L15_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="52">USB</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L15_CODE" spirit:choiceRef="choice_list_c9c6f019" spirit:order="53">USB</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L0_TYPE</spirit:name>
       <spirit:displayName>Lane 0 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L0_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="53">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L0_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="54">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L1_TYPE</spirit:name>
       <spirit:displayName>Lane 1 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L1_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="54">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L1_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="55">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L2_TYPE</spirit:name>
       <spirit:displayName>Lane 2 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L2_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="55">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L2_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="56">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L3_TYPE</spirit:name>
       <spirit:displayName>Lane 3 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L3_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="56">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L3_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="57">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L4_TYPE</spirit:name>
       <spirit:displayName>Lane 4 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L4_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="57">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L4_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="58">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L5_TYPE</spirit:name>
       <spirit:displayName>Lane 5 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L5_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="58">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L5_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="59">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L6_TYPE</spirit:name>
       <spirit:displayName>Lane 6 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L6_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="59">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L6_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="60">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L7_TYPE</spirit:name>
       <spirit:displayName>Lane 7 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L7_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="60">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L7_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="61">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L8_TYPE</spirit:name>
       <spirit:displayName>Lane 8 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L8_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="61">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L8_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="62">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L9_TYPE</spirit:name>
       <spirit:displayName>Lane 9 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L9_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="62">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L9_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="63">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L10_TYPE</spirit:name>
       <spirit:displayName>Lane 10 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L10_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="63">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L10_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="64">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L11_TYPE</spirit:name>
       <spirit:displayName>Lane 11 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L11_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="64">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L11_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="65">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L12_TYPE</spirit:name>
       <spirit:displayName>Lane 12 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L12_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="65">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L12_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="66">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L13_TYPE</spirit:name>
       <spirit:displayName>Lane 13 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L13_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="66">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L13_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="67">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L14_TYPE</spirit:name>
       <spirit:displayName>Lane 14 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L14_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="67">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L14_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="68">VOLTAGE</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>L15_TYPE</spirit:name>
       <spirit:displayName>Lane 15 Type</spirit:displayName>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L15_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="68">VOLTAGE</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.L15_TYPE" spirit:choiceRef="choice_list_47c1b742" spirit:order="69">VOLTAGE</spirit:value>
     </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
@@ -4971,15 +4970,15 @@
       <xilinx:autoFamilySupportLevel>level_2</xilinx:autoFamilySupportLevel>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
       <xilinx:coreRevision>0</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-11-07T23:36:17Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2023-01-18T19:24:29Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
-      <xilinx:xilinxVersion>2022.1</xilinx:xilinxVersion>
+      <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="539cf576"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="de3bab3c"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="103c13cc"/>
-      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="e4d69fc8"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="9faf4a97"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="3818ec81"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="267e5688"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="e477ddef"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="30d65c63"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

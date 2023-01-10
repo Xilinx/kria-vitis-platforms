@@ -1,5 +1,6 @@
 // Copyright (C) 2022, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
+
 // TTCL file to generate Verilog file with configurable input and output ports
 
 <: set ComponentName     [getComponentNameString]                                      :>
@@ -27,7 +28,7 @@
 // Copyright (C) 2022, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
-// Convert USB (Unipolar Straight Binary) to BTC (Binary Two's Complement)
+// Convert BOB (Bipolar Offset Binary) to BTC (Binary Two's Complement)
 
 `timescale 1 ns / 1 ps
 
@@ -47,13 +48,18 @@ module <=: $ComponentName :>_top #(
 <: } :>
 
 <: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
-  output reg [L<=: $i :>_ADC_BITS-1:0] L<=: $i :>_DOUT,
+  output reg signed [L<=: $i :>_ADC_BITS-1:0] L<=: $i :>_DOUT,
   output reg L<=: $i :>_DOUT_VLD,
 <: } :>
 
   input  wire CLK,
   input  wire RESETn
 );
+
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+  wire [L<=: $i :>_ADC_BITS-1:0] L<=: $i :>_MIDPOINT = {1'b1, {L<=: $i :>_ADC_BITS-1{1'b0}}};
+<: } :>
+
 
 <: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
   always @(posedge CLK)
@@ -66,8 +72,8 @@ module <=: $ComponentName :>_top #(
       else
         if (L<=: $i :>_DIN_VLD)
           begin
-            // Flip the MSB (1 -> 0 or 0 -> 1)
-            L<=: $i :>_DOUT <= {~L<=: $i :>_DIN[L<=: $i :>_ADC_BITS-1], L<=: $i :>_DIN[L<=: $i :>_ADC_BITS-2:0]};
+            // Subtract Mid-point code
+            L<=: $i :>_DOUT <= L<=: $i :>_DIN - L<=: $i :>_MIDPOINT;
             L<=: $i :>_DOUT_VLD <= 1'b1;
           end
         else

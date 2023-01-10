@@ -1,0 +1,128 @@
+// Copyright (C) 2022, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+// TTCL file to generate Verilog file with multiple modules with configurable module names
+
+<: set ComponentName   [getComponentNameString]                                        :>
+<: setFileExtension    ".v"                                                            :>
+<: setFileName         [ttcl_string_concat $ComponentName "_qscaler"]                  :>
+<: setOutputDirectory  "./"                                                            :>
+<: set NUM_CHANNELS    [get_property CONFIG.NUM_CHANNELS     [::ipxit::current_inst]]  :>
+
+// Copyright (C) 2022, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+// This module converts the ADC hexadecimal value into a scaled value based on the 
+// scaling_factor given to this module.
+//
+// Converts data to Q8.Q16 mode
+// Q16 LSB [15:0] used for decimal portion
+// Q8 MSB [22:16] used for integer portion
+// bit[23] indicates sign 1'b1: -ve ; 1'b0: +ve when used as signed value
+//
+//           <------------ integer ------------>  <---------------- decimal ----------------->
+//  _______  _______  _______  _______  _______   _______  _______  _______  _______  _______
+// |       ||       ||       ||       ||       | |       ||       ||       ||       ||       | 
+// |  Sign ||  2^6  ||  .... ||   2^1 ||  2^0  |.|  2^-1 ||  ---  || 2^-14 || 2^-15 || 2^-16 | 
+// |_______||_______||_______||_______||_______| |_______||_______||_______||_______||_______|
+//
+// There is a scale_factor that is set by software to calibrate the output for the integer 
+// portion, where a value of 0x1 would mean 1V or 1A depending on the type of data it gets.
+//
+
+`timescale 1 ns / 1 ps
+<: for {set i 0} { $i < $NUM_CHANNELS } { incr i } { :>
+    module <=: $ComponentName :>_qscaler_l<=: $i :> #
+(
+    parameter integer SIGNED = 1,
+    parameter integer DATA_WIDTH = 16,
+    parameter integer QSCALE_MAX_BITS = 24
+)
+(
+    input clk,
+    input resetn,
+
+    // In Q15.16 format
+    input [31:0] scale_factor,
+
+    // In integer format
+    input [DATA_WIDTH-1:0] din,
+    input din_vld,
+
+    //  (* X_INTERFACE_PARAMETER = "CLK_DOMAIN <value>,PHASE <value>,FREQ_HZ <value>,LAYERED_METADATA <value>,HAS_TLAST <value>,HAS_TKEEP <value>,HAS_TSTRB <value>,HAS_TREADY <value>,TUSER_WIDTH <value>,TID_WIDTH <value>,TDEST_WIDTH <value>,TDATA_NUM_BYTES <value>" *)
+    (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 axis_q TDATA" *)
+    output [QSCALE_MAX_BITS-1:0] axis_q_tdata, 
+    (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 axis_q TLAST" *)
+    output axis_q_tlast, 
+    (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 axis_q TVALID" *)
+    output axis_q_tvalid,
+    (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 axis_q TREADY" *)
+    input axis_q_tready  
+);
+
+// Not including sign bit
+localparam MULT_LATENCY = 6;
+
+reg [MULT_LATENCY-1:0] delay_vld = 'h0;
+reg din_vld_reg = 1'b0;
+wire din_vld_rising;
+wire mult_ce;
+wire [QSCALE_MAX_BITS-1:0] mult_a;
+wire [QSCALE_MAX_BITS-1:0] mult_out;
+wire mult_out_vld;
+wire empty;
+
+// Multiplier latency is MULT_LATENCY, so mult_out_vld is MULT_LATENCY clocks after din_vld
+always @(posedge clk)
+begin
+    if (resetn == 1'b0)
+        delay_vld <= 'h0;
+    else
+    begin
+        delay_vld[MULT_LATENCY-1:1] <= delay_vld[MULT_LATENCY-2:0];
+        delay_vld[0] <= din_vld_rising;
+    end
+end
+
+always @(posedge clk)
+begin
+    din_vld_reg <= din_vld;
+end
+
+assign din_vld_rising = !din_vld_reg & din_vld;
+
+// Use multiplier to multiply QLSB * din
+assign mult_a = din;
+assign mult_ce = |{delay_vld,din_vld_rising};
+assign mult_out_vld = delay_vld[MULT_LATENCY-1];
+
+qscaler_scaling_mult_l<=: $i :> qscaler_scaler_mult_i
+  (
+      .CLK    (clk),        // input 
+      .A      (mult_a),       // input ADC + offset + overflow wide
+      .B      (scale_factor[QSCALE_MAX_BITS-1:0]),  // input QSCALE_MAX_BITS wide
+      .CE     (mult_ce),    // input 
+      .SCLR   (~resetn),    // input 
+      .P      (mult_out)    // output QSCALE_MAX_BITS wide
+  );
+
+assign axis_q_tvalid = !empty;
+assign rd_en = !empty && axis_q_tready;
+assign axis_q_tlast = axis_q_tvalid;
+
+fifo_generator_0 axis_q_fifo
+(
+  .clk(clk),                  // input 
+  .srst(~resetn),             // input 
+  .din(mult_out),             // input QSCALE_MAX_BITS wide
+  .wr_en(mult_out_vld),       // input 
+  .rd_en(rd_en),              // input 
+  .dout(axis_q_tdata),        // output QSCALE_MAX_BITS wide
+  .full(),                    // output 
+  .empty(empty),              // output 
+  .wr_rst_busy(),             // output 
+  .rd_rst_busy()              // output 
+);
+
+endmodule
+
+<: } :>

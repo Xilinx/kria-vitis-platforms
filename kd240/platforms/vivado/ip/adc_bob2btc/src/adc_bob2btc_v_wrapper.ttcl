@@ -31,7 +31,7 @@
 // Copyright (C) 2022, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
 //
-// Wrapper for multiple instantiations of the ADC, in this case the 7476a.
+// Wrapper for multiple instantiations of the adc_bob2btc converter.
 
 `timescale 1 ns / 1 ps
 

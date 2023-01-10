@@ -2,7 +2,7 @@
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <spirit:vendor>xilinx.com</spirit:vendor>
   <spirit:library>user</spirit:library>
-  <spirit:name>adc_usb2btc</spirit:name>
+  <spirit:name>adc_bob2btc</spirit:name>
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
@@ -1060,14 +1060,14 @@
         <spirit:name>xilinx_anylanguagebehavioralsimulation</spirit:name>
         <spirit:displayName>Simulation</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:simulation</spirit:envIdentifier>
-        <spirit:modelName>adc_usb2btc</spirit:modelName>
+        <spirit:modelName>adc_bob2btc</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>5e61419b</spirit:value>
+            <spirit:value>bd03c100</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1075,14 +1075,14 @@
         <spirit:name>xilinx_anylanguagesynthesis</spirit:name>
         <spirit:displayName>Synthesis</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:synthesis</spirit:envIdentifier>
-        <spirit:modelName>adc_usb2btc</spirit:modelName>
+        <spirit:modelName>adc_bob2btc</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagesynthesis_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>5e61419b</spirit:value>
+            <spirit:value>bd03c100</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1097,7 +1097,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>383f6804</spirit:value>
+            <spirit:value>0d5896c9</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1112,7 +1112,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>383f6804</spirit:value>
+            <spirit:value>0d5896c9</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2764,7 +2764,7 @@
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/adc_usb2btc_v1_0.tcl</spirit:name>
+        <spirit:name>xgui/adc_bob2btc_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
@@ -2772,36 +2772,36 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>src/adc_usb2btc_v.ttcl</spirit:name>
+        <spirit:name>src/adc_bob2btc_v.ttcl</spirit:name>
         <spirit:userFileType>ttcl</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/adc_usb2btc_v_wrapper.ttcl</spirit:name>
+        <spirit:name>src/adc_bob2btc_v_wrapper.ttcl</spirit:name>
         <spirit:userFileType>ttcl</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>src/adc_usb2btc_v.ttcl</spirit:name>
+        <spirit:name>src/adc_bob2btc_v.ttcl</spirit:name>
         <spirit:userFileType>ttcl</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/adc_usb2btc_v_wrapper.ttcl</spirit:name>
+        <spirit:name>src/adc_bob2btc_v_wrapper.ttcl</spirit:name>
         <spirit:userFileType>ttcl</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_verilogsimulationwrapper_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>src/adc_usb2btc_v_wrapper.ttcl</spirit:name>
+        <spirit:name>src/adc_bob2btc_v_wrapper.ttcl</spirit:name>
         <spirit:userFileType>ttcl</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_verilogsynthesiswrapper_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>src/adc_usb2btc_v_wrapper.ttcl</spirit:name>
+        <spirit:name>src/adc_bob2btc_v_wrapper.ttcl</spirit:name>
         <spirit:userFileType>ttcl</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -2810,7 +2810,7 @@
   <spirit:parameters>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">adc_usb2btc_v1_0</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">adc_bob2btc_v1_0</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>NUM_CHANNELS</spirit:name>
@@ -2903,19 +2903,19 @@
       <xilinx:taxonomies>
         <xilinx:taxonomy>/Digital_Signal_Processing/Building_Blocks</xilinx:taxonomy>
       </xilinx:taxonomies>
-      <xilinx:displayName>ADC USB to BTC Converter</xilinx:displayName>
+      <xilinx:displayName>ADC BOB to BTC Converter</xilinx:displayName>
       <xilinx:autoFamilySupportLevel>level_2</xilinx:autoFamilySupportLevel>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
       <xilinx:coreRevision>0</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-12-16T18:24:59Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2023-01-18T01:16:50Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="991d46c9"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="0cf3e30e"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="59de967a"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="336c148c"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="917a58e6"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="c042ebd6"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="ff270c44"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>
