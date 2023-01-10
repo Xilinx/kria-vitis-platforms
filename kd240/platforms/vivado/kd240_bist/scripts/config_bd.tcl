@@ -373,10 +373,14 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   set adc_hub_0 [ create_bd_cell -type ip -vlnv xilinx.com:user:adc_hub adc_hub_0 ]
   set_property -dict [list \
     CONFIG.L0_TYPE {VOLTAGE} \
+    CONFIG.L1_CODE {BTC} \
     CONFIG.L1_TYPE {CURRENT} \
     CONFIG.L2_TYPE {VOLTAGE} \
+    CONFIG.L3_CODE {BTC} \
     CONFIG.L3_TYPE {CURRENT} \
+    CONFIG.L5_CODE {BTC} \
     CONFIG.L5_TYPE {CURRENT} \
+    CONFIG.L7_CODE {BTC} \
     CONFIG.L7_TYPE {CURRENT} \
     CONFIG.NUM_CHANNELS {8} \
   ] $adc_hub_0
@@ -385,6 +389,11 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   # Create instance: adc_if, and set properties
   set adc_if [ create_bd_cell -type ip -vlnv xilinx.com:user:adc7352_if adc_if ]
   set_property CONFIG.NUM_CHANNELS {8} $adc_if
+
+
+  # Create instance: adc_bob2btc, and set properties
+  set adc_bob2btc [ create_bd_cell -type ip -vlnv xilinx.com:user:adc_bob2btc adc_bob2btc ]
+  set_property CONFIG.NUM_CHANNELS {8} $adc_bob2btc
 
 
   # Create instance: xlslice_oc_err_0, and set properties
@@ -440,14 +449,22 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   connect_bd_intf_net -intf_net adc_hub_0_L1_AXIS [get_bd_intf_pins L1_AXIS] [get_bd_intf_pins adc_hub_0/L1_AXIS]
   connect_bd_intf_net -intf_net adc_hub_0_L2_AXIS [get_bd_intf_pins L2_AXIS] [get_bd_intf_pins adc_hub_0/L2_AXIS]
   connect_bd_intf_net -intf_net adc_hub_1_L0_AXIS [get_bd_intf_pins L0_AXIS] [get_bd_intf_pins adc_hub_0/L0_AXIS]
-  connect_bd_intf_net -intf_net adc_if_phase_a_b_i_L0_ADC [get_bd_intf_pins adc_hub_0/L0_ADC] [get_bd_intf_pins adc_if/L0_ADC]
-  connect_bd_intf_net -intf_net adc_if_phase_a_b_i_L1_ADC [get_bd_intf_pins adc_hub_0/L1_ADC] [get_bd_intf_pins adc_if/L1_ADC]
-  connect_bd_intf_net -intf_net adc_if_phase_a_b_i_L2_ADC [get_bd_intf_pins adc_hub_0/L2_ADC] [get_bd_intf_pins adc_if/L2_ADC]
-  connect_bd_intf_net -intf_net adc_if_phase_a_b_i_L3_ADC [get_bd_intf_pins adc_hub_0/L3_ADC] [get_bd_intf_pins adc_if/L3_ADC]
-  connect_bd_intf_net -intf_net adc_if_phase_a_b_i_L4_ADC [get_bd_intf_pins adc_hub_0/L4_ADC] [get_bd_intf_pins adc_if/L4_ADC]
-  connect_bd_intf_net -intf_net adc_if_phase_a_b_i_L5_ADC [get_bd_intf_pins adc_hub_0/L5_ADC] [get_bd_intf_pins adc_if/L5_ADC]
-  connect_bd_intf_net -intf_net adc_if_phase_a_b_i_L6_ADC [get_bd_intf_pins adc_hub_0/L6_ADC] [get_bd_intf_pins adc_if/L6_ADC]
-  connect_bd_intf_net -intf_net adc_if_phase_a_b_i_L7_ADC [get_bd_intf_pins adc_hub_0/L7_ADC] [get_bd_intf_pins adc_if/L7_ADC]
+  connect_bd_intf_net -intf_net adc_if_L0_ADC [get_bd_intf_pins adc_if/L0_ADC] [get_bd_intf_pins adc_bob2btc/L0_ADC]
+  connect_bd_intf_net -intf_net adc_if_L1_ADC [get_bd_intf_pins adc_if/L1_ADC] [get_bd_intf_pins adc_bob2btc/L1_ADC]
+  connect_bd_intf_net -intf_net adc_if_L2_ADC [get_bd_intf_pins adc_if/L2_ADC] [get_bd_intf_pins adc_bob2btc/L2_ADC]
+  connect_bd_intf_net -intf_net adc_if_L3_ADC [get_bd_intf_pins adc_if/L3_ADC] [get_bd_intf_pins adc_bob2btc/L3_ADC]
+  connect_bd_intf_net -intf_net adc_if_L4_ADC [get_bd_intf_pins adc_if/L4_ADC] [get_bd_intf_pins adc_bob2btc/L4_ADC]
+  connect_bd_intf_net -intf_net adc_if_L5_ADC [get_bd_intf_pins adc_if/L5_ADC] [get_bd_intf_pins adc_bob2btc/L5_ADC]
+  connect_bd_intf_net -intf_net adc_if_L6_ADC [get_bd_intf_pins adc_if/L6_ADC] [get_bd_intf_pins adc_bob2btc/L6_ADC]
+  connect_bd_intf_net -intf_net adc_if_L7_ADC [get_bd_intf_pins adc_if/L7_ADC] [get_bd_intf_pins adc_bob2btc/L7_ADC]
+  connect_bd_intf_net -intf_net adc_bob2btc_L0_SYS [get_bd_intf_pins adc_hub_0/L0_ADC] [get_bd_intf_pins adc_bob2btc/L0_SYS]
+  connect_bd_intf_net -intf_net adc_bob2btc_L1_SYS [get_bd_intf_pins adc_hub_0/L1_ADC] [get_bd_intf_pins adc_bob2btc/L1_SYS]
+  connect_bd_intf_net -intf_net adc_bob2btc_L2_SYS [get_bd_intf_pins adc_hub_0/L2_ADC] [get_bd_intf_pins adc_bob2btc/L2_SYS]
+  connect_bd_intf_net -intf_net adc_bob2btc_L3_SYS [get_bd_intf_pins adc_hub_0/L3_ADC] [get_bd_intf_pins adc_bob2btc/L3_SYS]
+  connect_bd_intf_net -intf_net adc_bob2btc_L4_SYS [get_bd_intf_pins adc_hub_0/L4_ADC] [get_bd_intf_pins adc_bob2btc/L4_SYS]
+  connect_bd_intf_net -intf_net adc_bob2btc_L5_SYS [get_bd_intf_pins adc_hub_0/L5_ADC] [get_bd_intf_pins adc_bob2btc/L5_SYS]
+  connect_bd_intf_net -intf_net adc_bob2btc_L6_SYS [get_bd_intf_pins adc_hub_0/L6_ADC] [get_bd_intf_pins adc_bob2btc/L6_SYS]
+  connect_bd_intf_net -intf_net adc_bob2btc_L7_SYS [get_bd_intf_pins adc_hub_0/L7_ADC] [get_bd_intf_pins adc_bob2btc/L7_SYS]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins S_AXI] [get_bd_intf_pins adc_hub_0/S_AXI]
 
   # Create port connections
@@ -469,8 +486,10 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   connect_bd_net -net xlslice_oc_err_4_Dout [get_bd_pins dc_link_ov_err] [get_bd_pins xlslice_oc_err_7/Dout]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_hub_0/S_AXI_ACLK] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_if/CLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_bob2btc/CLK] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_hub_0/S_AXI_ARESETN] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_if/RESETn] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_bob2btc/RESETn] -boundary_type upper
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -578,6 +597,7 @@ proc create_root_design { parentCell } {
   set axi_quad_spi_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_quad_spi axi_quad_spi_0 ]
   set_property -dict [list \
     CONFIG.C_SCK_RATIO {16} \
+    CONFIG.Multiples16 {2} \
     CONFIG.C_SPI_MODE {0} \
     CONFIG.QSPI_BOARD_INTERFACE {Custom} \
   ] $axi_quad_spi_0
@@ -587,6 +607,9 @@ proc create_root_design { parentCell } {
 
   # Create instance: gate_driver
   create_hier_cell_gate_driver [current_bd_instance .] gate_driver
+
+  # Create instance: hls_qei_top_0, and set properties
+  set hls_qei_top_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_qei_top hls_qei_top_0 ]
 
   # Create instance: ila_enc_qei, and set properties
   set ila_enc_qei [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila ila_enc_qei ]
@@ -603,9 +626,6 @@ proc create_root_design { parentCell } {
     CONFIG.C_NUM_OF_PROBES {6} \
   ] $ila_gate_driver
 
-
-  # Create instance: hls_qei_top_0, and set properties
-  set hls_qei_top_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_qei_top hls_qei_top_0 ]
 
   # Create instance: proc_sys_reset_0, and set properties
   set proc_sys_reset_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset proc_sys_reset_0 ]
@@ -682,23 +702,26 @@ proc create_root_design { parentCell } {
   set zynq_ultra_ps_e_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e zynq_ultra_ps_e_0 ]
   apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_board_preset "1" }  [get_bd_cells zynq_ultra_ps_e_0]
   set_property -dict [ list \
-   CONFIG.PSU__USE__IRQ0 {1} \
-   CONFIG.PSU__USE__IRQ1 {1} \
-   CONFIG.PSU__NUM_FABRIC_RESETS {2} \
-   CONFIG.PSU__USE__M_AXI_GP0 {1} \
-   CONFIG.PSU__USE__M_AXI_GP1 {0} \
-   CONFIG.PSU__USE__M_AXI_GP2 {1} \
-   CONFIG.PSU__USE__S_AXI_GP2 {1} \
-   #CONFIG.PSU__USE__S_AXI_GP3 {1} \
-   CONFIG.PSU__MAXIGP0__DATA_WIDTH {32} \
-   CONFIG.PSU__MAXIGP2__DATA_WIDTH {32} \
-   CONFIG.PSU__SAXIGP2__DATA_WIDTH {128} \
-   #CONFIG.PSU__SAXIGP3__DATA_WIDTH {128} \
-   CONFIG.PSU__FPGA_PL1_ENABLE {1} \
-   CONFIG.PSU__CRL_APB__PL1_REF_CTRL__FREQMHZ {20} \
-   CONFIG.PSU__TTC0__WAVEOUT__ENABLE {1} \
-   CONFIG.PSU__TTC0__WAVEOUT__IO {EMIO} \
-
+    CONFIG.PSU__USE__IRQ0 {1} \
+    CONFIG.PSU__USE__IRQ1 {1} \
+    CONFIG.PSU__NUM_FABRIC_RESETS {2} \
+    CONFIG.PSU__USE__M_AXI_GP0 {1} \
+    CONFIG.PSU__USE__M_AXI_GP1 {0} \
+    CONFIG.PSU__USE__M_AXI_GP2 {1} \
+    CONFIG.PSU__USE__S_AXI_GP2 {1} \
+    #CONFIG.PSU__USE__S_AXI_GP3 {1} \
+    CONFIG.PSU__MAXIGP0__DATA_WIDTH {32} \
+    CONFIG.PSU__MAXIGP2__DATA_WIDTH {32} \
+    CONFIG.PSU__SAXIGP2__DATA_WIDTH {128} \
+    #CONFIG.PSU__SAXIGP3__DATA_WIDTH {128} \
+    CONFIG.PSU__FPGA_PL1_ENABLE {1} \
+    CONFIG.PSU__CRL_APB__PL1_REF_CTRL__FREQMHZ {20} \
+    CONFIG.PSU__TTC0__WAVEOUT__ENABLE {1} \
+    CONFIG.PSU__TTC0__WAVEOUT__IO {EMIO} \
+    CONFIG.PSU_MIO_45_PULLUPDOWN {disable} \
+    CONFIG.PSU_MIO_46_PULLUPDOWN {disable} \
+    CONFIG.PSU_MIO_47_PULLUPDOWN {disable} \
+    CONFIG.PSU_MIO_48_PULLUPDOWN {disable} \
  ] $zynq_ultra_ps_e_0
 
   # Create interface connections
@@ -725,7 +748,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net B_0_1 [get_bd_ports qei_se_B] [get_bd_pins hls_qei_top_0/qei_B_dout] -boundary_type upper
   connect_bd_net -net I_0_1 [get_bd_ports qei_se_I] [get_bd_pins ila_enc_qei/probe6] -boundary_type upper
   connect_bd_net -net I_0_1 [get_bd_ports qei_se_I] [get_bd_pins hls_qei_top_0/qei_I_dout] -boundary_type upper
-  connect_bd_net -net TQ_SDO_1 [get_bd_ports TQ_SDO] [get_bd_pins axi_quad_spi_0/io0_i]
+  connect_bd_net -net TQ_SDO_1 [get_bd_ports TQ_SDO] [get_bd_pins axi_quad_spi_0/io1_i]
   connect_bd_net -net adc_hub_1_interrupt [get_bd_pins ADC/interrupt] [get_bd_pins xlconcat_int/In0]
   connect_bd_net -net axi_quad_spi_0_io0_o [get_bd_ports TQ_SDI] [get_bd_pins axi_quad_spi_0/io0_o]
   connect_bd_net -net axi_quad_spi_0_ip2intc_irpt [get_bd_pins axi_quad_spi_0/ip2intc_irpt] [get_bd_pins xlconcat_int/In1]
