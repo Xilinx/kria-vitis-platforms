@@ -318,7 +318,7 @@ set_property DELAY_VALUE 0 [get_cells -hier -filter {NAME =~ */rgmii_interface/d
 set_property DELAY_VALUE 0 [get_cells -hier -filter {NAME =~ */rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
 
 ## Refclk frequency
-set_property REFCLK_FREQUENCY 300 [get_cells -hier -filter {NAME =~ *delay_rgmii_tx*}]
+set_property REFCLK_FREQUENCY 333.33333 [get_cells -hier -filter {NAME =~ *delay_rgmii_tx*}]
 
 ## False paths
 set_clock_groups -asynchronous -group [get_clocks gem2_clk_in]
