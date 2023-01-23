@@ -372,14 +372,20 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   # Create instance: adc_hub_0, and set properties
   set adc_hub_0 [ create_bd_cell -type ip -vlnv xilinx.com:user:adc_hub adc_hub_0 ]
   set_property -dict [list \
+    CONFIG.L0_CODE {BTC} \
     CONFIG.L0_TYPE {VOLTAGE} \
     CONFIG.L1_CODE {BTC} \
     CONFIG.L1_TYPE {CURRENT} \
+    CONFIG.L2_CODE {BTC} \
     CONFIG.L2_TYPE {VOLTAGE} \
     CONFIG.L3_CODE {BTC} \
     CONFIG.L3_TYPE {CURRENT} \
+    CONFIG.L4_CODE {BTC} \
+    CONFIG.L4_TYPE {VOLTAGE} \
     CONFIG.L5_CODE {BTC} \
     CONFIG.L5_TYPE {CURRENT} \
+    CONFIG.L6_CODE {BTC} \
+    CONFIG.L6_TYPE {VOLTAGE} \
     CONFIG.L7_CODE {BTC} \
     CONFIG.L7_TYPE {CURRENT} \
     CONFIG.NUM_CHANNELS {8} \
