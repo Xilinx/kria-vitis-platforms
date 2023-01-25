@@ -59,7 +59,7 @@
     output  wire               phase_imbal_err_en,
     output  wire [31:0]        phase_imbal_clr,
     output  wire               gate_drive_en_sw,
-    output  wire signed [31:0] phase_imbal_limit,
+    output  wire [31:0]        phase_imbal_limit,
     
     output  wire               speed_sel,
     output  wire               current_sel,

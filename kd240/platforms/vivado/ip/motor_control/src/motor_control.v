@@ -31,11 +31,13 @@
 
 
     // Parameters of Axi Slave Bus Interface s_axi_cntrl
-    parameter integer C_s_axi_cntrl_DATA_WIDTH  = 32,
-    parameter integer C_s_axi_cntrl_ADDR_WIDTH  = 5,
+    parameter integer C_S_AXI_CNTRL_DATA_WIDTH  = 32,
+    parameter integer C_S_AXI_CNTRL_ADDR_WIDTH  = 5,
 
     // Parameters for AXI stream
-    parameter integer C_s_axis_TDATA_WIDTH  = 32
+    parameter integer Q_INTEGER = 7,
+    parameter integer Q_FRACTIONAL = 16,
+    parameter integer C_S_AXIS_TDATA_WIDTH  = 1 + Q_INTEGER + Q_FRACTIONAL 
 
   )
   (
@@ -61,46 +63,47 @@
     // Ports of Axi Slave Bus Interface s_axi_cntrl
     input wire  s_axi_cntrl_clk,
     input wire  s_axi_cntrl_resetn,
-    input wire [C_s_axi_cntrl_ADDR_WIDTH-1 : 0] s_axi_cntrl_awaddr,
+    input wire [C_S_AXI_CNTRL_ADDR_WIDTH-1 : 0] s_axi_cntrl_awaddr,
     input wire [2 : 0] s_axi_cntrl_awprot,
     input wire  s_axi_cntrl_awvalid,
     output wire  s_axi_cntrl_awready,
-    input wire [C_s_axi_cntrl_DATA_WIDTH-1 : 0] s_axi_cntrl_wdata,
-    input wire [(C_s_axi_cntrl_DATA_WIDTH/8)-1 : 0] s_axi_cntrl_wstrb,
+    input wire [C_S_AXI_CNTRL_DATA_WIDTH-1 : 0] s_axi_cntrl_wdata,
+    input wire [(C_S_AXI_CNTRL_DATA_WIDTH/8)-1 : 0] s_axi_cntrl_wstrb,
     input wire  s_axi_cntrl_wvalid,
     output wire  s_axi_cntrl_wready,
     output wire [1 : 0] s_axi_cntrl_bresp,
     output wire  s_axi_cntrl_bvalid,
     input wire  s_axi_cntrl_bready,
-    input wire [C_s_axi_cntrl_ADDR_WIDTH-1 : 0] s_axi_cntrl_araddr,
+    input wire [C_S_AXI_CNTRL_ADDR_WIDTH-1 : 0] s_axi_cntrl_araddr,
     input wire [2 : 0] s_axi_cntrl_arprot,
     input wire  s_axi_cntrl_arvalid,
     output wire  s_axi_cntrl_arready,
-    output wire [C_s_axi_cntrl_DATA_WIDTH-1 : 0] s_axi_cntrl_rdata,
+    output wire [C_S_AXI_CNTRL_DATA_WIDTH-1 : 0] s_axi_cntrl_rdata,
     output wire [1 : 0] s_axi_cntrl_rresp,
     output wire  s_axi_cntrl_rvalid,
     input wire  s_axi_cntrl_rready,
     
      
     // Ports of Axi Slave Bus Interface s_axis_phase_a_i
-    input wire [C_s_axis_TDATA_WIDTH-1 : 0] s_axis_phase_a_i_tdata,
+    input wire [C_S_AXIS_TDATA_WIDTH-1 : 0] s_axis_phase_a_i_tdata,
     input wire  s_axis_phase_a_i_tvalid,
     output wire  s_axis_phase_a_i_tready,
 
     // Ports of Axi Slave Bus Interface s_axis_phase_b_i
-    input wire [C_s_axis_TDATA_WIDTH-1 : 0] s_axis_phase_b_i_tdata,
+    input wire [C_S_AXIS_TDATA_WIDTH-1 : 0] s_axis_phase_b_i_tdata,
     input wire  s_axis_phase_b_i_tvalid,
     output wire  s_axis_phase_b_i_tready,
 
     // Ports of Axi Slave Bus Interface s_axis_phase_c_i
-    input wire [C_s_axis_TDATA_WIDTH-1 : 0] s_axis_phase_c_i_tdata,
+    input wire [C_S_AXIS_TDATA_WIDTH-1 : 0] s_axis_phase_c_i_tdata,
     input wire  s_axis_phase_c_i_tvalid,
     output wire  s_axis_phase_c_i_tready
     
   );
   
 
-  wire signed [31:0] phase_imbal_limit;
+  wire signed [C_S_AXIS_TDATA_WIDTH-1:0] phase_imbal_limit_q;
+  wire [31:0] phase_imbal_limit;
   wire phase_imbal_err;
   wire [31:0] phase_imbal_clr;
   wire phase_imbal_err_en;
@@ -108,16 +111,18 @@
   
   reg phase_imbal;
    
-  reg signed [31:0] phase_a_i;
-  reg signed [31:0] phase_b_i;
-  reg signed [31:0] phase_c_i;
-
+  reg signed [C_S_AXIS_TDATA_WIDTH:0] phase_a_i;
+  reg signed [C_S_AXIS_TDATA_WIDTH:0] phase_b_i;
+  reg signed [C_S_AXIS_TDATA_WIDTH:0] phase_c_i;
   
-    
+//C_S_AXIS_TDATA_WIDTH  = 1 (Sign bit) + Q_INTEGER + Q_FRACTIONAL
+//Max width supported on the limit register is 32 bit, so C_S_AXIS_TDATA_WIDTH cannot be more than 32-bits
+  assign phase_imbal_limit_q[C_S_AXIS_TDATA_WIDTH-1:0] = phase_imbal_limit[C_S_AXIS_TDATA_WIDTH-1:0];
+      
 // Instantiation of Axi Bus Interface s_axi_cntrl
   motor_control_s_axi_cntrl # ( 
-    .C_S_AXI_DATA_WIDTH(C_s_axi_cntrl_DATA_WIDTH),
-    .C_S_AXI_ADDR_WIDTH(C_s_axi_cntrl_ADDR_WIDTH)
+    .C_S_AXI_DATA_WIDTH(C_S_AXI_CNTRL_DATA_WIDTH),
+    .C_S_AXI_ADDR_WIDTH(C_S_AXI_CNTRL_ADDR_WIDTH)
   ) motor_control_s_axi_cntrl_inst (
     .S_AXI_ACLK(s_axi_cntrl_clk),
     .S_AXI_ARESETN(s_axi_cntrl_resetn),
@@ -156,7 +161,7 @@
   begin
     if ( s_axi_cntrl_resetn == 1'b0 )
       begin
-        phase_a_i  <= 32'b0;
+        phase_a_i  <= 0;
       end 
     else
       begin    
@@ -170,7 +175,7 @@
   begin
     if ( s_axi_cntrl_resetn == 1'b0 )
       begin
-        phase_b_i  <= 32'b0;
+        phase_b_i  <= 0;
       end 
     else
       begin    
@@ -183,7 +188,7 @@
   begin
     if ( s_axi_cntrl_resetn == 1'b0 )
       begin
-        phase_c_i  <= 32'b0;
+        phase_c_i  <= 0;
       end 
     else
       begin    
@@ -195,7 +200,7 @@
   
   // The current imbalance is a check of the summation of the three phase currents. 
   // An ideal motor would have: Phase A + Phase B + Phase C = 0A. 
-  // If Phase A + Phase B + Phase C = 0A > limit then set this bit
+  // If Phase A + Phase B + Phase C > limit then set this bit
   // Note this is just a warning and doesn't disable the gate drive  
   
   always @( posedge s_axi_cntrl_clk )
@@ -206,11 +211,11 @@
         end 
       else
         begin                   
-          // When adding 2 negative number in Q15.Q16 format the resultant value
+          // When adding 2 negative number say in Q7.Q16 format the resultant value
           // may need an extra bit on the MSB side 
           // Not accouting for overflow when adding negative numbers
-          // as not expecting a value of -2^16
-          if ((phase_a_i + phase_b_i + phase_c_i > phase_imbal_limit) && (phase_imbal_err_en == 1'b1))
+          // as not expecting a value of -2^8
+          if ((phase_a_i + phase_b_i + phase_c_i > phase_imbal_limit_q) && (phase_imbal_err_en == 1'b1))
             phase_imbal <= 1'b1;               
           else if (phase_imbal_clr == 32'h0bad00ff)
             phase_imbal <= 1'b0;

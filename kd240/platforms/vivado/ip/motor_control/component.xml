@@ -342,8 +342,8 @@
         <spirit:name>reg0</spirit:name>
         <spirit:displayName>reg0</spirit:displayName>
         <spirit:baseAddress spirit:format="bitString" spirit:bitStringLength="1">0x0</spirit:baseAddress>
-        <spirit:range spirit:format="long" spirit:resolve="dependent" spirit:dependency="pow(2,(spirit:decode(id(&apos;MODELPARAM_VALUE.C_s_axi_cntrl_ADDR_WIDTH&apos;)) - 1) - 0 + 1)" spirit:minimum="4096" spirit:rangeType="long">4096</spirit:range>
-        <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_s_axi_cntrl_DATA_WIDTH&apos;)) - 1) - 0 + 1">32</spirit:width>
+        <spirit:range spirit:format="long" spirit:resolve="dependent" spirit:dependency="pow(2,(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S_AXI_CNTRL_ADDR_WIDTH&apos;)) - 1) - 0 + 1)" spirit:minimum="4096" spirit:rangeType="long">4096</spirit:range>
+        <spirit:width spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S_AXI_CNTRL_DATA_WIDTH&apos;)) - 1) - 0 + 1">32</spirit:width>
         <spirit:usage>register</spirit:usage>
       </spirit:addressBlock>
     </spirit:memoryMap>
@@ -362,7 +362,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>d17e13b8</spirit:value>
+            <spirit:value>61fde0de</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -378,7 +378,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>d17e13b8</spirit:value>
+            <spirit:value>61fde0de</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -392,7 +392,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>0246bf6a</spirit:value>
+            <spirit:value>d52e3591</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -571,7 +571,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_s_axi_cntrl_ADDR_WIDTH&apos;)) - 1)">4</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S_AXI_CNTRL_ADDR_WIDTH&apos;)) - 1)">4</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -640,7 +640,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_s_axi_cntrl_DATA_WIDTH&apos;)) - 1)">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S_AXI_CNTRL_DATA_WIDTH&apos;)) - 1)">31</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -660,7 +660,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="((spirit:decode(id(&apos;MODELPARAM_VALUE.C_s_axi_cntrl_DATA_WIDTH&apos;)) / 8) - 1)">3</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="((spirit:decode(id(&apos;MODELPARAM_VALUE.C_S_AXI_CNTRL_DATA_WIDTH&apos;)) / 8) - 1)">3</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -755,7 +755,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_s_axi_cntrl_ADDR_WIDTH&apos;)) - 1)">4</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S_AXI_CNTRL_ADDR_WIDTH&apos;)) - 1)">4</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -824,7 +824,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_s_axi_cntrl_DATA_WIDTH&apos;)) - 1)">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S_AXI_CNTRL_DATA_WIDTH&apos;)) - 1)">31</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -887,7 +887,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_s_axis_TDATA_WIDTH&apos;)) - 1)">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S_AXIS_TDATA_WIDTH&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -933,7 +933,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_s_axis_TDATA_WIDTH&apos;)) - 1)">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S_AXIS_TDATA_WIDTH&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -979,7 +979,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_s_axis_TDATA_WIDTH&apos;)) - 1)">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_S_AXIS_TDATA_WIDTH&apos;)) - 1)">23</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -1023,19 +1023,29 @@
     </spirit:ports>
     <spirit:modelParameters>
       <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="integer">
-        <spirit:name>C_s_axi_cntrl_DATA_WIDTH</spirit:name>
+        <spirit:name>C_S_AXI_CNTRL_DATA_WIDTH</spirit:name>
         <spirit:displayName>C S Axi Cntrl Data Width</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_s_axi_cntrl_DATA_WIDTH">32</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S_AXI_CNTRL_DATA_WIDTH">32</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
-        <spirit:name>C_s_axi_cntrl_ADDR_WIDTH</spirit:name>
+        <spirit:name>C_S_AXI_CNTRL_ADDR_WIDTH</spirit:name>
         <spirit:displayName>C S Axi Cntrl Addr Width</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_s_axi_cntrl_ADDR_WIDTH">5</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_S_AXI_CNTRL_ADDR_WIDTH">5</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
-        <spirit:name>C_s_axis_TDATA_WIDTH</spirit:name>
+        <spirit:name>C_S_AXIS_TDATA_WIDTH</spirit:name>
         <spirit:displayName>C S Axis Tdata Width</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_s_axis_TDATA_WIDTH">32</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="dependent" spirit:id="MODELPARAM_VALUE.C_S_AXIS_TDATA_WIDTH" spirit:dependency="((1 + spirit:decode(id(&apos;MODELPARAM_VALUE.Q_INTEGER&apos;))) + spirit:decode(id(&apos;MODELPARAM_VALUE.Q_FRACTIONAL&apos;)))">24</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>Q_INTEGER</spirit:name>
+        <spirit:displayName>Q Integer</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.Q_INTEGER">7</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>Q_FRACTIONAL</spirit:name>
+        <spirit:displayName>Q Fractional</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.Q_FRACTIONAL">16</spirit:value>
       </spirit:modelParameter>
     </spirit:modelParameters>
   </spirit:model>
@@ -1063,7 +1073,7 @@
       <spirit:file>
         <spirit:name>src/motor_control.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_7612e4ab</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_f75f7294</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1082,7 +1092,7 @@
       <spirit:file>
         <spirit:name>xgui/motor_control_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_0246bf6a</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_d52e3591</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -1090,23 +1100,33 @@
   <spirit:description>Motor Control - Application specific block</spirit:description>
   <spirit:parameters>
     <spirit:parameter>
-      <spirit:name>C_s_axi_cntrl_DATA_WIDTH</spirit:name>
-      <spirit:displayName>C S Axi Cntrl Data Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.C_s_axi_cntrl_DATA_WIDTH">32</spirit:value>
+      <spirit:name>C_S_AXI_CNTRL_ADDR_WIDTH</spirit:name>
+      <spirit:displayName>SAXI_CNTRL Addr Width</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.C_S_AXI_CNTRL_ADDR_WIDTH">5</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
-      <spirit:name>C_s_axi_cntrl_ADDR_WIDTH</spirit:name>
-      <spirit:displayName>C S Axi Cntrl Addr Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.C_s_axi_cntrl_ADDR_WIDTH">5</spirit:value>
-    </spirit:parameter>
-    <spirit:parameter>
-      <spirit:name>C_s_axis_TDATA_WIDTH</spirit:name>
-      <spirit:displayName>C S Axis Tdata Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.C_s_axis_TDATA_WIDTH">32</spirit:value>
+      <spirit:name>C_S_AXIS_TDATA_WIDTH</spirit:name>
+      <spirit:displayName>SAXIS Data Width</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.C_S_AXIS_TDATA_WIDTH">24</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
       <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">motor_control_v1_0</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>Q_INTEGER</spirit:name>
+      <spirit:displayName>Q format Integer bits</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.Q_INTEGER">7</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>Q_FRACTIONAL</spirit:name>
+      <spirit:displayName>Q format Fractional bits</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.Q_FRACTIONAL">16</spirit:value>
+    </spirit:parameter>
+    <spirit:parameter>
+      <spirit:name>C_S_AXI_CNTRL_DATA_WIDTH</spirit:name>
+      <spirit:displayName>SAXI_CNTRL Data Width</spirit:displayName>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.C_S_AXI_CNTRL_DATA_WIDTH">32</spirit:value>
     </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
@@ -1144,17 +1164,17 @@
       <xilinx:displayName>motor_control</xilinx:displayName>
       <xilinx:autoFamilySupportLevel>level_0</xilinx:autoFamilySupportLevel>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>6</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2022-12-05T22:01:26Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>10</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-01-05T23:08:07Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="7a380cc6"/>
-      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="15bd4355"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="6491f789"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="d2f0d94b"/>
-      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="0eb19089"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="e290a23f"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="7402839c"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="0d593daf"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="28a1cf74"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="f979f63f"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="ee9c68de"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>
