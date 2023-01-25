@@ -12,7 +12,7 @@ help:
 	@echo 'Usage:'
 	@echo ''
 	@echo '  make ip'
-	@echo '    Generate IP for SVPWM'
+	@echo '    Generate IP for PWM GEN'
 	@echo ''
 
 .PHONY: all

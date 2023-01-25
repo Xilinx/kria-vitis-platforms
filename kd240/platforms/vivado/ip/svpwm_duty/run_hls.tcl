@@ -6,7 +6,7 @@ source settings.tcl
 set VITIS_LIBS ../../../../../common/Vitis_Libraries/motorcontrol
 set SVPWM_IP ${VITIS_LIBS}/L1/tests/FOC/IP_SVPWM
 
-set PROJ "ip_svpwm.prj"
+set PROJ "ip_svpwm_duty.prj"
 set SOLN "sol1"
 
 if {![info exists CLKP]} {
@@ -21,7 +21,7 @@ open_project -reset $PROJ
 
 add_files "${SVPWM_IP}/src/ip_svpwm.cpp" -cflags "-I${VITIS_LIBS}/L1/include/hw -I${SVPWM_IP}/src"
 add_files -tb "${SVPWM_IP}/src/test_svpwm.cpp" -cflags "-I${VITIS_LIBS}/L1/include/hw -I${SVPWM_IP}/src" 
-set_top hls_svpwm
+set_top hls_svpwm_duty
 
 open_solution -reset $SOLN
 
