@@ -13,17 +13,17 @@ set_property BITSTREAM.CONFIG.UNUSEDPIN PULLNONE [current_design]
 
 ## MDIO constraints
 
-set_property PACKAGE_PIN G7 [get_ports mdio_io]
+set_property PACKAGE_PIN L1 [get_ports mdio_io]
 set_property IOSTANDARD LVCMOS18 [get_ports mdio_io]
 set_property SLEW SLOW [get_ports mdio_io]
 set_property DRIVE 4 [get_ports mdio_io]
 
-set_property PACKAGE_PIN H7 [get_ports mdio_mdc]
+set_property PACKAGE_PIN K2 [get_ports mdio_mdc]
 set_property IOSTANDARD LVCMOS18 [get_ports mdio_mdc]
 set_property SLEW SLOW [get_ports mdio_mdc]
 set_property DRIVE 4 [get_ports mdio_mdc]
 
-set_property PACKAGE_PIN P1 [get_ports {Phy_reset_n[0]}]
+set_property PACKAGE_PIN M1 [get_ports {Phy_reset_n[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {Phy_reset_n[0]}]
 set_property SLEW SLOW [get_ports {Phy_reset_n[0]}]
 set_property DRIVE 4 [get_ports {Phy_reset_n[0]}]
@@ -38,7 +38,7 @@ set_property IOSTANDARD LVCMOS18 [get_ports mdio2_mdc]
 set_property SLEW SLOW [get_ports mdio2_mdc]
 set_property DRIVE 4 [get_ports mdio2_mdc]
 
-set_property PACKAGE_PIN L1 [get_ports {Phy_reset_n[1]}]
+set_property PACKAGE_PIN D4 [get_ports {Phy_reset_n[1]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {Phy_reset_n[1]}]
 set_property SLEW SLOW [get_ports {Phy_reset_n[1]}]
 set_property DRIVE 4 [get_ports {Phy_reset_n[1]}]
@@ -46,12 +46,12 @@ set_property DRIVE 4 [get_ports {Phy_reset_n[1]}]
 ## RGMII constraints
 
 # PHY0
-set_property PACKAGE_PIN T4 [get_ports rgmii_tx_ctl]
+set_property PACKAGE_PIN K6 [get_ports rgmii_tx_ctl]
 set_property IOSTANDARD LVCMOS18 [get_ports rgmii_tx_ctl]
 set_property SLEW SLOW [get_ports rgmii_tx_ctl]
 set_property DRIVE 4 [get_ports rgmii_tx_ctl]
 
-set_property PACKAGE_PIN U4 [get_ports rgmii_txc]
+set_property PACKAGE_PIN K7 [get_ports rgmii_txc]
 set_property IOSTANDARD LVCMOS18 [get_ports rgmii_txc]
 set_property SLEW SLOW [get_ports rgmii_txc]
 set_property DRIVE 4 [get_ports rgmii_txc]
@@ -76,44 +76,44 @@ set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_td[3]}]
 set_property SLEW SLOW [get_ports {rgmii_td[3]}]
 set_property DRIVE 4 [get_ports {rgmii_td[3]}]
 
-set_property PACKAGE_PIN N1 [get_ports rgmii_rx_ctl]
+set_property PACKAGE_PIN P1 [get_ports rgmii_rx_ctl]
 set_property IOSTANDARD LVCMOS18 [get_ports rgmii_rx_ctl]
 set_property SLEW SLOW [get_ports {rgmii_rx_ctl}]
 set_property DRIVE 4 [get_ports {rgmii_rx_ctl}]
 
-set_property PACKAGE_PIN N2 [get_ports rgmii_rxc]
+set_property PACKAGE_PIN P2 [get_ports rgmii_rxc]
 set_property IOSTANDARD LVCMOS18 [get_ports rgmii_rxc]
 set_property SLEW SLOW [get_ports {rgmii_rxc}]
 set_property DRIVE 4 [get_ports {rgmii_rxc}]
 
-set_property PACKAGE_PIN K7 [get_ports {rgmii_rd[0]}]
+set_property PACKAGE_PIN R1 [get_ports {rgmii_rd[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_rd[0]}]
 set_property SLEW SLOW [get_ports {rgmii_rd[0]}]
 set_property DRIVE 4 [get_ports {rgmii_rd[0]}]
 
-set_property PACKAGE_PIN K6 [get_ports {rgmii_rd[1]}]
+set_property PACKAGE_PIN T1 [get_ports {rgmii_rd[1]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_rd[1]}]
 set_property SLEW SLOW [get_ports {rgmii_rd[1]}]
 set_property DRIVE 4 [get_ports {rgmii_rd[1]}]
 
-set_property PACKAGE_PIN R1 [get_ports {rgmii_rd[2]}]
+set_property PACKAGE_PIN N2 [get_ports {rgmii_rd[2]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_rd[2]}]
 set_property SLEW SLOW [get_ports {rgmii_rd[2]}]
 set_property DRIVE 4 [get_ports {rgmii_rd[2]}]
 
-set_property PACKAGE_PIN T1 [get_ports {rgmii_rd[3]}]
+set_property PACKAGE_PIN N1 [get_ports {rgmii_rd[3]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii_rd[3]}]
 set_property SLEW SLOW [get_ports {rgmii_rd[3]}]
 set_property DRIVE 4 [get_ports {rgmii_rd[3]}]
 
 
 # PHY1
-set_property PACKAGE_PIN E1 [get_ports rgmii2_tx_ctl]
+set_property PACKAGE_PIN G6 [get_ports rgmii2_tx_ctl]
 set_property IOSTANDARD LVCMOS18 [get_ports rgmii2_tx_ctl]
 set_property SLEW SLOW [get_ports rgmii2_tx_ctl]
 set_property DRIVE 4 [get_ports rgmii2_tx_ctl]
 
-set_property PACKAGE_PIN F1 [get_ports rgmii2_txc]
+set_property PACKAGE_PIN F7 [get_ports rgmii2_txc]
 set_property IOSTANDARD LVCMOS18 [get_ports rgmii2_txc]
 set_property SLEW SLOW [get_ports rgmii2_txc]
 set_property DRIVE 4 [get_ports rgmii2_txc]
@@ -128,43 +128,43 @@ set_property IOSTANDARD LVCMOS18 [get_ports {rgmii2_td[1]}]
 set_property SLEW SLOW [get_ports {rgmii2_td[1]}]
 set_property DRIVE 4 [get_ports {rgmii2_td[1]}]
 
-set_property PACKAGE_PIN F7 [get_ports {rgmii2_td[2]}]
+set_property PACKAGE_PIN G2 [get_ports {rgmii2_td[2]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii2_td[2]}]
 set_property SLEW SLOW [get_ports {rgmii2_td[2]}]
 set_property DRIVE 4 [get_ports {rgmii2_td[2]}]
 
-set_property PACKAGE_PIN G6 [get_ports {rgmii2_td[3]}]
+set_property PACKAGE_PIN G1 [get_ports {rgmii2_td[3]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii2_td[3]}]
 set_property SLEW SLOW [get_ports {rgmii2_td[3]}]
 set_property DRIVE 4 [get_ports {rgmii2_td[3]}]
 
-set_property PACKAGE_PIN M1 [get_ports rgmii2_rx_ctl]
+set_property PACKAGE_PIN F1 [get_ports rgmii2_rx_ctl]
 set_property IOSTANDARD LVCMOS18 [get_ports rgmii2_rx_ctl]
 set_property SLEW SLOW [get_ports {rgmii2_rx_ctl}]
 set_property DRIVE 4 [get_ports {rgmii2_rx_ctl}]
 
-set_property PACKAGE_PIN L2 [get_ports rgmii2_rxc]
+set_property PACKAGE_PIN A4 [get_ports rgmii2_rxc]
 set_property IOSTANDARD LVCMOS18 [get_ports rgmii2_rxc]
 set_property SLEW SLOW [get_ports {rgmii2_rxc}]
 set_property DRIVE 4 [get_ports {rgmii2_rxc}]
 
 
-set_property PACKAGE_PIN K1 [get_ports {rgmii2_rd[0]}]
+set_property PACKAGE_PIN C1 [get_ports {rgmii2_rd[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii2_rd[0]}]
 set_property SLEW SLOW [get_ports {rgmii2_rd[0]}]
 set_property DRIVE 4 [get_ports {rgmii2_rd[0]}]
 
-set_property PACKAGE_PIN J1 [get_ports {rgmii2_rd[1]}]
+set_property PACKAGE_PIN D1 [get_ports {rgmii2_rd[1]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii2_rd[1]}]
 set_property SLEW SLOW [get_ports {rgmii2_rd[1]}]
 set_property DRIVE 4 [get_ports {rgmii2_rd[1]}]
 
-set_property PACKAGE_PIN J7 [get_ports {rgmii2_rd[2]}]
+set_property PACKAGE_PIN D2 [get_ports {rgmii2_rd[2]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii2_rd[2]}]
 set_property SLEW SLOW [get_ports {rgmii2_rd[2]}]
 set_property DRIVE 4 [get_ports {rgmii2_rd[2]}]
 
-set_property PACKAGE_PIN H8 [get_ports {rgmii2_rd[3]}]
+set_property PACKAGE_PIN E2 [get_ports {rgmii2_rd[3]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {rgmii2_rd[3]}]
 set_property SLEW SLOW [get_ports {rgmii2_rd[3]}]
 set_property DRIVE 4 [get_ports {rgmii2_rd[3]}]
@@ -247,18 +247,18 @@ set_property IOSTANDARD LVCMOS33 [get_ports QEI_I]
 
 ## ADC Constraints
 # Chip Selects
-set_property PACKAGE_PIN E2 [get_ports {dc_link_adc_cs_n[0]}]
+set_property PACKAGE_PIN K1 [get_ports {dc_link_adc_cs_n[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {dc_link_adc_cs_n[0]}]
 set_property SLEW SLOW [get_ports {dc_link_adc_cs_n[0]}]
 set_property DRIVE 4 [get_ports {dc_link_adc_cs_n[0]}]
 
-set_property PACKAGE_PIN T6 [get_ports {motor_adc_cs_n[0]}]
+set_property PACKAGE_PIN U5 [get_ports {motor_adc_cs_n[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {motor_adc_cs_n[0]}]
 set_property SLEW SLOW [get_ports {motor_adc_cs_n[0]}]
 set_property DRIVE 4 [get_ports {motor_adc_cs_n[0]}]
 
 # ADC output clocks
-set_property PACKAGE_PIN C1 [get_ports dc_link_adc_sclk]
+set_property PACKAGE_PIN H8 [get_ports dc_link_adc_sclk]
 set_property IOSTANDARD LVCMOS18 [get_ports dc_link_adc_sclk]
 set_property SLEW SLOW [get_ports dc_link_adc_sclk]
 set_property DRIVE 4 [get_ports dc_link_adc_sclk]
@@ -275,10 +275,10 @@ set_property IOSTANDARD LVCMOS18 [get_ports motor_pa_data_i]
 set_property PACKAGE_PIN M7 [get_ports motor_pb_data_i]
 set_property IOSTANDARD LVCMOS18 [get_ports motor_pb_data_i]
 
-set_property PACKAGE_PIN U5 [get_ports motor_pc_data_i]
+set_property PACKAGE_PIN T6 [get_ports motor_pc_data_i]
 set_property IOSTANDARD LVCMOS18 [get_ports motor_pc_data_i]
 
-set_property PACKAGE_PIN D2 [get_ports dc_link_data_i]
+set_property PACKAGE_PIN J1 [get_ports dc_link_data_i]
 set_property IOSTANDARD LVCMOS18 [get_ports dc_link_data_i]
 
 # Volatges
@@ -291,14 +291,14 @@ set_property IOSTANDARD LVCMOS18 [get_ports motor_pb_data_v]
 set_property PACKAGE_PIN N7 [get_ports motor_pc_data_v]
 set_property IOSTANDARD LVCMOS18 [get_ports motor_pc_data_v]
 
-set_property PACKAGE_PIN D1 [get_ports dc_link_data_v]
+set_property PACKAGE_PIN J7 [get_ports dc_link_data_v]
 set_property IOSTANDARD LVCMOS18 [get_ports dc_link_data_v]
 
 
 ## Clock inputs from board
 
 # 25Mhz clock
-set_property PACKAGE_PIN P2 [get_ports CLK_IN_gem]
+set_property PACKAGE_PIN L2 [get_ports CLK_IN_gem]
 set_property IOSTANDARD LVCMOS18 [get_ports CLK_IN_gem]
 
 #------------------------------------------------------------------

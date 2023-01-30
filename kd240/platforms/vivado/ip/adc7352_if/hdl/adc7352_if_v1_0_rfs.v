@@ -32,7 +32,7 @@ module adc7352_if #(
 
 
 localparam integer LEADING_ZEROS = 2-1;
-localparam integer QUIET = 2;
+localparam integer QUIET = 0;
 
 // State machine states
 localparam [3:0] 
@@ -105,7 +105,7 @@ synchronizer_simple sync_sample
 synchronizer_simple sync_sample_off
 (
     .data_in    (update_sclk),
-    .new_clk    (~SCLK),
+    .new_clk    (~SCLK), // Shouldn't this be CLK?
     .data_out   (update_sclk_off)
 );
 
@@ -126,7 +126,7 @@ begin
   else
     case (sm) 
       sm_IDLE: begin
-	// Implementing QUIET countdown
+        // Implementing QUIET countdown
         if (cntdown > 0)
           cntdown <= cntdown - 1'b1;
         else if (update_sclk) begin

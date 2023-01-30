@@ -81,6 +81,7 @@
     reg offset_sclr;
 
     wire  start_shift;
+    reg  offset_done;
     reg  shift_done;
     reg  adder_done;
     reg  sub_done;
@@ -88,6 +89,8 @@
 
     reg [3:0] last_num_samples_val;
     reg tap_changed;
+    reg [31:0] last_offset_val;
+    reg offset_changed;
 
 
     // State machines for simple moving average
@@ -115,7 +118,7 @@
 
     always @(posedge CLK)
     begin
-      if (RESETn == 1'b0 || tap_changed == 1'b1) begin
+      if (RESETn == 1'b0 || tap_changed == 1'b1 || offset_changed == 1'b1) begin
         for( i = 0; i <= maxk; i = i + 1 )
           samples[i] <= 'h0;
         s <= 0;
@@ -143,7 +146,7 @@
     // sub will be set based on these states.
     always @(posedge CLK)
     begin
-      if (RESETn == 1'b0 || tap_changed == 1'b1)
+      if (RESETn == 1'b0 || tap_changed == 1'b1 || offset_changed == 1'b1)
         begin
           sm_sub <= sm_sub_IDLE;
           sub_sclr <= 1'b1;
@@ -153,7 +156,7 @@
         
         case (sm_sub)
           sm_sub_IDLE:
-            if (tap_changed)
+            if (tap_changed || offset_changed)
               sm_sub <= sm_sub_IDLE;
             else if (vld_reg[1])
               sm_sub <= sm_sub_PASS_THROUGH;
@@ -172,7 +175,7 @@
     // adder will be set based on these states.
     always @(posedge CLK)
     begin
-      if (RESETn == 1'b0 || tap_changed == 1'b1)
+      if (RESETn == 1'b0 || tap_changed == 1'b1 || offset_changed)
         begin
           sm_adder <= sm_adder_IDLE;
           adder_sclr <= 1'b1;
@@ -194,7 +197,7 @@
 
     always @(posedge CLK)
     begin
-      if (RESETn == 1'b0 || tap_changed == 1'b1) begin
+      if (RESETn == 1'b0 || tap_changed == 1'b1 || offset_changed == 1'b1) begin
         sm_sma <= sm_IDLE;
         offset_sclr <= 1'b1;
       end else begin
@@ -232,7 +235,9 @@
         sub_result_div <= 'h0;
         shift_done <= 1'b0;
         last_num_samples_val <= 'h0;
+        last_offset_val <= 'h0;
         tap_changed <= 1'b0;
+        offset_changed <= 1'b0;
 
       end else begin
         if (last_num_samples_val != NUM_SAMPLES)
@@ -242,6 +247,14 @@
           end
         else if (tap_changed && sm_sma == sm_IDLE)
           tap_changed <= 1'b0;
+
+        if (last_offset_val != OFFSET)
+          begin
+            last_offset_val <= OFFSET;
+            offset_changed <= 1'b1;
+          end
+        else if (offset_changed && sm_sma == sm_IDLE)
+          offset_changed <= 1'b0;
 
         if (sm_sma == sm_IDLE && vld_reg[1] == 1'b0)
           sample_cnt <= 0;
@@ -253,20 +266,22 @@
 
         // This is to only enable the second adder when the first adder is done
         // (modify if latency through adder changes)
-        if (tap_changed == 1'b1)
+        if (tap_changed == 1'b1 || offset_changed == 1'b1)
           begin
             shift_done <= 1'b0;
             adder_done <= 1'b0;
+            offset_done <= 1'b0;
             sub_done <= 1'b0;
           end
         else
           begin
             shift_done <= start_shift;
+            offset_done <= offset_en;
             adder_done <= adder_en;
             sub_done <= adder_done;
           end
 
-        if (tap_changed == 1'b1)
+        if (tap_changed == 1'b1 || offset_changed == 1'b1)
           sub_result_div <= 'h0;
         else
           if (start_shift)
@@ -288,7 +303,7 @@
       end
     end
 
-// Offset adder - add fixed offset (can be negative) to raw ADC values
+// Offset subtractor - subtract fixed offset (can be negative) to raw ADC values
     offset_ip_l<=: $i :> offset_inst 
     (
       .A      (offset_a_in),

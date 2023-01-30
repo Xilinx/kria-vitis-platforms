@@ -66,8 +66,9 @@ module <=: $ComponentName :>_top #(
       else
         if (L<=: $i :>_DIN_VLD)
           begin
-            // Flip the MSB (1 -> 0 or 0 -> 1)
-            L<=: $i :>_DOUT <= {~L<=: $i :>_DIN[L<=: $i :>_ADC_BITS-1], L<=: $i :>_DIN[L<=: $i :>_ADC_BITS-2:0]};
+            // Shift right to drop LSB and always use positive for output (MSB=0)
+            //L<=: $i :>_DOUT <= {~L<=: $i :>_DIN[L<=: $i :>_ADC_BITS-1], L<=: $i :>_DIN[L<=: $i :>_ADC_BITS-2:0]};
+            L<=: $i :>_DOUT <= L<=: $i :>_DIN >> 1;
             L<=: $i :>_DOUT_VLD <= 1'b1;
           end
         else

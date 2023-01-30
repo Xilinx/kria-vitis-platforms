@@ -41,7 +41,7 @@
     input clk,
     input resetn,
 
-    // In Q15.16 format
+    // In Q format
     input [31:0] scale_factor,
 
     // In integer format

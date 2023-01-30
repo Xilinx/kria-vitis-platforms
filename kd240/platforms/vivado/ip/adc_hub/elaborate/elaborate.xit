@@ -125,7 +125,7 @@ foreach config $used_LANE_CONFIG {
   set_property -dict [list \
     CONFIG.A_Width $adc_width \
     CONFIG.B_Width {8} \
-    CONFIG.Add_Mode {Add} \
+    CONFIG.Add_Mode {Subtract} \
     CONFIG.SCLR {true} \
     CONFIG.CE {true} \
     CONFIG.Out_Width $adc_offset \

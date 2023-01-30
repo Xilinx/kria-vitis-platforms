@@ -1095,13 +1095,23 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   # Create instance: adc_hub_phase_dc, and set properties
   set adc_hub_phase_dc [ create_bd_cell -type ip -vlnv xilinx.com:user:adc_hub adc_hub_phase_dc ]
   set_property -dict [list \
-    CONFIG.L0_TYPE {CURRENT} \
-    CONFIG.L1_TYPE {VOLTAGE} \
-    CONFIG.L2_TYPE {CURRENT} \
-    CONFIG.L3_TYPE {VOLTAGE} \
-    CONFIG.L4_TYPE {CURRENT} \
-    CONFIG.L6_TYPE {CURRENT} \
-    CONFIG.NUM_CHANNELS {8} \
+   CONFIG.L0_TYPE {VOLTAGE} \
+   CONFIG.L1_TYPE {CURRENT} \
+   CONFIG.L2_TYPE {VOLTAGE} \
+   CONFIG.L3_TYPE {CURRENT} \
+   CONFIG.L4_TYPE {VOLTAGE} \
+   CONFIG.L5_TYPE {CURRENT} \
+   CONFIG.L6_TYPE {VOLTAGE} \
+   CONFIG.L7_TYPE {CURRENT} \
+   CONFIG.L0_CODE {BTC} \
+   CONFIG.L1_CODE {BTC} \
+   CONFIG.L2_CODE {BTC} \
+   CONFIG.L3_CODE {BTC} \
+   CONFIG.L4_CODE {BTC} \
+   CONFIG.L5_CODE {BTC} \
+   CONFIG.L6_CODE {BTC} \
+   CONFIG.L7_CODE {BTC} \
+   CONFIG.NUM_CHANNELS {8} \
   ] $adc_hub_phase_dc
 
 
@@ -1109,11 +1119,13 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   set adc_if [ create_bd_cell -type ip -vlnv xilinx.com:user:adc7352_if adc_if ]
   set_property CONFIG.NUM_CHANNELS {8} $adc_if
 
+  # Create instance: adc_usb2btc, and set properties
+  set adc_usb2btc [ create_bd_cell -type ip -vlnv xilinx.com:user:adc_usb2btc adc_usb2btc ]
+  set_property CONFIG.NUM_CHANNELS {8} $adc_usb2btc
 
-  # Create instance: adc_usb2btc_curr, and set properties
-  set adc_usb2btc_curr [ create_bd_cell -type ip -vlnv xilinx.com:user:adc_usb2btc adc_usb2btc_curr ]
-  set_property CONFIG.NUM_CHANNELS {4} $adc_usb2btc_curr
-
+  # Create instance: adc_bob2btc, and set properties
+  set adc_bob2btc [ create_bd_cell -type ip -vlnv xilinx.com:user:adc_bob2btc:1.0 adc_bob2btc ]
+  set_property CONFIG.NUM_CHANNELS {8} $adc_bob2btc
 
   # Create instance: xlslice_oc_err_0, and set properties
   set xlslice_oc_err_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_0 ]
@@ -1169,18 +1181,22 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins dc_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L6_AXIS]
   connect_bd_intf_net -intf_net adc_hub_0_L2_AXIS [get_bd_intf_pins pb_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L2_AXIS]
   connect_bd_intf_net -intf_net adc_hub_1_L0_AXIS [get_bd_intf_pins pa_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L0_AXIS]
-  connect_bd_intf_net -intf_net adc_if_L0_ADC [get_bd_intf_pins adc_if/L0_ADC] [get_bd_intf_pins adc_usb2btc_curr/L0_ADC]
-  connect_bd_intf_net -intf_net adc_if_L1_ADC [get_bd_intf_pins adc_hub_phase_dc/L1_ADC] [get_bd_intf_pins adc_if/L1_ADC]
-  connect_bd_intf_net -intf_net adc_if_L2_ADC [get_bd_intf_pins adc_if/L2_ADC] [get_bd_intf_pins adc_usb2btc_curr/L1_ADC]
-  connect_bd_intf_net -intf_net adc_if_L3_ADC [get_bd_intf_pins adc_hub_phase_dc/L3_ADC] [get_bd_intf_pins adc_if/L3_ADC]
-  connect_bd_intf_net -intf_net adc_if_L4_ADC [get_bd_intf_pins adc_if/L4_ADC] [get_bd_intf_pins adc_usb2btc_curr/L2_ADC]
-  connect_bd_intf_net -intf_net adc_if_L5_ADC [get_bd_intf_pins adc_hub_phase_dc/L5_ADC] [get_bd_intf_pins adc_if/L5_ADC]
-  connect_bd_intf_net -intf_net adc_if_L6_ADC [get_bd_intf_pins adc_if/L6_ADC] [get_bd_intf_pins adc_usb2btc_curr/L3_ADC]
-  connect_bd_intf_net -intf_net adc_if_L7_ADC [get_bd_intf_pins adc_hub_phase_dc/L7_ADC] [get_bd_intf_pins adc_if/L7_ADC]
-  connect_bd_intf_net -intf_net adc_usb2btc_0_L0_SYS [get_bd_intf_pins adc_hub_phase_dc/L0_ADC] [get_bd_intf_pins adc_usb2btc_curr/L0_SYS]
-  connect_bd_intf_net -intf_net adc_usb2btc_curr_L1_SYS [get_bd_intf_pins adc_hub_phase_dc/L2_ADC] [get_bd_intf_pins adc_usb2btc_curr/L1_SYS]
-  connect_bd_intf_net -intf_net adc_usb2btc_curr_L2_SYS [get_bd_intf_pins adc_hub_phase_dc/L4_ADC] [get_bd_intf_pins adc_usb2btc_curr/L2_SYS]
-  connect_bd_intf_net -intf_net adc_usb2btc_curr_L3_SYS [get_bd_intf_pins adc_hub_phase_dc/L6_ADC] [get_bd_intf_pins adc_usb2btc_curr/L3_SYS]
+  connect_bd_intf_net -intf_net adc_if_L0_ADC [get_bd_intf_pins adc_if/L0_ADC] [get_bd_intf_pins adc_usb2btc/L0_ADC]
+  connect_bd_intf_net -intf_net adc_if_L1_ADC [get_bd_intf_pins adc_if/L1_ADC] [get_bd_intf_pins adc_bob2btc/L1_ADC]
+  connect_bd_intf_net -intf_net adc_if_L2_ADC [get_bd_intf_pins adc_if/L2_ADC] [get_bd_intf_pins adc_usb2btc/L2_ADC]
+  connect_bd_intf_net -intf_net adc_if_L3_ADC [get_bd_intf_pins adc_if/L3_ADC] [get_bd_intf_pins adc_bob2btc/L3_ADC]
+  connect_bd_intf_net -intf_net adc_if_L4_ADC [get_bd_intf_pins adc_if/L4_ADC] [get_bd_intf_pins adc_usb2btc/L4_ADC]
+  connect_bd_intf_net -intf_net adc_if_L5_ADC [get_bd_intf_pins adc_if/L5_ADC] [get_bd_intf_pins adc_bob2btc/L5_ADC]
+  connect_bd_intf_net -intf_net adc_if_L6_ADC [get_bd_intf_pins adc_if/L6_ADC] [get_bd_intf_pins adc_usb2btc/L6_ADC]
+  connect_bd_intf_net -intf_net adc_if_L7_ADC [get_bd_intf_pins adc_if/L7_ADC] [get_bd_intf_pins adc_usb2btc/L7_ADC]
+  connect_bd_intf_net -intf_net adc_usb2btc_L0_SYS [get_bd_intf_pins adc_hub_phase_dc/L0_ADC] [get_bd_intf_pins adc_usb2btc/L0_SYS]
+  connect_bd_intf_net -intf_net adc_bob2btc_L1_SYS [get_bd_intf_pins adc_hub_phase_dc/L1_ADC] [get_bd_intf_pins adc_bob2btc/L1_SYS]
+  connect_bd_intf_net -intf_net adc_usb2btc_L2_SYS [get_bd_intf_pins adc_hub_phase_dc/L2_ADC] [get_bd_intf_pins adc_usb2btc/L2_SYS]
+  connect_bd_intf_net -intf_net adc_bob2btc_L3_SYS [get_bd_intf_pins adc_hub_phase_dc/L3_ADC] [get_bd_intf_pins adc_bob2btc/L3_SYS]
+  connect_bd_intf_net -intf_net adc_usb2btc_L4_SYS [get_bd_intf_pins adc_hub_phase_dc/L4_ADC] [get_bd_intf_pins adc_usb2btc/L4_SYS]
+  connect_bd_intf_net -intf_net adc_bob2btc_L5_SYS [get_bd_intf_pins adc_hub_phase_dc/L5_ADC] [get_bd_intf_pins adc_bob2btc/L5_SYS]
+  connect_bd_intf_net -intf_net adc_usb2btc_L6_SYS [get_bd_intf_pins adc_hub_phase_dc/L6_ADC] [get_bd_intf_pins adc_usb2btc/L6_SYS]
+  connect_bd_intf_net -intf_net adc_usb2btc_L7_SYS [get_bd_intf_pins adc_hub_phase_dc/L7_ADC] [get_bd_intf_pins adc_usb2btc/L7_SYS]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins S_AXI] [get_bd_intf_pins adc_hub_phase_dc/S_AXI]
 
   # Create port connections
@@ -1202,10 +1218,12 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   connect_bd_net -net xlslice_oc_err_4_Dout [get_bd_pins dc_link_ov_err] [get_bd_pins xlslice_oc_err_7/Dout]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_hub_phase_dc/S_AXI_ACLK] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_if/CLK] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_usb2btc_curr/CLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_usb2btc/CLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_bob2btc/CLK] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_hub_phase_dc/S_AXI_ARESETN] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_if/RESETn] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_usb2btc_curr/RESETn] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_usb2btc/RESETn] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_bob2btc/RESETn] -boundary_type upper
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -1446,14 +1464,14 @@ proc create_root_design { parentCell } {
   connect_bd_net -net A_0_1 [get_bd_ports QEI_A] [get_bd_pins hls_qei_top_0/qei_A_dout]
   connect_bd_net -net B_0_1 [get_bd_ports QEI_B] [get_bd_pins hls_qei_top_0/qei_B_dout]
   connect_bd_net -net I_0_1 [get_bd_ports QEI_I] [get_bd_pins hls_qei_top_0/qei_I_dout]
-  connect_bd_net -net In0_0_1 [get_bd_ports motor_pa_data_i] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net In1_0_1 [get_bd_ports motor_pa_data_v] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net In2_0_1 [get_bd_ports motor_pb_data_i] [get_bd_pins xlconcat_0/In2]
-  connect_bd_net -net In3_0_1 [get_bd_ports motor_pb_data_v] [get_bd_pins xlconcat_0/In3]
-  connect_bd_net -net In4_0_1 [get_bd_ports motor_pc_data_i] [get_bd_pins xlconcat_0/In4]
-  connect_bd_net -net In5_0_1 [get_bd_ports motor_pc_data_v] [get_bd_pins xlconcat_0/In5]
-  connect_bd_net -net In6_0_1 [get_bd_ports dc_link_data_i] [get_bd_pins xlconcat_0/In6]
-  connect_bd_net -net In7_0_1 [get_bd_ports dc_link_data_v] [get_bd_pins xlconcat_0/In7]
+  connect_bd_net -net In0_0_1 [get_bd_ports motor_pa_data_v] [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net In1_0_1 [get_bd_ports motor_pa_data_i] [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net In2_0_1 [get_bd_ports motor_pb_data_v] [get_bd_pins xlconcat_0/In2]
+  connect_bd_net -net In3_0_1 [get_bd_ports motor_pb_data_i] [get_bd_pins xlconcat_0/In3]
+  connect_bd_net -net In4_0_1 [get_bd_ports motor_pc_data_v] [get_bd_pins xlconcat_0/In4]
+  connect_bd_net -net In5_0_1 [get_bd_ports motor_pc_data_i] [get_bd_pins xlconcat_0/In5]
+  connect_bd_net -net In6_0_1 [get_bd_ports dc_link_data_v] [get_bd_pins xlconcat_0/In6]
+  connect_bd_net -net In7_0_1 [get_bd_ports dc_link_data_1] [get_bd_pins xlconcat_0/In7]
   connect_bd_net -net SDATA_1 [get_bd_pins ADC/SDATA] [get_bd_pins xlconcat_0/dout]
   connect_bd_net -net TSN_subsystem_clk_out1 [get_bd_pins PS_0/saxihp0_fpd_aclk] [get_bd_pins TSN_subsystem/clk_out1]
   connect_bd_net -net TSN_subsystem_clk_out4 [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins TSN_subsystem/clk_out4]
