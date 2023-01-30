@@ -224,11 +224,11 @@ set_property IOSTANDARD LVCMOS18 [get_ports dc_link_adc_sclk]
 set_property SLEW SLOW [get_ports dc_link_adc_sclk]
 set_property DRIVE 4 [get_ports dc_link_adc_sclk]
 
-set_property PACKAGE_PIN J7 [get_ports dc_link_data_i]
-set_property IOSTANDARD LVCMOS18 [get_ports dc_link_data_i]
-
-set_property PACKAGE_PIN J1 [get_ports dc_link_data_v]
+set_property PACKAGE_PIN J7 [get_ports dc_link_data_v]
 set_property IOSTANDARD LVCMOS18 [get_ports dc_link_data_v]
+
+set_property PACKAGE_PIN J1 [get_ports dc_link_data_i]
+set_property IOSTANDARD LVCMOS18 [get_ports dc_link_data_i]
 
 set_property PACKAGE_PIN U5 [get_ports {motor_adc_cs_n[0]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {motor_adc_cs_n[0]}]
@@ -240,23 +240,23 @@ set_property IOSTANDARD LVCMOS18 [get_ports motor_adc_sclk]
 set_property SLEW SLOW [get_ports motor_adc_sclk]
 set_property DRIVE 4 [get_ports motor_adc_sclk]
 
-set_property PACKAGE_PIN P6 [get_ports motor_pa_data_i]
-set_property IOSTANDARD LVCMOS18 [get_ports motor_pa_data_i]
-
-set_property PACKAGE_PIN N4 [get_ports motor_pa_data_v]
+set_property PACKAGE_PIN P6 [get_ports motor_pa_data_v]
 set_property IOSTANDARD LVCMOS18 [get_ports motor_pa_data_v]
 
-set_property PACKAGE_PIN P4 [get_ports motor_pb_data_i]
-set_property IOSTANDARD LVCMOS18 [get_ports motor_pb_data_i]
+set_property PACKAGE_PIN N4 [get_ports motor_pa_data_i]
+set_property IOSTANDARD LVCMOS18 [get_ports motor_pa_data_i]
 
-set_property PACKAGE_PIN M7 [get_ports motor_pb_data_v]
+set_property PACKAGE_PIN P4 [get_ports motor_pb_data_v]
 set_property IOSTANDARD LVCMOS18 [get_ports motor_pb_data_v]
 
-set_property PACKAGE_PIN N7 [get_ports motor_pc_data_i]
-set_property IOSTANDARD LVCMOS18 [get_ports motor_pc_data_i]
+set_property PACKAGE_PIN M7 [get_ports motor_pb_data_i]
+set_property IOSTANDARD LVCMOS18 [get_ports motor_pb_data_i]
 
-set_property PACKAGE_PIN T6 [get_ports motor_pc_data_v]
+set_property PACKAGE_PIN N7 [get_ports motor_pc_data_v]
 set_property IOSTANDARD LVCMOS18 [get_ports motor_pc_data_v]
+
+set_property PACKAGE_PIN T6 [get_ports motor_pc_data_i]
+set_property IOSTANDARD LVCMOS18 [get_ports motor_pc_data_i]
 
 ## One wire
 set_property PACKAGE_PIN H13 [get_ports {one_wire[0]}]
