@@ -1124,7 +1124,7 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   set_property CONFIG.NUM_CHANNELS {8} $adc_usb2btc
 
   # Create instance: adc_bob2btc, and set properties
-  set adc_bob2btc [ create_bd_cell -type ip -vlnv xilinx.com:user:adc_bob2btc:1.0 adc_bob2btc ]
+  set adc_bob2btc [ create_bd_cell -type ip -vlnv xilinx.com:user:adc_bob2btc adc_bob2btc ]
   set_property CONFIG.NUM_CHANNELS {8} $adc_bob2btc
 
   # Create instance: xlslice_oc_err_0, and set properties
@@ -1175,12 +1175,14 @@ proc create_hier_cell_ADC { parentCell nameHier } {
     CONFIG.DOUT_WIDTH {1} \
   ] $xlslice_oc_err_7
 
+  set xlconcat_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_1 ]
+  set_property CONFIG.NUM_PORTS {8} $xlconcat_1
 
   # Create interface connections
-  connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins pc_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L4_AXIS]
-  connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins dc_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L6_AXIS]
-  connect_bd_intf_net -intf_net adc_hub_0_L2_AXIS [get_bd_intf_pins pb_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L2_AXIS]
-  connect_bd_intf_net -intf_net adc_hub_1_L0_AXIS [get_bd_intf_pins pa_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L0_AXIS]
+  connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins pc_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L5_AXIS]
+  connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins dc_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L7_AXIS]
+  connect_bd_intf_net -intf_net adc_hub_0_L2_AXIS [get_bd_intf_pins pb_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L3_AXIS]
+  connect_bd_intf_net -intf_net adc_hub_1_L0_AXIS [get_bd_intf_pins pa_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L1_AXIS]
   connect_bd_intf_net -intf_net adc_if_L0_ADC [get_bd_intf_pins adc_if/L0_ADC] [get_bd_intf_pins adc_usb2btc/L0_ADC]
   connect_bd_intf_net -intf_net adc_if_L1_ADC [get_bd_intf_pins adc_if/L1_ADC] [get_bd_intf_pins adc_bob2btc/L1_ADC]
   connect_bd_intf_net -intf_net adc_if_L2_ADC [get_bd_intf_pins adc_if/L2_ADC] [get_bd_intf_pins adc_usb2btc/L2_ADC]
@@ -1212,10 +1214,18 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   connect_bd_net -net phase_a_i_Dout3 [get_bd_pins phase_b_oc_err] [get_bd_pins xlslice_oc_err_1/Dout]
   connect_bd_net -net phase_b_i_Dout3 [get_bd_pins phase_a_oc_err] [get_bd_pins xlslice_oc_err_0/Dout]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins SCLK_RESETn] [get_bd_pins adc_if/SCLK_RESETn]
-  connect_bd_net -net xlconstant_1_dout [get_bd_pins UPDATE] [get_bd_pins adc_if/UPDATE]
   connect_bd_net -net xlslice_oc_err_2_Dout [get_bd_pins phase_c_oc_err] [get_bd_pins xlslice_oc_err_2/Dout]
   connect_bd_net -net xlslice_oc_err_3_Dout [get_bd_pins dc_link_oc_err] [get_bd_pins xlslice_oc_err_3/Dout]
   connect_bd_net -net xlslice_oc_err_4_Dout [get_bd_pins dc_link_ov_err] [get_bd_pins xlslice_oc_err_7/Dout]
+  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In7] [get_bd_pins UPDATE]
+  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In6] [get_bd_pins UPDATE]
+  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In5] [get_bd_pins UPDATE]
+  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In4] [get_bd_pins UPDATE]
+  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In3] [get_bd_pins UPDATE]
+  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In2] [get_bd_pins UPDATE]
+  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In1] [get_bd_pins UPDATE]
+  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In0] [get_bd_pins UPDATE]
+  connect_bd_net -net xlconcat_1_dout_update [get_bd_pins xlconcat_1/dout] [get_bd_pins adc_if/UPDATE]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_hub_phase_dc/S_AXI_ACLK] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_if/CLK] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_usb2btc/CLK] -boundary_type upper
@@ -1471,7 +1481,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net In4_0_1 [get_bd_ports motor_pc_data_v] [get_bd_pins xlconcat_0/In4]
   connect_bd_net -net In5_0_1 [get_bd_ports motor_pc_data_i] [get_bd_pins xlconcat_0/In5]
   connect_bd_net -net In6_0_1 [get_bd_ports dc_link_data_v] [get_bd_pins xlconcat_0/In6]
-  connect_bd_net -net In7_0_1 [get_bd_ports dc_link_data_1] [get_bd_pins xlconcat_0/In7]
+  connect_bd_net -net In7_0_1 [get_bd_ports dc_link_data_i] [get_bd_pins xlconcat_0/In7]
   connect_bd_net -net SDATA_1 [get_bd_pins ADC/SDATA] [get_bd_pins xlconcat_0/dout]
   connect_bd_net -net TSN_subsystem_clk_out1 [get_bd_pins PS_0/saxihp0_fpd_aclk] [get_bd_pins TSN_subsystem/clk_out1]
   connect_bd_net -net TSN_subsystem_clk_out4 [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins TSN_subsystem/clk_out4]
