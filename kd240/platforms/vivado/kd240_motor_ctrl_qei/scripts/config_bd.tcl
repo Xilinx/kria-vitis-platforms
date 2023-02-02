@@ -1127,16 +1127,6 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   set adc_bob2btc [ create_bd_cell -type ip -vlnv xilinx.com:user:adc_bob2btc adc_bob2btc ]
   set_property CONFIG.NUM_CHANNELS {8} $adc_bob2btc
 
-  # Create instance: xlslice_oc_err_0, and set properties
-  set xlslice_oc_err_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_0 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {0} \
-    CONFIG.DIN_TO {0} \
-    CONFIG.DIN_WIDTH {8} \
-    CONFIG.DOUT_WIDTH {1} \
-  ] $xlslice_oc_err_0
-
-
   # Create instance: xlslice_oc_err_1, and set properties
   set xlslice_oc_err_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_1 ]
   set_property -dict [list \
@@ -1145,16 +1135,6 @@ proc create_hier_cell_ADC { parentCell nameHier } {
     CONFIG.DIN_WIDTH {8} \
     CONFIG.DOUT_WIDTH {1} \
   ] $xlslice_oc_err_1
-
-
-  # Create instance: xlslice_oc_err_2, and set properties
-  set xlslice_oc_err_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_2 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {2} \
-    CONFIG.DIN_TO {2} \
-    CONFIG.DIN_WIDTH {8} \
-  ] $xlslice_oc_err_2
-
 
   # Create instance: xlslice_oc_err_3, and set properties
   set xlslice_oc_err_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_3 ]
@@ -1165,6 +1145,22 @@ proc create_hier_cell_ADC { parentCell nameHier } {
     CONFIG.DOUT_WIDTH {1} \
   ] $xlslice_oc_err_3
 
+  # Create instance: xlslice_oc_err_5, and set properties
+  set xlslice_oc_err_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_5 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {5} \
+    CONFIG.DIN_TO {5} \
+    CONFIG.DIN_WIDTH {8} \
+  ] $xlslice_oc_err_5
+
+  # Create instance: xlslice_ov_err_6, and set properties
+  set xlslice_ov_err_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_ov_err_6 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {6} \
+    CONFIG.DIN_TO {6} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_ov_err_6
 
   # Create instance: xlslice_oc_err_7, and set properties
   set xlslice_oc_err_7 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_7 ]
@@ -1204,19 +1200,19 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   # Create port connections
   connect_bd_net -net SDATA_0_1 [get_bd_pins SDATA] [get_bd_pins adc_if/SDATA]
   connect_bd_net -net adc_hub_1_interrupt [get_bd_pins interrupt] [get_bd_pins adc_hub_phase_dc/interrupt]
-  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins xlslice_oc_err_0/Din] -boundary_type upper
   connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins xlslice_oc_err_1/Din] -boundary_type upper
-  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins xlslice_oc_err_2/Din] -boundary_type upper
   connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins xlslice_oc_err_3/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins xlslice_oc_err_5/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins xlslice_ov_err_6/Din] -boundary_type upper
   connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins xlslice_oc_err_7/Din] -boundary_type upper
   connect_bd_net -net adc_if_0_CSn [get_bd_pins CSn] [get_bd_pins adc_if/CSn]
   connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_pins SCLK] [get_bd_pins adc_if/SCLK]
-  connect_bd_net -net phase_a_i_Dout3 [get_bd_pins phase_b_oc_err] [get_bd_pins xlslice_oc_err_1/Dout]
-  connect_bd_net -net phase_b_i_Dout3 [get_bd_pins phase_a_oc_err] [get_bd_pins xlslice_oc_err_0/Dout]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins SCLK_RESETn] [get_bd_pins adc_if/SCLK_RESETn]
-  connect_bd_net -net xlslice_oc_err_2_Dout [get_bd_pins phase_c_oc_err] [get_bd_pins xlslice_oc_err_2/Dout]
-  connect_bd_net -net xlslice_oc_err_3_Dout [get_bd_pins dc_link_oc_err] [get_bd_pins xlslice_oc_err_3/Dout]
-  connect_bd_net -net xlslice_oc_err_4_Dout [get_bd_pins dc_link_ov_err] [get_bd_pins xlslice_oc_err_7/Dout]
+  connect_bd_net -net xlslice_oc_err_1_Dout [get_bd_pins phase_a_oc_err] [get_bd_pins xlslice_oc_err_1/Dout]
+  connect_bd_net -net xlslice_oc_err_3_Dout [get_bd_pins phase_b_oc_err] [get_bd_pins xlslice_oc_err_3/Dout]
+  connect_bd_net -net xlslice_oc_err_5_Dout [get_bd_pins phase_c_oc_err] [get_bd_pins xlslice_oc_err_5/Dout]
+  connect_bd_net -net xlslice_ov_err_6_Dout [get_bd_pins dc_link_ov_err] [get_bd_pins xlslice_ov_err_6/Dout]
+  connect_bd_net -net xlslice_oc_err_7_Dout [get_bd_pins dc_link_oc_err] [get_bd_pins xlslice_oc_err_7/Dout]
   connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In7] [get_bd_pins UPDATE]
   connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In6] [get_bd_pins UPDATE]
   connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In5] [get_bd_pins UPDATE]
