@@ -1068,7 +1068,7 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   # Create interface pins
   create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:aximm_rtl:1.0 S_AXI
 
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 dc_i_AXIS
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 dc_v_AXIS
 
   create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 pa_i_AXIS
 
@@ -1176,7 +1176,7 @@ proc create_hier_cell_ADC { parentCell nameHier } {
 
   # Create interface connections
   connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins pc_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L5_AXIS]
-  connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins dc_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L7_AXIS]
+  connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins dc_v_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L6_AXIS]
   connect_bd_intf_net -intf_net adc_hub_0_L2_AXIS [get_bd_intf_pins pb_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L3_AXIS]
   connect_bd_intf_net -intf_net adc_hub_1_L0_AXIS [get_bd_intf_pins pa_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L1_AXIS]
   connect_bd_intf_net -intf_net adc_if_L0_ADC [get_bd_intf_pins adc_if/L0_ADC] [get_bd_intf_pins adc_usb2btc/L0_ADC]
@@ -1428,7 +1428,7 @@ proc create_root_design { parentCell } {
 
   # Create interface connections
   connect_bd_intf_net -intf_net ADC_L0_AXIS [get_bd_intf_pins ADC/pa_i_AXIS] [get_bd_intf_pins broadcast_i/S_AXIS0]
-  connect_bd_intf_net -intf_net ADC_dc_i_AXIS [get_bd_intf_pins ADC/dc_i_AXIS] [get_bd_intf_pins hls_svpwm_duty_0/strm_dc_link]
+  connect_bd_intf_net -intf_net ADC_dc_v_AXIS [get_bd_intf_pins ADC/dc_v_AXIS] [get_bd_intf_pins hls_svpwm_duty_0/strm_dc_link]
   connect_bd_intf_net -intf_net S_AXIS1_1 [get_bd_intf_pins ADC/pb_i_AXIS] [get_bd_intf_pins broadcast_i/S_AXIS1]
   connect_bd_intf_net -intf_net S_AXIS2_1 [get_bd_intf_pins ADC/pc_i_AXIS] [get_bd_intf_pins broadcast_i/S_AXIS2]
   connect_bd_intf_net -intf_net TSN_subsystem_M00_AXI [get_bd_intf_pins PS_0/S_AXI_HP0_FPD] [get_bd_intf_pins TSN_subsystem/M00_AXI]
