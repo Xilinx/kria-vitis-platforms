@@ -82,11 +82,11 @@ proc create_hier_cell_gate_driver { parentCell nameHier } {
   connect_bd_net -net xlslice_lower_Dout [get_bd_pins phase_upper] [get_bd_pins gate_driver_A/phase_lower] -boundary_type upper
   connect_bd_net -net xlslice_lower_Dout [get_bd_pins phase_upper] [get_bd_pins gate_driver_B/phase_lower] -boundary_type upper
   connect_bd_net -net xlslice_lower_Dout [get_bd_pins phase_upper] [get_bd_pins gate_driver_C/phase_lower] -boundary_type upper
-  connect_bd_net -net xlslice_lower_Dout [get_bd_pins phase_upper] [get_bd_pins xlslice_lower/Dout] -boundary_type upper
+  connect_bd_net -net xlslice_lower_Dout [get_bd_pins phase_upper] [get_bd_pins xlslice_upper/Dout] -boundary_type upper
   connect_bd_net -net xlslice_upper_Dout [get_bd_pins phase_lower] [get_bd_pins gate_driver_A/phase_upper] -boundary_type upper
   connect_bd_net -net xlslice_upper_Dout [get_bd_pins phase_lower] [get_bd_pins gate_driver_B/phase_upper] -boundary_type upper
   connect_bd_net -net xlslice_upper_Dout [get_bd_pins phase_lower] [get_bd_pins gate_driver_C/phase_upper] -boundary_type upper
-  connect_bd_net -net xlslice_upper_Dout [get_bd_pins phase_lower] [get_bd_pins xlslice_upper/Dout] -boundary_type upper
+  connect_bd_net -net xlslice_upper_Dout [get_bd_pins phase_lower] [get_bd_pins xlslice_lower/Dout] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins ttc] [get_bd_pins xlslice_lower/Din] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins ttc] [get_bd_pins xlslice_upper/Din] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins sys_clk] [get_bd_pins gate_driver_A/sys_clk] -boundary_type upper
@@ -157,26 +157,26 @@ proc create_hier_cell_ethernet_subsystem { parentCell nameHier } {
   create_bd_pin -dir O -from 0 -to 0 -type rst gem2_phy_rst_n
   create_bd_pin -dir I -type clk m_axi_mm2s_aclk
 
-  # Create instance: axi_dma_0, and set properties
-  set axi_dma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_dma_0 ]
+  # Create instance: axi_dma_gem2, and set properties
+  set axi_dma_gem2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_dma_gem2 ]
 
-  # Create instance: axi_dma_1, and set properties
-  set axi_dma_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_dma_1 ]
+  # Create instance: axi_dma_gem1, and set properties
+  set axi_dma_gem1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_dma axi_dma_gem1 ]
 
-  # Create instance: axi_ethernet_0, and set properties
-  set axi_ethernet_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_0 ]
+  # Create instance: axi_ethernet_gem2, and set properties
+  set axi_ethernet_gem2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_gem2 ]
   set_property -dict [list \
     CONFIG.PHY_TYPE {RGMII} \
     CONFIG.SupportLevel {1} \
-  ] $axi_ethernet_0
+  ] $axi_ethernet_gem2
 
 
-  # Create instance: axi_ethernet_1, and set properties
-  set axi_ethernet_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_1 ]
+  # Create instance: axi_ethernet_gem1, and set properties
+  set axi_ethernet_gem1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_ethernet axi_ethernet_gem1 ]
   set_property -dict [list \
     CONFIG.PHY_TYPE {RGMII} \
     CONFIG.SupportLevel {0} \
-  ] $axi_ethernet_1
+  ] $axi_ethernet_gem1
 
 
   # Create instance: axi_interconnect_0, and set properties
@@ -224,62 +224,62 @@ proc create_hier_cell_ethernet_subsystem { parentCell nameHier } {
 
   # Create interface connections
   connect_bd_intf_net -intf_net S00_AXI_1 [get_bd_intf_pins S00_AXI] [get_bd_intf_pins axi_interconnect_0/S00_AXI]
-  connect_bd_intf_net -intf_net axi_dma_0_M_AXIS_CNTRL [get_bd_intf_pins axi_dma_0/M_AXIS_CNTRL] [get_bd_intf_pins axi_ethernet_0/s_axis_txc]
-  connect_bd_intf_net -intf_net axi_dma_0_M_AXIS_MM2S [get_bd_intf_pins axi_dma_0/M_AXIS_MM2S] [get_bd_intf_pins axi_ethernet_0/s_axis_txd]
-  connect_bd_intf_net -intf_net axi_dma_0_M_AXI_MM2S [get_bd_intf_pins axi_dma_0/M_AXI_MM2S] [get_bd_intf_pins axi_smc/S00_AXI]
-  connect_bd_intf_net -intf_net axi_dma_0_M_AXI_S2MM [get_bd_intf_pins axi_dma_0/M_AXI_S2MM] [get_bd_intf_pins axi_smc/S01_AXI]
-  connect_bd_intf_net -intf_net axi_dma_0_M_AXI_SG [get_bd_intf_pins axi_dma_0/M_AXI_SG] [get_bd_intf_pins axi_smc/S02_AXI]
-  connect_bd_intf_net -intf_net axi_dma_1_M_AXIS_CNTRL [get_bd_intf_pins axi_dma_1/M_AXIS_CNTRL] [get_bd_intf_pins axi_ethernet_1/s_axis_txc]
-  connect_bd_intf_net -intf_net axi_dma_1_M_AXIS_MM2S [get_bd_intf_pins axi_dma_1/M_AXIS_MM2S] [get_bd_intf_pins axi_ethernet_1/s_axis_txd]
-  connect_bd_intf_net -intf_net axi_dma_1_M_AXI_MM2S [get_bd_intf_pins axi_dma_1/M_AXI_MM2S] [get_bd_intf_pins axi_smc/S03_AXI]
-  connect_bd_intf_net -intf_net axi_dma_1_M_AXI_S2MM [get_bd_intf_pins axi_dma_1/M_AXI_S2MM] [get_bd_intf_pins axi_smc/S04_AXI]
-  connect_bd_intf_net -intf_net axi_dma_1_M_AXI_SG [get_bd_intf_pins axi_dma_1/M_AXI_SG] [get_bd_intf_pins axi_smc/S05_AXI]
-  connect_bd_intf_net -intf_net axi_ethernet_0_m_axis_rxd [get_bd_intf_pins axi_dma_0/S_AXIS_S2MM] [get_bd_intf_pins axi_ethernet_0/m_axis_rxd]
-  connect_bd_intf_net -intf_net axi_ethernet_0_m_axis_rxs [get_bd_intf_pins axi_dma_0/S_AXIS_STS] [get_bd_intf_pins axi_ethernet_0/m_axis_rxs]
-  connect_bd_intf_net -intf_net axi_ethernet_0_mdio [get_bd_intf_pins gem2_mdio] [get_bd_intf_pins axi_ethernet_0/mdio]
-  connect_bd_intf_net -intf_net axi_ethernet_0_rgmii [get_bd_intf_pins gem2_rgmii] [get_bd_intf_pins axi_ethernet_0/rgmii]
-  connect_bd_intf_net -intf_net axi_ethernet_1_m_axis_rxd [get_bd_intf_pins axi_dma_1/S_AXIS_S2MM] [get_bd_intf_pins axi_ethernet_1/m_axis_rxd]
-  connect_bd_intf_net -intf_net axi_ethernet_1_m_axis_rxs [get_bd_intf_pins axi_dma_1/S_AXIS_STS] [get_bd_intf_pins axi_ethernet_1/m_axis_rxs]
-  connect_bd_intf_net -intf_net axi_ethernet_1_mdio [get_bd_intf_pins gem1_mdio] [get_bd_intf_pins axi_ethernet_1/mdio]
-  connect_bd_intf_net -intf_net axi_ethernet_1_rgmii [get_bd_intf_pins gem1_rgmii] [get_bd_intf_pins axi_ethernet_1/rgmii]
-  connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_dma_0/S_AXI_LITE] [get_bd_intf_pins axi_interconnect_0/M00_AXI]
-  connect_bd_intf_net -intf_net axi_interconnect_0_M01_AXI [get_bd_intf_pins axi_ethernet_0/s_axi] [get_bd_intf_pins axi_interconnect_0/M01_AXI]
-  connect_bd_intf_net -intf_net axi_interconnect_0_M02_AXI [get_bd_intf_pins axi_dma_1/S_AXI_LITE] [get_bd_intf_pins axi_interconnect_0/M02_AXI]
-  connect_bd_intf_net -intf_net axi_interconnect_0_M03_AXI [get_bd_intf_pins axi_ethernet_1/s_axi] [get_bd_intf_pins axi_interconnect_0/M03_AXI]
+  connect_bd_intf_net -intf_net axi_dma_gem2_M_AXIS_CNTRL [get_bd_intf_pins axi_dma_gem2/M_AXIS_CNTRL] [get_bd_intf_pins axi_ethernet_gem2/s_axis_txc]
+  connect_bd_intf_net -intf_net axi_dma_gem2_M_AXIS_MM2S [get_bd_intf_pins axi_dma_gem2/M_AXIS_MM2S] [get_bd_intf_pins axi_ethernet_gem2/s_axis_txd]
+  connect_bd_intf_net -intf_net axi_dma_gem2_M_AXI_MM2S [get_bd_intf_pins axi_dma_gem2/M_AXI_MM2S] [get_bd_intf_pins axi_smc/S00_AXI]
+  connect_bd_intf_net -intf_net axi_dma_gem2_M_AXI_S2MM [get_bd_intf_pins axi_dma_gem2/M_AXI_S2MM] [get_bd_intf_pins axi_smc/S01_AXI]
+  connect_bd_intf_net -intf_net axi_dma_gem2_M_AXI_SG [get_bd_intf_pins axi_dma_gem2/M_AXI_SG] [get_bd_intf_pins axi_smc/S02_AXI]
+  connect_bd_intf_net -intf_net axi_dma_gem1_M_AXIS_CNTRL [get_bd_intf_pins axi_dma_gem1/M_AXIS_CNTRL] [get_bd_intf_pins axi_ethernet_gem1/s_axis_txc]
+  connect_bd_intf_net -intf_net axi_dma_gem1_M_AXIS_MM2S [get_bd_intf_pins axi_dma_gem1/M_AXIS_MM2S] [get_bd_intf_pins axi_ethernet_gem1/s_axis_txd]
+  connect_bd_intf_net -intf_net axi_dma_gem1_M_AXI_MM2S [get_bd_intf_pins axi_dma_gem1/M_AXI_MM2S] [get_bd_intf_pins axi_smc/S03_AXI]
+  connect_bd_intf_net -intf_net axi_dma_gem1_M_AXI_S2MM [get_bd_intf_pins axi_dma_gem1/M_AXI_S2MM] [get_bd_intf_pins axi_smc/S04_AXI]
+  connect_bd_intf_net -intf_net axi_dma_gem1_M_AXI_SG [get_bd_intf_pins axi_dma_gem1/M_AXI_SG] [get_bd_intf_pins axi_smc/S05_AXI]
+  connect_bd_intf_net -intf_net axi_ethernet_gem2_m_axis_rxd [get_bd_intf_pins axi_dma_gem2/S_AXIS_S2MM] [get_bd_intf_pins axi_ethernet_gem2/m_axis_rxd]
+  connect_bd_intf_net -intf_net axi_ethernet_gem2_m_axis_rxs [get_bd_intf_pins axi_dma_gem2/S_AXIS_STS] [get_bd_intf_pins axi_ethernet_gem2/m_axis_rxs]
+  connect_bd_intf_net -intf_net axi_ethernet_gem2_mdio [get_bd_intf_pins gem2_mdio] [get_bd_intf_pins axi_ethernet_gem2/mdio]
+  connect_bd_intf_net -intf_net axi_ethernet_gem2_rgmii [get_bd_intf_pins gem2_rgmii] [get_bd_intf_pins axi_ethernet_gem2/rgmii]
+  connect_bd_intf_net -intf_net axi_ethernet_gem1_m_axis_rxd [get_bd_intf_pins axi_dma_gem1/S_AXIS_S2MM] [get_bd_intf_pins axi_ethernet_gem1/m_axis_rxd]
+  connect_bd_intf_net -intf_net axi_ethernet_gem1_m_axis_rxs [get_bd_intf_pins axi_dma_gem1/S_AXIS_STS] [get_bd_intf_pins axi_ethernet_gem1/m_axis_rxs]
+  connect_bd_intf_net -intf_net axi_ethernet_gem1_mdio [get_bd_intf_pins gem1_mdio] [get_bd_intf_pins axi_ethernet_gem1/mdio]
+  connect_bd_intf_net -intf_net axi_ethernet_gem1_rgmii [get_bd_intf_pins gem1_rgmii] [get_bd_intf_pins axi_ethernet_gem1/rgmii]
+  connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_dma_gem2/S_AXI_LITE] [get_bd_intf_pins axi_interconnect_0/M00_AXI]
+  connect_bd_intf_net -intf_net axi_interconnect_0_M01_AXI [get_bd_intf_pins axi_ethernet_gem2/s_axi] [get_bd_intf_pins axi_interconnect_0/M01_AXI]
+  connect_bd_intf_net -intf_net axi_interconnect_0_M02_AXI [get_bd_intf_pins axi_dma_gem1/S_AXI_LITE] [get_bd_intf_pins axi_interconnect_0/M02_AXI]
+  connect_bd_intf_net -intf_net axi_interconnect_0_M03_AXI [get_bd_intf_pins axi_ethernet_gem1/s_axi] [get_bd_intf_pins axi_interconnect_0/M03_AXI]
   connect_bd_intf_net -intf_net axi_smc_M00_AXI [get_bd_intf_pins M00_AXI] [get_bd_intf_pins axi_smc/M00_AXI]
 
   # Create port connections
-  connect_bd_net -net axi_dma_0_mm2s_cntrl_reset_out_n [get_bd_pins axi_dma_0/mm2s_cntrl_reset_out_n] [get_bd_pins axi_ethernet_0/axi_txc_arstn]
-  connect_bd_net -net axi_dma_0_mm2s_introut [get_bd_pins axi_dma_0/mm2s_introut] [get_bd_pins xlconcat_0/In2]
-  connect_bd_net -net axi_dma_0_mm2s_prmry_reset_out_n [get_bd_pins axi_dma_0/mm2s_prmry_reset_out_n] [get_bd_pins axi_ethernet_0/axi_txd_arstn]
-  connect_bd_net -net axi_dma_0_s2mm_introut [get_bd_pins axi_dma_0/s2mm_introut] [get_bd_pins xlconcat_0/In3]
-  connect_bd_net -net axi_dma_0_s2mm_prmry_reset_out_n [get_bd_pins axi_dma_0/s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_0/axi_rxd_arstn]
-  connect_bd_net -net axi_dma_0_s2mm_sts_reset_out_n [get_bd_pins axi_dma_0/s2mm_sts_reset_out_n] [get_bd_pins axi_ethernet_0/axi_rxs_arstn]
-  connect_bd_net -net axi_dma_1_mm2s_cntrl_reset_out_n [get_bd_pins axi_dma_1/mm2s_cntrl_reset_out_n] [get_bd_pins axi_ethernet_1/axi_txc_arstn]
-  connect_bd_net -net axi_dma_1_mm2s_introut [get_bd_pins axi_dma_1/mm2s_introut] [get_bd_pins xlconcat_0/In4]
-  connect_bd_net -net axi_dma_1_mm2s_prmry_reset_out_n [get_bd_pins axi_dma_1/mm2s_prmry_reset_out_n] [get_bd_pins axi_ethernet_1/axi_txd_arstn]
-  connect_bd_net -net axi_dma_1_s2mm_introut [get_bd_pins axi_dma_1/s2mm_introut] [get_bd_pins xlconcat_0/In5]
-  connect_bd_net -net axi_dma_1_s2mm_prmry_reset_out_n [get_bd_pins axi_dma_1/s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_1/axi_rxd_arstn]
-  connect_bd_net -net axi_dma_1_s2mm_sts_reset_out_n [get_bd_pins axi_dma_1/s2mm_sts_reset_out_n] [get_bd_pins axi_ethernet_1/axi_rxs_arstn]
-  connect_bd_net -net axi_ethernet_0_interrupt [get_bd_pins axi_ethernet_0/interrupt] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net axi_ethernet_0_mac_irq [get_bd_pins axi_ethernet_0/mac_irq] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net axi_ethernet_0_phy_rst_n [get_bd_pins gem2_phy_rst_n] [get_bd_pins axi_ethernet_0/phy_rst_n]
-  connect_bd_net -net axi_ethernet_1_interrupt [get_bd_pins axi_ethernet_1/interrupt] [get_bd_pins xlconcat_0/In7]
-  connect_bd_net -net axi_ethernet_1_mac_irq [get_bd_pins axi_ethernet_1/mac_irq] [get_bd_pins xlconcat_0/In6]
-  connect_bd_net -net axi_ethernet_1_phy_rst_n [get_bd_pins gem1_phy_rst_n] [get_bd_pins axi_ethernet_1/phy_rst_n]
+  connect_bd_net -net axi_dma_gem2_mm2s_cntrl_reset_out_n [get_bd_pins axi_dma_gem2/mm2s_cntrl_reset_out_n] [get_bd_pins axi_ethernet_gem2/axi_txc_arstn]
+  connect_bd_net -net axi_dma_gem2_mm2s_introut [get_bd_pins axi_dma_gem2/mm2s_introut] [get_bd_pins xlconcat_0/In2]
+  connect_bd_net -net axi_dma_gem2_mm2s_prmry_reset_out_n [get_bd_pins axi_dma_gem2/mm2s_prmry_reset_out_n] [get_bd_pins axi_ethernet_gem2/axi_txd_arstn]
+  connect_bd_net -net axi_dma_gem2_s2mm_introut [get_bd_pins axi_dma_gem2/s2mm_introut] [get_bd_pins xlconcat_0/In3]
+  connect_bd_net -net axi_dma_gem2_s2mm_prmry_reset_out_n [get_bd_pins axi_dma_gem2/s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_gem2/axi_rxd_arstn]
+  connect_bd_net -net axi_dma_gem2_s2mm_sts_reset_out_n [get_bd_pins axi_dma_gem2/s2mm_sts_reset_out_n] [get_bd_pins axi_ethernet_gem2/axi_rxs_arstn]
+  connect_bd_net -net axi_dma_gem1_mm2s_cntrl_reset_out_n [get_bd_pins axi_dma_gem1/mm2s_cntrl_reset_out_n] [get_bd_pins axi_ethernet_gem1/axi_txc_arstn]
+  connect_bd_net -net axi_dma_gem1_mm2s_introut [get_bd_pins axi_dma_gem1/mm2s_introut] [get_bd_pins xlconcat_0/In4]
+  connect_bd_net -net axi_dma_gem1_mm2s_prmry_reset_out_n [get_bd_pins axi_dma_gem1/mm2s_prmry_reset_out_n] [get_bd_pins axi_ethernet_gem1/axi_txd_arstn]
+  connect_bd_net -net axi_dma_gem1_s2mm_introut [get_bd_pins axi_dma_gem1/s2mm_introut] [get_bd_pins xlconcat_0/In5]
+  connect_bd_net -net axi_dma_gem1_s2mm_prmry_reset_out_n [get_bd_pins axi_dma_gem1/s2mm_prmry_reset_out_n] [get_bd_pins axi_ethernet_gem1/axi_rxd_arstn]
+  connect_bd_net -net axi_dma_gem1_s2mm_sts_reset_out_n [get_bd_pins axi_dma_gem1/s2mm_sts_reset_out_n] [get_bd_pins axi_ethernet_gem1/axi_rxs_arstn]
+  connect_bd_net -net axi_ethernet_gem2_interrupt [get_bd_pins axi_ethernet_gem2/interrupt] [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net axi_ethernet_gem2_mac_irq [get_bd_pins axi_ethernet_gem2/mac_irq] [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net axi_ethernet_gem2_phy_rst_n [get_bd_pins gem2_phy_rst_n] [get_bd_pins axi_ethernet_gem2/phy_rst_n]
+  connect_bd_net -net axi_ethernet_gem1_interrupt [get_bd_pins axi_ethernet_gem1/interrupt] [get_bd_pins xlconcat_0/In7]
+  connect_bd_net -net axi_ethernet_gem1_mac_irq [get_bd_pins axi_ethernet_gem1/mac_irq] [get_bd_pins xlconcat_0/In6]
+  connect_bd_net -net axi_ethernet_gem1_phy_rst_n [get_bd_pins gem1_phy_rst_n] [get_bd_pins axi_ethernet_gem1/phy_rst_n]
   connect_bd_net -net clk_100MHz_1 [get_bd_pins gem2_clk_in] [get_bd_pins clk_wiz/clk_in1]
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/m_axi_mm2s_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/m_axi_s2mm_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/m_axi_sg_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_0/s_axi_lite_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_1/m_axi_mm2s_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_1/m_axi_s2mm_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_1/m_axi_sg_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_1/s_axi_lite_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_ethernet_0/axis_clk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_ethernet_0/s_axi_lite_clk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_ethernet_1/axis_clk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_ethernet_1/s_axi_lite_clk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_gem2/m_axi_mm2s_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_gem2/m_axi_s2mm_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_gem2/m_axi_sg_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_gem2/s_axi_lite_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_gem1/m_axi_mm2s_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_gem1/m_axi_s2mm_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_gem1/m_axi_sg_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_dma_gem1/s_axi_lite_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_ethernet_gem2/axis_clk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_ethernet_gem2/s_axi_lite_clk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_ethernet_gem1/axis_clk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_ethernet_gem1/s_axi_lite_clk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_interconnect_0/ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_interconnect_0/M00_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_interconnect_0/M01_ACLK] -boundary_type upper
@@ -288,21 +288,21 @@ proc create_hier_cell_ethernet_subsystem { parentCell nameHier } {
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_interconnect_0/S00_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins axi_smc/aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] -boundary_type upper
-  connect_bd_net -net clk_wiz_1_clk_out1 [get_bd_pins axi_ethernet_1/gtx_clk] [get_bd_pins clk_wiz_1/clk_out1]
-  connect_bd_net -net clk_wiz_clk_out1 [get_bd_pins axi_ethernet_0/gtx_clk] [get_bd_pins clk_wiz/clk_out1]
-  connect_bd_net -net clk_wiz_clk_out2 [get_bd_pins axi_ethernet_0/ref_clk] [get_bd_pins clk_wiz/clk_out2]
+  connect_bd_net -net clk_wiz_1_clk_out1 [get_bd_pins axi_ethernet_gem1/gtx_clk] [get_bd_pins clk_wiz_1/clk_out1]
+  connect_bd_net -net clk_wiz_clk_out1 [get_bd_pins axi_ethernet_gem2/gtx_clk] [get_bd_pins clk_wiz/clk_out1]
+  connect_bd_net -net clk_wiz_clk_out2 [get_bd_pins axi_ethernet_gem2/ref_clk] [get_bd_pins clk_wiz/clk_out2]
   connect_bd_net -net gem1_clk_in_1 [get_bd_pins gem1_clk_in] [get_bd_pins clk_wiz_1/clk_in1]
   connect_bd_net -net proc_sys_reset_0_interconnect_aresetn [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins proc_sys_reset_0/interconnect_aresetn]
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins axi_dma_1/axi_resetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins axi_ethernet_0/s_axi_lite_resetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins axi_ethernet_1/s_axi_lite_resetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins axi_interconnect_0/M00_ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins axi_interconnect_0/M01_ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins axi_interconnect_0/M02_ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins axi_interconnect_0/M03_ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins axi_interconnect_0/S00_ARESETN] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins axi_smc/aresetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins proc_sys_reset_0/peripheral_aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_gem2/axi_resetn] [get_bd_pins axi_dma_gem1/axi_resetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_gem2/axi_resetn] [get_bd_pins axi_ethernet_gem2/s_axi_lite_resetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_gem2/axi_resetn] [get_bd_pins axi_ethernet_gem1/s_axi_lite_resetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_gem2/axi_resetn] [get_bd_pins axi_interconnect_0/M00_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_gem2/axi_resetn] [get_bd_pins axi_interconnect_0/M01_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_gem2/axi_resetn] [get_bd_pins axi_interconnect_0/M02_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_gem2/axi_resetn] [get_bd_pins axi_interconnect_0/M03_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_gem2/axi_resetn] [get_bd_pins axi_interconnect_0/S00_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_gem2/axi_resetn] [get_bd_pins axi_smc/aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins axi_dma_gem2/axi_resetn] [get_bd_pins proc_sys_reset_0/peripheral_aresetn] -boundary_type upper
   connect_bd_net -net xlconcat_0_dout [get_bd_pins dout] [get_bd_pins xlconcat_0/dout]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ext_reset_in] [get_bd_pins proc_sys_reset_0/ext_reset_in]
 
@@ -404,16 +404,6 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   set_property CONFIG.NUM_CHANNELS {8} $adc_bob2btc
 
 
-  # Create instance: xlslice_oc_err_0, and set properties
-  set xlslice_oc_err_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_0 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {0} \
-    CONFIG.DIN_TO {0} \
-    CONFIG.DIN_WIDTH {8} \
-    CONFIG.DOUT_WIDTH {1} \
-  ] $xlslice_oc_err_0
-
-
   # Create instance: xlslice_oc_err_1, and set properties
   set xlslice_oc_err_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_1 ]
   set_property -dict [list \
@@ -424,15 +414,6 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   ] $xlslice_oc_err_1
 
 
-  # Create instance: xlslice_oc_err_2, and set properties
-  set xlslice_oc_err_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_2 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {2} \
-    CONFIG.DIN_TO {2} \
-    CONFIG.DIN_WIDTH {8} \
-  ] $xlslice_oc_err_2
-
-
   # Create instance: xlslice_oc_err_3, and set properties
   set xlslice_oc_err_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_3 ]
   set_property -dict [list \
@@ -441,6 +422,25 @@ proc create_hier_cell_ADC { parentCell nameHier } {
     CONFIG.DIN_WIDTH {8} \
     CONFIG.DOUT_WIDTH {1} \
   ] $xlslice_oc_err_3
+
+
+  # Create instance: xlslice_oc_err_5, and set properties
+  set xlslice_oc_err_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_5 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {5} \
+    CONFIG.DIN_TO {5} \
+    CONFIG.DIN_WIDTH {8} \
+  ] $xlslice_oc_err_5
+
+
+  # Create instance: xlslice_oc_err_6, and set properties
+  set xlslice_oc_err_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_6 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {6} \
+    CONFIG.DIN_TO {6} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_oc_err_6
 
 
   # Create instance: xlslice_oc_err_7, and set properties
@@ -480,20 +480,24 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   # Create port connections
   connect_bd_net -net SDATA_0_1 [get_bd_pins SDATA] [get_bd_pins adc_if/SDATA]
   connect_bd_net -net adc_hub_1_interrupt [get_bd_pins interrupt] [get_bd_pins adc_hub_0/interrupt]
-  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_0/over_fault] [get_bd_pins xlslice_oc_err_0/Din] -boundary_type upper
   connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_0/over_fault] [get_bd_pins xlslice_oc_err_1/Din] -boundary_type upper
-  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_0/over_fault] [get_bd_pins xlslice_oc_err_2/Din] -boundary_type upper
   connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_0/over_fault] [get_bd_pins xlslice_oc_err_3/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_0/over_fault] [get_bd_pins xlslice_oc_err_5/Din] -boundary_type upper
   connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_0/over_fault] [get_bd_pins xlslice_oc_err_7/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_0/over_fault] [get_bd_pins xlslice_oc_err_6/Din] -boundary_type upper
+  
   connect_bd_net -net adc_if_0_CSn [get_bd_pins CSn] [get_bd_pins adc_if/CSn]
   connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_pins SCLK] [get_bd_pins adc_if/SCLK]
-  connect_bd_net -net phase_a_i_Dout3 [get_bd_pins phase_b_oc_err] [get_bd_pins xlslice_oc_err_1/Dout]
-  connect_bd_net -net phase_b_i_Dout3 [get_bd_pins phase_a_oc_err] [get_bd_pins xlslice_oc_err_0/Dout]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins SCLK_RESETn] [get_bd_pins adc_if/SCLK_RESETn]
   connect_bd_net -net xlconstant_1_dout [get_bd_pins UPDATE] [get_bd_pins adc_if/UPDATE]
-  connect_bd_net -net xlslice_oc_err_2_Dout [get_bd_pins phase_c_oc_err] [get_bd_pins xlslice_oc_err_2/Dout]
-  connect_bd_net -net xlslice_oc_err_3_Dout [get_bd_pins dc_link_oc_err] [get_bd_pins xlslice_oc_err_3/Dout]
-  connect_bd_net -net xlslice_oc_err_4_Dout [get_bd_pins dc_link_ov_err] [get_bd_pins xlslice_oc_err_7/Dout]
+  
+  connect_bd_net -net phase_a_i_Dout3 [get_bd_pins phase_a_oc_err] [get_bd_pins xlslice_oc_err_1/Dout]
+  connect_bd_net -net phase_b_i_Dout3 [get_bd_pins phase_b_oc_err] [get_bd_pins xlslice_oc_err_3/Dout]
+  connect_bd_net -net phase_c_i_Dout3 [get_bd_pins phase_c_oc_err] [get_bd_pins xlslice_oc_err_5/Dout]
+  connect_bd_net -net dc_link_oc_err_Dout [get_bd_pins dc_link_oc_err] [get_bd_pins xlslice_oc_err_7/Dout]
+  connect_bd_net -net dc_link_ov_err_Dout [get_bd_pins dc_link_ov_err] [get_bd_pins xlslice_oc_err_6/Dout]
+  
+  
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_hub_0/S_AXI_ACLK] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_if/CLK] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_bob2btc/CLK] -boundary_type upper
@@ -849,27 +853,27 @@ proc create_root_design { parentCell } {
 
   # Create address segments
   assign_bd_address -offset 0xA0010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ADC/adc_hub_0/S_AXI/Reg] -force
-  assign_bd_address -offset 0x80000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ethernet_subsystem/axi_dma_0/S_AXI_LITE/Reg] -force
-  assign_bd_address -offset 0x80010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ethernet_subsystem/axi_dma_1/S_AXI_LITE/Reg] -force
-  assign_bd_address -offset 0x80040000 -range 0x00040000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ethernet_subsystem/axi_ethernet_0/s_axi/Reg0] -force
-  assign_bd_address -offset 0x80080000 -range 0x00040000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ethernet_subsystem/axi_ethernet_1/s_axi/Reg0] -force
+  assign_bd_address -offset 0x80000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ethernet_subsystem/axi_dma_gem2/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x80010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ethernet_subsystem/axi_dma_gem1/S_AXI_LITE/Reg] -force
+  assign_bd_address -offset 0x80040000 -range 0x00040000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ethernet_subsystem/axi_ethernet_gem2/s_axi/Reg0] -force
+  assign_bd_address -offset 0x80080000 -range 0x00040000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ethernet_subsystem/axi_ethernet_gem1/s_axi/Reg0] -force
   assign_bd_address -offset 0xA0020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] -force
   assign_bd_address -offset 0xA0030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_quad_spi_0/AXI_LITE/Reg] -force
   assign_bd_address -offset 0xA0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs hls_qei_top_0/s_axi_qei_args/Reg] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_0/Data_MM2S] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_0/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_0/Data_SG] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_1/Data_MM2S] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_1/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
-  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_1/Data_SG] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem2/Data_MM2S] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem2/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem2/Data_SG] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem1/Data_MM2S] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem1/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
+  assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem1/Data_SG] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
 
   # Exclude Address Segments
-  exclude_bd_addr_seg -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_0/Data_MM2S] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM]
-  exclude_bd_addr_seg -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_0/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM]
-  exclude_bd_addr_seg -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_0/Data_SG] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM]
-  exclude_bd_addr_seg -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_1/Data_MM2S] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM]
-  exclude_bd_addr_seg -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_1/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM]
-  exclude_bd_addr_seg -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_1/Data_SG] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM]
+  exclude_bd_addr_seg -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem2/Data_MM2S] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM]
+  exclude_bd_addr_seg -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem2/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM]
+  exclude_bd_addr_seg -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem2/Data_SG] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM]
+  exclude_bd_addr_seg -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem1/Data_MM2S] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM]
+  exclude_bd_addr_seg -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem1/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM]
+  exclude_bd_addr_seg -offset 0xFF000000 -range 0x01000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem1/Data_SG] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM]
 
 
   # Restore current instance

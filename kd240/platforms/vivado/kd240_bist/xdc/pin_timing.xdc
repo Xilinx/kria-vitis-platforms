@@ -313,26 +313,26 @@ set_property IOSTANDARD LVCMOS18 [get_ports gem2_clk_in]
 #------------------------------------------------------------------
 
 
-set_property DELAY_VALUE 875 [get_cells -hier -filter {NAME =~ */rgmii_interface/delay_rgmii_tx_clk}]
+set_property DELAY_VALUE 0 [get_cells -hier -filter {NAME =~ */rgmii_interface/delay_rgmii_tx_clk}]
 set_property DELAY_VALUE 0 [get_cells -hier -filter {NAME =~ */rgmii_interface/delay_rgmii_rx*}]
 set_property DELAY_VALUE 0 [get_cells -hier -filter {NAME =~ */rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
 
 ## Refclk frequency
 set_property REFCLK_FREQUENCY 333.33333 [get_cells -hier -filter {NAME =~ *delay_rgmii_tx*}]
+set_property REFCLK_FREQUENCY 333.33333 [get_cells -hier -filter {NAME =~ *delay_rgmii_rx_ctl}]
+set_property REFCLK_FREQUENCY 333.33333 [get_cells -hier -filter {NAME =~ *delay_rgmii_rxd}]
 
 ## False paths
+set_clock_groups -asynchronous -group [get_clocks gem1_clk_in]
 set_clock_groups -asynchronous -group [get_clocks gem2_clk_in]
 set_clock_groups -asynchronous -group [get_clocks gem1_rgmii_rxc]
 set_clock_groups -asynchronous -group [get_clocks gem2_rgmii_rxc]
 set_clock_groups -asynchronous -group [get_clocks clk_pl_0]
 set_clock_groups -asynchronous -group [get_clocks clk_pl_1]
-set_clock_groups -asynchronous -group [get_clocks clk_out1_kd240_bist_clk_wiz_1]
-set_clock_groups -asynchronous -group [get_clocks clk_out2_kd240_bist_clk_wiz_1]
+set_clock_groups -asynchronous -group [get_clocks kd240_bist_i/ethernet_subsystem/axi_ethernet_0/inst/mac/inst_rgmii_tx_clk]
+set_clock_groups -asynchronous -group [get_clocks kd240_bist_i/ethernet_subsystem/axi_ethernet_1/inst/mac/inst_rgmii_tx_clk]
+set_clock_groups -asynchronous -group [get_clocks clk_out1_kd240_bist_clk_wiz_0]
+set_clock_groups -asynchronous -group [get_clocks clk_out2_kd240_bist_clk_wiz_0]
+set_clock_groups -asynchronous -group [get_clocks clk_out1_kd240_bist_clk_wiz_1_0]
 
-set_false_path -from [get_clocks -of_objects [get_pins kd240_bist_i/ethernet_subsystem/clk_wiz_1/inst/mmcme4_adv_inst/CLKOUT0]] -to [get_clocks kd240_bist_i/ethernet_subsystem/axi_ethernet_1/inst/mac/inst_rgmii_tx_clk]
 
-# Debug Hub
-set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
-set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
-set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
-connect_debug_port dbg_hub/clk [get_nets clk]
