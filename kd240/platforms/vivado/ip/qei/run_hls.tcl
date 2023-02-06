@@ -21,7 +21,7 @@ open_project -reset $PROJ
 
 add_files "${QEI_IP}/src/ip_qei.cpp" -cflags "-I${VITIS_LIBS}/L1/include/hw -I${QEI_IP}/src"
 add_files -tb "${QEI_IP}/src/test_ip_qei.cpp" -cflags "-I${VITIS_LIBS}/L1/include/hw -I${QEI_IP}/src"
-set_top hls_qei_top
+set_top hls_qei
 
 open_solution -reset $SOLN
 

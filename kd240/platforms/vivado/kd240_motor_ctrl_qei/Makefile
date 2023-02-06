@@ -59,3 +59,6 @@ clean_ip:
 	make -C $(FOC_DIR) clean
 	make -C $(SVPWM_DIR) clean
 
+.PHONY: clean_all
+clean_all: clean clean_ip
+

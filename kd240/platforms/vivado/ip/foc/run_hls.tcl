@@ -21,7 +21,7 @@ open_project -reset $PROJ
 
 add_files "${FOC_IP}/src/ip_foc.cpp" -cflags "-I${VITIS_LIBS}/L1/include/hw -I${FOC_IP}/src"
 add_files -tb "${FOC_IP}/src/test_ip_foc.cpp" -cflags "-I${VITIS_LIBS}/L1/include/hw -I${FOC_IP}/src" 
-set_top hls_foc_periodic_top_ap_fixed
+set_top hls_foc_periodic_ap_fixed
 
 open_solution -reset $SOLN
 
