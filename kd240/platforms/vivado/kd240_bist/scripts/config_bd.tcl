@@ -624,8 +624,8 @@ proc create_root_design { parentCell } {
   # Create instance: gate_driver
   create_hier_cell_gate_driver [current_bd_instance .] gate_driver
 
-  # Create instance: hls_qei_top_0, and set properties
-  set hls_qei_top_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_qei_top hls_qei_top_0 ]
+  # Create instance: hls_qei_0, and set properties
+  set hls_qei_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_qei hls_qei_0 ]
 
   # Create instance: ila_enc_qei, and set properties
   set ila_enc_qei [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila ila_enc_qei ]
@@ -744,7 +744,7 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_LPD [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM0_LPD] [get_bd_intf_pins ethernet_subsystem/S00_AXI]
   connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports GPIO] [get_bd_intf_pins axi_gpio_0/GPIO]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins ADC/S_AXI] [get_bd_intf_pins axi_interconnect_cntrl/M00_AXI]
-  connect_bd_intf_net -intf_net axi_interconnect_cntrl_M01_AXI [get_bd_intf_pins axi_interconnect_cntrl/M01_AXI] [get_bd_intf_pins hls_qei_top_0/s_axi_qei_args]
+  connect_bd_intf_net -intf_net axi_interconnect_cntrl_M01_AXI [get_bd_intf_pins axi_interconnect_cntrl/M01_AXI] [get_bd_intf_pins hls_qei_0/s_axi_qei_args]
   connect_bd_intf_net -intf_net axi_interconnect_cntrl_M02_AXI [get_bd_intf_pins axi_gpio_0/S_AXI] [get_bd_intf_pins axi_interconnect_cntrl/M02_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_cntrl_M03_AXI [get_bd_intf_pins axi_interconnect_cntrl/M03_AXI] [get_bd_intf_pins axi_quad_spi_0/AXI_LITE]
   connect_bd_intf_net -intf_net ethernet_subsystem_M00_AXI [get_bd_intf_pins zynq_ultra_ps_e_0/S_AXI_HP0_FPD] [get_bd_intf_pins ethernet_subsystem/M00_AXI]
@@ -759,11 +759,11 @@ proc create_root_design { parentCell } {
   connect_bd_net -net ADC_CSn [get_bd_pins ADC/CSn] [get_bd_pins xlslice_1/Din] -boundary_type upper
   connect_bd_net -net ARESETN_1 [get_bd_pins axi_interconnect_cntrl/ARESETN] [get_bd_pins proc_sys_reset_0/interconnect_aresetn]
   connect_bd_net -net A_0_1 [get_bd_ports qei_se_A] [get_bd_pins ila_enc_qei/probe4] -boundary_type upper
-  connect_bd_net -net A_0_1 [get_bd_ports qei_se_A] [get_bd_pins hls_qei_top_0/qei_A_dout] -boundary_type upper
+  connect_bd_net -net A_0_1 [get_bd_ports qei_se_A] [get_bd_pins hls_qei_0/qei_A_dout] -boundary_type upper
   connect_bd_net -net B_0_1 [get_bd_ports qei_se_B] [get_bd_pins ila_enc_qei/probe5] -boundary_type upper
-  connect_bd_net -net B_0_1 [get_bd_ports qei_se_B] [get_bd_pins hls_qei_top_0/qei_B_dout] -boundary_type upper
+  connect_bd_net -net B_0_1 [get_bd_ports qei_se_B] [get_bd_pins hls_qei_0/qei_B_dout] -boundary_type upper
   connect_bd_net -net I_0_1 [get_bd_ports qei_se_I] [get_bd_pins ila_enc_qei/probe6] -boundary_type upper
-  connect_bd_net -net I_0_1 [get_bd_ports qei_se_I] [get_bd_pins hls_qei_top_0/qei_I_dout] -boundary_type upper
+  connect_bd_net -net I_0_1 [get_bd_ports qei_se_I] [get_bd_pins hls_qei_0/qei_I_dout] -boundary_type upper
   connect_bd_net -net TQ_SDO_1 [get_bd_ports TQ_SDO] [get_bd_pins axi_quad_spi_0/io1_i]
   connect_bd_net -net adc_hub_1_interrupt [get_bd_pins ADC/interrupt] [get_bd_pins xlconcat_int/In0]
   connect_bd_net -net axi_quad_spi_0_io0_o [get_bd_ports TQ_SDI] [get_bd_pins axi_quad_spi_0/io0_o]
@@ -789,12 +789,12 @@ proc create_root_design { parentCell } {
   connect_bd_net -net gate_driver_Dout1 [get_bd_pins gate_driver/phase_upper] [get_bd_pins ila_gate_driver/probe4]
   connect_bd_net -net gem1_clk_in_1 [get_bd_ports gem1_clk_in] [get_bd_pins ethernet_subsystem/gem1_clk_in]
   connect_bd_net -net gem2_clk_in_1 [get_bd_ports gem2_clk_in] [get_bd_pins ethernet_subsystem/gem2_clk_in]
-  connect_bd_net -net hls_qei_top_0_qei_RPM_THETA_m_TDATA [get_bd_pins ila_enc_qei/probe0] [get_bd_pins hls_qei_top_0/qei_RPM_THETA_m_TDATA]
-  connect_bd_net -net hls_qei_top_0_qei_RPM_THETA_m_TVALID [get_bd_pins ila_enc_qei/probe1] [get_bd_pins hls_qei_top_0/qei_RPM_THETA_m_TVALID]
-  connect_bd_net -net hls_qei_top_0_qei_dir_TDATA [get_bd_pins ila_enc_qei/probe2] [get_bd_pins hls_qei_top_0/qei_dir_TDATA]
-  connect_bd_net -net hls_qei_top_0_qei_dir_TVALID [get_bd_pins ila_enc_qei/probe3] [get_bd_pins hls_qei_top_0/qei_dir_TVALID]
-  connect_bd_net -net hls_qei_top_0_qei_err_TDATA [get_bd_pins ila_enc_qei/probe7] [get_bd_pins hls_qei_top_0/qei_err_TDATA]
-  connect_bd_net -net hls_qei_top_0_qei_err_TVALID [get_bd_pins ila_enc_qei/probe8] [get_bd_pins hls_qei_top_0/qei_err_TVALID]
+  connect_bd_net -net hls_qei_0_qei_RPM_THETA_m_TDATA [get_bd_pins ila_enc_qei/probe0] [get_bd_pins hls_qei_0/qei_RPM_THETA_m_TDATA]
+  connect_bd_net -net hls_qei_0_qei_RPM_THETA_m_TVALID [get_bd_pins ila_enc_qei/probe1] [get_bd_pins hls_qei_0/qei_RPM_THETA_m_TVALID]
+  connect_bd_net -net hls_qei_0_qei_dir_TDATA [get_bd_pins ila_enc_qei/probe2] [get_bd_pins hls_qei_0/qei_dir_TDATA]
+  connect_bd_net -net hls_qei_0_qei_dir_TVALID [get_bd_pins ila_enc_qei/probe3] [get_bd_pins hls_qei_0/qei_dir_TVALID]
+  connect_bd_net -net hls_qei_0_qei_err_TDATA [get_bd_pins ila_enc_qei/probe7] [get_bd_pins hls_qei_0/qei_err_TDATA]
+  connect_bd_net -net hls_qei_0_qei_err_TVALID [get_bd_pins ila_enc_qei/probe8] [get_bd_pins hls_qei_0/qei_err_TVALID]
   connect_bd_net -net motor_pa_data_a_1 [get_bd_ports motor_pa_data_v] [get_bd_pins xlconcat_1/In0]
   connect_bd_net -net motor_pa_data_b_1 [get_bd_ports motor_pa_data_i] [get_bd_pins xlconcat_1/In1]
   connect_bd_net -net motor_pb_data_a_1 [get_bd_ports motor_pb_data_v] [get_bd_pins xlconcat_1/In2]
@@ -818,12 +818,12 @@ proc create_root_design { parentCell } {
   connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins gate_driver/sys_clk] -boundary_type upper
   connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins ila_enc_qei/clk] -boundary_type upper
   connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins ila_gate_driver/clk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins hls_qei_top_0/ap_clk] -boundary_type upper
+  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins hls_qei_0/ap_clk] -boundary_type upper
   connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins ADC/SCLK_RESETn] [get_bd_pins proc_sys_reset_1/peripheral_aresetn]
   connect_bd_net -net xlconcat_1_dout [get_bd_pins ADC/SDATA] [get_bd_pins xlconcat_1/dout]
   connect_bd_net -net xlconcat_int_dout [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq1] [get_bd_pins xlconcat_int/dout]
-  connect_bd_net -net xlconstant_0_dout [get_bd_pins hls_qei_top_0/ap_start] [get_bd_pins xlconstant_0/dout]
+  connect_bd_net -net xlconstant_0_dout [get_bd_pins hls_qei_0/ap_start] [get_bd_pins xlconstant_0/dout]
   connect_bd_net -net xlconstant_1_dout [get_bd_pins ADC/UPDATE] [get_bd_pins xlconstant_1/dout]
   connect_bd_net -net xlslice_0_Dout [get_bd_ports gate_drive_en] [get_bd_pins ila_gate_driver/probe5] -boundary_type upper
   connect_bd_net -net xlslice_0_Dout [get_bd_ports gate_drive_en] [get_bd_pins xlslice_gpio_0/Dout] -boundary_type upper
@@ -845,7 +845,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins axi_interconnect_cntrl/S00_ARESETN] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins axi_quad_spi_0/s_axi_aresetn] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins gate_driver/sys_rstn] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins hls_qei_top_0/ap_rst_n] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins hls_qei_0/ap_rst_n] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins proc_sys_reset_0/peripheral_aresetn] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn1 [get_bd_pins zynq_ultra_ps_e_0/pl_resetn0] [get_bd_pins ethernet_subsystem/ext_reset_in] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn1 [get_bd_pins zynq_ultra_ps_e_0/pl_resetn0] [get_bd_pins proc_sys_reset_0/ext_reset_in] -boundary_type upper
@@ -859,7 +859,7 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0x80080000 -range 0x00040000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs ethernet_subsystem/axi_ethernet_gem1/s_axi/Reg0] -force
   assign_bd_address -offset 0xA0020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] -force
   assign_bd_address -offset 0xA0030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_quad_spi_0/AXI_LITE/Reg] -force
-  assign_bd_address -offset 0xA0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs hls_qei_top_0/s_axi_qei_args/Reg] -force
+  assign_bd_address -offset 0xA0000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs hls_qei_0/s_axi_qei_args/Reg] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem2/Data_MM2S] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem2/Data_S2MM] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ethernet_subsystem/axi_dma_gem2/Data_SG] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW] -force

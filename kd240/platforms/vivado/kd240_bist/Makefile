@@ -37,4 +37,11 @@ $(QEI_IP):
 .PHONY: clean
 clean:
 	$(RM) $(VIV_PRJ_DIR) vivado* *dynamic* *.log *.xpe
+	
+.PHONY: clean_ip
+clean_ip:	
+	make -C $(QEI_DIR) clean
+
+.PHONY: clean_all
+clean_all: clean clean_ip
 
