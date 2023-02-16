@@ -58,6 +58,7 @@ clean_ip:
 	make -C $(QEI_DIR) clean
 	make -C $(FOC_DIR) clean
 	make -C $(SVPWM_DIR) clean
+	make -C $(PWM_GEN_DIR) clean
 
 .PHONY: clean_all
 clean_all: clean clean_ip

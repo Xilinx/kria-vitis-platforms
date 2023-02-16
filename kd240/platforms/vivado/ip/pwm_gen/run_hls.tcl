@@ -30,6 +30,7 @@ create_clock -period $CLKP
 set_clock_uncertainty 1.25
 
 csynth_design
+config_export -ipname hls_pwm_gen
 export_design -rtl verilog -format ip_catalog
 
 exit

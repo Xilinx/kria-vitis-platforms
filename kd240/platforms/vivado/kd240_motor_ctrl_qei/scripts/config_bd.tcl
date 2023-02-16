@@ -1370,13 +1370,13 @@ proc create_root_design { parentCell } {
   create_hier_cell_gate_driver [current_bd_instance .] gate_driver
 
   # Create instance: hls_foc_periodic_0, and set properties
-  set hls_foc_periodic_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_foc_periodic_ap_fixed hls_foc_periodic_0 ]
+  set hls_foc_periodic_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_foc_periodic hls_foc_periodic_0 ]
 
   # Create instance: hls_pwm_gen_0, and set properties
   set hls_pwm_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_pwm_gen hls_pwm_gen_0 ]
 
   # Create instance: hls_qei_0, and set properties
-  set hls_qei_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_qei hls_qei_0 ]
+  set hls_qei_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_qei_axi hls_qei_0 ]
 
   # Create instance: hls_svpwm_duty_0, and set properties
   set hls_svpwm_duty_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_svpwm_duty hls_svpwm_duty_0 ]
