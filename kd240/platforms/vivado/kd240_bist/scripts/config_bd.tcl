@@ -625,7 +625,7 @@ proc create_root_design { parentCell } {
   create_hier_cell_gate_driver [current_bd_instance .] gate_driver
 
   # Create instance: hls_qei_0, and set properties
-  set hls_qei_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_qei hls_qei_0 ]
+  set hls_qei_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_qei_axi hls_qei_0 ]
 
   # Create instance: ila_enc_qei, and set properties
   set ila_enc_qei [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila ila_enc_qei ]
