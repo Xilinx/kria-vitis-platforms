@@ -1,6 +1,3 @@
-// Copyright (C) 2022, Advanced Micro Devices, Inc.
-// SPDX-License-Identifier: Apache-2.0
-
 // Motor Control Register Block
 //  ------------------------------------------------------------------------------------------- 
 //  | Register  | Register  | Default      | Description                                       |

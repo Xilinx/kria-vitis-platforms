@@ -362,7 +362,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>61fde0de</spirit:value>
+            <spirit:value>ee3f5861</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -378,7 +378,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>61fde0de</spirit:value>
+            <spirit:value>ee3f5861</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -392,19 +392,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>d52e3591</spirit:value>
-          </spirit:parameter>
-        </spirit:parameters>
-      </spirit:view>
-      <spirit:view>
-        <spirit:name>xilinx_testbench</spirit:name>
-        <spirit:displayName>Test Bench</spirit:displayName>
-        <spirit:envIdentifier>:vivado.xilinx.com:simulation.testbench</spirit:envIdentifier>
-        <spirit:modelName>motor_control_tb</spirit:modelName>
-        <spirit:parameters>
-          <spirit:parameter>
-            <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>db241d1d</spirit:value>
+            <spirit:value>9e1a56d4</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -515,6 +503,45 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
+        <spirit:name>phase_a_uc_err</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>wire</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>phase_b_uc_err</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>wire</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>phase_c_uc_err</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>wire</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
         <spirit:name>dc_link_oc_err</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
@@ -529,6 +556,32 @@
       </spirit:port>
       <spirit:port>
         <spirit:name>dc_link_ov_err</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>wire</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>dc_link_uc_err</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>wire</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>dc_link_uv_err</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -1073,7 +1126,7 @@
       <spirit:file>
         <spirit:name>src/motor_control.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_f75f7294</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_1f0bf88e</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1092,7 +1145,7 @@
       <spirit:file>
         <spirit:name>xgui/motor_control_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_d52e3591</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_9e1a56d4</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -1164,15 +1217,15 @@
       <xilinx:displayName>motor_control</xilinx:displayName>
       <xilinx:autoFamilySupportLevel>level_0</xilinx:autoFamilySupportLevel>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>10</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-01-05T23:08:07Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>12</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-02-22T23:52:29Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
-      <xilinx:xilinxVersion>2022.1</xilinx:xilinxVersion>
+      <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="7a380cc6"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="7402839c"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="0d593daf"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="28a1cf74"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="0df54d2b"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="d67453e7"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="f979f63f"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="ee9c68de"/>
     </xilinx:packagingInfo>

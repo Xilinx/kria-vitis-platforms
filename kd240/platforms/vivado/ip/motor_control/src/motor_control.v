@@ -1,6 +1,3 @@
-// Copyright (C) 2022, Advanced Micro Devices, Inc.
-// SPDX-License-Identifier: Apache-2.0
-
 // This module drives the Texas Instruments LM5106 gate driver chip 
 // enable pin. The enable pin is driven if enabled by the  
 // SW application and if no current/voltage limits are violated 
@@ -51,15 +48,19 @@
     output wire  voltage_sel,
     output wire  current_sel,
     output wire  speed_sel,
-    
-    
+        
     input wire   phase_a_oc_err, 
     input wire   phase_b_oc_err,
     input wire   phase_c_oc_err,
+    input wire   phase_a_uc_err, 
+    input wire   phase_b_uc_err,
+    input wire   phase_c_uc_err,
+    
     input wire   dc_link_oc_err,
     input wire   dc_link_ov_err,
-    
-        
+    input wire   dc_link_uc_err,
+    input wire   dc_link_uv_err,
+         
     // Ports of Axi Slave Bus Interface s_axi_cntrl
     input wire  s_axi_cntrl_clk,
     input wire  s_axi_cntrl_resetn,
@@ -230,8 +231,10 @@
   assign phase_imbal_err = phase_imbal;  
   assign interrupt = (disable_interrupt == 1'b1) ? 1'b0: phase_imbal;
   
-  // If any over current or over voltage limit is violated disable gate drive enable
-  assign gate_drive_en = gate_drive_en_sw & (~(phase_a_oc_err | phase_b_oc_err | phase_c_oc_err | dc_link_oc_err | dc_link_ov_err));
+  // If any current or voltage limit is violated disable gate drive enable
+    assign gate_drive_en = gate_drive_en_sw & (~(phase_a_oc_err | phase_b_oc_err | phase_c_oc_err | dc_link_oc_err | dc_link_ov_err |
+                                                 phase_a_uc_err | phase_b_uc_err | phase_c_uc_err | dc_link_uc_err | dc_link_uv_err ));
+  
   
   assign s_axis_phase_a_i_tready = 1'b1;
   assign s_axis_phase_b_i_tready = 1'b1;
