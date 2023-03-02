@@ -206,8 +206,8 @@ generate
         // Only interrupt if irq_disable bit is not set
         assign irq_disable[chan] = global_irq_disable[(32*chan)+:1];
         assign interrupts[(2*chan)+:2] = (irq_disable[chan]) ? 'h0 : error_status[(32*chan)+:2];
-        assign over_fault[chan] = error_status[(2*chan)+0];
-        assign under_fault[chan] = error_status[(2*chan)+1];
+        assign over_fault[chan] = error_status[(32*chan)+0];
+        assign under_fault[chan] = error_status[(32*chan)+1];
     end
 endgenerate
 
