@@ -1415,13 +1415,13 @@ proc create_root_design { parentCell } {
   set clk_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz clk_wiz_0 ]
   set_property -dict [list \
     CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {100} \
-    CONFIG.CLKOUT2_JITTER {162.169} \
+    CONFIG.CLKOUT2_JITTER {133.814} \
     CONFIG.CLKOUT2_PHASE_ERROR {87.181} \
-    CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {20} \
+    CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {48} \
     CONFIG.CLKOUT2_USED {true} \
     CONFIG.CLK_OUT1_PORT {clk_out_100M} \
-    CONFIG.CLK_OUT2_PORT {clk_out_20M} \
-    CONFIG.MMCM_CLKOUT1_DIVIDE {60} \
+    CONFIG.CLK_OUT2_PORT {clk_out_48M} \
+    CONFIG.MMCM_CLKOUT1_DIVIDE {25} \
     CONFIG.NUM_OUT_CLKS {2} \
     CONFIG.PRIM_SOURCE {Global_buffer} \
     CONFIG.RESET_PORT {resetn} \
@@ -1460,17 +1460,15 @@ proc create_root_design { parentCell } {
 
   # Create instance: xlconcat_int, and set properties
   set xlconcat_int [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_int ]
-  set_property CONFIG.NUM_PORTS {3} $xlconcat_int
+  set_property CONFIG.NUM_PORTS {7} $xlconcat_int
 
+
+  # Create instance: xlconstant_update, and set properties
+  set xlconstant_update [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_update ]
 
   # Create instance: xlslice_CSn, and set properties
   set xlslice_CSn [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_CSn ]
   set_property CONFIG.DIN_WIDTH {8} $xlslice_CSn
-
-
-  # Create instance: xlslice_ap_start, and set properties
-  set xlslice_ap_start [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_ap_start ]
-  set_property CONFIG.DIN_WIDTH {94} $xlslice_ap_start
 
 
   # Create instance: xlslice_dc_CSn, and set properties
@@ -1548,7 +1546,6 @@ proc create_root_design { parentCell } {
   connect_bd_net -net In5_0_1 [get_bd_ports motor_pc_data_i] [get_bd_pins xlconcat_0/In5]
   connect_bd_net -net In6_0_1 [get_bd_ports dc_link_data_v] [get_bd_pins xlconcat_0/In6]
   connect_bd_net -net In7_0_1 [get_bd_ports dc_link_data_i] [get_bd_pins xlconcat_0/In7]
-  connect_bd_net -net PS_0_emio_gpio_o [get_bd_pins PS_0/emio_gpio_o] [get_bd_pins xlslice_ap_start/Din]
   connect_bd_net -net SDATA_1 [get_bd_pins ADC/SDATA] [get_bd_pins xlconcat_0/dout]
   connect_bd_net -net TSN_subsystem_clk_out1 [get_bd_pins PS_0/saxihp0_fpd_aclk] [get_bd_pins TSN_subsystem/clk_out1]
   connect_bd_net -net TSN_subsystem_clk_out4 [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins TSN_subsystem/clk_out4]
@@ -1564,17 +1561,21 @@ proc create_root_design { parentCell } {
   connect_bd_net -net clk_in1_0_1 [get_bd_ports CLK_IN_gem] [get_bd_pins TSN_subsystem/CLK_IN_gem]
   connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_ports dc_link_adc_sclk] [get_bd_ports motor_adc_sclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_ports dc_link_adc_sclk] [get_bd_pins ADC/SCLK] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_ports dc_link_adc_sclk] [get_bd_pins clk_wiz_0/clk_out_20M] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_ports dc_link_adc_sclk] [get_bd_pins clk_wiz_0/clk_out_48M] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_ports dc_link_adc_sclk] [get_bd_pins proc_sys_reset_1/slowest_sync_clk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_locked [get_bd_pins clk_wiz_0/locked] [get_bd_pins proc_sys_reset_0/dcm_locked] -boundary_type upper
   connect_bd_net -net clk_wiz_0_locked [get_bd_pins clk_wiz_0/locked] [get_bd_pins proc_sys_reset_1/dcm_locked] -boundary_type upper
   connect_bd_net -net gate_driver_A_gate_drive [get_bd_ports gate_drive_phase_a] [get_bd_pins gate_driver/gate_drive_phase_a]
   connect_bd_net -net gate_driver_B_gate_drive [get_bd_ports gate_drive_phase_b] [get_bd_pins gate_driver/gate_drive_phase_b]
   connect_bd_net -net gate_driver_C_gate_drive [get_bd_ports gate_drive_phase_c] [get_bd_pins gate_driver/gate_drive_phase_c]
+  connect_bd_net -net hls_foc_periodic_0_interrupt [get_bd_pins hls_foc_periodic_0/interrupt] [get_bd_pins xlconcat_int/In4]
+  connect_bd_net -net hls_pwm_gen_0_interrupt [get_bd_pins hls_pwm_gen_0/interrupt] [get_bd_pins xlconcat_int/In6]
   connect_bd_net -net hls_pwm_gen_0_strm_pwm_h_c_din [get_bd_pins gate_driver/phase_upper_c] [get_bd_pins hls_pwm_gen_0/strm_pwm_h_c_din]
   connect_bd_net -net hls_pwm_gen_0_strm_pwm_l_a_din [get_bd_pins gate_driver/phase_lower_a] [get_bd_pins hls_pwm_gen_0/strm_pwm_l_a_din]
   connect_bd_net -net hls_pwm_gen_0_strm_pwm_l_b_din [get_bd_pins gate_driver/phase_lower_b] [get_bd_pins hls_pwm_gen_0/strm_pwm_l_b_din]
   connect_bd_net -net hls_pwm_gen_0_strm_pwm_l_c_din [get_bd_pins gate_driver/phase_lower_c] [get_bd_pins hls_pwm_gen_0/strm_pwm_l_c_din]
+  connect_bd_net -net hls_qei_0_interrupt [get_bd_pins hls_qei_0/interrupt] [get_bd_pins xlconcat_int/In3]
+  connect_bd_net -net hls_svpwm_duty_0_interrupt [get_bd_pins hls_svpwm_duty_0/interrupt] [get_bd_pins xlconcat_int/In5]
   connect_bd_net -net motor_control_0_gate_drive_en [get_bd_ports gate_drive_en] [get_bd_pins motor_control_0/gate_drive_en]
   connect_bd_net -net motor_control_0_interrupt [get_bd_pins motor_control_0/interrupt] [get_bd_pins xlconcat_int/In1]
   connect_bd_net -net phase_upper_a_1 [get_bd_pins gate_driver/phase_upper_a] [get_bd_pins hls_pwm_gen_0/strm_pwm_h_a_din]
@@ -1582,11 +1583,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins ADC/SCLK_RESETn] [get_bd_pins proc_sys_reset_1/peripheral_aresetn]
   connect_bd_net -net xlconcat_irq [get_bd_pins PS_0/pl_ps_irq0] [get_bd_pins xlconcat_int/dout]
   connect_bd_net -net xlconstant_0_dout [get_bd_ports Phy_reset_n] [get_bd_pins TSN_subsystem/Phy_reset_n]
-  connect_bd_net -net xlconstant_1_dout [get_bd_pins ADC/UPDATE] [get_bd_pins hls_foc_periodic_0/ap_start] -boundary_type upper
-  connect_bd_net -net xlconstant_1_dout [get_bd_pins ADC/UPDATE] [get_bd_pins hls_pwm_gen_0/ap_start] -boundary_type upper
-  connect_bd_net -net xlconstant_1_dout [get_bd_pins ADC/UPDATE] [get_bd_pins hls_qei_0/ap_start] -boundary_type upper
-  connect_bd_net -net xlconstant_1_dout [get_bd_pins ADC/UPDATE] [get_bd_pins hls_svpwm_duty_0/ap_start] -boundary_type upper
-  connect_bd_net -net xlconstant_1_dout [get_bd_pins ADC/UPDATE] [get_bd_pins xlslice_ap_start/Dout] -boundary_type upper
+  connect_bd_net -net xlconstant_0_dout1 [get_bd_pins ADC/UPDATE] [get_bd_pins xlconstant_update/dout]
   connect_bd_net -net xlslice_0_Dout1 [get_bd_ports fan_en_b] [get_bd_pins xlslice_fan/Dout]
   connect_bd_net -net xlslice_CSn_Dout [get_bd_ports motor_adc_cs_n] [get_bd_pins xlslice_CSn/Dout]
   connect_bd_net -net xlslice_dc_CSn_Dout [get_bd_ports dc_link_adc_cs_n] [get_bd_pins xlslice_dc_CSn/Dout]
@@ -1655,8 +1652,9 @@ proc create_root_design { parentCell } {
   # Create PFM attributes
   set_property PFM_NAME {xilinx:kd240_motor_ctrl_qei:kd240_motor_ctrl_qei:1.0} [get_files [current_bd_design].bd]
   set_property PFM.AXI_PORT {M_AXI_HPM1_FPD {memport "M_AXI_GP" sptag "" memory "" is_range "false"} S_AXI_HPC0_FPD {memport "S_AXI_HP" sptag "HPC0" memory "PS_0 HPC0_DDR_LOW" is_range "false"} S_AXI_HPC1_FPD {memport "S_AXI_HP" sptag "HPC1" memory "PS_0 HPC1_DDR_LOW" is_range "false"} S_AXI_HP1_FPD {memport "S_AXI_HP" sptag "HP1" memory "PS_0 HP1_DDR_LOW" is_range "false"} S_AXI_HP2_FPD {memport "S_AXI_HP" sptag "HP2" memory "PS_0 HP2_DDR_LOW" is_range "false"} S_AXI_HP3_FPD {memport "S_AXI_HP" sptag "HP3" memory "PS_0 HP3_DDR_LOW" is_range "false"} S_AXI_LPD {memport "MIG" sptag "LPD" memory "PS_0 LPD_DDR_LOW" is_range "false"}} [get_bd_cells /PS_0]
-  set_property PFM.CLOCK {clk_out_100M {id "4" is_default "true" proc_sys_reset "/proc_sys_reset_0" status "fixed" freq_hz "99999000"} clk_out_20M {id "5" is_default "false" proc_sys_reset "/proc_sys_reset_1" status "fixed" freq_hz "19999800"}} [get_bd_cells /clk_wiz_0]
+  set_property PFM.CLOCK {clk_out_100M {id "4" is_default "true" proc_sys_reset "/proc_sys_reset_0" status "fixed" freq_hz "99999000"} clk_out_48M {id "5" is_default "false" proc_sys_reset "/proc_sys_reset_1" status "fixed" freq_hz "4999952"}} [get_bd_cells /clk_wiz_0]
   set_property PFM.IRQ {pl_ps_irq1 {id 0 range 7}} [get_bd_cells /PS_0]
+  
 
 
   validate_bd_design

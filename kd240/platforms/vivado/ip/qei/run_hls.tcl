@@ -4,7 +4,8 @@
 source settings.tcl
 
 set VITIS_LIBS ../../../../../common/Vitis_Libraries/motorcontrol
-set QEI_IP ${VITIS_LIBS}/L1/tests/FOC/IP_QEI
+set QEI_IP ${VITIS_LIBS}/L1/tests/IP_QEI
+
 
 set PROJ "hls_qei.prj"
 set SOLN "sol1"

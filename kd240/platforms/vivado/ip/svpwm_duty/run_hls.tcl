@@ -4,7 +4,7 @@
 source settings.tcl 
 
 set VITIS_LIBS ../../../../../common/Vitis_Libraries/motorcontrol
-set SVPWM_IP ${VITIS_LIBS}/L1/tests/FOC/IP_SVPWM
+set SVPWM_IP ${VITIS_LIBS}/L1/tests/IP_SVPWM
 
 set PROJ "ip_svpwm_duty.prj"
 set SOLN "sol1"
