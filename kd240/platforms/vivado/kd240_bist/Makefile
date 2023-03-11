@@ -13,7 +13,13 @@ VIV_SCRIPTS_DIR = scripts
 VIV_XSA = $(VIV_PRJ_DIR)/$(VIV_DESIGN).xsa
 VIV_SRC = $(VIV_SCRIPTS_DIR)/main.tcl
 QEI_DIR= ../ip/qei
-QEI_IP = $(QEI_DIR)/hls_qei.prj/sol1/impl/export.zip
+QEI_IP = $(QEI_DIR)/*.prj/sol1/impl/export.zip
+PG_DIR= ../ip/pattern_gen
+PG_IP = $(PG_DIR)/*.prj/sol1/impl/export.zip
+SVPWM_DIR= ../ip/svpwm_duty
+SVPWM_IP = $(SVPWM_DIR)/*.prj/sol1/impl/export.zip
+PWM_GEN_DIR= ../ip/pwm_gen
+PWM_GEN_IP = $(PWM_GEN_DIR)/*.prj/sol1/impl/export.zip
 
 
 .PHONY: help
@@ -28,11 +34,20 @@ help:
 all: xsa
 
 xsa: $(VIV_XSA)
-$(VIV_XSA): $(VIV_SRC) $(QEI_IP)
+$(VIV_XSA): $(VIV_SRC) $(QEI_IP) $(PG_IP) $(SVPWM_IP) $(PWM_GEN_IP)
 	$(VIVADO) -mode batch -notrace -source $(VIV_SRC) -tclargs -jobs $(JOBS)
 
 $(QEI_IP):
-	make -C $(QEI_DIR) ip
+	make -C $(QEI_DIR) ip 
+
+$(PG_IP):
+	make -C $(PG_DIR) ip 
+
+$(SVPWM_IP):
+	make -C $(SVPWM_DIR) ip 
+
+$(PWM_GEN_IP):
+	make -C $(PWM_GEN_DIR) ip 
 
 .PHONY: clean
 clean:
@@ -41,6 +56,9 @@ clean:
 .PHONY: clean_ip
 clean_ip:	
 	make -C $(QEI_DIR) clean
+	make -C $(PG_DIR) clean
+	make -C $(SVPWM_DIR) clean
+	make -C $(PWM_GEN_DIR) clean
 
 .PHONY: clean_all
 clean_all: clean clean_ip
