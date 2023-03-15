@@ -349,10 +349,15 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   create_bd_pin -dir I UPDATE
   create_bd_pin -dir O -from 0 -to 0 dc_link_oc_err
   create_bd_pin -dir O -from 0 -to 0 dc_link_ov_err
+  create_bd_pin -dir O -from 0 -to 0 dc_link_uc_err
+  create_bd_pin -dir O -from 0 -to 0 dc_link_uv_err
   create_bd_pin -dir O -type intr interrupt
   create_bd_pin -dir O -from 0 -to 0 phase_a_oc_err
+  create_bd_pin -dir O -from 0 -to 0 phase_a_uc_err
   create_bd_pin -dir O -from 0 -to 0 phase_b_oc_err
+  create_bd_pin -dir O -from 0 -to 0 phase_b_uc_err
   create_bd_pin -dir O -from 0 -to 0 phase_c_oc_err
+  create_bd_pin -dir O -from 0 -to 0 phase_c_uc_err
 
   # Create instance: adc_hub_0, and set properties
   set adc_hub_0 [ create_bd_cell -type ip -vlnv xilinx.com:user:adc_hub adc_hub_0 ]
@@ -438,6 +443,55 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   ] $xlslice_oc_err_7
 
 
+  # Create instance: xlslice_uc_err_1, and set properties
+  set xlslice_uc_err_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_1 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {1} \
+    CONFIG.DIN_TO {1} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_uc_err_1
+
+
+  # Create instance: xlslice_uc_err_3, and set properties
+  set xlslice_uc_err_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_3 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {3} \
+    CONFIG.DIN_TO {3} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_uc_err_3
+
+
+  # Create instance: xlslice_uc_err_5, and set properties
+  set xlslice_uc_err_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_5 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {5} \
+    CONFIG.DIN_TO {5} \
+    CONFIG.DIN_WIDTH {8} \
+  ] $xlslice_uc_err_5
+
+
+  # Create instance: xlslice_uc_err_6, and set properties
+  set xlslice_uc_err_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_6 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {6} \
+    CONFIG.DIN_TO {6} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_uc_err_6
+
+
+  # Create instance: xlslice_uc_err_7, and set properties
+  set xlslice_uc_err_7 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_7 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {7} \
+    CONFIG.DIN_TO {7} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_uc_err_7
+
+
   # Create interface connections
   connect_bd_intf_net -intf_net adc_hub_0_L1_AXIS [get_bd_intf_pins L1_AXIS] [get_bd_intf_pins adc_hub_0/L1_AXIS]
   connect_bd_intf_net -intf_net adc_hub_0_L2_AXIS [get_bd_intf_pins L2_AXIS] [get_bd_intf_pins adc_hub_0/L2_AXIS]
@@ -464,6 +518,11 @@ proc create_hier_cell_ADC { parentCell nameHier } {
 
   # Create port connections
   connect_bd_net -net SDATA_0_1 [get_bd_pins SDATA] [get_bd_pins adc_if/SDATA]
+  connect_bd_net -net adc_hub_0_under_fault [get_bd_pins adc_hub_0/under_fault] [get_bd_pins xlslice_uc_err_1/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_0_under_fault [get_bd_pins adc_hub_0/under_fault] [get_bd_pins xlslice_uc_err_3/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_0_under_fault [get_bd_pins adc_hub_0/under_fault] [get_bd_pins xlslice_uc_err_5/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_0_under_fault [get_bd_pins adc_hub_0/under_fault] [get_bd_pins xlslice_uc_err_6/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_0_under_fault [get_bd_pins adc_hub_0/under_fault] [get_bd_pins xlslice_uc_err_7/Din] -boundary_type upper
   connect_bd_net -net adc_hub_1_interrupt [get_bd_pins interrupt] [get_bd_pins adc_hub_0/interrupt]
   connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_0/over_fault] [get_bd_pins xlslice_oc_err_1/Din] -boundary_type upper
   connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_0/over_fault] [get_bd_pins xlslice_oc_err_3/Din] -boundary_type upper
@@ -648,6 +707,17 @@ proc create_root_design { parentCell } {
   # Create instance: gate_driver
   create_hier_cell_gate_driver [current_bd_instance .] gate_driver
 
+  # Create instance: gate_driver_chk_en, and set properties
+  set block_name gate_driver_chk_en
+  set block_cell_name gate_driver_chk_en
+  if { [catch {set gate_driver_chk_en [create_bd_cell -type module -reference $block_name $block_cell_name] } errmsg] } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2095 -severity "ERROR" "Unable to add referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   } elseif { $gate_driver_chk_en eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2096 -severity "ERROR" "Unable to referenced block <$block_name>. Please add the files for ${block_name}'s definition into the project."}
+     return 1
+   }
+  
   # Create instance: hls_pattern_gen_0, and set properties
   set hls_pattern_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:hls_pattern_gen hls_pattern_gen_0 ]
 
@@ -782,6 +852,14 @@ proc create_root_design { parentCell } {
   # Create port connections
   connect_bd_net -net ADC_CSn [get_bd_pins ADC/CSn] [get_bd_pins xlslice_0/Din] -boundary_type upper
   connect_bd_net -net ADC_CSn [get_bd_pins ADC/CSn] [get_bd_pins xlslice_1/Din] -boundary_type upper
+  connect_bd_net -net ADC_dc_link_oc_err [get_bd_pins ADC/dc_link_oc_err] [get_bd_pins gate_driver_chk_en/dc_link_oc_err]
+  connect_bd_net -net ADC_dc_link_ov_err [get_bd_pins ADC/dc_link_ov_err] [get_bd_pins gate_driver_chk_en/dc_link_ov_err]
+  connect_bd_net -net ADC_phase_a_oc_err [get_bd_pins ADC/phase_a_oc_err] [get_bd_pins gate_driver_chk_en/phase_a_oc_err]
+  connect_bd_net -net ADC_phase_a_uc_err [get_bd_pins ADC/phase_a_uc_err] [get_bd_pins gate_driver_chk_en/phase_a_uc_err]
+  connect_bd_net -net ADC_phase_b_oc_err [get_bd_pins ADC/phase_b_oc_err] [get_bd_pins gate_driver_chk_en/phase_b_oc_err]
+  connect_bd_net -net ADC_phase_b_uc_err [get_bd_pins ADC/phase_b_uc_err] [get_bd_pins gate_driver_chk_en/phase_b_uc_err]
+  connect_bd_net -net ADC_phase_c_oc_err [get_bd_pins ADC/phase_c_oc_err] [get_bd_pins gate_driver_chk_en/phase_c_oc_err]
+  connect_bd_net -net ADC_phase_c_uc_err [get_bd_pins ADC/phase_c_uc_err] [get_bd_pins gate_driver_chk_en/phase_c_uc_err]
   connect_bd_net -net ARESETN_1 [get_bd_pins axi_interconnect_cntrl/ARESETN] [get_bd_pins proc_sys_reset_0/interconnect_aresetn]
   connect_bd_net -net A_0_1 [get_bd_ports qei_se_A] [get_bd_pins hls_qei_0/qei_A_dout] -boundary_type upper
   connect_bd_net -net B_0_1 [get_bd_ports qei_se_B] [get_bd_pins hls_qei_0/qei_B_dout] -boundary_type upper
@@ -807,7 +885,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net ethernet_subsystem_dout [get_bd_pins ethernet_subsystem/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
   connect_bd_net -net ethernet_subsystem_gem2_phy_rst_n [get_bd_ports gem1_phy_rst_n] [get_bd_pins ethernet_subsystem/gem1_phy_rst_n]
   connect_bd_net -net ethernet_subsystem_gem3_phy_rst_n [get_bd_ports gem2_phy_rst_n] [get_bd_pins ethernet_subsystem/gem2_phy_rst_n]
-  connect_bd_net -net gate_drive_en [get_bd_ports gate_drive_en] [get_bd_pins xlslice_gpio_0/Dout] -boundary_type upper
+  connect_bd_net -net gate_drive_en [get_bd_ports gate_drive_en] [get_bd_pins gate_driver_chk_en/gate_drive_en]
   connect_bd_net -net gate_driver_A_gate_drive [get_bd_ports gate_drive_phase_a] [get_bd_pins gate_driver/gate_drive_phase_a] -boundary_type upper
   connect_bd_net -net gate_driver_B_gate_drive [get_bd_ports gate_drive_phase_b] [get_bd_pins gate_driver/gate_drive_phase_b] -boundary_type upper
   connect_bd_net -net gate_driver_C_gate_drive [get_bd_ports gate_drive_phase_c] [get_bd_pins gate_driver/gate_drive_phase_c] -boundary_type upper
@@ -855,6 +933,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net xlslice_0_Dout1 [get_bd_ports fan_en_b] [get_bd_pins xlslice_fan/Dout]
   connect_bd_net -net xlslice_0_Dout2 [get_bd_ports motor_adc_cs_n] [get_bd_pins xlslice_0/Dout]
   connect_bd_net -net xlslice_1_Dout [get_bd_ports dc_link_adc_cs_n] [get_bd_pins xlslice_1/Dout]
+  connect_bd_net -net xlslice_gpio_0_Dout [get_bd_pins gate_driver_chk_en/gate_drive_en_sw] [get_bd_pins xlslice_gpio_0/Dout]
   connect_bd_net -net xlslice_gpio_1_Dout [get_bd_ports brake_cntrl] [get_bd_pins xlslice_gpio_1/Dout]
   connect_bd_net -net xlslice_gpio_2_Dout [get_bd_ports one_wire] [get_bd_pins xlslice_gpio_2/Dout]
   connect_bd_net -net zynq_ultra_ps_e_0_emio_gpio_o [get_bd_pins axi_gpio_0/gpio2_io_o] [get_bd_pins xlslice_gpio_0/Din] -boundary_type upper
