@@ -15,13 +15,13 @@
 // of an adder.  One adder is a pure adder, and the other switches between
 // add and subtract.
 // The theory behind the implementation is in http://en.wikipedia.org/wiki/Moving_average
-// 
+//
 // This module does the following:
 // There is a two stage operation, an adder followed by a subtractor.
 // 1. Adder A input is always new data from samples[0].
 // 2. Adder B input is always the result from the subtractor.
 // 3. Subtractor does not subtract anything from the first NUM_SAMPLES, just passes input A to result.
-// 4. On NUM_SAMPLES+1, a new sample is added to previous total and subtractor subtracts the oldest 
+// 4. On NUM_SAMPLES+1, a new sample is added to previous total and subtractor subtracts the oldest
 //    sample, leaving the new result as the total of the most recent NUM_SAMPLES samples.
 // 5. The result of the subtractor is then shifted as the averaged output.
 
@@ -41,7 +41,7 @@
       input [ADC_BITS-1:0] DATA,
       input DATA_VLD,
       input [31:0] OFFSET,
-      input [3:0] NUM_SAMPLES,
+      input [4:0] NUM_SAMPLES,
 
       output wire [DATA_WIDTH-1:0] SMA_DATA,
       output wire SMA_DATA_VLD
@@ -50,8 +50,8 @@
     localparam integer OFFSET_WIDTH = 8;
 
     // Maximum values
-    localparam integer maxk = 8;
-    localparam integer maxs = 3;
+    localparam integer maxk = 16;
+    localparam integer maxs = 4;
 
     integer i;
     integer s;
@@ -85,9 +85,9 @@
     reg  shift_done;
     reg  adder_done;
     reg  sub_done;
-    wire [1:0] sval;
+    wire [2:0] sval;
 
-    reg [3:0] last_num_samples_val;
+    reg [maxs:0] last_num_samples_val;
     reg tap_changed;
     reg [31:0] last_offset_val;
     reg offset_changed;
@@ -107,14 +107,15 @@
                         sm_adder_ADD_NEW = 'h1;
 
 
-    reg [3:0] sample_cnt;
+    reg [maxs:0] sample_cnt;
     reg [1:0] sm_sma = sm_IDLE;
     reg [1:0] sm_sub = sm_sub_IDLE;
     reg [1:0] sm_adder = sm_adder_IDLE;
 
     assign sval = (NUM_SAMPLES == 2) ? 1 :
                   (NUM_SAMPLES == 4) ? 2 :
-                  (NUM_SAMPLES == 8) ? 3 : 0;
+                  (NUM_SAMPLES == 8) ? 3 :
+                  (NUM_SAMPLES == 16) ? 4 : 0;
 
     always @(posedge CLK)
     begin
@@ -153,7 +154,7 @@
         end
       else begin
         sub_sclr <= 1'b0;
-        
+
         case (sm_sub)
           sm_sub_IDLE:
             if (tap_changed || offset_changed)
@@ -304,7 +305,7 @@
     end
 
 // Offset subtractor - subtract fixed offset (can be negative) to raw ADC values
-    offset_ip_l<=: $i :> offset_inst 
+    offset_ip_l<=: $i :> offset_inst
     (
       .A      (offset_a_in),
       .B      (offset_b_in),
@@ -324,7 +325,7 @@
     assign adder_a_in = samples[0];
 
     // Adder instantiation (only does add function)
-    adder_ip_l<=: $i :> adder_inst 
+    adder_ip_l<=: $i :> adder_inst
     (
       .A      (adder_a_in),
       .B      (adder_b_in),
@@ -344,7 +345,7 @@
     assign SMA_DATA = sub_result_div;
     assign SMA_DATA_VLD = shift_done;
 
-    sub_ip_l<=: $i :> sub_inst 
+    sub_ip_l<=: $i :> sub_inst
     (
       .A      (sub_a_in),
       .B      (sub_b_in),

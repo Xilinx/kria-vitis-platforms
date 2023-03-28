@@ -86,7 +86,7 @@
     .DATA           (adc_in),
     .DATA_VLD       (adc_vld),
     .OFFSET         (offset),
-    .NUM_SAMPLES    (num_samples[3:0]),
+    .NUM_SAMPLES    (num_samples[4:0]),
 
     .SMA_DATA       (adc_sma),
     .SMA_DATA_VLD   (adc_sma_vld)
