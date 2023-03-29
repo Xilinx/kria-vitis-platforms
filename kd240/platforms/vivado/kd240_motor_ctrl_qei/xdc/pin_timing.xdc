@@ -306,10 +306,10 @@ set_property IOSTANDARD LVCMOS18 [get_ports CLK_IN_gem]
 #------------------------------------------------------------------
 
 ## False paths
-set_false_path -from [get_clocks clk_out1_*_clk_wiz_0_0] -to [get_clocks clk_out2_*_clk_wiz_0_0] 
-set_false_path -from [get_clocks clk_out2_*_clk_wiz_0_0] -to [get_clocks clk_out1_*_clk_wiz_0_0] 
-set_false_path -from [get_clocks clk_out2_*_clk_wiz_0_0] -to [get_clocks clk_out4_*_clk_wiz_0_0] 
-set_false_path -from [get_clocks clk_out4_*_clk_wiz_0_0] -to [get_clocks clk_out2_*_clk_wiz_0_0] 
+set_false_path -from [get_clocks clk_out1_*_clk_wiz_0_0] -to [get_clocks clk_out2_*_clk_wiz_0_0]
+set_false_path -from [get_clocks clk_out2_*_clk_wiz_0_0] -to [get_clocks clk_out1_*_clk_wiz_0_0]
+set_false_path -from [get_clocks clk_out2_*_clk_wiz_0_0] -to [get_clocks clk_out4_*_clk_wiz_0_0]
+set_false_path -from [get_clocks clk_out4_*_clk_wiz_0_0] -to [get_clocks clk_out2_*_clk_wiz_0_0]
 
 set_property DELAY_VALUE 0 [get_cells -hier -filter {NAME =~ */rgmii_interface/delay_rgmii_tx_clk}]
 set_property DELAY_VALUE 0 [get_cells -hier -filter {NAME =~ */rgmii_interface/delay_rgmii_rx*}]
@@ -328,3 +328,5 @@ set_clock_groups -asynchronous -group [get_clocks rgmii2_rxc]
 set_clock_groups -asynchronous -group [get_clocks clk_pl_0]
 set_clock_groups -asynchronous -group [get_clocks kd240_*/TSN_subsystem/my_tsn_ip/inst/tsn_temac_1/inst_rgmii_tx_clk]
 set_clock_groups -asynchronous -group [get_clocks kd240_*/TSN_subsystem/my_tsn_ip/inst/tsn_temac_2/inst_rgmii_tx_clk]
+set_clock_groups -asynchronous -group [get_clocks clk_out_48M_*]
+set_clock_groups -asynchronous -group [get_clocks clk_out_100M_*]
