@@ -660,7 +660,7 @@ proc create_root_design { parentCell } {
     CONFIG.C_ALL_INPUTS {0} \
     CONFIG.C_ALL_INPUTS_2 {0} \
     CONFIG.C_ALL_OUTPUTS {0} \
-    CONFIG.C_ALL_OUTPUTS_2 {1} \
+    CONFIG.C_ALL_OUTPUTS_2 {0} \
     CONFIG.C_GPIO2_WIDTH {3} \
     CONFIG.C_GPIO_WIDTH {8} \
     CONFIG.C_IS_DUAL {1} \
