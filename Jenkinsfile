@@ -101,7 +101,7 @@ pipeline {
                     extensions:
                     [
                         [$class: 'ChangelogToBranch', options:
-                              [compareRemote: 'origin', compareTarget: env.tool_release]
+                              [compareRemote: 'origin', compareTarget: env.deploy_branch]
                         ]
                     ]
                 ])
