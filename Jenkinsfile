@@ -392,7 +392,7 @@ pipeline {
                         }
                     }
                 }
-				stage('kv260_bist') {
+                stage('kv260_bist') {
                     environment {
                         root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_bist"
