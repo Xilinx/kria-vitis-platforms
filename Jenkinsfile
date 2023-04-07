@@ -57,7 +57,7 @@ def deployOverlay() {
     script: '''
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
             pushd ${root_dir}
-            DST=${DEPLOYDIR}/${overlay}
+            DST=${DEPLOYDIR}/${board}-${overlay}
             mkdir -p ${DST}
 
             cp -f ${example_dir}/binary_container_1/*.xsa \
@@ -142,6 +142,7 @@ pipeline {
                         root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_ispMipiRx_vcu_DP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        board="kv260"
                         pfm_dir="${root_dir}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
@@ -222,6 +223,7 @@ pipeline {
                         root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_vcuDecode_vmixDP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        board="kv260"
                         pfm_dir="${root_dir}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
@@ -279,6 +281,7 @@ pipeline {
                         root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_ispMipiRx_vmixDP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        board="kv260"
                         pfm_dir="${root_dir}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
@@ -336,6 +339,7 @@ pipeline {
                         root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_ispMipiRx_rpiMipiRx_DP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        board="kv260"
                         pfm_dir="${root_dir}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
@@ -393,6 +397,7 @@ pipeline {
                         root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_bist"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        board="kv260"
                         pfm_dir="${root_dir}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
@@ -427,6 +432,7 @@ pipeline {
                         root_dir="${WORKSPACE}/src/kr260"
                         pfm_base="kr260_tsn_rs485pmod"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        board="kr260"
                         pfm_dir="${root_dir}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
@@ -458,6 +464,7 @@ pipeline {
                         root_dir="${WORKSPACE}/src/k26"
                         pfm_base="k26_base_starter_kit"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        board="k26"
                         pfm_dir="${root_dir}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
