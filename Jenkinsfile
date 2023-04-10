@@ -37,6 +37,27 @@ def deployPlatform() {
     '''
 }
 
+def deployPlatformFirmware() {
+    sh label: 'platform firmware deploy',
+    script: '''
+        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
+            pushd ${work_dir}/${board}
+            mkdir -p tmp
+            unzip platforms/${pfm}/hw/${pfm_base}.xsa -d tmp
+            pushd tmp
+            source ${setup} -r ${tool_release} && set -e
+            echo "all: { ${pfm_base}.bit }" > bootgen.bif
+            bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
+            popd
+            fw=$(echo ${pfm_base} | tr _ -)
+            DST=${DEPLOYDIR}/firmware/${fw}
+            mkdir -p ${DST}
+            cp -f tmp/${pfm_base}.bit.bin ${DST}/${fw}.bin
+            popd
+        fi
+    '''
+}
+
 def buildOverlay() {
     sh label: 'overlay build',
     script: '''
@@ -433,7 +454,7 @@ pipeline {
                             }
                             post {
                                 success {
-                                    deployPlatform()
+                                    deployPlatformFirmware()
                                 }
                             }
                         }
@@ -466,7 +487,7 @@ pipeline {
                             }
                             post {
                                 success {
-                                    deployPlatform()
+                                    deployPlatformFirmware()
                                 }
                             }
                         }
@@ -499,7 +520,7 @@ pipeline {
                             }
                             post {
                                 success {
-                                    deployPlatform()
+                                    deployPlatformFirmware()
                                 }
                             }
                         }
