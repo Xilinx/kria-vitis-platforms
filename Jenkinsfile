@@ -29,8 +29,9 @@ def deployPlatform() {
     script: '''
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
             pushd ${work_dir}/${board}
-            mkdir -p ${DEPLOYDIR}
-            cp -rf platforms/${pfm} ${DEPLOYDIR}
+            DST=${DEPLOYDIR}/platforms
+            mkdir -p ${DST}
+            cp -rf platforms/${pfm} ${DST}
             popd
         fi
     '''
@@ -64,14 +65,10 @@ def deployOverlay() {
     sh label: 'overlay deploy',
     script: '''
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            pushd ${work_dir}/${board}
-            DST=${DEPLOYDIR}/${board}-${overlay}
+            DST=${DEPLOYDIR}/firmware/${board}-${overlay}
             mkdir -p ${DST}
-            cp -f ${example_dir}/binary_container_1/*.xsa \
-                    ${example_dir}/binary_container_1/*.xclbin \
-                    ${example_dir}/binary_container_1/link/int/system.bit* \
-                    ${DST}
-            popd
+            cp -f ${example_dir}/binary_container_1/*.xclbin ${DST}/${board}-${overlay}.xclbin
+            cp -f ${example_dir}/binary_container_1/link/int/system.bit.bin ${DST}/${board}-${overlay}.bin
         fi
     '''
 }
