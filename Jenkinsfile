@@ -1,12 +1,23 @@
 /*
- * (C) Copyright 2020 - 2022 Xilinx, Inc.
+ * Copyright (C) 2020 - 2022 Xilinx, Inc.
+ * Copyright (C) 2023, Advanced Micro Devices, Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
+
+def createWorkDir() {
+    sh label: 'create work dir',
+    script: '''
+        if [ ! -d ${work_dir} ]; then
+            mkdir -p ${work_dir}
+            cp -rf ${ws}/src/* ${work_dir}
+        fi
+    '''
+}
 
 def buildPlatform() {
     sh label: 'platform build',
     script: '''
-        pushd ${root_dir}
+        pushd ${work_dir}/${board}
         source ${setup} -r ${tool_release} && set -e
         ${lsf} make platform PFM=${pfm_base} JOBS=32
         popd
@@ -17,9 +28,31 @@ def deployPlatform() {
     sh label: 'platform deploy',
     script: '''
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            pushd ${root_dir}
-            mkdir -p ${DEPLOYDIR}
-            cp -rf platforms/${pfm} ${DEPLOYDIR}
+            pushd ${work_dir}/${board}
+            DST=${DEPLOYDIR}/platforms
+            mkdir -p ${DST}
+            cp -rf platforms/${pfm} ${DST}
+            popd
+        fi
+    '''
+}
+
+def deployPlatformFirmware() {
+    sh label: 'platform firmware deploy',
+    script: '''
+        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
+            pushd ${work_dir}/${board}
+            mkdir -p tmp
+            unzip platforms/${pfm}/hw/${pfm_base}.xsa -d tmp
+            pushd tmp
+            source ${setup} -r ${tool_release} && set -e
+            echo "all: { ${pfm_base}.bit }" > bootgen.bif
+            bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
+            popd
+            fw=$(echo ${pfm_base} | tr _ -)
+            DST=${DEPLOYDIR}/firmware/${fw}
+            mkdir -p ${DST}
+            cp -f tmp/${pfm_base}.bit.bin ${DST}/${fw}.bin
             popd
         fi
     '''
@@ -28,8 +61,7 @@ def deployPlatform() {
 def buildOverlay() {
     sh label: 'overlay build',
     script: '''
-        pushd ${root_dir}
-
+        pushd ${work_dir}/${board}
         if [ -d platforms/${pfm} ]; then
             echo "Using platform from local build"
         elif [ -d ${DEPLOYDIR}/${pfm} ]; then
@@ -39,15 +71,13 @@ def buildOverlay() {
             echo "No valid platform found: ${pfm}"
             exit 1
         fi
-
         source ${setup} -r ${tool_release} && set -e
         ${lsf} make overlay OVERLAY=${overlay}
+        popd
 
         pushd ${example_dir}/binary_container_1/link/int
         echo 'all: { system.bit }' > bootgen.bif
         bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
-        popd
-
         popd
     '''
 }
@@ -56,15 +86,10 @@ def deployOverlay() {
     sh label: 'overlay deploy',
     script: '''
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            pushd ${root_dir}
-            DST=${DEPLOYDIR}/${board}-${overlay}
+            DST=${DEPLOYDIR}/firmware/${board}-${overlay}
             mkdir -p ${DST}
-
-            cp -f ${example_dir}/binary_container_1/*.xsa \
-                    ${example_dir}/binary_container_1/*.xclbin \
-                    ${example_dir}/binary_container_1/link/int/system.bit* \
-                    ${DST}
-            popd
+            cp -f ${example_dir}/binary_container_1/*.xclbin ${DST}/${board}-${overlay}.xclbin
+            cp -f ${example_dir}/binary_container_1/link/int/system.bit.bin ${DST}/${board}-${overlay}.bin
         fi
     '''
 }
@@ -79,8 +104,9 @@ pipeline {
         tool_build="daily_latest"
         auto_branch="2022.1"
         pfm_ver="202220_1"
-        setup="${WORKSPACE}/paeg-helper/env-setup.sh"
-        lsf="${WORKSPACE}/paeg-helper/scripts/lsf"
+        ws="${WORKSPACE}"
+        setup="${ws}/paeg-helper/env-setup.sh"
+        lsf="${ws}/paeg-helper/scripts/lsf"
         DEPLOYDIR="/wrk/paeg_builds/build-artifacts/kria-vitis-platforms/${tool_release}"
     }
     options {
@@ -139,11 +165,11 @@ pipeline {
             parallel {
                 stage('kv260_ispMipiRx_vcu_DP') {
                     environment {
-                        root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_ispMipiRx_vcu_DP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        work_dir="${ws}/work/${pfm_base}"
                         board="kv260"
-                        pfm_dir="${root_dir}/platforms/${pfm}"
+                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
@@ -162,6 +188,7 @@ pipeline {
                                 script {
                                     env.BUILD_SMARTCAM = '1'
                                 }
+                                createWorkDir()
                                 buildPlatform()
                             }
                             post {
@@ -175,7 +202,7 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="smartcam"
-                                example_dir="${root_dir}/overlays/examples/${overlay}"
+                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
@@ -185,6 +212,7 @@ pipeline {
                                 }
                             }
                             steps {
+                                createWorkDir()
                                 buildOverlay()
                             }
                             post {
@@ -198,7 +226,7 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="benchmark"
-                                example_dir="${root_dir}/overlays/examples/${overlay}"
+                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
@@ -208,6 +236,7 @@ pipeline {
                                 }
                             }
                             steps {
+                                createWorkDir()
                                 buildOverlay()
                             }
                             post {
@@ -220,11 +249,11 @@ pipeline {
                 }
                 stage('kv260_vcuDecode_vmixDP') {
                     environment {
-                        root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_vcuDecode_vmixDP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        work_dir="${ws}/work/${pfm_base}"
                         board="kv260"
-                        pfm_dir="${root_dir}/platforms/${pfm}"
+                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
@@ -243,6 +272,7 @@ pipeline {
                                 script {
                                     env.BUILD_AIBOX_REID = '1'
                                 }
+                                createWorkDir()
                                 buildPlatform()
                             }
                             post {
@@ -256,7 +286,7 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="aibox-reid"
-                                example_dir="${root_dir}/overlays/examples/${overlay}"
+                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
@@ -266,6 +296,7 @@ pipeline {
                                 }
                             }
                             steps {
+                                createWorkDir()
                                 buildOverlay()
                             }
                             post {
@@ -278,11 +309,11 @@ pipeline {
                 }
                 stage('kv260_ispMipiRx_vmixDP') {
                     environment {
-                        root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_ispMipiRx_vmixDP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        work_dir="${ws}/work/${pfm_base}"
                         board="kv260"
-                        pfm_dir="${root_dir}/platforms/${pfm}"
+                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
@@ -301,6 +332,7 @@ pipeline {
                                 script {
                                     env.BUILD_DEFECT_DETECT = '1'
                                 }
+                                createWorkDir()
                                 buildPlatform()
                             }
                             post {
@@ -314,7 +346,7 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="defect-detect"
-                                example_dir="${root_dir}/overlays/examples/${overlay}"
+                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
@@ -324,6 +356,7 @@ pipeline {
                                 }
                             }
                             steps {
+                                createWorkDir()
                                 buildOverlay()
                             }
                             post {
@@ -336,11 +369,11 @@ pipeline {
                 }
                 stage('kv260_ispMipiRx_rpiMipiRx_DP') {
                     environment {
-                        root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_ispMipiRx_rpiMipiRx_DP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        work_dir="work/${pfm_base}"
                         board="kv260"
-                        pfm_dir="${root_dir}/platforms/${pfm}"
+                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
@@ -359,6 +392,7 @@ pipeline {
                                 script {
                                     env.BUILD_NLP_SMARTVISION = '1'
                                 }
+                                createWorkDir()
                                 buildPlatform()
                             }
                             post {
@@ -372,7 +406,7 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="nlp-smartvision"
-                                example_dir="${root_dir}/overlays/examples/${overlay}"
+                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
                             }
                             when {
                                 anyOf {
@@ -382,6 +416,7 @@ pipeline {
                                 }
                             }
                             steps {
+                                createWorkDir()
                                 buildOverlay()
                             }
                             post {
@@ -394,11 +429,11 @@ pipeline {
                 }
                 stage('kv260_bist') {
                     environment {
-                        root_dir="${WORKSPACE}/src/kv260"
                         pfm_base="kv260_bist"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        work_dir="work/${pfm_base}"
                         board="kv260"
-                        pfm_dir="${root_dir}/platforms/${pfm}"
+                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
@@ -414,14 +449,12 @@ pipeline {
                                 }
                             }
                             steps {
-                                script {
-                                    env.BUILD_BIST = '1'
-                                }
+                                createWorkDir()
                                 buildPlatform()
                             }
                             post {
                                 success {
-                                    deployPlatform()
+                                    deployPlatformFirmware()
                                 }
                             }
                         }
@@ -429,11 +462,11 @@ pipeline {
                 }
                 stage('kr260_tsn_rs485pmod') {
                     environment {
-                        root_dir="${WORKSPACE}/src/kr260"
                         pfm_base="kr260_tsn_rs485pmod"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        work_dir="work/${pfm_base}"
                         board="kr260"
-                        pfm_dir="${root_dir}/platforms/${pfm}"
+                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
@@ -449,23 +482,24 @@ pipeline {
                                 }
                             }
                             steps {
+                                createWorkDir()
                                 buildPlatform()
                             }
                             post {
                                 success {
-                                    deployPlatform()
+                                    deployPlatformFirmware()
                                 }
                             }
                         }
                     }
                 }
-	        stage('k26_base_starter_kit') {
+                stage('k26_base_starter_kit') {
                     environment {
-                        root_dir="${WORKSPACE}/src/k26"
                         pfm_base="k26_base_starter_kit"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        work_dir="work/${pfm_base}"
                         board="k26"
-                        pfm_dir="${root_dir}/platforms/${pfm}"
+                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
@@ -481,11 +515,12 @@ pipeline {
                                 }
                             }
                             steps {
+                                createWorkDir()
                                 buildPlatform()
                             }
                             post {
                                 success {
-                                    deployPlatform()
+                                    deployPlatformFirmware()
                                 }
                             }
                         }
