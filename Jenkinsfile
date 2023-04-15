@@ -52,6 +52,7 @@ def deployPlatformFirmware() {
             fw=$(echo ${pfm_base} | tr _ -)
             DST=${DEPLOYDIR}/firmware/${fw}
             mkdir -p ${DST}
+            cp -f tmp/${pfm_base}.bit ${DST}/${fw}.bit
             cp -f tmp/${pfm_base}.bit.bin ${DST}/${fw}.bin
             popd
         fi
@@ -89,6 +90,7 @@ def deployOverlay() {
             DST=${DEPLOYDIR}/firmware/${board}-${overlay}
             mkdir -p ${DST}
             cp -f ${example_dir}/binary_container_1/*.xclbin ${DST}/${board}-${overlay}.xclbin
+            cp -f ${example_dir}/binary_container_1/link/int/system.bit ${DST}/${board}-${overlay}.bit
             cp -f ${example_dir}/binary_container_1/link/int/system.bit.bin ${DST}/${board}-${overlay}.bin
         fi
     '''
