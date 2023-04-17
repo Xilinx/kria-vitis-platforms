@@ -1,5 +1,6 @@
-// Copyright (C) 2022, Advanced Micro Devices, Inc.
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
+
 // TTCL file to generate Verilog file with configurable input and output ports
 
 <: set ComponentName       [getComponentNameString]                                          :>
@@ -69,7 +70,7 @@
 <:                               $L10_CODE $L11_CODE $L12_CODE $L13_CODE $L14_CODE \         :>
 <:                               $L15_CODE]                                                  :>
 
-// Copyright (C) 2022, Advanced Micro Devices, Inc.
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 `timescale 1 ns / 1 ps
@@ -104,7 +105,7 @@ module <=: $ComponentName :> #(
     input wire  S_AXI_ACLK,
     // Global Reset Signal. This Signal is Active LOW
     input wire  S_AXI_ARESETN,
-    // Write address (issued by master, acceped by Slave)
+    // Write address (issued by master, accepted by Slave)
     input wire [C_S_AXI_ADDR_WIDTH-1 : 0] S_AXI_AWADDR,
     // Write channel Protection type. This signal indicates the
         // privilege and security level of the transaction, and whether
@@ -116,11 +117,11 @@ module <=: $ComponentName :> #(
     // Write address ready. This signal indicates that the slave is ready
         // to accept an address and associated control signals.
     output wire  S_AXI_AWREADY,
-    // Write data (issued by master, acceped by Slave) 
+    // Write data (issued by master, accepted by Slave)
     input wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_WDATA,
     // Write strobes. This signal indicates which byte lanes hold
         // valid data. There is one write strobe bit for each eight
-        // bits of the write data bus.    
+        // bits of the write data bus.
     input wire [(C_S_AXI_DATA_WIDTH/8)-1 : 0] S_AXI_WSTRB,
     // Write valid. This signal indicates that valid write
         // data and strobes are available.
@@ -164,8 +165,8 @@ module <=: $ComponentName :> #(
 <: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
     // AXI4 Stream Interface(s) - Based on NUM_CHANNELS
 
-    output wire [QSCALE_MAX_BITS-1:0] L<=: $i :>_axis_tdata, 
-    output wire L<=: $i :>_axis_tlast, 
+    output wire [QSCALE_MAX_BITS-1:0] L<=: $i :>_axis_tdata,
+    output wire L<=: $i :>_axis_tlast,
     output wire L<=: $i :>_axis_tvalid,
     input wire L<=: $i :>_axis_tready,
 
@@ -217,7 +218,7 @@ module <=: $ComponentName :> #(
     .S_AXI_RREADY           (S_AXI_RREADY),
 
 <: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
-    .L<=: $i :>_axis_tdata  (L<=: $i :>_axis_tdata), 
+    .L<=: $i :>_axis_tdata  (L<=: $i :>_axis_tdata),
     .L<=: $i :>_axis_tlast  (L<=: $i :>_axis_tlast),
     .L<=: $i :>_axis_tvalid (L<=: $i :>_axis_tvalid),
     .L<=: $i :>_axis_tready (L<=: $i :>_axis_tready),

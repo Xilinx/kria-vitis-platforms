@@ -1,3 +1,6 @@
+# Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
 namespace eval adc_hub_v1 {
 
 set NUM_CHANNELS                    [get_property CONFIG.NUM_CHANNELS               [::ipxit::current_inst]]
@@ -72,6 +75,8 @@ set LANE_CONFIG [list $L0_CONFIG $L1_CONFIG $L2_CONFIG $L3_CONFIG \
                       $L8_CONFIG $L9_CONFIG $L10_CONFIG $L11_CONFIG \
                       $L12_CONFIG $L13_CONFIG $L14_CONFIG $L15_CONFIG]
 set used_LANE_CONFIG [lrange $LANE_CONFIG 0 $NUM_CHANNELS-1]
+set USE_BRAM_FIFO 1
+
 
 foreach config $used_LANE_CONFIG {
   set lane [expr {[lindex $config end]}]
@@ -81,7 +86,11 @@ foreach config $used_LANE_CONFIG {
   set dsp_long [expr {[lindex $config 1] ? "Use_Mults" : "Use_LUTs" }]
   set adc_width [expr {[lindex $config 2]}]
   set offset 1
-  set overflow 3
+  if {$USE_BRAM_FIFO == 0} {
+    set overflow 3
+  } else {
+    set overflow 6
+  }
   set adc_offset [expr $adc_width + $offset]
   set adc_overflow [expr $adc_width + $offset + $overflow]
 
@@ -124,7 +133,7 @@ foreach config $used_LANE_CONFIG {
   set offset_sub_core                [create_sub_core $offset_sub_core_vlnv $offset_sub_core_name]
   set_property -dict [list \
     CONFIG.A_Width $adc_width \
-    CONFIG.B_Width {8} \
+    CONFIG.B_Width $adc_width \
     CONFIG.Add_Mode {Subtract} \
     CONFIG.SCLR {true} \
     CONFIG.CE {true} \
@@ -155,6 +164,22 @@ foreach config $used_LANE_CONFIG {
     CONFIG.PortBType {Unsigned} \
   ] $multscale_sub_core
 
+if {$USE_BRAM_FIFO == 1} {
+  # Configure FIFO Generator IP for samples pipeline
+  set sample_fifo_sub_core_vlnv           xilinx.com:ip:fifo_generator:13.2
+  set sample_fifo_sub_core_name           "sample_fifo_generator_l${lane}"
+  set sample_fifo_sub_core                [create_sub_core $sample_fifo_sub_core_vlnv $sample_fifo_sub_core_name]
+  set_property -dict [list \
+    CONFIG.Fifo_Implementation {Common_Clock_Builtin_FIFO} \
+    CONFIG.Performance_Options {Standard_FIFO} \
+    CONFIG.Input_Data_Width $adc_offset \
+    CONFIG.Input_Depth {512} \
+    CONFIG.Output_Data_Width $adc_offset \
+    CONFIG.Output_Depth {512} \
+    CONFIG.Use_Embedded_Registers {false} \
+    CONFIG.Valid_Flag {true} \
+  ] $sample_fifo_sub_core
+}
 }
 
   # Configure FIFO Generator IP

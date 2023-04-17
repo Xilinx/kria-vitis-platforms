@@ -1,4 +1,4 @@
-// Copyright (C) 2022, Advanced Micro Devices, Inc.
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // This implements the AXI control and status registers for the ADC
@@ -40,7 +40,7 @@ module adc_hub_axi_cntrl #
     input wire  S_AXI_ACLK,
     // Global Reset Signal. This Signal is Active LOW
     input wire  S_AXI_ARESETN,
-    // Write address (issued by master, acceped by Slave)
+    // Write address (issued by master, accepted by Slave)
     input wire [C_S_AXI_ADDR_WIDTH-1 : 0] S_AXI_AWADDR,
     // Write channel Protection type. This signal indicates the
         // privilege and security level of the transaction, and whether
@@ -52,11 +52,11 @@ module adc_hub_axi_cntrl #
     // Write address ready. This signal indicates that the slave is ready
         // to accept an address and associated control signals.
     output wire  S_AXI_AWREADY,
-    // Write data (issued by master, acceped by Slave) 
+    // Write data (issued by master, accepted by Slave)
     input wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_WDATA,
     // Write strobes. This signal indicates which byte lanes hold
         // valid data. There is one write strobe bit for each eight
-        // bits of the write data bus.    
+        // bits of the write data bus.
     input wire [(C_S_AXI_DATA_WIDTH/8)-1 : 0] S_AXI_WSTRB,
     // Write valid. This signal indicates that valid write
         // data and strobes are available.
@@ -179,15 +179,15 @@ module adc_hub_axi_cntrl #
       begin
         axi_awready <= 1'b0;
         aw_en <= 1'b1;
-      end 
+      end
     else
-      begin    
+      begin
         if (~axi_awready && S_AXI_AWVALID && S_AXI_WVALID && aw_en)
           begin
-            // slave is ready to accept write address when 
+            // slave is ready to accept write address when
             // there is a valid write address and write data
-            // on the write address and data bus. This design 
-            // expects no outstanding transactions. 
+            // on the write address and data bus. This design
+            // expects no outstanding transactions.
             axi_awready <= 1'b1;
             aw_en <= 1'b0;
           end
@@ -212,9 +212,9 @@ module adc_hub_axi_cntrl #
     if ( S_AXI_ARESETN == 1'b0 )
       begin
         axi_awaddr <= 0;
-      end 
+      end
     else
-      begin    
+      begin
         if (~axi_awready && S_AXI_AWVALID && S_AXI_WVALID && aw_en)
           begin
             // Write Address latching
@@ -226,16 +226,16 @@ module adc_hub_axi_cntrl #
   // Implement axi_wready generation
   // axi_wready is asserted for one S_AXI_ACLK clock cycle when both
   // S_AXI_AWVALID and S_AXI_WVALID are asserted. axi_wready is
-  // de-asserted when reset is low. 
+  // de-asserted when reset is low.
 
   always @( posedge S_AXI_ACLK )
   begin
     if ( S_AXI_ARESETN == 1'b0 )
       begin
         axi_wready <= 1'b0;
-      end 
+      end
     else
-      begin    
+      begin
         if (~axi_wready && S_AXI_WVALID && S_AXI_AWVALID && aw_en )
           begin
             // slave is ready to accept write data when
@@ -248,7 +248,7 @@ module adc_hub_axi_cntrl #
           begin
             axi_wready <= 1'b0;
           end
-      end 
+      end
   end
 
   // Implement memory mapped register select and write logic generation
@@ -275,9 +275,9 @@ module adc_hub_axi_cntrl #
       begin
         axi_bvalid  <= 0;
         axi_bresp   <= 2'b0;
-      end 
+      end
     else
-      begin    
+      begin
         if (axi_awready && S_AXI_AWVALID && ~axi_bvalid && axi_wready && S_AXI_WVALID)
           begin
             // indicates a valid write response is available
@@ -286,7 +286,7 @@ module adc_hub_axi_cntrl #
           end                   // work error responses in future
         else
           begin
-            if (S_AXI_BREADY && axi_bvalid) 
+            if (S_AXI_BREADY && axi_bvalid)
               //check if bready is asserted while bvalid is high)
               //(there is a possibility that bready is always asserted high)
               begin
@@ -340,7 +340,7 @@ module adc_hub_axi_cntrl #
       begin
         axi_rvalid <= 0;
         axi_rresp  <= 0;
-      end 
+      end
     else
       begin
         if (axi_arready && S_AXI_ARVALID && ~axi_rvalid)
@@ -368,7 +368,7 @@ module adc_hub_axi_cntrl #
     if ( S_AXI_ARESETN == 1'b0 )
       begin
         axi_rdata  <= 0;
-      end 
+      end
     else
       begin
         // When there is a valid read address (S_AXI_ARVALID) with
@@ -393,8 +393,8 @@ generate
       assign slv_reg6[(32*chan)+:32] = error_status[(32*chan)+:32];
       assign clear_over_error[(32*chan)+:32] = slv_reg7[(32*chan)+:32];
       assign clear_under_error[(32*chan)+:32] = slv_reg8[(32*chan)+:32];
-      assign over_limit_enable[(32*chan)+:32] = slv_reg9[(32*chan)+:32]; 
-      assign under_limit_enable[(32*chan)+:32] = slv_reg10[(32*chan)+:32]; 
+      assign over_limit_enable[(32*chan)+:32] = slv_reg9[(32*chan)+:32];
+      assign under_limit_enable[(32*chan)+:32] = slv_reg10[(32*chan)+:32];
       assign slv_reg11[(32*chan)+:32] = data_signed[chan];
       assign slv_reg12[(32*chan)+:32] = data_type[chan];
       assign slv_reg13[(32*chan)+:32] = NUM_CHANNELS;
@@ -446,14 +446,14 @@ generate
               slv_reg7[(32*chan)+:32] <= 0;
               slv_reg8[(32*chan)+:32] <= 0;
               slv_reg9[(32*chan)+:32] <= 0;
-              slv_reg10[(32*chan)+:32] <= 0; 
+              slv_reg10[(32*chan)+:32] <= 0;
               //slv_reg11[(32*chan)+:32] <= 0; // signed/unsigned data
               //slv_reg12[(32*chan)+:32] <= 0; // voltage/current data
               //slv_reg13[(32*chan)+:32] <= 0; // Num Channels (per channel, but same info on each)
               slv_reg14[(32*chan)+:32] <= 32'h0; // global_irq_disable (per channel, but only need one set)
               slv_reg15[(32*chan)+:32] <= 32'h0; // offset
-            end 
-          else 
+            end
+          else
             begin
               // auto-clear these registers
               slv_reg7[(32*chan)+:32] <= 0;
@@ -469,21 +469,21 @@ generate
                             // Respective byte enables are asserted as per write strobes
                             // Slave register 0
                             slv_reg0[(C_S_AXI_DATA_WIDTH*chan)+(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
-                          end  
+                          end
                       4'h1:
                         for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
                           if ( S_AXI_WSTRB[byte_index] == 1 ) begin
                             // Respective byte enables are asserted as per write strobes
                             // Slave register 1
                             slv_reg1[(C_S_AXI_DATA_WIDTH*chan)+(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
-                          end  
+                          end
                       4'h2:
                         for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
                           if ( S_AXI_WSTRB[byte_index] == 1 ) begin
                             // Respective byte enables are asserted as per write strobes
                             // Slave register 2
                             slv_reg2[(C_S_AXI_DATA_WIDTH*chan)+(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
-                          end  
+                          end
                       4'h3:
                         for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
                           if ( S_AXI_WSTRB[byte_index] == 1 ) begin
@@ -522,7 +522,7 @@ generate
                             // Slave register 7
                             slv_reg7[(C_S_AXI_DATA_WIDTH*chan)+(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
                           end
-                      
+
                       4'h8:
                         for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
                           if ( S_AXI_WSTRB[byte_index] == 1 ) begin
@@ -537,7 +537,7 @@ generate
                             // Slave register 9
                             slv_reg9[(C_S_AXI_DATA_WIDTH*chan)+(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
                           end
-                      4'hA: 
+                      4'hA:
                         for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
                           if ( S_AXI_WSTRB[byte_index] == 1 ) begin
                             // Respective byte enables are asserted as per write strobes
@@ -554,15 +554,15 @@ generate
                             // Respective byte enables are asserted as per write strobes
                             // Slave register 14
                             slv_reg14[(C_S_AXI_DATA_WIDTH*chan)+(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
-                        end  
+                        end
                       4'hF:
                         for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
                           if ( S_AXI_WSTRB[byte_index] == 1 ) begin
                             // Respective byte enables are asserted as per write strobes
                             // Slave register 15
                             slv_reg15[(C_S_AXI_DATA_WIDTH*chan)+(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
-                        end  
-                      default : 
+                        end
+                      default :
                         begin
                           slv_reg0[(32*chan)+:32] <= slv_reg0[(32*chan)+:32];
                           slv_reg1[(32*chan)+:32] <= slv_reg1[(32*chan)+:32];
@@ -591,7 +591,7 @@ endgenerate
 endmodule
 
 
-// Copyright (C) 2022, Advanced Micro Devices, Inc.
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // This module controls the over/under fault generation and is instantiated
@@ -622,12 +622,12 @@ endmodule
   // Values on AXIS are in Q8.Q16 mode (but are in 32 bit registers)
   // Q16 LSB [15:0] used for decimal portion
   // Q7 MSB [22:16] used for integer portion
-  // bit[23] indicates sign 1'b1: -ve ; 1'b0: +ve 
+  // bit[23] indicates sign 1'b1: -ve ; 1'b0: +ve
 
   //           <------------ integer ----------->  <---------------- decimal ----------------->
   //  _______  _______  _______  _______  _______   _______  _______  _______  _______  _______
-  // |       ||       ||       ||       ||       | |       ||       ||       ||       ||       | 
-  // |  Sign ||  2^6  ||  .... ||   2^1 ||  2^0  |.|  2^-1 ||  ---  || 2^-14 || 2^-15 || 2^-16 | 
+  // |       ||       ||       ||       ||       | |       ||       ||       ||       ||       |
+  // |  Sign ||  2^6  ||  .... ||   2^1 ||  2^0  |.|  2^-1 ||  ---  || 2^-14 || 2^-15 || 2^-16 |
   // |_______||_______||_______||_______||_______| |_______||_______||_______||_______||_______|
   //
 
@@ -656,7 +656,7 @@ endmodule
             over_limit_err <= 1'b1;
           else if (clear_over_error == 32'h0BAD00FF)
             over_limit_err <= 1'b0;
-          // Hold error until clear 
+          // Hold error until clear
           else
             over_limit_err <= over_limit_err;
         end
