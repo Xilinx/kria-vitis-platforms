@@ -1,4 +1,5 @@
-# (C) Copyright 2020 - 2022 Xilinx, Inc.
+# Copyright (C) 2020 - 2022 Xilinx, Inc.
+# Copyright (C) 2023, Advanced Micro Devices, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
 RM = rm -rf
@@ -11,6 +12,9 @@ VIV_SCRIPTS_DIR = scripts
 
 VIV_XSA = $(VIV_PRJ_DIR)/$(VIV_DESIGN).xsa
 VIV_SRC = $(VIV_SCRIPTS_DIR)/main.tcl
+
+VIV_TIMING_ERROR = "CRITICAL WARNING: \[Timing 38-282\] The design failed to meet the timing requirements"
+
 ISP_DIR= ./ip/isp_single_kv260
 ISP_IP = isppipeline.prj 
 
@@ -31,6 +35,7 @@ $(ISP_IP):
 xsa: $(VIV_XSA)
 $(VIV_XSA): $(VIV_SRC) $(ISP_IP)
 	$(VIVADO) -mode batch -notrace -source $(VIV_SRC)
+	@grep $(VIV_TIMING_ERROR) vivado.log; if [ $$? = 0 ]; then exit 1; fi
 
 .PHONY: clean
 clean:
