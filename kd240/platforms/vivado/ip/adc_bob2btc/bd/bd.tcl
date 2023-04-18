@@ -1,3 +1,6 @@
+# Copyright (C) 2023, Advanced Micro Devices, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
 proc init { cellpath otherInfo } {
   set ip [get_bd_cells $cellpath]
 }

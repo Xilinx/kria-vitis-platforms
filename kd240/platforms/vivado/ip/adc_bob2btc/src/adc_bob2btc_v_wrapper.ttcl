@@ -1,4 +1,4 @@
-// Copyright (C) 2022, Advanced Micro Devices, Inc.
+// Copyright (C) 2023, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
 // TTCL file to generate Verilog file with configurable input and output ports
 
@@ -28,7 +28,7 @@
 <:                           $L8_ADC_BITS $L9_ADC_BITS $L10_ADC_BITS $L11_ADC_BITS \    :>
 <:                           $L12_ADC_BITS $L13_ADC_BITS $L14_ADC_BITS $L15_ADC_BITS]   :>
 
-// Copyright (C) 2022, Advanced Micro Devices, Inc.
+// Copyright (C) 2023, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
 //
 // Wrapper for multiple instantiations of the adc_bob2btc converter.

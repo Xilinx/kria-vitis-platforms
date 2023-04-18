@@ -1,4 +1,4 @@
-// Copyright (C) 2022, Advanced Micro Devices, Inc.
+// Copyright (C) 2023, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // TTCL file to generate Verilog file with configurable input and output ports
@@ -25,7 +25,7 @@
 <: set L14_ADC_BITS      [get_property CONFIG.L14_ADC_BITS   [::ipxit::current_inst]]  :>
 <: set L15_ADC_BITS      [get_property CONFIG.L15_ADC_BITS   [::ipxit::current_inst]]  :>
 
-// Copyright (C) 2022, Advanced Micro Devices, Inc.
+// Copyright (C) 2023, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
 // Convert BOB (Bipolar Offset Binary) to BTC (Binary Two's Complement)
@@ -79,7 +79,7 @@ module <=: $ComponentName :>_top #(
         else
           L<=: $i :>_DOUT_VLD <= 1'b0;
     end
-    
+
 <: } :>
 
 endmodule
