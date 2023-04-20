@@ -157,7 +157,7 @@ pipeline {
                     environment {
                         pfm_base="kv260_ispMipiRx_vcu_DP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="kv260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
@@ -241,7 +241,7 @@ pipeline {
                     environment {
                         pfm_base="kv260_vcuDecode_vmixDP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="kv260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
@@ -301,7 +301,7 @@ pipeline {
                     environment {
                         pfm_base="kv260_ispMipiRx_vmixDP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="kv260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
@@ -361,7 +361,7 @@ pipeline {
                     environment {
                         pfm_base="kv260_ispMipiRx_rpiMipiRx_DP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="kv260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
@@ -421,7 +421,7 @@ pipeline {
                     environment {
                         pfm_base="kv260_bist"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="kv260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
@@ -454,7 +454,7 @@ pipeline {
                     environment {
                         pfm_base="kr260_tsn_rs485pmod"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="kr260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
@@ -487,7 +487,7 @@ pipeline {
                     environment {
                         pfm_base="k26_base_starter_kit"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="k26"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
