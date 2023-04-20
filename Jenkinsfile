@@ -4,6 +4,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+def logCommitIDs() {
+    sh label: 'log commit IDs',
+    script: '''
+        idfile=${ws}/commitIDs
+        pushd ${ws}/src
+        echo -n "src : " >> ${idfile}
+        git rev-parse HEAD >> ${idfile}
+        subm=($(cat .gitmodules | grep path | cut -d "=" -f2))
+        for sm in "${subm[@]}"; do
+            pushd ${sm}
+            echo -n "${sm} : " >> ${idfile}
+            git rev-parse HEAD >> ${idfile}
+            popd
+        done
+        popd
+        pushd ${ws}/paeg-helper
+        echo -n "paeg-helper : " >> ${idfile}
+        git rev-parse HEAD >> ${idfile}
+        popd
+        cat ${idfile}
+    '''
+}
+
 def createWorkDir() {
     sh label: 'create work dir',
     script: '''
@@ -33,6 +56,7 @@ def deployPlatform() {
             mkdir -p ${DST}
             cp -rf platforms/${pfm} ${DST}
             popd
+            cp ${ws}/commitIDs ${DST}/${pfm}
         fi
     '''
 }
@@ -55,6 +79,7 @@ def deployPlatformFirmware() {
             cp -f tmp/${pfm_base}.bit ${DST}/${fw}.bit
             cp -f tmp/${pfm_base}.bit.bin ${DST}/${fw}.bin
             popd
+            cp ${ws}/commitIDs ${DST}
         fi
     '''
 }
@@ -92,6 +117,7 @@ def deployOverlay() {
             cp -f ${example_dir}/binary_container_1/*.xclbin ${DST}/${board}-${overlay}.xclbin
             cp -f ${example_dir}/binary_container_1/link/int/system.bit ${DST}/${board}-${overlay}.bit
             cp -f ${example_dir}/binary_container_1/link/int/system.bit.bin ${DST}/${board}-${overlay}.bin
+            cp ${ws}/commitIDs ${DST}
         fi
     '''
 }
@@ -149,6 +175,7 @@ pipeline {
                         url: 'https://gitenterprise.xilinx.com/PAEG/paeg-automation.git'
                     ]]
                 ])
+                logCommitIDs()
             }
         }
         stage('Vitis Builds') {
