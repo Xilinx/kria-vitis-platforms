@@ -4,6 +4,29 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+def logCommitIDs() {
+    sh label: 'log commit IDs',
+    script: '''
+        idfile=${ws}/commitIDs
+        pushd ${ws}/src
+        echo -n "src : " >> ${idfile}
+        git rev-parse HEAD >> ${idfile}
+        subm=($(cat .gitmodules | grep path | cut -d "=" -f2))
+        for sm in "${subm[@]}"; do
+            pushd ${sm}
+            echo -n "${sm} : " >> ${idfile}
+            git rev-parse HEAD >> ${idfile}
+            popd
+        done
+        popd
+        pushd ${ws}/paeg-helper
+        echo -n "paeg-helper : " >> ${idfile}
+        git rev-parse HEAD >> ${idfile}
+        popd
+        cat ${idfile}
+    '''
+}
+
 def createWorkDir() {
     sh label: 'create work dir',
     script: '''
@@ -33,6 +56,7 @@ def deployPlatform() {
             mkdir -p ${DST}
             cp -rf platforms/${pfm} ${DST}
             popd
+            cp ${ws}/commitIDs ${DST}/${pfm}
         fi
     '''
 }
@@ -55,6 +79,7 @@ def deployPlatformFirmware() {
             cp -f tmp/${pfm_base}.bit ${DST}/${fw}.bit
             cp -f tmp/${pfm_base}.bit.bin ${DST}/${fw}.bin
             popd
+            cp ${ws}/commitIDs ${DST}
         fi
     '''
 }
@@ -92,6 +117,7 @@ def deployOverlay() {
             cp -f ${example_dir}/binary_container_1/*.xclbin ${DST}/${board}-${overlay}.xclbin
             cp -f ${example_dir}/binary_container_1/link/int/system.bit ${DST}/${board}-${overlay}.bit
             cp -f ${example_dir}/binary_container_1/link/int/system.bit.bin ${DST}/${board}-${overlay}.bin
+            cp ${ws}/commitIDs ${DST}
         fi
     '''
 }
@@ -119,22 +145,6 @@ pipeline {
         cron(env.BRANCH_NAME == 'master' ? 'H 21 * * *' : '')
     }
     stages {
-        stage ('Fix Changelog') {
-            steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: scm.branches,
-                    userRemoteConfigs: scm.userRemoteConfigs,
-                    // this extension builds the changesets from the compareTarget branch
-                    extensions:
-                    [
-                        [$class: 'ChangelogToBranch', options:
-                              [compareRemote: 'origin', compareTarget: env.deploy_branch]
-                        ]
-                    ]
-                ])
-            }
-        }
         stage('Clone Repos') {
             steps {
                 // checkout main source repo
@@ -142,7 +152,11 @@ pipeline {
                     $class: 'GitSCM',
                     branches: scm.branches,
                     doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
-                    extensions: scm.extensions + [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'src']],
+                    extensions: scm.extensions +
+                    [
+                        [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src'],
+                        [$class: 'ChangelogToBranch', options: [compareRemote: 'origin', compareTarget: env.deploy_branch]]
+                    ],
                     userRemoteConfigs: scm.userRemoteConfigs
                 ])
                 // checkout paeg-automation helper repo
@@ -161,6 +175,7 @@ pipeline {
                         url: 'https://gitenterprise.xilinx.com/PAEG/paeg-automation.git'
                     ]]
                 ])
+                logCommitIDs()
             }
         }
         stage('Vitis Builds') {
@@ -169,7 +184,7 @@ pipeline {
                     environment {
                         pfm_base="kv260_ispMipiRx_vcu_DP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="kv260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
@@ -253,7 +268,7 @@ pipeline {
                     environment {
                         pfm_base="kv260_vcuDecode_vmixDP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="kv260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
@@ -313,7 +328,7 @@ pipeline {
                     environment {
                         pfm_base="kv260_ispMipiRx_vmixDP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="kv260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
@@ -373,7 +388,7 @@ pipeline {
                     environment {
                         pfm_base="kv260_ispMipiRx_rpiMipiRx_DP"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="kv260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
@@ -433,7 +448,7 @@ pipeline {
                     environment {
                         pfm_base="kv260_bist"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="kv260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
@@ -466,7 +481,7 @@ pipeline {
                     environment {
                         pfm_base="kr260_tsn_rs485pmod"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="kr260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
@@ -499,7 +514,7 @@ pipeline {
                     environment {
                         pfm_base="k26_base_starter_kit"
                         pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="work/${pfm_base}"
+                        work_dir="${ws}/build/${pfm_base}"
                         board="k26"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
