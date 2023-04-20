@@ -119,22 +119,6 @@ pipeline {
         cron(env.BRANCH_NAME == 'master' ? 'H 21 * * *' : '')
     }
     stages {
-        stage ('Fix Changelog') {
-            steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: scm.branches,
-                    userRemoteConfigs: scm.userRemoteConfigs,
-                    // this extension builds the changesets from the compareTarget branch
-                    extensions:
-                    [
-                        [$class: 'ChangelogToBranch', options:
-                              [compareRemote: 'origin', compareTarget: env.deploy_branch]
-                        ]
-                    ]
-                ])
-            }
-        }
         stage('Clone Repos') {
             steps {
                 // checkout main source repo
@@ -142,7 +126,11 @@ pipeline {
                     $class: 'GitSCM',
                     branches: scm.branches,
                     doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
-                    extensions: scm.extensions + [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'src']],
+                    extensions: scm.extensions +
+                    [
+                        [$class: 'RelativeTargetDirectory', relativeTargetDir: 'src'],
+                        [$class: 'ChangelogToBranch', options: [compareRemote: 'origin', compareTarget: env.deploy_branch]]
+                    ],
                     userRemoteConfigs: scm.userRemoteConfigs
                 ])
                 // checkout paeg-automation helper repo
