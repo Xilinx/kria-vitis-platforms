@@ -1,84 +1,156 @@
-// Copyright (C) 2022, Advanced Micro Devices, Inc.
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
-// TTCL file to generate Verilog file with configurable input and output ports
 
-<: set ComponentName    [getComponentNameString]                                     :>
-<: setFileExtension     ".v"                                                         :>
-<: setFileName          [ttcl_string_concat $ComponentName "_top"]                   :>
-<: setOutputDirectory   "./"                                                         :>
-<: set NUM_CHANNELS     [get_property CONFIG.NUM_CHANNELS  [::ipxit::current_inst]]  :>
-<: set L0_ADC_BITS      [get_property CONFIG.L0_ADC_BITS   [::ipxit::current_inst]]  :>
-<: set L1_ADC_BITS      [get_property CONFIG.L1_ADC_BITS   [::ipxit::current_inst]]  :>
-<: set L2_ADC_BITS      [get_property CONFIG.L2_ADC_BITS   [::ipxit::current_inst]]  :>
-<: set L3_ADC_BITS      [get_property CONFIG.L3_ADC_BITS   [::ipxit::current_inst]]  :>
-<: set L4_ADC_BITS      [get_property CONFIG.L4_ADC_BITS   [::ipxit::current_inst]]  :>
-<: set L5_ADC_BITS      [get_property CONFIG.L5_ADC_BITS   [::ipxit::current_inst]]  :>
-<: set L6_ADC_BITS      [get_property CONFIG.L6_ADC_BITS   [::ipxit::current_inst]]  :>
-<: set L7_ADC_BITS      [get_property CONFIG.L7_ADC_BITS   [::ipxit::current_inst]]  :>
-<: set L8_ADC_BITS      [get_property CONFIG.L8_ADC_BITS   [::ipxit::current_inst]]  :>
-<: set L9_ADC_BITS      [get_property CONFIG.L9_ADC_BITS   [::ipxit::current_inst]]  :>
-<: set L10_ADC_BITS     [get_property CONFIG.L10_ADC_BITS  [::ipxit::current_inst]]  :>
-<: set L11_ADC_BITS     [get_property CONFIG.L11_ADC_BITS  [::ipxit::current_inst]]  :>
-<: set L12_ADC_BITS     [get_property CONFIG.L12_ADC_BITS  [::ipxit::current_inst]]  :>
-<: set L13_ADC_BITS     [get_property CONFIG.L13_ADC_BITS  [::ipxit::current_inst]]  :>
-<: set L14_ADC_BITS     [get_property CONFIG.L14_ADC_BITS  [::ipxit::current_inst]]  :>
-<: set L15_ADC_BITS     [get_property CONFIG.L15_ADC_BITS  [::ipxit::current_inst]]  :>
+// TTCL file to generate Verilog file with multiple modules with configurable module names
+
+<: set ComponentName   [getComponentNameString]                                        :>
+<: setFileExtension    ".v"                                                            :>
+<: setFileName         [ttcl_string_concat $ComponentName "_adc7352_if"]                  :>
+<: setOutputDirectory  "./"                                                            :>
+<: set NUM_CHANNELS    [get_property CONFIG.NUM_CHANNELS     [::ipxit::current_inst]]  :>
 
 // Copyright (C) 2022, Advanced Micro Devices, Inc.
 // SPDX-License-Identifier: Apache-2.0
-//
-// Wrapper for multiple instantiations of the ADC, in this case the 7476a.
 
+// This module controls one half of ADC7352.  The ADC7352
+// actually contains two channels, but this module only exercises one
+// of these channels.  Two instances can be used to control both.  This
+// way it is easier to parameterize for the number of channels being used.
+// SCLK is limited to 48 MHz which is the maximum speed that is supported
+// by the ADC7352.
 `timescale 1 ns / 1 ps
 
-module <=: $ComponentName :>_top #(
-    // Per channel parameters
-<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
-  parameter L<=: $i :>_ADC_BITS = 12,
-<: } :>
-
-  parameter integer NUM_CHANNELS = 1
+<: for {set i 0} { $i < $NUM_CHANNELS } { incr i } { :>
+module adc7352_if_l<=: $i :> #
+(
+    parameter integer ADC_BITS = 12
 )
 (
 
   // Interface to ADC
-  output wire [NUM_CHANNELS-1:0] CSn,
+  output wire CSn,
+  input  wire SDATA,
   input  wire SCLK,
-  input wire [NUM_CHANNELS-1:0] SDATA,
-
-  // Interface to system
-<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
-  output wire [L<=: $i :>_ADC_BITS-1:0] L<=: $i :>_DOUT,
-  output wire L<=: $i :>_DOUT_VLD,
-<: } :>
-
-  input  wire CLK,
-  input  wire [NUM_CHANNELS-1:0] UPDATE,
+  input  wire UPDATE,
   input  wire RESETn,
-  input  wire SCLK_RESETn
+  output reg  [ADC_BITS-1:0] DOUT,
+  output reg  DOUT_VLD
 );
 
-genvar chan;
 
-<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
-    adc7352_if #(
-      .ADC_BITS     (L<=: $i :>_ADC_BITS)
-    )
-    L<=: $i :>_adc_inst
-    (
-      // Interface to ADC
-      .CSn          (CSn[<=: $i :>]),
-      .SDATA        (SDATA[<=: $i :>]),
-      .SCLK         (SCLK),
-      
-      // Interface to system
-      .CLK          (CLK),
-      .UPDATE       (UPDATE[<=: $i :>]),
-      .RESETn       (RESETn),
-      .SCLK_RESETn  (SCLK_RESETn),
-      .DOUT         (L<=: $i :>_DOUT),
-      .DOUT_VLD     (L<=: $i :>_DOUT_VLD)
-    );
-<: } :>
+localparam integer LEADING_ZEROS = 2-1;
+localparam integer QUIET = 0;
+
+// State machine states
+localparam [1:0]
+  sm_IDLE = 4'b10,
+  sm_LDZ_A = 4'b00,
+  sm_ACQ_A = 4'b01;
+
+(* mark_debug = "true" *) reg [1:0] sm = sm_IDLE;
+(* mark_debug = "true" *) reg [3:0] cntdown = 'h0;
+(* mark_debug = "true" *) reg [ADC_BITS-1:0] data_a = 'h0;
+(* mark_debug = "true" *) reg [1:0] last_state = sm_IDLE;
+
+(* mark_debug = "true" *) wire shift;
+(* mark_debug = "true" *) wire vld;
+
+// start debug
+(* mark_debug = "true" *) reg signed [ADC_BITS-1:0] signed_last_data;
+(* mark_debug = "true" *) wire trigger_sclk;
+(* mark_debug = "true" *) wire signed [ADC_BITS-1:0] diff;
+wire signed [ADC_BITS-1:0] signed_data_a;
+
+always @(posedge SCLK)
+begin
+  if (vld)
+    signed_last_data <= data_a;
+end
+
+assign signed_data_a = data_a;
+assign diff = (vld) ? (signed_last_data - signed_data_a) : 1'b0;
+assign trigger_sclk = (diff > 32) ? 1'b1 :
+                      ((diff < -32) ? 1'b1 : 1'b0);
+// End debug
+
+assign CSn = sm[1];
+assign shift = sm[0];
+assign vld = (sm == sm_IDLE && last_state == sm_ACQ_A);
+
+// Register state machine state for transition detection
+always @(posedge SCLK)
+  last_state <= sm;
+
+
+always @(posedge SCLK)
+begin
+  if (RESETn == 1'b0)
+    sm <= sm_IDLE;
+  else
+    case (sm)
+      sm_IDLE: begin
+        // Implementing QUIET countdown
+        if (QUIET > 0 && cntdown > 0)
+          cntdown <= cntdown - 1'b1;
+        else if (UPDATE) begin
+          cntdown <= LEADING_ZEROS;
+          sm <= sm_LDZ_A;
+        end
+      end
+
+      sm_LDZ_A:
+        if (cntdown > 0)
+          cntdown <= cntdown - 1'b1;
+        else begin
+          sm <= sm_ACQ_A;
+          cntdown <= ADC_BITS-1;
+        end
+
+      sm_ACQ_A:
+        if (cntdown > 0)
+          cntdown <= cntdown - 1'b1;
+        else
+          begin
+            //sm <= sm_SEND_VLD;
+            sm <= sm_IDLE;
+            cntdown <= QUIET;
+          end
+      default: sm <= sm_IDLE;
+    endcase
+end
+
+always @(posedge SCLK)
+begin
+  if (RESETn == 1'b0 || sm == sm_IDLE)
+    data_a <= 'h0;
+
+  else if (shift)
+  begin
+    data_a <= data_a << 1;
+    data_a[0] <= SDATA;
+  end
+  else if (DOUT_VLD)
+    data_a <= 'h0;
+  else
+    data_a[0] <= SDATA;
+end
+
+always @(posedge SCLK)
+begin
+  if (RESETn == 1'b0)
+  begin
+    DOUT <= 'h0;
+    DOUT_VLD <= 1'b0;
+  end
+  else if (vld)
+  begin
+    DOUT <= data_a;
+    DOUT_VLD <= 1'b1;
+  end
+  else
+    DOUT_VLD <= 1'b0;
+end
 
 endmodule
+
+<: } :>

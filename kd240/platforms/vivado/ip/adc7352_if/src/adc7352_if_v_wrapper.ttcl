@@ -56,10 +56,8 @@ module <=: $ComponentName :> #(
   output wire L<=: $i :>_DOUT_VLD,
 <: } :>
 
-  input  wire CLK,
   input  wire [NUM_CHANNELS-1:0] UPDATE,
-  input  wire RESETn,
-  input  wire SCLK_RESETn
+  input  wire RESETn
 );
 
 <=: $ComponentName :>_top #(
@@ -78,10 +76,8 @@ module <=: $ComponentName :> #(
     .L<=: $i :>_DOUT        (L<=: $i :>_DOUT),
     .L<=: $i :>_DOUT_VLD    (L<=: $i :>_DOUT_VLD),
 <: } :>
-    .CLK                    (CLK),
     .UPDATE                 (UPDATE),
-    .RESETn                 (RESETn),
-    .SCLK_RESETn            (SCLK_RESETn)
+    .RESETn                 (RESETn)
   );
 
 endmodule

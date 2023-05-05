@@ -1,0 +1,81 @@
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+// TTCL file to generate Verilog file with configurable input and output ports
+
+<: set ComponentName    [getComponentNameString]                                     :>
+<: setFileExtension     ".v"                                                         :>
+<: setFileName          [ttcl_string_concat $ComponentName "_top"]                   :>
+<: setOutputDirectory   "./"                                                         :>
+<: set NUM_CHANNELS     [get_property CONFIG.NUM_CHANNELS  [::ipxit::current_inst]]  :>
+<: set L0_ADC_BITS      [get_property CONFIG.L0_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L1_ADC_BITS      [get_property CONFIG.L1_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L2_ADC_BITS      [get_property CONFIG.L2_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L3_ADC_BITS      [get_property CONFIG.L3_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L4_ADC_BITS      [get_property CONFIG.L4_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L5_ADC_BITS      [get_property CONFIG.L5_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L6_ADC_BITS      [get_property CONFIG.L6_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L7_ADC_BITS      [get_property CONFIG.L7_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L8_ADC_BITS      [get_property CONFIG.L8_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L9_ADC_BITS      [get_property CONFIG.L9_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L10_ADC_BITS     [get_property CONFIG.L10_ADC_BITS  [::ipxit::current_inst]]  :>
+<: set L11_ADC_BITS     [get_property CONFIG.L11_ADC_BITS  [::ipxit::current_inst]]  :>
+<: set L12_ADC_BITS     [get_property CONFIG.L12_ADC_BITS  [::ipxit::current_inst]]  :>
+<: set L13_ADC_BITS     [get_property CONFIG.L13_ADC_BITS  [::ipxit::current_inst]]  :>
+<: set L14_ADC_BITS     [get_property CONFIG.L14_ADC_BITS  [::ipxit::current_inst]]  :>
+<: set L15_ADC_BITS     [get_property CONFIG.L15_ADC_BITS  [::ipxit::current_inst]]  :>
+
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Wrapper for multiple instantiations of the ADC, in this case the 7476a.
+
+`timescale 1 ns / 1 ps
+
+module <=: $ComponentName :>_top #(
+    // Per channel parameters
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+  parameter L<=: $i :>_ADC_BITS = 12,
+<: } :>
+
+  parameter integer NUM_CHANNELS = 1
+)
+(
+
+  // Interface to ADC
+  output wire [NUM_CHANNELS-1:0] CSn,
+  input  wire SCLK,
+  input wire [NUM_CHANNELS-1:0] SDATA,
+
+  // Interface to system
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+  output wire [L<=: $i :>_ADC_BITS-1:0] L<=: $i :>_DOUT,
+  output wire L<=: $i :>_DOUT_VLD,
+<: } :>
+
+  input  wire [NUM_CHANNELS-1:0] UPDATE,
+  input  wire RESETn
+);
+
+genvar chan;
+
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+    adc7352_if_l<=: $i :> #(
+      .ADC_BITS     (L<=: $i :>_ADC_BITS)
+    )
+    L<=: $i :>_adc_inst
+    (
+      // Interface to ADC
+      .CSn          (CSn[<=: $i :>]),
+      .SDATA        (SDATA[<=: $i :>]),
+      .SCLK         (SCLK),
+
+      // Interface to system
+      .UPDATE       (UPDATE[<=: $i :>]),
+      .RESETn       (RESETn),
+      .DOUT         (L<=: $i :>_DOUT),
+      .DOUT_VLD     (L<=: $i :>_DOUT_VLD)
+    );
+<: } :>
+
+endmodule
