@@ -6,6 +6,608 @@
 ##################################################################
 
 
+# Hierarchical cell: sync_vector
+proc create_hier_cell_sync_vector { parentCell nameHier } {
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_sync_vector() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+  create_bd_intf_pin -mode Slave -vlnv User:interface:data_valid_rtl:1.0 DATA_IN0
+
+  create_bd_intf_pin -mode Slave -vlnv User:interface:data_valid_rtl:1.0 DATA_IN1
+
+  create_bd_intf_pin -mode Slave -vlnv User:interface:data_valid_rtl:1.0 DATA_IN2
+
+  create_bd_intf_pin -mode Slave -vlnv User:interface:data_valid_rtl:1.0 DATA_IN3
+
+  create_bd_intf_pin -mode Slave -vlnv User:interface:data_valid_rtl:1.0 DATA_IN4
+
+  create_bd_intf_pin -mode Slave -vlnv User:interface:data_valid_rtl:1.0 DATA_IN5
+
+  create_bd_intf_pin -mode Slave -vlnv User:interface:data_valid_rtl:1.0 DATA_IN6
+
+  create_bd_intf_pin -mode Slave -vlnv User:interface:data_valid_rtl:1.0 DATA_IN7
+
+  create_bd_intf_pin -mode Master -vlnv User:interface:data_valid_rtl:1.0 DATA_OUT0
+
+  create_bd_intf_pin -mode Master -vlnv User:interface:data_valid_rtl:1.0 DATA_OUT1
+
+  create_bd_intf_pin -mode Master -vlnv User:interface:data_valid_rtl:1.0 DATA_OUT2
+
+  create_bd_intf_pin -mode Master -vlnv User:interface:data_valid_rtl:1.0 DATA_OUT3
+
+  create_bd_intf_pin -mode Master -vlnv User:interface:data_valid_rtl:1.0 DATA_OUT4
+
+  create_bd_intf_pin -mode Master -vlnv User:interface:data_valid_rtl:1.0 DATA_OUT5
+
+  create_bd_intf_pin -mode Master -vlnv User:interface:data_valid_rtl:1.0 DATA_OUT6
+
+  create_bd_intf_pin -mode Master -vlnv User:interface:data_valid_rtl:1.0 DATA_OUT7
+
+
+  # Create pins
+  create_bd_pin -dir I -type clk CLK
+  create_bd_pin -dir I -type clk SCLK
+
+  # Create instance: synchronizer_vector_0, and set properties
+  set synchronizer_vector_0 [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_vector_vld synchronizer_vector_0 ]
+  set_property CONFIG.DATA_WIDTH {12} $synchronizer_vector_0
+
+
+  # Create instance: synchronizer_vector_1, and set properties
+  set synchronizer_vector_1 [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_vector_vld synchronizer_vector_1 ]
+  set_property CONFIG.DATA_WIDTH {12} $synchronizer_vector_1
+
+
+  # Create instance: synchronizer_vector_2, and set properties
+  set synchronizer_vector_2 [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_vector_vld synchronizer_vector_2 ]
+  set_property CONFIG.DATA_WIDTH {12} $synchronizer_vector_2
+
+
+  # Create instance: synchronizer_vector_3, and set properties
+  set synchronizer_vector_3 [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_vector_vld synchronizer_vector_3 ]
+  set_property CONFIG.DATA_WIDTH {12} $synchronizer_vector_3
+
+
+  # Create instance: synchronizer_vector_4, and set properties
+  set synchronizer_vector_4 [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_vector_vld synchronizer_vector_4 ]
+  set_property CONFIG.DATA_WIDTH {12} $synchronizer_vector_4
+
+
+  # Create instance: synchronizer_vector_5, and set properties
+  set synchronizer_vector_5 [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_vector_vld synchronizer_vector_5 ]
+  set_property CONFIG.DATA_WIDTH {12} $synchronizer_vector_5
+
+
+  # Create instance: synchronizer_vector_6, and set properties
+  set synchronizer_vector_6 [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_vector_vld synchronizer_vector_6 ]
+  set_property CONFIG.DATA_WIDTH {12} $synchronizer_vector_6
+
+
+  # Create instance: synchronizer_vector_7, and set properties
+  set synchronizer_vector_7 [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_vector_vld synchronizer_vector_7 ]
+  set_property CONFIG.DATA_WIDTH {12} $synchronizer_vector_7
+
+
+  # Create interface connections
+  connect_bd_intf_net -intf_net adc_if_L0_ADC [get_bd_intf_pins DATA_IN0] [get_bd_intf_pins synchronizer_vector_0/DATA_IN]
+  connect_bd_intf_net -intf_net adc_if_L1_ADC [get_bd_intf_pins DATA_IN1] [get_bd_intf_pins synchronizer_vector_1/DATA_IN]
+  connect_bd_intf_net -intf_net adc_if_L2_ADC [get_bd_intf_pins DATA_IN2] [get_bd_intf_pins synchronizer_vector_2/DATA_IN]
+  connect_bd_intf_net -intf_net adc_if_L3_ADC [get_bd_intf_pins DATA_IN3] [get_bd_intf_pins synchronizer_vector_3/DATA_IN]
+  connect_bd_intf_net -intf_net adc_if_L4_ADC [get_bd_intf_pins DATA_IN4] [get_bd_intf_pins synchronizer_vector_4/DATA_IN]
+  connect_bd_intf_net -intf_net adc_if_L5_ADC [get_bd_intf_pins DATA_IN5] [get_bd_intf_pins synchronizer_vector_5/DATA_IN]
+  connect_bd_intf_net -intf_net adc_if_L6_ADC [get_bd_intf_pins DATA_IN6] [get_bd_intf_pins synchronizer_vector_6/DATA_IN]
+  connect_bd_intf_net -intf_net adc_if_L7_ADC [get_bd_intf_pins DATA_IN7] [get_bd_intf_pins synchronizer_vector_7/DATA_IN]
+  connect_bd_intf_net -intf_net synchronizer_vector_0_DATA_OUT [get_bd_intf_pins DATA_OUT0] [get_bd_intf_pins synchronizer_vector_0/DATA_OUT]
+  connect_bd_intf_net -intf_net synchronizer_vector_1_DATA_OUT [get_bd_intf_pins DATA_OUT1] [get_bd_intf_pins synchronizer_vector_1/DATA_OUT]
+  connect_bd_intf_net -intf_net synchronizer_vector_2_DATA_OUT [get_bd_intf_pins DATA_OUT2] [get_bd_intf_pins synchronizer_vector_2/DATA_OUT]
+  connect_bd_intf_net -intf_net synchronizer_vector_3_DATA_OUT [get_bd_intf_pins DATA_OUT3] [get_bd_intf_pins synchronizer_vector_3/DATA_OUT]
+  connect_bd_intf_net -intf_net synchronizer_vector_4_DATA_OUT [get_bd_intf_pins DATA_OUT4] [get_bd_intf_pins synchronizer_vector_4/DATA_OUT]
+  connect_bd_intf_net -intf_net synchronizer_vector_5_DATA_OUT [get_bd_intf_pins DATA_OUT5] [get_bd_intf_pins synchronizer_vector_5/DATA_OUT]
+  connect_bd_intf_net -intf_net synchronizer_vector_6_DATA_OUT [get_bd_intf_pins DATA_OUT6] [get_bd_intf_pins synchronizer_vector_6/DATA_OUT]
+  connect_bd_intf_net -intf_net synchronizer_vector_7_DATA_OUT [get_bd_intf_pins DATA_OUT7] [get_bd_intf_pins synchronizer_vector_7/DATA_OUT]
+
+  # Create port connections
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins synchronizer_vector_0/data_in_clk] -boundary_type upper
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins synchronizer_vector_1/data_in_clk] -boundary_type upper
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins synchronizer_vector_2/data_in_clk] -boundary_type upper
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins synchronizer_vector_3/data_in_clk] -boundary_type upper
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins synchronizer_vector_4/data_in_clk] -boundary_type upper
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins synchronizer_vector_5/data_in_clk] -boundary_type upper
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins synchronizer_vector_6/data_in_clk] -boundary_type upper
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins synchronizer_vector_7/data_in_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins synchronizer_vector_0/data_out_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins synchronizer_vector_1/data_out_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins synchronizer_vector_2/data_out_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins synchronizer_vector_3/data_out_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins synchronizer_vector_4/data_out_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins synchronizer_vector_5/data_out_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins synchronizer_vector_6/data_out_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins synchronizer_vector_7/data_out_clk] -boundary_type upper
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
+
+# Hierarchical cell: sync
+proc create_hier_cell_sync { parentCell nameHier } {
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_sync() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+
+  # Create pins
+  create_bd_pin -dir I -type clk CLK
+  create_bd_pin -dir I -type clk SCLK
+  create_bd_pin -dir I -from 0 -to 0 -type rst SCLK_RESETn
+  create_bd_pin -dir I -from 0 -to 0 csn_dc_in
+  create_bd_pin -dir O -from 0 -to 0 csn_dc_out
+  create_bd_pin -dir I -from 0 -to 0 csn_motor_in
+  create_bd_pin -dir O -from 0 -to 0 csn_motor_out
+  create_bd_pin -dir O -from 0 -to 0 sclk_resetn_out
+  create_bd_pin -dir I -from 0 -to 0 update_dc_in
+  create_bd_pin -dir O -from 0 -to 0 update_dc_out
+  create_bd_pin -dir I -from 0 -to 0 update_motor_in
+  create_bd_pin -dir O -from 0 -to 0 update_motor_out
+
+  # Create instance: dc_csn_sync, and set properties
+  set dc_csn_sync [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_simple dc_csn_sync ]
+
+  # Create instance: dc_update_sync, and set properties
+  set dc_update_sync [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_simple dc_update_sync ]
+
+  # Create instance: motor_csn_sync, and set properties
+  set motor_csn_sync [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_simple motor_csn_sync ]
+
+  # Create instance: motor_update_sync, and set properties
+  set motor_update_sync [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_simple motor_update_sync ]
+
+  # Create instance: sclk_resetn_sync, and set properties
+  set sclk_resetn_sync [ create_bd_cell -type ip -vlnv user.org:user:synchronizer_simple sclk_resetn_sync ]
+
+  # Create port connections
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins dc_update_sync/new_clk] -boundary_type upper
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins motor_update_sync/new_clk] -boundary_type upper
+  connect_bd_net -net adc_sample_ctrl_dc_sample_adc [get_bd_pins update_dc_in] [get_bd_pins dc_update_sync/data_in]
+  connect_bd_net -net adc_sample_ctrl_motor_sample_adc [get_bd_pins update_motor_in] [get_bd_pins motor_update_sync/data_in]
+  connect_bd_net -net dc_csn_sync_data_out [get_bd_pins csn_dc_out] [get_bd_pins dc_csn_sync/data_out]
+  connect_bd_net -net dc_update_out [get_bd_pins update_dc_out] [get_bd_pins dc_update_sync/data_out]
+  connect_bd_net -net motor_csn_sync_data_out [get_bd_pins csn_motor_out] [get_bd_pins motor_csn_sync/data_out]
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins SCLK_RESETn] [get_bd_pins sclk_resetn_sync/data_in]
+  connect_bd_net -net sclk_resetn_sync_data_out [get_bd_pins sclk_resetn_out] [get_bd_pins sclk_resetn_sync/data_out]
+  connect_bd_net -net smotor_update_out [get_bd_pins update_motor_out] [get_bd_pins motor_update_sync/data_out]
+  connect_bd_net -net xlslice_CSn_Dout [get_bd_pins csn_motor_in] [get_bd_pins motor_csn_sync/data_in]
+  connect_bd_net -net xlslice_dc_CSn_Dout [get_bd_pins csn_dc_in] [get_bd_pins dc_csn_sync/data_in]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins dc_csn_sync/new_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins motor_csn_sync/new_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins sclk_resetn_sync/new_clk] -boundary_type upper
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
+
+# Hierarchical cell: slices
+proc create_hier_cell_slices { parentCell nameHier } {
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_slices() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+
+  # Create pins
+  create_bd_pin -dir I -from 7 -to 0 CSn
+  create_bd_pin -dir O -from 0 -to 0 dc_link_adc_cs_n
+  create_bd_pin -dir O -from 0 -to 0 dc_link_oc_err
+  create_bd_pin -dir O -from 0 -to 0 dc_link_ov_err
+  create_bd_pin -dir O -from 0 -to 0 dc_link_uc_err
+  create_bd_pin -dir O -from 0 -to 0 dc_link_uv_err
+  create_bd_pin -dir O -from 0 -to 0 motor_adc_cs_n
+  create_bd_pin -dir I -from 7 -to 0 over_fault
+  create_bd_pin -dir O -from 0 -to 0 phase_a_oc_err
+  create_bd_pin -dir O -from 0 -to 0 phase_a_uc_err
+  create_bd_pin -dir O -from 0 -to 0 phase_b_oc_err
+  create_bd_pin -dir O -from 0 -to 0 phase_b_uc_err
+  create_bd_pin -dir O -from 0 -to 0 phase_c_oc_err
+  create_bd_pin -dir O -from 0 -to 0 phase_c_uc_err
+  create_bd_pin -dir I -from 7 -to 0 under_fault
+
+  # Create instance: xlslice_CSn, and set properties
+  set xlslice_CSn [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_CSn ]
+  set_property CONFIG.DIN_WIDTH {8} $xlslice_CSn
+
+
+  # Create instance: xlslice_dc_CSn, and set properties
+  set xlslice_dc_CSn [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_dc_CSn ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {7} \
+    CONFIG.DIN_TO {7} \
+    CONFIG.DIN_WIDTH {8} \
+  ] $xlslice_dc_CSn
+
+
+  # Create instance: xlslice_oc_err_1, and set properties
+  set xlslice_oc_err_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_1 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {1} \
+    CONFIG.DIN_TO {1} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_oc_err_1
+
+
+  # Create instance: xlslice_oc_err_3, and set properties
+  set xlslice_oc_err_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_3 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {3} \
+    CONFIG.DIN_TO {3} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_oc_err_3
+
+
+  # Create instance: xlslice_oc_err_5, and set properties
+  set xlslice_oc_err_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_5 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {5} \
+    CONFIG.DIN_TO {5} \
+    CONFIG.DIN_WIDTH {8} \
+  ] $xlslice_oc_err_5
+
+
+  # Create instance: xlslice_oc_err_7, and set properties
+  set xlslice_oc_err_7 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_7 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {7} \
+    CONFIG.DIN_TO {7} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_oc_err_7
+
+
+  # Create instance: xlslice_ov_err_6, and set properties
+  set xlslice_ov_err_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_ov_err_6 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {6} \
+    CONFIG.DIN_TO {6} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_ov_err_6
+
+
+  # Create instance: xlslice_uc_err_1, and set properties
+  set xlslice_uc_err_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_1 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {1} \
+    CONFIG.DIN_TO {1} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_uc_err_1
+
+
+  # Create instance: xlslice_uc_err_3, and set properties
+  set xlslice_uc_err_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_3 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {3} \
+    CONFIG.DIN_TO {3} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_uc_err_3
+
+
+  # Create instance: xlslice_uc_err_5, and set properties
+  set xlslice_uc_err_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_5 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {5} \
+    CONFIG.DIN_TO {5} \
+    CONFIG.DIN_WIDTH {8} \
+  ] $xlslice_uc_err_5
+
+
+  # Create instance: xlslice_uc_err_7, and set properties
+  set xlslice_uc_err_7 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_7 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {7} \
+    CONFIG.DIN_TO {7} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_uc_err_7
+
+
+  # Create instance: xlslice_uv_err_6, and set properties
+  set xlslice_uv_err_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uv_err_6 ]
+  set_property -dict [list \
+    CONFIG.DIN_FROM {6} \
+    CONFIG.DIN_TO {6} \
+    CONFIG.DIN_WIDTH {8} \
+    CONFIG.DOUT_WIDTH {1} \
+  ] $xlslice_uv_err_6
+
+
+  # Create port connections
+  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins over_fault] [get_bd_pins xlslice_oc_err_1/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins over_fault] [get_bd_pins xlslice_oc_err_3/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins over_fault] [get_bd_pins xlslice_oc_err_5/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins over_fault] [get_bd_pins xlslice_oc_err_7/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins over_fault] [get_bd_pins xlslice_ov_err_6/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_phase_dc_under_fault [get_bd_pins under_fault] [get_bd_pins xlslice_uc_err_1/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_phase_dc_under_fault [get_bd_pins under_fault] [get_bd_pins xlslice_uc_err_3/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_phase_dc_under_fault [get_bd_pins under_fault] [get_bd_pins xlslice_uc_err_5/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_phase_dc_under_fault [get_bd_pins under_fault] [get_bd_pins xlslice_uc_err_7/Din] -boundary_type upper
+  connect_bd_net -net adc_hub_phase_dc_under_fault [get_bd_pins under_fault] [get_bd_pins xlslice_uv_err_6/Din] -boundary_type upper
+  connect_bd_net -net adc_if_0_CSn [get_bd_pins CSn] [get_bd_pins xlslice_CSn/Din] -boundary_type upper
+  connect_bd_net -net adc_if_0_CSn [get_bd_pins CSn] [get_bd_pins xlslice_dc_CSn/Din] -boundary_type upper
+  connect_bd_net -net xlslice_CSn_Dout [get_bd_pins motor_adc_cs_n] [get_bd_pins xlslice_CSn/Dout]
+  connect_bd_net -net xlslice_dc_CSn_Dout [get_bd_pins dc_link_adc_cs_n] [get_bd_pins xlslice_dc_CSn/Dout]
+  connect_bd_net -net xlslice_oc_err_1_Dout [get_bd_pins phase_a_oc_err] [get_bd_pins xlslice_oc_err_1/Dout]
+  connect_bd_net -net xlslice_oc_err_3_Dout [get_bd_pins phase_b_oc_err] [get_bd_pins xlslice_oc_err_3/Dout]
+  connect_bd_net -net xlslice_oc_err_5_Dout [get_bd_pins phase_c_oc_err] [get_bd_pins xlslice_oc_err_5/Dout]
+  connect_bd_net -net xlslice_oc_err_7_Dout [get_bd_pins dc_link_oc_err] [get_bd_pins xlslice_oc_err_7/Dout]
+  connect_bd_net -net xlslice_ov_err_6_Dout [get_bd_pins dc_link_ov_err] [get_bd_pins xlslice_ov_err_6/Dout]
+  connect_bd_net -net xlslice_uc_err_1_Dout [get_bd_pins phase_a_uc_err] [get_bd_pins xlslice_uc_err_1/Dout]
+  connect_bd_net -net xlslice_uc_err_3_Dout [get_bd_pins phase_b_uc_err] [get_bd_pins xlslice_uc_err_3/Dout]
+  connect_bd_net -net xlslice_uc_err_5_Dout [get_bd_pins phase_c_uc_err] [get_bd_pins xlslice_uc_err_5/Dout]
+  connect_bd_net -net xlslice_uc_err_7_Dout [get_bd_pins dc_link_uc_err] [get_bd_pins xlslice_uc_err_7/Dout]
+  connect_bd_net -net xlslice_uv_err_6_Dout [get_bd_pins dc_link_uv_err] [get_bd_pins xlslice_uv_err_6/Dout]
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
+
+# Hierarchical cell: gate_driver
+proc create_hier_cell_gate_driver { parentCell nameHier } {
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_gate_driver() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+
+  # Create pins
+  create_bd_pin -dir O gate_drive_phase_a
+  create_bd_pin -dir O gate_drive_phase_b
+  create_bd_pin -dir O gate_drive_phase_c
+  create_bd_pin -dir I phase_lower_a
+  create_bd_pin -dir I phase_lower_b
+  create_bd_pin -dir I phase_lower_c
+  create_bd_pin -dir I phase_upper_a
+  create_bd_pin -dir I phase_upper_b
+  create_bd_pin -dir I phase_upper_c
+  create_bd_pin -dir I -type clk sys_clk
+  create_bd_pin -dir I -type rst sys_rstn
+
+  # Create instance: gate_driver_A, and set properties
+  set gate_driver_A [ create_bd_cell -type ip -vlnv xilinx.com:user:gate_driver gate_driver_A ]
+
+  # Create instance: gate_driver_B, and set properties
+  set gate_driver_B [ create_bd_cell -type ip -vlnv xilinx.com:user:gate_driver gate_driver_B ]
+
+  # Create instance: gate_driver_C, and set properties
+  set gate_driver_C [ create_bd_cell -type ip -vlnv xilinx.com:user:gate_driver gate_driver_C ]
+
+  # Create port connections
+  connect_bd_net -net gate_driver_A_gate_drive [get_bd_pins gate_drive_phase_a] [get_bd_pins gate_driver_A/gate_drive]
+  connect_bd_net -net gate_driver_B_gate_drive [get_bd_pins gate_drive_phase_b] [get_bd_pins gate_driver_B/gate_drive]
+  connect_bd_net -net gate_driver_C_gate_drive [get_bd_pins gate_drive_phase_c] [get_bd_pins gate_driver_C/gate_drive]
+  connect_bd_net -net phase_lower_0_1 [get_bd_pins phase_lower_a] [get_bd_pins gate_driver_A/phase_lower]
+  connect_bd_net -net phase_lower_1_1 [get_bd_pins phase_lower_b] [get_bd_pins gate_driver_B/phase_lower]
+  connect_bd_net -net phase_lower_2_1 [get_bd_pins phase_lower_c] [get_bd_pins gate_driver_C/phase_lower]
+  connect_bd_net -net phase_upper_0_1 [get_bd_pins phase_upper_a] [get_bd_pins gate_driver_A/phase_upper]
+  connect_bd_net -net phase_upper_1_1 [get_bd_pins phase_upper_b] [get_bd_pins gate_driver_B/phase_upper]
+  connect_bd_net -net phase_upper_2_1 [get_bd_pins phase_upper_c] [get_bd_pins gate_driver_C/phase_upper]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins sys_clk] [get_bd_pins gate_driver_A/sys_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins sys_clk] [get_bd_pins gate_driver_B/sys_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins sys_clk] [get_bd_pins gate_driver_C/sys_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins sys_rstn] [get_bd_pins gate_driver_A/sys_rstn] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins sys_rstn] [get_bd_pins gate_driver_B/sys_rstn] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins sys_rstn] [get_bd_pins gate_driver_C/sys_rstn] -boundary_type upper
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
+
+# Hierarchical cell: broadcast_i
+proc create_hier_cell_broadcast_i { parentCell nameHier } {
+
+  variable script_folder
+
+  if { $parentCell eq "" || $nameHier eq "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_broadcast_i() - Empty argument(s)!"}
+     return
+  }
+
+  # Get object for parentCell
+  set parentObj [get_bd_cells $parentCell]
+  if { $parentObj == "" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
+     return
+  }
+
+  # Make sure parentObj is hier blk
+  set parentType [get_property TYPE $parentObj]
+  if { $parentType ne "hier" } {
+     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
+     return
+  }
+
+  # Save current instance; Restore later
+  set oldCurInst [current_bd_instance .]
+
+  # Set parent object as current
+  current_bd_instance $parentObj
+
+  # Create cell and set as current instance
+  set hier_obj [create_bd_cell -type hier $nameHier]
+  current_bd_instance $hier_obj
+
+  # Create interface pins
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M00_AXIS0
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M00_AXIS1
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M00_AXIS2
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M01_AXIS
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M01_AXIS1
+
+  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M01_AXIS2
+
+  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 S_AXIS0
+
+  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 S_AXIS1
+
+  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 S_AXIS2
+
+
+  # Create pins
+  create_bd_pin -dir I -type clk aclk
+  create_bd_pin -dir I -type rst aresetn
+
+  # Create instance: axis_broadcaster_0, and set properties
+  set axis_broadcaster_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_broadcaster axis_broadcaster_0 ]
+
+  # Create instance: axis_broadcaster_1, and set properties
+  set axis_broadcaster_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_broadcaster axis_broadcaster_1 ]
+
+  # Create instance: axis_broadcaster_2, and set properties
+  set axis_broadcaster_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_broadcaster axis_broadcaster_2 ]
+
+  # Create interface connections
+  connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins S_AXIS0] [get_bd_intf_pins axis_broadcaster_0/S_AXIS]
+  connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins S_AXIS1] [get_bd_intf_pins axis_broadcaster_1/S_AXIS]
+  connect_bd_intf_net -intf_net Conn3 [get_bd_intf_pins S_AXIS2] [get_bd_intf_pins axis_broadcaster_2/S_AXIS]
+  connect_bd_intf_net -intf_net Conn4 [get_bd_intf_pins M00_AXIS0] [get_bd_intf_pins axis_broadcaster_0/M00_AXIS]
+  connect_bd_intf_net -intf_net Conn5 [get_bd_intf_pins M00_AXIS1] [get_bd_intf_pins axis_broadcaster_1/M00_AXIS]
+  connect_bd_intf_net -intf_net Conn6 [get_bd_intf_pins M00_AXIS2] [get_bd_intf_pins axis_broadcaster_2/M00_AXIS]
+  connect_bd_intf_net -intf_net Conn7 [get_bd_intf_pins M01_AXIS] [get_bd_intf_pins axis_broadcaster_0/M01_AXIS]
+  connect_bd_intf_net -intf_net Conn8 [get_bd_intf_pins M01_AXIS1] [get_bd_intf_pins axis_broadcaster_1/M01_AXIS]
+  connect_bd_intf_net -intf_net Conn9 [get_bd_intf_pins M01_AXIS2] [get_bd_intf_pins axis_broadcaster_2/M01_AXIS]
+
+  # Create port connections
+  connect_bd_net -net aclk_1 [get_bd_pins aclk] [get_bd_pins axis_broadcaster_0/aclk] -boundary_type upper
+  connect_bd_net -net aclk_1 [get_bd_pins aclk] [get_bd_pins axis_broadcaster_1/aclk] -boundary_type upper
+  connect_bd_net -net aclk_1 [get_bd_pins aclk] [get_bd_pins axis_broadcaster_2/aclk] -boundary_type upper
+  connect_bd_net -net aresetn_1 [get_bd_pins aresetn] [get_bd_pins axis_broadcaster_0/aresetn] -boundary_type upper
+  connect_bd_net -net aresetn_1 [get_bd_pins aresetn] [get_bd_pins axis_broadcaster_1/aresetn] -boundary_type upper
+  connect_bd_net -net aresetn_1 [get_bd_pins aresetn] [get_bd_pins axis_broadcaster_2/aresetn] -boundary_type upper
+
+  # Restore current instance
+  current_bd_instance $oldCurInst
+}
+
 # Hierarchical cell: tx_s
 proc create_hier_cell_tx_s { parentCell nameHier } {
 
@@ -253,175 +855,6 @@ proc create_hier_cell_rx_b { parentCell nameHier } {
   connect_bd_net -net ta_dma_0_m_axis_st_tlast [get_bd_pins tlast] [get_bd_pins and_last_valid/Op1]
   connect_bd_net -net ta_dma_0_m_axis_st_tvalid [get_bd_pins tvalid] [get_bd_pins and_last_valid/Op2]
   connect_bd_net -net util_vector_logic_0_Res [get_bd_pins and_last_valid/Res] [get_bd_pins and_ready/Op1]
-
-  # Restore current instance
-  current_bd_instance $oldCurInst
-}
-
-# Hierarchical cell: gate_driver
-proc create_hier_cell_gate_driver { parentCell nameHier } {
-
-  variable script_folder
-
-  if { $parentCell eq "" || $nameHier eq "" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_gate_driver() - Empty argument(s)!"}
-     return
-  }
-
-  # Get object for parentCell
-  set parentObj [get_bd_cells $parentCell]
-  if { $parentObj == "" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
-     return
-  }
-
-  # Make sure parentObj is hier blk
-  set parentType [get_property TYPE $parentObj]
-  if { $parentType ne "hier" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
-     return
-  }
-
-  # Save current instance; Restore later
-  set oldCurInst [current_bd_instance .]
-
-  # Set parent object as current
-  current_bd_instance $parentObj
-
-  # Create cell and set as current instance
-  set hier_obj [create_bd_cell -type hier $nameHier]
-  current_bd_instance $hier_obj
-
-  # Create interface pins
-
-  # Create pins
-  create_bd_pin -dir O gate_drive_phase_a
-  create_bd_pin -dir O gate_drive_phase_b
-  create_bd_pin -dir O gate_drive_phase_c
-  create_bd_pin -dir I phase_lower_a
-  create_bd_pin -dir I phase_lower_b
-  create_bd_pin -dir I phase_lower_c
-  create_bd_pin -dir I phase_upper_a
-  create_bd_pin -dir I phase_upper_b
-  create_bd_pin -dir I phase_upper_c
-  create_bd_pin -dir I -type clk sys_clk
-  create_bd_pin -dir I -type rst sys_rstn
-
-  # Create instance: gate_driver_A, and set properties
-  set gate_driver_A [ create_bd_cell -type ip -vlnv xilinx.com:user:gate_driver gate_driver_A ]
-
-  # Create instance: gate_driver_B, and set properties
-  set gate_driver_B [ create_bd_cell -type ip -vlnv xilinx.com:user:gate_driver gate_driver_B ]
-
-  # Create instance: gate_driver_C, and set properties
-  set gate_driver_C [ create_bd_cell -type ip -vlnv xilinx.com:user:gate_driver gate_driver_C ]
-
-  # Create port connections
-  connect_bd_net -net gate_driver_A_gate_drive [get_bd_pins gate_drive_phase_a] [get_bd_pins gate_driver_A/gate_drive]
-  connect_bd_net -net gate_driver_B_gate_drive [get_bd_pins gate_drive_phase_b] [get_bd_pins gate_driver_B/gate_drive]
-  connect_bd_net -net gate_driver_C_gate_drive [get_bd_pins gate_drive_phase_c] [get_bd_pins gate_driver_C/gate_drive]
-  connect_bd_net -net phase_lower_0_1 [get_bd_pins phase_lower_a] [get_bd_pins gate_driver_A/phase_lower]
-  connect_bd_net -net phase_lower_1_1 [get_bd_pins phase_lower_b] [get_bd_pins gate_driver_B/phase_lower]
-  connect_bd_net -net phase_lower_2_1 [get_bd_pins phase_lower_c] [get_bd_pins gate_driver_C/phase_lower]
-  connect_bd_net -net phase_upper_0_1 [get_bd_pins phase_upper_a] [get_bd_pins gate_driver_A/phase_upper]
-  connect_bd_net -net phase_upper_1_1 [get_bd_pins phase_upper_b] [get_bd_pins gate_driver_B/phase_upper]
-  connect_bd_net -net phase_upper_2_1 [get_bd_pins phase_upper_c] [get_bd_pins gate_driver_C/phase_upper]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins sys_clk] [get_bd_pins gate_driver_A/sys_clk] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins sys_clk] [get_bd_pins gate_driver_B/sys_clk] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins sys_clk] [get_bd_pins gate_driver_C/sys_clk] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins sys_rstn] [get_bd_pins gate_driver_A/sys_rstn] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins sys_rstn] [get_bd_pins gate_driver_B/sys_rstn] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins sys_rstn] [get_bd_pins gate_driver_C/sys_rstn] -boundary_type upper
-
-  # Restore current instance
-  current_bd_instance $oldCurInst
-}
-
-# Hierarchical cell: broadcast_i
-proc create_hier_cell_broadcast_i { parentCell nameHier } {
-
-  variable script_folder
-
-  if { $parentCell eq "" || $nameHier eq "" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2092 -severity "ERROR" "create_hier_cell_broadcast_i() - Empty argument(s)!"}
-     return
-  }
-
-  # Get object for parentCell
-  set parentObj [get_bd_cells $parentCell]
-  if { $parentObj == "" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2090 -severity "ERROR" "Unable to find parent cell <$parentCell>!"}
-     return
-  }
-
-  # Make sure parentObj is hier blk
-  set parentType [get_property TYPE $parentObj]
-  if { $parentType ne "hier" } {
-     catch {common::send_gid_msg -ssname BD::TCL -id 2091 -severity "ERROR" "Parent <$parentObj> has TYPE = <$parentType>. Expected to be <hier>."}
-     return
-  }
-
-  # Save current instance; Restore later
-  set oldCurInst [current_bd_instance .]
-
-  # Set parent object as current
-  current_bd_instance $parentObj
-
-  # Create cell and set as current instance
-  set hier_obj [create_bd_cell -type hier $nameHier]
-  current_bd_instance $hier_obj
-
-  # Create interface pins
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M00_AXIS0
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M00_AXIS1
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M00_AXIS2
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M01_AXIS
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M01_AXIS1
-
-  create_bd_intf_pin -mode Master -vlnv xilinx.com:interface:axis_rtl:1.0 M01_AXIS2
-
-  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 S_AXIS0
-
-  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 S_AXIS1
-
-  create_bd_intf_pin -mode Slave -vlnv xilinx.com:interface:axis_rtl:1.0 S_AXIS2
-
-
-  # Create pins
-  create_bd_pin -dir I -type clk aclk
-  create_bd_pin -dir I -type rst aresetn
-
-  # Create instance: axis_broadcaster_0, and set properties
-  set axis_broadcaster_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_broadcaster axis_broadcaster_0 ]
-
-  # Create instance: axis_broadcaster_1, and set properties
-  set axis_broadcaster_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_broadcaster axis_broadcaster_1 ]
-
-  # Create instance: axis_broadcaster_2, and set properties
-  set axis_broadcaster_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_broadcaster axis_broadcaster_2 ]
-
-  # Create interface connections
-  connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins S_AXIS0] [get_bd_intf_pins axis_broadcaster_0/S_AXIS]
-  connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins S_AXIS1] [get_bd_intf_pins axis_broadcaster_1/S_AXIS]
-  connect_bd_intf_net -intf_net Conn3 [get_bd_intf_pins S_AXIS2] [get_bd_intf_pins axis_broadcaster_2/S_AXIS]
-  connect_bd_intf_net -intf_net Conn4 [get_bd_intf_pins M00_AXIS0] [get_bd_intf_pins axis_broadcaster_0/M00_AXIS]
-  connect_bd_intf_net -intf_net Conn5 [get_bd_intf_pins M00_AXIS1] [get_bd_intf_pins axis_broadcaster_1/M00_AXIS]
-  connect_bd_intf_net -intf_net Conn6 [get_bd_intf_pins M00_AXIS2] [get_bd_intf_pins axis_broadcaster_2/M00_AXIS]
-  connect_bd_intf_net -intf_net Conn7 [get_bd_intf_pins M01_AXIS] [get_bd_intf_pins axis_broadcaster_0/M01_AXIS]
-  connect_bd_intf_net -intf_net Conn8 [get_bd_intf_pins M01_AXIS1] [get_bd_intf_pins axis_broadcaster_1/M01_AXIS]
-  connect_bd_intf_net -intf_net Conn9 [get_bd_intf_pins M01_AXIS2] [get_bd_intf_pins axis_broadcaster_2/M01_AXIS]
-
-  # Create port connections
-  connect_bd_net -net aclk_1 [get_bd_pins aclk] [get_bd_pins axis_broadcaster_0/aclk] -boundary_type upper
-  connect_bd_net -net aclk_1 [get_bd_pins aclk] [get_bd_pins axis_broadcaster_1/aclk] -boundary_type upper
-  connect_bd_net -net aclk_1 [get_bd_pins aclk] [get_bd_pins axis_broadcaster_2/aclk] -boundary_type upper
-  connect_bd_net -net aresetn_1 [get_bd_pins aresetn] [get_bd_pins axis_broadcaster_0/aresetn] -boundary_type upper
-  connect_bd_net -net aresetn_1 [get_bd_pins aresetn] [get_bd_pins axis_broadcaster_1/aresetn] -boundary_type upper
-  connect_bd_net -net aresetn_1 [get_bd_pins aresetn] [get_bd_pins axis_broadcaster_2/aresetn] -boundary_type upper
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -1079,16 +1512,18 @@ proc create_hier_cell_ADC { parentCell nameHier } {
 
   # Create pins
   create_bd_pin -dir I -type clk CLK
-  create_bd_pin -dir O -from 7 -to 0 CSn
   create_bd_pin -dir I -type rst RESETn
   create_bd_pin -dir I -type clk SCLK
   create_bd_pin -dir I -type rst SCLK_RESETn
   create_bd_pin -dir I -from 7 -to 0 SDATA
-  create_bd_pin -dir I UPDATE
+  create_bd_pin -dir I motor_pwm
   create_bd_pin -dir O -from 0 -to 0 dc_link_oc_err
   create_bd_pin -dir O -from 0 -to 0 dc_link_ov_err
   create_bd_pin -dir O -from 0 -to 0 dc_link_uc_err
   create_bd_pin -dir O -from 0 -to 0 dc_link_uv_err
+  create_bd_pin -dir O -from 0 -to 0 motor_adc_sample_cmd
+  create_bd_pin -dir O -from 0 -to 0 motor_adc_cs_n
+  create_bd_pin -dir O -from 0 -to 0 dc_link_adc_cs_n
   create_bd_pin -dir O -type intr interrupt
   create_bd_pin -dir O -from 0 -to 0 phase_a_oc_err
   create_bd_pin -dir O -from 0 -to 0 phase_a_uc_err
@@ -1132,114 +1567,51 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   set adc_bob2btc [ create_bd_cell -type ip -vlnv xilinx.com:user:adc_bob2btc adc_bob2btc ]
   set_property CONFIG.NUM_CHANNELS {8} $adc_bob2btc
 
-  # Create instance: xlslice_oc_err_1, and set properties
-  set xlslice_oc_err_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_1 ]
+  # Create instance: adc_sample_ctrl_dc, and set properties
+  set adc_sample_ctrl_dc [ create_bd_cell -type ip -vlnv user.org:user:adc_sample_ctrl adc_sample_ctrl_dc ]
   set_property -dict [list \
-    CONFIG.DIN_FROM {1} \
-    CONFIG.DIN_TO {1} \
-    CONFIG.DIN_WIDTH {8} \
-    CONFIG.DOUT_WIDTH {1} \
-  ] $xlslice_oc_err_1
+    CONFIG.CLK_PERIOD_NS {9.999001} \
+    CONFIG.SCLK_PERIOD_NS {20.833541} \
+  ] $adc_sample_ctrl_dc
 
-  # Create instance: xlslice_oc_err_3, and set properties
-  set xlslice_oc_err_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_3 ]
+
+  # Create instance: adc_sample_ctrl_motor, and set properties
+  set adc_sample_ctrl_motor [ create_bd_cell -type ip -vlnv user.org:user:adc_sample_ctrl adc_sample_ctrl_motor ]
   set_property -dict [list \
-    CONFIG.DIN_FROM {3} \
-    CONFIG.DIN_TO {3} \
-    CONFIG.DIN_WIDTH {8} \
-    CONFIG.DOUT_WIDTH {1} \
-  ] $xlslice_oc_err_3
+    CONFIG.CLK_PERIOD_NS {9.999001} \
+    CONFIG.SCLK_PERIOD_NS {20.833541} \
+  ] $adc_sample_ctrl_motor
 
-  # Create instance: xlslice_oc_err_5, and set properties
-  set xlslice_oc_err_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_5 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {5} \
-    CONFIG.DIN_TO {5} \
-    CONFIG.DIN_WIDTH {8} \
-  ] $xlslice_oc_err_5
+  # Create instance: slices
+  create_hier_cell_slices $hier_obj slices
 
-  # Create instance: xlslice_ov_err_6, and set properties
-  set xlslice_ov_err_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_ov_err_6 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {6} \
-    CONFIG.DIN_TO {6} \
-    CONFIG.DIN_WIDTH {8} \
-    CONFIG.DOUT_WIDTH {1} \
-  ] $xlslice_ov_err_6
+  # Create instance: sync
+  create_hier_cell_sync $hier_obj sync
 
-  # Create instance: xlslice_oc_err_7, and set properties
-  set xlslice_oc_err_7 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_oc_err_7 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {7} \
-    CONFIG.DIN_TO {7} \
-    CONFIG.DIN_WIDTH {8} \
-    CONFIG.DOUT_WIDTH {1} \
-  ] $xlslice_oc_err_7
+  # Create instance: sync_vector
+  create_hier_cell_sync_vector $hier_obj sync_vector
 
- # Create instance: xlslice_uc_err_1, and set properties
-  set xlslice_uc_err_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_1 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {1} \
-    CONFIG.DIN_TO {1} \
-    CONFIG.DIN_WIDTH {8} \
-    CONFIG.DOUT_WIDTH {1} \
-  ] $xlslice_uc_err_1
+  # Create instance: xlconcat_update, and set properties
+  set xlconcat_update [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_update ]
+  set_property CONFIG.NUM_PORTS {8} $xlconcat_update
 
 
-  # Create instance: xlslice_uc_err_3, and set properties
-  set xlslice_uc_err_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_3 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {3} \
-    CONFIG.DIN_TO {3} \
-    CONFIG.DIN_WIDTH {8} \
-    CONFIG.DOUT_WIDTH {1} \
-  ] $xlslice_uc_err_3
-
-
-  # Create instance: xlslice_uc_err_5, and set properties
-  set xlslice_uc_err_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_5 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {5} \
-    CONFIG.DIN_TO {5} \
-    CONFIG.DIN_WIDTH {8} \
-  ] $xlslice_uc_err_5
-
-
-  # Create instance: xlslice_uc_err_7, and set properties
-  set xlslice_uc_err_7 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uc_err_7 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {7} \
-    CONFIG.DIN_TO {7} \
-    CONFIG.DIN_WIDTH {8} \
-    CONFIG.DOUT_WIDTH {1} \
-  ] $xlslice_uc_err_7
-
-
-  # Create instance: xlslice_uv_err_6, and set properties
-  set xlslice_uv_err_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_uv_err_6 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {6} \
-    CONFIG.DIN_TO {6} \
-    CONFIG.DIN_WIDTH {8} \
-    CONFIG.DOUT_WIDTH {1} \
-  ] $xlslice_uv_err_6
-
-  set xlconcat_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_1 ]
-  set_property CONFIG.NUM_PORTS {8} $xlconcat_1
+  # Create instance: xlconstant_gnd, and set properties
+  set xlconstant_gnd [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_gnd ]
 
   # Create interface connections
   connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins pc_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L5_AXIS]
   connect_bd_intf_net -intf_net Conn2 [get_bd_intf_pins dc_v_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L6_AXIS]
   connect_bd_intf_net -intf_net adc_hub_0_L2_AXIS [get_bd_intf_pins pb_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L3_AXIS]
   connect_bd_intf_net -intf_net adc_hub_1_L0_AXIS [get_bd_intf_pins pa_i_AXIS] [get_bd_intf_pins adc_hub_phase_dc/L1_AXIS]
-  connect_bd_intf_net -intf_net adc_if_L0_ADC [get_bd_intf_pins adc_if/L0_ADC] [get_bd_intf_pins adc_usb2btc/L0_ADC]
-  connect_bd_intf_net -intf_net adc_if_L1_ADC [get_bd_intf_pins adc_if/L1_ADC] [get_bd_intf_pins adc_bob2btc/L1_ADC]
-  connect_bd_intf_net -intf_net adc_if_L2_ADC [get_bd_intf_pins adc_if/L2_ADC] [get_bd_intf_pins adc_usb2btc/L2_ADC]
-  connect_bd_intf_net -intf_net adc_if_L3_ADC [get_bd_intf_pins adc_if/L3_ADC] [get_bd_intf_pins adc_bob2btc/L3_ADC]
-  connect_bd_intf_net -intf_net adc_if_L4_ADC [get_bd_intf_pins adc_if/L4_ADC] [get_bd_intf_pins adc_usb2btc/L4_ADC]
-  connect_bd_intf_net -intf_net adc_if_L5_ADC [get_bd_intf_pins adc_if/L5_ADC] [get_bd_intf_pins adc_bob2btc/L5_ADC]
-  connect_bd_intf_net -intf_net adc_if_L6_ADC [get_bd_intf_pins adc_if/L6_ADC] [get_bd_intf_pins adc_usb2btc/L6_ADC]
-  connect_bd_intf_net -intf_net adc_if_L7_ADC [get_bd_intf_pins adc_if/L7_ADC] [get_bd_intf_pins adc_usb2btc/L7_ADC]
+  connect_bd_intf_net -intf_net adc_if_L0_ADC [get_bd_intf_pins adc_if/L0_ADC] [get_bd_intf_pins sync_vector/DATA_IN0]
+  connect_bd_intf_net -intf_net adc_if_L1_ADC [get_bd_intf_pins adc_if/L1_ADC] [get_bd_intf_pins sync_vector/DATA_IN1]
+  connect_bd_intf_net -intf_net adc_if_L2_ADC [get_bd_intf_pins adc_if/L2_ADC] [get_bd_intf_pins sync_vector/DATA_IN2]
+  connect_bd_intf_net -intf_net adc_if_L3_ADC [get_bd_intf_pins adc_if/L3_ADC] [get_bd_intf_pins sync_vector/DATA_IN3]
+  connect_bd_intf_net -intf_net adc_if_L4_ADC [get_bd_intf_pins adc_if/L4_ADC] [get_bd_intf_pins sync_vector/DATA_IN4]
+  connect_bd_intf_net -intf_net adc_if_L5_ADC [get_bd_intf_pins adc_if/L5_ADC] [get_bd_intf_pins sync_vector/DATA_IN5]
+  connect_bd_intf_net -intf_net adc_if_L6_ADC [get_bd_intf_pins adc_if/L6_ADC] [get_bd_intf_pins sync_vector/DATA_IN6]
+  connect_bd_intf_net -intf_net adc_if_L7_ADC [get_bd_intf_pins adc_if/L7_ADC] [get_bd_intf_pins sync_vector/DATA_IN7]
   connect_bd_intf_net -intf_net adc_usb2btc_L0_SYS [get_bd_intf_pins adc_hub_phase_dc/L0_ADC] [get_bd_intf_pins adc_usb2btc/L0_SYS]
   connect_bd_intf_net -intf_net adc_bob2btc_L1_SYS [get_bd_intf_pins adc_hub_phase_dc/L1_ADC] [get_bd_intf_pins adc_bob2btc/L1_SYS]
   connect_bd_intf_net -intf_net adc_usb2btc_L2_SYS [get_bd_intf_pins adc_hub_phase_dc/L2_ADC] [get_bd_intf_pins adc_usb2btc/L2_SYS]
@@ -1249,48 +1621,68 @@ proc create_hier_cell_ADC { parentCell nameHier } {
   connect_bd_intf_net -intf_net adc_usb2btc_L6_SYS [get_bd_intf_pins adc_hub_phase_dc/L6_ADC] [get_bd_intf_pins adc_usb2btc/L6_SYS]
   connect_bd_intf_net -intf_net adc_usb2btc_L7_SYS [get_bd_intf_pins adc_hub_phase_dc/L7_ADC] [get_bd_intf_pins adc_usb2btc/L7_SYS]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins S_AXI] [get_bd_intf_pins adc_hub_phase_dc/S_AXI]
+  connect_bd_intf_net -intf_net synchronizer_vector_0_DATA_OUT [get_bd_intf_pins adc_usb2btc/L0_ADC] [get_bd_intf_pins sync_vector/DATA_OUT0]
+  connect_bd_intf_net -intf_net synchronizer_vector_1_DATA_OUT [get_bd_intf_pins adc_bob2btc/L1_ADC] [get_bd_intf_pins sync_vector/DATA_OUT1]
+  connect_bd_intf_net -intf_net synchronizer_vector_2_DATA_OUT [get_bd_intf_pins adc_usb2btc/L2_ADC] [get_bd_intf_pins sync_vector/DATA_OUT2]
+  connect_bd_intf_net -intf_net synchronizer_vector_3_DATA_OUT [get_bd_intf_pins adc_bob2btc/L3_ADC] [get_bd_intf_pins sync_vector/DATA_OUT3]
+  connect_bd_intf_net -intf_net synchronizer_vector_4_DATA_OUT [get_bd_intf_pins adc_usb2btc/L4_ADC] [get_bd_intf_pins sync_vector/DATA_OUT4]
+  connect_bd_intf_net -intf_net synchronizer_vector_5_DATA_OUT [get_bd_intf_pins adc_bob2btc/L5_ADC] [get_bd_intf_pins sync_vector/DATA_OUT5]
+  connect_bd_intf_net -intf_net synchronizer_vector_6_DATA_OUT [get_bd_intf_pins adc_usb2btc/L6_ADC] [get_bd_intf_pins sync_vector/DATA_OUT6]
+  connect_bd_intf_net -intf_net synchronizer_vector_7_DATA_OUT [get_bd_intf_pins adc_usb2btc/L7_ADC] [get_bd_intf_pins sync_vector/DATA_OUT7]
 
   # Create port connections
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins adc_if/SCLK] -boundary_type upper
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins sync/SCLK] -boundary_type upper
+  connect_bd_net -net SCLK_1 [get_bd_pins SCLK] [get_bd_pins sync_vector/SCLK] -boundary_type upper
   connect_bd_net -net SDATA_0_1 [get_bd_pins SDATA] [get_bd_pins adc_if/SDATA]
   connect_bd_net -net adc_hub_1_interrupt [get_bd_pins interrupt] [get_bd_pins adc_hub_phase_dc/interrupt]
-  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins xlslice_oc_err_1/Din] -boundary_type upper
-  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins xlslice_oc_err_3/Din] -boundary_type upper
-  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins xlslice_oc_err_5/Din] -boundary_type upper
-  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins xlslice_ov_err_6/Din] -boundary_type upper
-  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins xlslice_oc_err_7/Din] -boundary_type upper
-  connect_bd_net -net adc_hub_phase_dc_under_fault [get_bd_pins adc_hub_phase_dc/under_fault] [get_bd_pins xlslice_uc_err_1/Din] -boundary_type upper
-  connect_bd_net -net adc_hub_phase_dc_under_fault [get_bd_pins adc_hub_phase_dc/under_fault] [get_bd_pins xlslice_uc_err_3/Din] -boundary_type upper
-  connect_bd_net -net adc_hub_phase_dc_under_fault [get_bd_pins adc_hub_phase_dc/under_fault] [get_bd_pins xlslice_uc_err_5/Din] -boundary_type upper
-  connect_bd_net -net adc_hub_phase_dc_under_fault [get_bd_pins adc_hub_phase_dc/under_fault] [get_bd_pins xlslice_uc_err_7/Din] -boundary_type upper
-  connect_bd_net -net adc_hub_phase_dc_under_fault [get_bd_pins adc_hub_phase_dc/under_fault] [get_bd_pins xlslice_uv_err_6/Din] -boundary_type upper
-  connect_bd_net -net adc_if_0_CSn [get_bd_pins CSn] [get_bd_pins adc_if/CSn]
-  connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_pins SCLK] [get_bd_pins adc_if/SCLK]
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins SCLK_RESETn] [get_bd_pins adc_if/SCLK_RESETn]
-  connect_bd_net -net xlslice_oc_err_1_Dout [get_bd_pins phase_a_oc_err] [get_bd_pins xlslice_oc_err_1/Dout]
-  connect_bd_net -net xlslice_oc_err_3_Dout [get_bd_pins phase_b_oc_err] [get_bd_pins xlslice_oc_err_3/Dout]
-  connect_bd_net -net xlslice_oc_err_5_Dout [get_bd_pins phase_c_oc_err] [get_bd_pins xlslice_oc_err_5/Dout]
-  connect_bd_net -net xlslice_oc_err_7_Dout [get_bd_pins dc_link_oc_err] [get_bd_pins xlslice_oc_err_7/Dout]
-  connect_bd_net -net xlslice_ov_err_6_Dout [get_bd_pins dc_link_ov_err] [get_bd_pins xlslice_ov_err_6/Dout]
-  connect_bd_net -net xlslice_uc_err_1_Dout [get_bd_pins phase_a_uc_err] [get_bd_pins xlslice_uc_err_1/Dout]
-  connect_bd_net -net xlslice_uc_err_3_Dout [get_bd_pins phase_b_uc_err] [get_bd_pins xlslice_uc_err_3/Dout]
-  connect_bd_net -net xlslice_uc_err_5_Dout [get_bd_pins phase_c_uc_err] [get_bd_pins xlslice_uc_err_5/Dout]
-  connect_bd_net -net xlslice_uc_err_7_Dout [get_bd_pins dc_link_uc_err] [get_bd_pins xlslice_uc_err_7/Dout]
-  connect_bd_net -net xlslice_uv_err_6_Dout [get_bd_pins dc_link_uv_err] [get_bd_pins xlslice_uv_err_6/Dout]
-  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In7] [get_bd_pins UPDATE]
-  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In6] [get_bd_pins UPDATE]
-  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In5] [get_bd_pins UPDATE]
-  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In4] [get_bd_pins UPDATE]
-  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In3] [get_bd_pins UPDATE]
-  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In2] [get_bd_pins UPDATE]
-  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In1] [get_bd_pins UPDATE]
-  connect_bd_net -net UPDATE_concat [get_bd_pins xlconcat_1/In0] [get_bd_pins UPDATE]
-  connect_bd_net -net xlconcat_1_dout_update [get_bd_pins xlconcat_1/dout] [get_bd_pins adc_if/UPDATE]
+  connect_bd_net -net adc_hub_1_over_fault [get_bd_pins adc_hub_phase_dc/over_fault] [get_bd_pins slices/over_fault]
+  connect_bd_net -net adc_hub_phase_dc_under_fault [get_bd_pins adc_hub_phase_dc/under_fault] [get_bd_pins slices/under_fault]
+  connect_bd_net -net adc_if_0_CSn [get_bd_pins adc_if/CSn] [get_bd_pins slices/CSn]
+  connect_bd_net -net adc_sample_ctrl_dc_sample_adc [get_bd_pins adc_sample_ctrl_dc/sample_adc] [get_bd_pins sync/update_dc_in]
+  connect_bd_net -net adc_sample_ctrl_motor_sample_adc [get_bd_pins adc_sample_ctrl_motor/sample_adc] [get_bd_pins sync/update_motor_in]
+  connect_bd_net -net dc_csn_sync_data_out [get_bd_pins adc_sample_ctrl_dc/csn] [get_bd_pins sync/csn_dc_out]
+  connect_bd_net -net dc_update_out [get_bd_pins sync/update_dc_out] [get_bd_pins xlconcat_update/In6] -boundary_type upper
+  connect_bd_net -net dc_update_out [get_bd_pins sync/update_dc_out] [get_bd_pins xlconcat_update/In7] -boundary_type upper
+  connect_bd_net -net motor_csn_sync_data_out [get_bd_pins adc_sample_ctrl_motor/csn] [get_bd_pins sync/csn_motor_out]
+  connect_bd_net -net motor_update_out [get_bd_pins motor_adc_sample_cmd] [get_bd_pins sync/update_motor_out] -boundary_type upper
+  connect_bd_net -net motor_update_out [get_bd_pins motor_adc_sample_cmd] [get_bd_pins xlconcat_update/In0] -boundary_type upper
+  connect_bd_net -net motor_update_out [get_bd_pins motor_adc_sample_cmd] [get_bd_pins xlconcat_update/In1] -boundary_type upper
+  connect_bd_net -net motor_update_out [get_bd_pins motor_adc_sample_cmd] [get_bd_pins xlconcat_update/In2] -boundary_type upper
+  connect_bd_net -net motor_update_out [get_bd_pins motor_adc_sample_cmd] [get_bd_pins xlconcat_update/In3] -boundary_type upper
+  connect_bd_net -net motor_update_out [get_bd_pins motor_adc_sample_cmd] [get_bd_pins xlconcat_update/In4] -boundary_type upper
+  connect_bd_net -net motor_update_out [get_bd_pins motor_adc_sample_cmd] [get_bd_pins xlconcat_update/In5] -boundary_type upper
+  connect_bd_net -net phase_a_motor_v_pwm_sync [get_bd_pins motor_pwm] [get_bd_pins adc_sample_ctrl_motor/pwm_sync]
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins SCLK_RESETn] [get_bd_pins adc_if/RESETn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins SCLK_RESETn] [get_bd_pins sync/SCLK_RESETn] -boundary_type upper
+  connect_bd_net -net sclk_resetn_sync_data_out [get_bd_pins adc_sample_ctrl_dc/sresetn] [get_bd_pins adc_sample_ctrl_motor/sresetn] -boundary_type upper
+  connect_bd_net -net sclk_resetn_sync_data_out [get_bd_pins adc_sample_ctrl_dc/sresetn] [get_bd_pins sync/sclk_resetn_out] -boundary_type upper
+  connect_bd_net -net xlconcat_update_dout [get_bd_pins xlconcat_update/dout] [get_bd_pins adc_if/UPDATE]
+  connect_bd_net -net xlconstant_gnd_dout [get_bd_pins adc_sample_ctrl_dc/pwm_sync] [get_bd_pins xlconstant_gnd/dout]
+  connect_bd_net -net xlslice_CSn_Dout [get_bd_pins motor_adc_cs_n] [get_bd_pins slices/motor_adc_cs_n] -boundary_type upper
+  connect_bd_net -net xlslice_CSn_Dout [get_bd_pins motor_adc_cs_n] [get_bd_pins sync/csn_motor_in] -boundary_type upper
+  connect_bd_net -net xlslice_dc_CSn_Dout [get_bd_pins dc_link_adc_cs_n] [get_bd_pins slices/dc_link_adc_cs_n] -boundary_type upper
+  connect_bd_net -net xlslice_dc_CSn_Dout [get_bd_pins dc_link_adc_cs_n] [get_bd_pins sync/csn_dc_in] -boundary_type upper
+  connect_bd_net -net xlslice_oc_err_1_Dout [get_bd_pins phase_a_oc_err] [get_bd_pins slices/phase_a_oc_err]
+  connect_bd_net -net xlslice_oc_err_3_Dout [get_bd_pins phase_b_oc_err] [get_bd_pins slices/phase_b_oc_err]
+  connect_bd_net -net xlslice_oc_err_5_Dout [get_bd_pins phase_c_oc_err] [get_bd_pins slices/phase_c_oc_err]
+  connect_bd_net -net xlslice_oc_err_7_Dout [get_bd_pins dc_link_oc_err] [get_bd_pins slices/dc_link_oc_err]
+  connect_bd_net -net xlslice_ov_err_6_Dout [get_bd_pins dc_link_ov_err] [get_bd_pins slices/dc_link_ov_err]
+  connect_bd_net -net xlslice_uc_err_1_Dout [get_bd_pins phase_a_uc_err] [get_bd_pins slices/phase_a_uc_err]
+  connect_bd_net -net xlslice_uc_err_3_Dout [get_bd_pins phase_b_uc_err] [get_bd_pins slices/phase_b_uc_err]
+  connect_bd_net -net xlslice_uc_err_5_Dout [get_bd_pins phase_c_uc_err] [get_bd_pins slices/phase_c_uc_err]
+  connect_bd_net -net xlslice_uc_err_7_Dout [get_bd_pins dc_link_uc_err] [get_bd_pins slices/dc_link_uc_err]
+  connect_bd_net -net xlslice_uv_err_6_Dout [get_bd_pins dc_link_uv_err] [get_bd_pins slices/dc_link_uv_err]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_hub_phase_dc/S_AXI_ACLK] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_if/CLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_sample_ctrl_dc/clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_sample_ctrl_motor/clk] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_usb2btc/CLK] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins adc_bob2btc/CLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins sync/CLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins CLK] [get_bd_pins sync_vector/CLK] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_hub_phase_dc/S_AXI_ARESETN] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_if/RESETn] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_sample_ctrl_dc/resetn] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_sample_ctrl_motor/resetn] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_usb2btc/RESETn] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins RESETn] [get_bd_pins adc_bob2btc/RESETn] -boundary_type upper
 
@@ -1352,14 +1744,15 @@ proc create_root_design { parentCell } {
   set dc_link_data_i [ create_bd_port -dir I -from 0 -to 0 dc_link_data_i ]
   set dc_link_data_v [ create_bd_port -dir I -from 0 -to 0 dc_link_data_v ]
   set fan_en_b [ create_bd_port -dir O -from 0 -to 0 fan_en_b ]
+  set foc_periodic_rate [ create_bd_port -dir O -from 7 -to 0 foc_periodic_rate ]
   set gate_drive_en [ create_bd_port -dir O -from 0 -to 0 gate_drive_en ]
   set gate_drive_phase_a [ create_bd_port -dir O gate_drive_phase_a ]
   set gate_drive_phase_b [ create_bd_port -dir O gate_drive_phase_b ]
   set gate_drive_phase_c [ create_bd_port -dir O gate_drive_phase_c ]
   set l1_rxs [ create_bd_port -dir O l1_rxs ]
   set l2_rxb [ create_bd_port -dir O l2_rxb ]
-  set l3_rxx [ create_bd_port -dir O l3_rxx ]
   set motor_adc_cs_n [ create_bd_port -dir O -from 0 -to 0 motor_adc_cs_n ]
+  set motor_adc_sample_cmd [ create_bd_port -dir O -from 0 -to 0 motor_adc_sample_cmd ]
   set motor_adc_sclk [ create_bd_port -dir O -type clk motor_adc_sclk ]
   set motor_pa_data_i [ create_bd_port -dir I -from 0 -to 0 motor_pa_data_i ]
   set motor_pa_data_v [ create_bd_port -dir I -from 0 -to 0 motor_pa_data_v ]
@@ -1369,8 +1762,8 @@ proc create_root_design { parentCell } {
   set motor_pc_data_v [ create_bd_port -dir I -from 0 -to 0 motor_pc_data_v ]
   set p1_txs [ create_bd_port -dir O p1_txs ]
   set p2_txb [ create_bd_port -dir O p2_txb ]
-  set p3_txx [ create_bd_port -dir O p3_txx ]
   set ptp_timer [ create_bd_port -dir O ptp_timer ]
+  set pwm_sync_phase_a [ create_bd_port -dir O -from 0 -to 0 pwm_sync_phase_a ]
 
   # Create instance: ADC
   create_hier_cell_ADC [current_bd_instance .] ADC
@@ -1453,6 +1846,21 @@ proc create_root_design { parentCell } {
   # Create instance: proc_sys_reset_1, and set properties
   set proc_sys_reset_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset proc_sys_reset_1 ]
 
+  # Create instance: util_vector_logic_0, and set properties
+  set util_vector_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic util_vector_logic_0 ]
+  set_property -dict [list \
+    CONFIG.C_OPERATION {not} \
+    CONFIG.C_SIZE {1} \
+  ] $util_vector_logic_0
+
+
+  # Create instance: util_vector_logic_1, and set properties
+  set util_vector_logic_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic util_vector_logic_1 ]
+  set_property -dict [list \
+    CONFIG.C_OPERATION {and} \
+    CONFIG.C_SIZE {1} \
+  ] $util_vector_logic_1
+
   # Create instance: xlconcat_0, and set properties
   set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_0 ]
   set_property CONFIG.NUM_PORTS {8} $xlconcat_0
@@ -1461,23 +1869,6 @@ proc create_root_design { parentCell } {
   # Create instance: xlconcat_int, and set properties
   set xlconcat_int [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_int ]
   set_property CONFIG.NUM_PORTS {7} $xlconcat_int
-
-
-  # Create instance: xlconstant_update, and set properties
-  set xlconstant_update [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_update ]
-
-  # Create instance: xlslice_CSn, and set properties
-  set xlslice_CSn [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_CSn ]
-  set_property CONFIG.DIN_WIDTH {8} $xlslice_CSn
-
-
-  # Create instance: xlslice_dc_CSn, and set properties
-  set xlslice_dc_CSn [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_dc_CSn ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {7} \
-    CONFIG.DIN_TO {7} \
-    CONFIG.DIN_WIDTH {8} \
-  ] $xlslice_dc_CSn
 
 
   # Create instance: xlslice_fan, and set properties
@@ -1522,15 +1913,16 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_LPD [get_bd_intf_pins PS_0/M_AXI_HPM0_LPD] [get_bd_intf_pins TSN_subsystem/S00_AXI]
 
   # Create port connections
-  connect_bd_net -net ADC_CSn [get_bd_pins ADC/CSn] [get_bd_pins xlslice_CSn/Din] -boundary_type upper
-  connect_bd_net -net ADC_CSn [get_bd_pins ADC/CSn] [get_bd_pins xlslice_dc_CSn/Din] -boundary_type upper
   connect_bd_net -net ADC_Dout [get_bd_pins ADC/phase_a_uc_err] [get_bd_pins motor_control_0/phase_a_uc_err]
   connect_bd_net -net ADC_Dout1 [get_bd_pins ADC/phase_b_uc_err] [get_bd_pins motor_control_0/phase_b_uc_err]
   connect_bd_net -net ADC_Dout2 [get_bd_pins ADC/phase_c_uc_err] [get_bd_pins motor_control_0/phase_c_uc_err]
   connect_bd_net -net ADC_Dout3 [get_bd_pins ADC/dc_link_uv_err] [get_bd_pins motor_control_0/dc_link_uv_err]
   connect_bd_net -net ADC_Dout4 [get_bd_pins ADC/dc_link_uc_err] [get_bd_pins motor_control_0/dc_link_uc_err]
+  connect_bd_net -net ADC_dc_link_adc_cs_n [get_bd_ports dc_link_adc_cs_n] [get_bd_pins ADC/dc_link_adc_cs_n]
   connect_bd_net -net ADC_dc_link_oc_err [get_bd_pins ADC/dc_link_oc_err] [get_bd_pins motor_control_0/dc_link_oc_err]
   connect_bd_net -net ADC_dc_link_ov_err [get_bd_pins ADC/dc_link_ov_err] [get_bd_pins motor_control_0/dc_link_ov_err]
+  connect_bd_net -net ADC_motor_adc_cs_n [get_bd_ports motor_adc_cs_n] [get_bd_pins ADC/motor_adc_cs_n]
+  connect_bd_net -net ADC_motor_adc_sample_cmd [get_bd_ports motor_adc_sample_cmd] [get_bd_pins ADC/motor_adc_sample_cmd]
   connect_bd_net -net ADC_phase_a_oc_err [get_bd_pins ADC/phase_a_oc_err] [get_bd_pins motor_control_0/phase_a_oc_err]
   connect_bd_net -net ADC_phase_b_oc_err [get_bd_pins ADC/phase_b_oc_err] [get_bd_pins motor_control_0/phase_b_oc_err]
   connect_bd_net -net ADC_phase_c_oc_err [get_bd_pins ADC/phase_c_oc_err] [get_bd_pins motor_control_0/phase_c_oc_err]
@@ -1552,41 +1944,45 @@ proc create_root_design { parentCell } {
   connect_bd_net -net TSN_subsystem_irq [get_bd_pins TSN_subsystem/irq] [get_bd_pins xlconcat_int/In2]
   connect_bd_net -net TSN_subsystem_lis1_rxs_0 [get_bd_ports l1_rxs] [get_bd_pins TSN_subsystem/lis1_rxs_0]
   connect_bd_net -net TSN_subsystem_lis2_rxb_0 [get_bd_ports l2_rxb] [get_bd_pins TSN_subsystem/lis2_rxb_0]
-  connect_bd_net -net TSN_subsystem_lis3_rxx_0 [get_bd_ports l3_rxx] [get_bd_pins TSN_subsystem/lis3_rxx_0]
   connect_bd_net -net TSN_subsystem_ptp_timer [get_bd_ports ptp_timer] [get_bd_pins TSN_subsystem/ptp_timer]
   connect_bd_net -net TSN_subsystem_pub1_txs_0 [get_bd_ports p1_txs] [get_bd_pins TSN_subsystem/pub1_txs_0]
   connect_bd_net -net TSN_subsystem_pub2_txb_0 [get_bd_ports p2_txb] [get_bd_pins TSN_subsystem/pub2_txb_0]
-  connect_bd_net -net TSN_subsystem_pub3_txx_0 [get_bd_ports p3_txx] [get_bd_pins TSN_subsystem/pub3_txx_0]
   connect_bd_net -net adc_hub_1_interrupt [get_bd_pins ADC/interrupt] [get_bd_pins xlconcat_int/In0]
   connect_bd_net -net clk_in1_0_1 [get_bd_ports CLK_IN_gem] [get_bd_pins TSN_subsystem/CLK_IN_gem]
   connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_ports dc_link_adc_sclk] [get_bd_ports motor_adc_sclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_ports dc_link_adc_sclk] [get_bd_pins ADC/SCLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_ports dc_link_adc_sclk] [get_bd_pins util_vector_logic_0/Op1] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_ports dc_link_adc_sclk] [get_bd_pins clk_wiz_0/clk_out_48M] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out_20M1 [get_bd_ports dc_link_adc_sclk] [get_bd_pins proc_sys_reset_1/slowest_sync_clk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_locked [get_bd_pins clk_wiz_0/locked] [get_bd_pins proc_sys_reset_0/dcm_locked] -boundary_type upper
   connect_bd_net -net clk_wiz_0_locked [get_bd_pins clk_wiz_0/locked] [get_bd_pins proc_sys_reset_1/dcm_locked] -boundary_type upper
   connect_bd_net -net gate_driver_A_gate_drive [get_bd_ports gate_drive_phase_a] [get_bd_pins gate_driver/gate_drive_phase_a]
   connect_bd_net -net gate_driver_B_gate_drive [get_bd_ports gate_drive_phase_b] [get_bd_pins gate_driver/gate_drive_phase_b]
   connect_bd_net -net gate_driver_C_gate_drive [get_bd_ports gate_drive_phase_c] [get_bd_pins gate_driver/gate_drive_phase_c]
+  connect_bd_net -net hls_foc_periodic_0_Va_cmd_TDATA [get_bd_pins hls_foc_periodic_0/Va_cmd_TDATA] [get_bd_pins hls_svpwm_duty_0/strm_Va_cmd_TDATA]
+  connect_bd_net -net hls_foc_periodic_0_Va_cmd_TVALID [get_bd_pins hls_foc_periodic_0/Va_cmd_TVALID] [get_bd_pins hls_svpwm_duty_0/strm_Va_cmd_TVALID] -boundary_type upper
+  connect_bd_net -net hls_foc_periodic_0_Va_cmd_TVALID [get_bd_pins hls_foc_periodic_0/Va_cmd_TVALID] [get_bd_pins util_vector_logic_1/Op1] -boundary_type upper
   connect_bd_net -net hls_foc_periodic_0_interrupt [get_bd_pins hls_foc_periodic_0/interrupt] [get_bd_pins xlconcat_int/In4]
   connect_bd_net -net hls_pwm_gen_0_interrupt [get_bd_pins hls_pwm_gen_0/interrupt] [get_bd_pins xlconcat_int/In6]
   connect_bd_net -net hls_pwm_gen_0_strm_pwm_h_c_din [get_bd_pins gate_driver/phase_upper_c] [get_bd_pins hls_pwm_gen_0/strm_pwm_h_c_din]
   connect_bd_net -net hls_pwm_gen_0_strm_pwm_l_a_din [get_bd_pins gate_driver/phase_lower_a] [get_bd_pins hls_pwm_gen_0/strm_pwm_l_a_din]
   connect_bd_net -net hls_pwm_gen_0_strm_pwm_l_b_din [get_bd_pins gate_driver/phase_lower_b] [get_bd_pins hls_pwm_gen_0/strm_pwm_l_b_din]
   connect_bd_net -net hls_pwm_gen_0_strm_pwm_l_c_din [get_bd_pins gate_driver/phase_lower_c] [get_bd_pins hls_pwm_gen_0/strm_pwm_l_c_din]
+  connect_bd_net -net hls_pwm_gen_0_strm_pwm_sync_a_din [get_bd_ports pwm_sync_phase_a] [get_bd_pins ADC/motor_pwm] -boundary_type upper
+  connect_bd_net -net hls_pwm_gen_0_strm_pwm_sync_a_din [get_bd_ports pwm_sync_phase_a] [get_bd_pins hls_pwm_gen_0/strm_pwm_sync_a_din] -boundary_type upper
   connect_bd_net -net hls_qei_0_interrupt [get_bd_pins hls_qei_0/interrupt] [get_bd_pins xlconcat_int/In3]
   connect_bd_net -net hls_svpwm_duty_0_interrupt [get_bd_pins hls_svpwm_duty_0/interrupt] [get_bd_pins xlconcat_int/In5]
+  connect_bd_net -net hls_svpwm_duty_0_strm_Va_cmd_TREADY [get_bd_pins hls_foc_periodic_0/Va_cmd_TREADY] [get_bd_pins hls_svpwm_duty_0/strm_Va_cmd_TREADY] -boundary_type upper
+  connect_bd_net -net hls_svpwm_duty_0_strm_Va_cmd_TREADY [get_bd_pins hls_foc_periodic_0/Va_cmd_TREADY] [get_bd_pins util_vector_logic_1/Op2] -boundary_type upper
   connect_bd_net -net motor_control_0_gate_drive_en [get_bd_ports gate_drive_en] [get_bd_pins motor_control_0/gate_drive_en]
   connect_bd_net -net motor_control_0_interrupt [get_bd_pins motor_control_0/interrupt] [get_bd_pins xlconcat_int/In1]
   connect_bd_net -net phase_upper_a_1 [get_bd_pins gate_driver/phase_upper_a] [get_bd_pins hls_pwm_gen_0/strm_pwm_h_a_din]
   connect_bd_net -net phase_upper_b_1 [get_bd_pins gate_driver/phase_upper_b] [get_bd_pins hls_pwm_gen_0/strm_pwm_h_b_din]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins ADC/SCLK_RESETn] [get_bd_pins proc_sys_reset_1/peripheral_aresetn]
+  connect_bd_net -net util_vector_logic_0_Res [get_bd_pins ADC/SCLK] [get_bd_pins proc_sys_reset_1/slowest_sync_clk] -boundary_type upper
+  connect_bd_net -net util_vector_logic_0_Res [get_bd_pins ADC/SCLK] [get_bd_pins util_vector_logic_0/Res] -boundary_type upper
+  connect_bd_net -net util_vector_logic_1_Res [get_bd_ports foc_periodic_rate] [get_bd_pins util_vector_logic_1/Res]
   connect_bd_net -net xlconcat_irq [get_bd_pins PS_0/pl_ps_irq0] [get_bd_pins xlconcat_int/dout]
   connect_bd_net -net xlconstant_0_dout [get_bd_ports Phy_reset_n] [get_bd_pins TSN_subsystem/Phy_reset_n]
-  connect_bd_net -net xlconstant_0_dout1 [get_bd_pins ADC/UPDATE] [get_bd_pins xlconstant_update/dout]
   connect_bd_net -net xlslice_0_Dout1 [get_bd_ports fan_en_b] [get_bd_pins xlslice_fan/Dout]
-  connect_bd_net -net xlslice_CSn_Dout [get_bd_ports motor_adc_cs_n] [get_bd_pins xlslice_CSn/Dout]
-  connect_bd_net -net xlslice_dc_CSn_Dout [get_bd_ports dc_link_adc_cs_n] [get_bd_pins xlslice_dc_CSn/Dout]
   connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins PS_0/emio_ttc0_wave_o] [get_bd_pins xlslice_fan/Din]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins PS_0/maxihpm0_fpd_aclk] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/ACLK] -boundary_type upper
@@ -1627,7 +2023,6 @@ proc create_root_design { parentCell } {
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn1 [get_bd_pins PS_0/pl_resetn0] [get_bd_pins proc_sys_reset_0/ext_reset_in] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn1 [get_bd_pins PS_0/pl_resetn0] [get_bd_pins proc_sys_reset_1/ext_reset_in] -boundary_type upper
 
-  
   # Create address segments
   assign_bd_address -offset 0xA0010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs ADC/adc_hub_phase_dc/S_AXI/Reg] -force
   assign_bd_address -offset 0x80020000 -range 0x00001000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs TSN_subsystem/axi_intc_0/S_AXI/Reg] -force

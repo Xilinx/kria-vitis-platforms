@@ -197,15 +197,21 @@ set_property IOSTANDARD LVCMOS33 [get_ports l2_rxb]
 set_property SLEW SLOW [get_ports l2_rxb]
 set_property DRIVE 4 [get_ports l2_rxb]
 
-set_property PACKAGE_PIN E12 [get_ports p3_txx]
-set_property IOSTANDARD LVCMOS33 [get_ports p3_txx]
-set_property SLEW SLOW [get_ports p3_txx]
-set_property DRIVE 4 [get_ports p3_txx]
+# ADC Sample test signals
+set_property PACKAGE_PIN E12 [get_ports pwm_sync_phase_a]
+set_property IOSTANDARD LVCMOS33 [get_ports pwm_sync_phase_a]
+set_property SLEW SLOW [get_ports pwm_sync_phase_a]
+set_property DRIVE 4 [get_ports pwm_sync_phase_a]
 
-set_property PACKAGE_PIN D10 [get_ports l3_rxx]
-set_property IOSTANDARD LVCMOS33 [get_ports l3_rxx]
-set_property SLEW SLOW [get_ports l3_rxx]
-set_property DRIVE 4 [get_ports l3_rxx]
+set_property PACKAGE_PIN D10 [get_ports foc_periodic_rate]
+set_property IOSTANDARD LVCMOS33 [get_ports foc_periodic_rate]
+set_property SLEW SLOW [get_ports foc_periodic_rate]
+set_property DRIVE 4 [get_ports foc_periodic_rate]
+
+set_property PACKAGE_PIN F13 [get_ports motor_adc_sample_cmd]
+set_property IOSTANDARD LVCMOS33 [get_ports motor_adc_sample_cmd]
+set_property SLEW SLOW [get_ports motor_adc_sample_cmd]
+set_property DRIVE 4 [get_ports motor_adc_sample_cmd]
 
 #Fan Speed Enable
 set_property PACKAGE_PIN G12 [get_ports {fan_en_b}]
