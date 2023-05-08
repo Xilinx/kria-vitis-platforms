@@ -444,39 +444,6 @@ pipeline {
                         }
                     }
                 }
-                stage('kv260_bist') {
-                    environment {
-                        pfm_base="kv260_bist"
-                        pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/build/${pfm_base}"
-                        board="kv260"
-                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
-                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
-                    }
-                    stages {
-                        stage('kv260_bist platform build')  {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                            }
-                            when {
-                                anyOf {
-                                    changeset "**/kv260/platforms/vivado/kv260_bist/**"
-                                    triggeredBy 'TimerTrigger'
-                                }
-                            }
-                            steps {
-                                createWorkDir()
-                                buildPlatform()
-                            }
-                            post {
-                                success {
-                                    deployPlatformFirmware()
-                                }
-                            }
-                        }
-                    }
-                }
                 stage('kr260_tsn_rs485pmod') {
                     environment {
                         pfm_base="kr260_tsn_rs485pmod"
