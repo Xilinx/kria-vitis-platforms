@@ -510,6 +510,39 @@ pipeline {
                         }
                     }
                 }
+                stage('kr260_pmod_gps') {
+                    environment {
+                        pfm_base="kr260_pmod_gps"
+                        pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        work_dir="${ws}/build/${pfm_base}"
+                        board="kr260"
+                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
+                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                    }
+                    stages {
+                        stage('kr260_pmod_gps platform build')  {
+                            environment {
+                                PAEG_LSF_MEM=65536
+                                PAEG_LSF_QUEUE="long"
+                            }
+                            when {
+                                anyOf {
+                                    changeset "**/kr260/platforms/vivado/kr260_pmod_gps/**"
+                                    triggeredBy 'TimerTrigger'
+                                }
+                            }
+                            steps {
+                                createWorkDir()
+                                buildPlatform()
+                            }
+                            post {
+                                success {
+                                    deployPlatformFirmware()
+                                }
+                            }
+                        }
+                    }
+                }
                 stage('k26_base_starter_kit') {
                     environment {
                         pfm_base="k26_base_starter_kit"
