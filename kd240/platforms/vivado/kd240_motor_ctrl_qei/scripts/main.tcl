@@ -1,7 +1,7 @@
 # Copyright (C) 2022, Advanced Micro Devices, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-#Set Board Preset 
+#Set Board Preset
 set_param board.repoPaths {../board_files/kd240_som/1.0 ../board_files/kd240_carrier/1.0}
 
 set proj_name kd240_motor_ctrl_qei
@@ -113,6 +113,8 @@ set_property platform.name $proj_name [current_project]
 set_property platform.vendor "xilinx" [current_project]
 
 set_property platform.version "1.0" [current_project]
+
+set_property strategy Area_ExploreSequential [get_runs impl_1]
 
 launch_runs synth_1 -jobs $jobs
 wait_on_run synth_1
