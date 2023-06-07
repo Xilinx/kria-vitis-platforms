@@ -903,28 +903,28 @@ proc create_root_design { parentCell } {
   connect_bd_net -net motor_pb_data_b_1 [get_bd_ports motor_pb_data_i] [get_bd_pins xlconcat_1/In3]
   connect_bd_net -net motor_pc_data_a_1 [get_bd_ports motor_pc_data_v] [get_bd_pins xlconcat_1/In4]
   connect_bd_net -net motor_pc_data_b_1 [get_bd_ports motor_pc_data_i] [get_bd_pins xlconcat_1/In5]
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_gpio_0/s_axi_aclk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/ACLK] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M00_ACLK] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M01_ACLK] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M02_ACLK] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M03_ACLK] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M04_ACLK] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M05_ACLK] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/S00_ACLK] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_quad_spi_0/ext_spi_clk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_quad_spi_0/s_axi_aclk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins ethernet_subsystem/m_axi_mm2s_aclk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins gate_driver/sys_clk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins hls_pattern_gen_0/ap_clk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins hls_pwm_gen_0/ap_clk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins hls_qei_0/ap_clk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins hls_svpwm_duty_0/ap_clk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_fpd_aclk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_lpd_aclk] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0] -boundary_type upper
-  connect_bd_net -net pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins zynq_ultra_ps_e_0/saxihp0_fpd_aclk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_gpio_0/s_axi_aclk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/ACLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M00_ACLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M01_ACLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M02_ACLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M03_ACLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M04_ACLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/M05_ACLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/S00_ACLK] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_quad_spi_0/ext_spi_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_quad_spi_0/s_axi_aclk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins ethernet_subsystem/m_axi_mm2s_aclk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins gate_driver/sys_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins hls_pattern_gen_0/ap_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins hls_pwm_gen_0/ap_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins hls_qei_0/ap_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins hls_svpwm_duty_0/ap_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_fpd_aclk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_lpd_aclk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins zynq_ultra_ps_e_0/saxihp0_fpd_aclk] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins ADC/SCLK_RESETn] [get_bd_pins proc_sys_reset_1/peripheral_aresetn]
   connect_bd_net -net xlconcat_1_dout [get_bd_pins ADC/SDATA] [get_bd_pins xlconcat_1/dout]
   connect_bd_net -net xlconcat_int_dout [get_bd_pins xlconcat_int/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq1]
