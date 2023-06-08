@@ -7,7 +7,7 @@ PWD = $(shell readlink -f .)
 
 # the platform directory has to be an absolute path when passed to v++
 PFM_DIR = $(PWD)/platforms
-PFM_VER = 202220_1
+PFM_VER = 202310_1
 
 # valid platforms
 PFM_LIST = kd240_motor_ctrl_qei

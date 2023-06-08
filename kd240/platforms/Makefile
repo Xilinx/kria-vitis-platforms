@@ -8,7 +8,7 @@ XSCT = $(XILINX_VITIS)/bin/xsct
 JOBS ?= 8
 
 PLATFORM ?= kd240_motor_ctrl_qei
-VERSION ?= 202220_1
+VERSION ?= 202310_1
 
 PFM_DIR = xilinx_$(PLATFORM)_$(VERSION)
 PFM_PRJ_DIR = xsct/$(PLATFORM)/$(PLATFORM)/export/$(PLATFORM)
