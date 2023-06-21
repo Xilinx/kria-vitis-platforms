@@ -199,6 +199,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_vcu_DP/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
@@ -225,6 +226,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/overlays/examples/smartcam/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_SMARTCAM', value: '1'
                                 }
                             }
@@ -249,6 +251,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/overlays/examples/benchmark/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_SMARTCAM', value: '1'
                                 }
                             }
@@ -283,6 +286,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/platforms/vivado/kv260_vcuDecode_vmixDP/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
@@ -309,6 +313,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/overlays/examples/aibox-reid/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_AIBOX_REID', value: '1'
                                 }
                             }
@@ -343,6 +348,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_vmixDP/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
@@ -369,6 +375,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/overlays/examples/defect-detect/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_DEFECT_DETECT', value: '1'
                                 }
                             }
@@ -403,6 +410,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_rpiMipiRx_DP/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
@@ -429,6 +437,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/overlays/examples/nlp-smartvision/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_NLP_SMARTVISION', value: '1'
                                 }
                             }
@@ -463,6 +472,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kr260/platforms/vivado/kr260_tsn_rs485pmod/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
@@ -496,6 +506,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kr260/platforms/vivado/kr260_pmod_gps/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
@@ -529,6 +540,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/k26/platforms/vivado/k26_base_starter_kit/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
