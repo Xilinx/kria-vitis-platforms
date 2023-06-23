@@ -90,9 +90,9 @@ def buildOverlay() {
         pushd ${work_dir}/${board}
         if [ -d platforms/${pfm} ]; then
             echo "Using platform from local build"
-        elif [ -d ${DEPLOYDIR}/${pfm} ]; then
+        elif [ -d ${DEPLOYDIR}/platforms/${pfm} ]; then
             echo "Using platform from build artifacts"
-            ln -s ${DEPLOYDIR}/${pfm} platforms/
+            ln -s ${DEPLOYDIR}/platforms/${pfm} platforms/
         else
             echo "No valid platform found: ${pfm}"
             exit 1
@@ -140,6 +140,8 @@ pipeline {
     options {
         // don't let the implicit checkout happen
         skipDefaultCheckout true
+        // retain logs for last 30 builds
+        buildDiscarder(logRotator(numToKeepStr: '30'))
     }
     triggers {
         cron(env.BRANCH_NAME == 'master' ? 'H 21 * * *' : '')
@@ -199,6 +201,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_vcu_DP/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
@@ -225,6 +228,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/overlays/examples/smartcam/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_SMARTCAM', value: '1'
                                 }
                             }
@@ -249,6 +253,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/overlays/examples/benchmark/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_SMARTCAM', value: '1'
                                 }
                             }
@@ -283,6 +288,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/platforms/vivado/kv260_vcuDecode_vmixDP/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
@@ -309,6 +315,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/overlays/examples/aibox-reid/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_AIBOX_REID', value: '1'
                                 }
                             }
@@ -343,6 +350,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_vmixDP/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
@@ -369,6 +377,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/overlays/examples/defect-detect/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_DEFECT_DETECT', value: '1'
                                 }
                             }
@@ -403,6 +412,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_rpiMipiRx_DP/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
@@ -429,6 +439,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kv260/overlays/examples/nlp-smartvision/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_NLP_SMARTVISION', value: '1'
                                 }
                             }
@@ -463,6 +474,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kr260/platforms/vivado/kr260_tsn_rs485pmod/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
@@ -496,6 +508,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/kr260/platforms/vivado/kr260_pmod_gps/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
@@ -529,6 +542,7 @@ pipeline {
                                 anyOf {
                                     changeset "**/k26/platforms/vivado/k26_base_starter_kit/**"
                                     triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
                                 }
                             }
                             steps {
