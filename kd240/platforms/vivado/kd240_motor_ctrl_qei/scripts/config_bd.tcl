@@ -1909,7 +1909,7 @@ proc create_root_design { parentCell } {
 #  connect_bd_intf_net -intf_net tsn_endpoint_ethernet_mac_0_mdio_external2 [get_bd_intf_ports mdio2] [get_bd_intf_pins TSN_subsystem/mdio2]
 #  connect_bd_intf_net -intf_net tsn_endpoint_ethernet_mac_0_rgmii1 [get_bd_intf_ports rgmii] [get_bd_intf_pins TSN_subsystem/rgmii]
 #  connect_bd_intf_net -intf_net tsn_endpoint_ethernet_mac_0_rgmii2 [get_bd_intf_ports rgmii2] [get_bd_intf_pins TSN_subsystem/rgmii2]
-  connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_FPD [get_bd_intf_pins PS_0/M_AXI_HPM0_FPD] [get_bd_intf_pins axi_interconnect_cntrl/S00_AXI]
+#  connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_FPD [get_bd_intf_pins PS_0/M_AXI_HPM0_FPD] [get_bd_intf_pins axi_interconnect_cntrl/S00_AXI]
 #  connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_LPD [get_bd_intf_pins PS_0/M_AXI_HPM0_LPD] [get_bd_intf_pins TSN_subsystem/S00_AXI]
 
   # Create port connections
