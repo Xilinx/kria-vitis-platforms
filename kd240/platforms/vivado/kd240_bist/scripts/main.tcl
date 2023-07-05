@@ -35,11 +35,6 @@ import_files -fileset constrs_1 $xdc_list
 set_property ip_repo_paths $ip_repo_path [current_project]
 update_ip_catalog
 
-
-# Add rtl files
-import_files -norecurse {./ip/gate_driver_chk_en.v}
-update_compile_order -fileset sources_1
-
 # Create block diagram design and set as current design
 set design_name $proj_name
 create_bd_design $proj_name

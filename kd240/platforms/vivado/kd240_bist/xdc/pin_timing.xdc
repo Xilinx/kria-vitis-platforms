@@ -334,5 +334,7 @@ set_clock_groups -asynchronous -group [get_clocks kd240_bist_i/ethernet_subsyste
 set_clock_groups -asynchronous -group [get_clocks clk_out1_kd240_bist_clk_wiz_0]
 set_clock_groups -asynchronous -group [get_clocks clk_out2_kd240_bist_clk_wiz_0]
 set_clock_groups -asynchronous -group [get_clocks clk_out1_kd240_bist_clk_wiz_1_0]
+set_clock_groups -asynchronous -group [get_clocks clk_out_48M_*]
+set_clock_groups -asynchronous -group [get_clocks clk_out_100M_*]
 
 
