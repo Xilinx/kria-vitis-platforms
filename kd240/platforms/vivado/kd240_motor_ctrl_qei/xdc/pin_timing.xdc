@@ -300,6 +300,25 @@ set_property IOSTANDARD LVCMOS18 [get_ports motor_pc_data_v]
 set_property PACKAGE_PIN J7 [get_ports dc_link_data_v]
 set_property IOSTANDARD LVCMOS18 [get_ports dc_link_data_v]
 
+## TQ Constraints 
+set_property PACKAGE_PIN J4 [get_ports TQ_SCLK]
+set_property IOSTANDARD LVCMOS18 [get_ports TQ_SCLK]
+set_property SLEW SLOW [get_ports TQ_SCLK]
+set_property DRIVE 4 [get_ports TQ_SCLK]
+
+set_property PACKAGE_PIN L6 [get_ports {TQ_CSn[0]}]
+set_property IOSTANDARD LVCMOS18 [get_ports {TQ_CSn[0]}]
+set_property SLEW SLOW [get_ports {TQ_CSn[0]}]
+set_property DRIVE 4 [get_ports {TQ_CSn[0]}]
+
+set_property PACKAGE_PIN K4 [get_ports TQ_SDI]
+set_property IOSTANDARD LVCMOS18 [get_ports TQ_SDI]
+set_property SLEW SLOW [get_ports TQ_SDI]
+set_property DRIVE 4 [get_ports TQ_SDI]
+
+set_property PACKAGE_PIN F4 [get_ports TQ_SDO]
+set_property IOSTANDARD LVCMOS18 [get_ports TQ_SDO]
+
 
 ## Clock inputs from board
 

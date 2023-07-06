@@ -114,7 +114,7 @@ set_property platform.vendor "xilinx" [current_project]
 
 set_property platform.version "1.0" [current_project]
 
-set_property strategy Area_ExploreSequential [get_runs impl_1]
+#set_property strategy Area_ExploreSequential [get_runs impl_1]
 
 launch_runs synth_1 -jobs $jobs
 wait_on_run synth_1
