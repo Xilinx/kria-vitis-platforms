@@ -72,7 +72,7 @@ wire mult_ce;
 wire [QSCALE_MAX_BITS-1:0] mult_a;
 wire [QSCALE_MAX_BITS-1:0] mult_out;
 wire mult_out_vld;
-wire empty;
+
 
 // Multiplier latency is MULT_LATENCY, so mult_out_vld is MULT_LATENCY clocks after din_vld
 always @(posedge clk)
@@ -108,23 +108,9 @@ qscaler_scaling_mult_l<=: $i :> qscaler_scaler_mult_i
       .P      (mult_out)    // output QSCALE_MAX_BITS wide
   );
 
-assign axis_q_tvalid = !empty;
-assign rd_en = !empty && axis_q_tready;
-assign axis_q_tlast = axis_q_tvalid;
-
-fifo_generator_0 axis_q_fifo
-(
-  .clk(clk),                  // input
-  .srst(~resetn),             // input
-  .din(mult_out),             // input QSCALE_MAX_BITS wide
-  .wr_en(mult_out_vld),       // input
-  .rd_en(rd_en),              // input
-  .dout(axis_q_tdata),        // output QSCALE_MAX_BITS wide
-  .full(),                    // output
-  .empty(empty),              // output
-  .wr_rst_busy(),             // output
-  .rd_rst_busy()              // output
-);
+assign axis_q_tvalid = mult_out_vld;
+assign axis_q_tlast = mult_out_vld;
+assign axis_q_tdata = mult_out;
 
 endmodule
 

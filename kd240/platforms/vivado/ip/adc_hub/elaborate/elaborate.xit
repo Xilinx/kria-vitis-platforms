@@ -182,19 +182,4 @@ if {$USE_BRAM_FIFO == 1} {
 }
 }
 
-  # Configure FIFO Generator IP
-  set fifo_sub_core_vlnv           xilinx.com:ip:fifo_generator:13.2
-  set fifo_sub_core_name           "fifo_generator_0"
-  set fifo_sub_core                [create_sub_core $fifo_sub_core_vlnv $fifo_sub_core_name]
-  set_property -dict [list \
-    CONFIG.Fifo_Implementation {Common_Clock_Distributed_RAM} \
-    CONFIG.Performance_Options {First_Word_Fall_Through} \
-    CONFIG.Input_Data_Width $qscale_max_bits \
-    CONFIG.Input_Depth {16} \
-    CONFIG.Output_Data_Width $qscale_max_bits \
-    CONFIG.Output_Depth {16} \
-    CONFIG.Use_Embedded_Registers {false} \
-    CONFIG.Use_Extra_Logic {true} \
-  ] $fifo_sub_core
-
 }
