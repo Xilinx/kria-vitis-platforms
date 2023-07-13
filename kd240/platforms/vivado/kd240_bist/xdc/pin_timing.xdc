@@ -258,17 +258,22 @@ set_property IOSTANDARD LVCMOS18 [get_ports motor_pc_data_v]
 set_property PACKAGE_PIN T6 [get_ports motor_pc_data_i]
 set_property IOSTANDARD LVCMOS18 [get_ports motor_pc_data_i]
 
-## One wire
-set_property PACKAGE_PIN H13 [get_ports {one_wire[0]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {one_wire[0]}]
-set_property SLEW SLOW [get_ports {one_wire[0]}]
-set_property DRIVE 4 [get_ports {one_wire[0]}]
+
+## GPIO2_tri_io
+
+# One wire
+set_property PACKAGE_PIN H13 [get_ports {GPIO2_tri_io[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {GPIO2_tri_io[0]}]
+set_property SLEW SLOW [get_ports {GPIO2_tri_io[0]}]
+set_property DRIVE 4 [get_ports {GPIO2_tri_io[0]}]
+
+# Brake control
+set_property PACKAGE_PIN B9 [get_ports {GPIO2_tri_io[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {GPIO2_tri_io[1]}]
+set_property SLEW SLOW [get_ports {GPIO2_tri_io[1]}]
+set_property DRIVE 4 [get_ports {GPIO2_tri_io[1]}]
 
 ## Gate Drive (check iostandards)
-set_property PACKAGE_PIN B9 [get_ports {brake_cntrl[0]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {brake_cntrl[0]}]
-set_property SLEW SLOW [get_ports {brake_cntrl[0]}]
-set_property DRIVE 4 [get_ports {brake_cntrl[0]}]
 
 set_property PACKAGE_PIN G9 [get_ports {gate_drive_en[0]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gate_drive_en[0]}]

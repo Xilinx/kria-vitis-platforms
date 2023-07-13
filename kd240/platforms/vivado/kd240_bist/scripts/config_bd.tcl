@@ -1092,13 +1092,14 @@ proc create_root_design { parentCell } {
 
   set gem2_rgmii [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:rgmii_rtl:1.0 gem2_rgmii ]
 
+  set GPIO2 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:gpio_rtl:1.0 GPIO2 ]
+
 
   # Create ports
   set TQ_CSn [ create_bd_port -dir O -from 0 -to 0 TQ_CSn ]
   set TQ_SCLK [ create_bd_port -dir O TQ_SCLK ]
   set TQ_SDI [ create_bd_port -dir O TQ_SDI ]
   set TQ_SDO [ create_bd_port -dir I TQ_SDO ]
-  set brake_cntrl [ create_bd_port -dir O -from 0 -to 0 brake_cntrl ]
   set dc_link_adc_cs_n [ create_bd_port -dir O -from 0 -to 0 dc_link_adc_cs_n ]
   set dc_link_adc_sclk [ create_bd_port -dir O dc_link_adc_sclk ]
   set dc_link_data_i [ create_bd_port -dir I dc_link_data_i ]
@@ -1120,7 +1121,6 @@ proc create_root_design { parentCell } {
   set motor_pb_data_v [ create_bd_port -dir I motor_pb_data_v ]
   set motor_pc_data_i [ create_bd_port -dir I motor_pc_data_i ]
   set motor_pc_data_v [ create_bd_port -dir I motor_pc_data_v ]
-  set one_wire [ create_bd_port -dir O -from 0 -to 0 one_wire ]
   set qei_se_A [ create_bd_port -dir I qei_se_A ]
   set qei_se_B [ create_bd_port -dir I qei_se_B ]
   set qei_se_I [ create_bd_port -dir I qei_se_I ]
@@ -1132,7 +1132,7 @@ proc create_root_design { parentCell } {
     CONFIG.C_ALL_INPUTS_2 {0} \
     CONFIG.C_ALL_OUTPUTS {0} \
     CONFIG.C_ALL_OUTPUTS_2 {0} \
-    CONFIG.C_GPIO2_WIDTH {3} \
+    CONFIG.C_GPIO2_WIDTH {2} \
     CONFIG.C_GPIO_WIDTH {8} \
     CONFIG.C_IS_DUAL {1} \
   ] $axi_gpio_0
@@ -1193,24 +1193,7 @@ proc create_root_design { parentCell } {
   ] $xlslice_fan
 
 
-  # Create instance: xlslice_gpio_1, and set properties
-  set xlslice_gpio_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_gpio_1 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {1} \
-    CONFIG.DIN_TO {1} \
-    CONFIG.DIN_WIDTH {3} \
-  ] $xlslice_gpio_1
-
-
-  # Create instance: xlslice_gpio_2, and set properties
-  set xlslice_gpio_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice xlslice_gpio_2 ]
-  set_property -dict [list \
-    CONFIG.DIN_FROM {2} \
-    CONFIG.DIN_TO {2} \
-    CONFIG.DIN_WIDTH {3} \
-  ] $xlslice_gpio_2
-
-# Create instance: PS_0, and set properties
+ # Create instance: PS_0, and set properties
   set PS_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e PS_0 ]
   apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_board_preset "1" }  [get_bd_cells PS_0]
   set_property -dict [ list \
@@ -1278,6 +1261,7 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net ADC_n_pb_i_AXIS [get_bd_intf_pins ADC/pb_i_AXIS] [get_bd_intf_pins broadcast_i/S_AXIS1]
   connect_bd_intf_net -intf_net ADC_n_pc_i_AXIS [get_bd_intf_pins ADC/pc_i_AXIS] [get_bd_intf_pins broadcast_i/S_AXIS2]
   connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports GPIO] [get_bd_intf_pins axi_gpio_0/GPIO]
+  connect_bd_intf_net -intf_net axi_gpio_0_GPIO2 [get_bd_intf_ports GPIO2] [get_bd_intf_pins axi_gpio_0/GPIO2]
   connect_bd_intf_net -intf_net axi_interconnect_cntrl_M00_AXI [get_bd_intf_pins axi_interconnect_cntrl/M00_AXI] [get_bd_intf_pins ADC/S_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_cntrl_M01_AXI [get_bd_intf_pins axi_interconnect_cntrl/M01_AXI] [get_bd_intf_pins hls_qei_0/s_axi_qei_args]
   connect_bd_intf_net -intf_net axi_interconnect_cntrl_M02_AXI [get_bd_intf_pins axi_interconnect_cntrl/M02_AXI] [get_bd_intf_pins motor_control_0/s_axi_cntrl]
@@ -1370,10 +1354,6 @@ proc create_root_design { parentCell } {
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins proc_sys_reset_1/peripheral_aresetn] [get_bd_pins ADC/SCLK_RESETn]
   connect_bd_net -net xlconcat_int_dout [get_bd_pins xlconcat_int/dout] [get_bd_pins PS_0/pl_ps_irq1]
   connect_bd_net -net xlslice_0_Dout1 [get_bd_pins xlslice_fan/Dout] [get_bd_ports fan_en_b]
-  connect_bd_net -net xlslice_gpio_1_Dout [get_bd_pins xlslice_gpio_1/Dout] [get_bd_ports brake_cntrl]
-  connect_bd_net -net xlslice_gpio_2_Dout [get_bd_pins xlslice_gpio_2/Dout] [get_bd_ports one_wire]
-  connect_bd_net -net zynq_ultra_ps_e_0_emio_gpio_o [get_bd_pins axi_gpio_0/gpio2_io_o] [get_bd_pins xlslice_gpio_1/Din] -boundary_type upper
-  connect_bd_net -net zynq_ultra_ps_e_0_emio_gpio_o [get_bd_pins axi_gpio_0/gpio2_io_o] [get_bd_pins xlslice_gpio_2/Din] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins PS_0/emio_ttc0_wave_o] [get_bd_pins xlslice_fan/Din]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins clk_wiz_0/clk_out_100M] [get_bd_pins axi_gpio_0/s_axi_aclk] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins clk_wiz_0/clk_out_100M] [get_bd_pins axi_interconnect_cntrl/ACLK] -boundary_type upper
