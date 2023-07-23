@@ -2,3 +2,7 @@
 	path = common/Vitis_Libraries/vision
 	url = https://gitenterprise.xilinx.com/FaaSApps/xf_opencv.git
 	branch = main
+[submodule "common/Vitis_Libraries/motorcontrol"]
+	path = common/Vitis_Libraries/motorcontrol
+	url = https://gitenterprise.xilinx.com/FaaSApps/xf_motorcontrol.git
+	branch = next
