@@ -1,0 +1,166 @@
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+// TTCL file to generate Verilog file with configurable input and output ports
+
+<: set ComponentName     [getComponentNameString]                                      :>
+<: setFileExtension      ".v"                                                          :>
+<: setFileName           [ttcl_string_concat $ComponentName "_adc_pipe"]               :>
+<: setOutputDirectory    "./"                                                          :>
+<: set NUM_CHANNELS      [get_property CONFIG.NUM_CHANNELS   [::ipxit::current_inst]]  :>
+
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+// Pipeline for ADC Hub
+// Contains simple_mov_avg, qscaler, and motor_fault_gen IP modules
+// Gets input from A/D Interface IP
+
+`timescale 1 ns / 1 ps
+
+<: for {set i 0} { $i < $NUM_CHANNELS } { incr i } { :>
+
+  module <=: $ComponentName :>_adc_pipe_l<=: $i :> #
+  (
+    parameter integer ADC_BITS = 12,
+    parameter integer SIGNED = 1,
+    parameter integer QSCALE_MAX_BITS = 24
+  )
+  (
+
+    // Interface to System
+    input wire clk,
+    input wire resetn,
+
+    // Interface to AXI Control/Status
+    input wire [31:0] scale_factor,
+    input wire [31:0] num_samples,
+    input wire [31:0] over_limit,
+    input wire [31:0] under_limit,
+    input wire [31:0] over_limit_enable,
+    input wire [31:0] under_limit_enable,
+    input wire [31:0] clear_over_error,
+    input wire [31:0] clear_under_error,
+    input wire [31:0] offset,
+    output reg [31:0] raw_adc,
+    output reg [31:0] qscale_data,
+    output wire [31:0] error_status,
+
+    // AXI4 Stream Interface
+    //  (* X_INTERFACE_PARAMETER = "CLK_DOMAIN <value>,PHASE <value>,FREQ_HZ <value>,LAYERED_METADATA <value>,HAS_TLAST <value>,HAS_TKEEP <value>,HAS_TSTRB <value>,HAS_TREADY <value>,TUSER_WIDTH <value>,TID_WIDTH <value>,TDEST_WIDTH <value>,TDATA_NUM_BYTES <value>" *)
+    (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 axis TDATA" *)
+    output [QSCALE_MAX_BITS-1:0] axis_tdata,
+    (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 axis TLAST" *)
+    output axis_tlast,
+    (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 axis TVALID" *)
+    output axis_tvalid,
+    (* X_INTERFACE_INFO = "xilinx.com:interface:axis:1.0 axis TREADY" *)
+    input axis_tready,
+
+  // Interface to ADC
+    input wire [ADC_BITS-1:0] adc_in,
+    input wire adc_vld
+
+  );
+
+  // Local parameters
+  localparam integer OVERFLOW = 3;
+  localparam integer DATA_WIDTH = ADC_BITS + OVERFLOW + 1;
+
+  // Signal declarations
+
+  (* mark_debug = "true" *) wire  [DATA_WIDTH-1:0] adc_sma;
+  (* mark_debug = "true" *) wire  adc_sma_vld;
+
+  // Instantiate simple moving average
+  <=: $ComponentName :>_simple_mov_avg_l<=: $i :> #
+  (
+    .ADC_BITS       (ADC_BITS),
+    .SIGNED         (SIGNED),
+    .DATA_WIDTH     (DATA_WIDTH)
+  )
+  sma_i
+  (
+    .CLK            (clk),
+    .RESETn         (resetn),
+    .DATA           (adc_in),
+    .DATA_VLD       (adc_vld),
+    .OFFSET         (offset),
+    .NUM_SAMPLES    (num_samples),
+    .SMA_DATA       (adc_sma),
+    .SMA_DATA_VLD   (adc_sma_vld)
+  );
+
+
+  // Instantiate qscaler
+  <=: $ComponentName :>_qscaler_l<=: $i :> #
+  (
+    .SIGNED         (SIGNED),
+    .DATA_WIDTH     (DATA_WIDTH),
+    .QSCALE_MAX_BITS(QSCALE_MAX_BITS)
+  )
+  qscaler_i
+  (
+    .clk            (clk),
+    .resetn         (resetn),
+    .din            (adc_sma),
+    .din_vld        (adc_sma_vld),
+    .scale_factor   (scale_factor),
+    .axis_q_tdata   (axis_tdata),
+    .axis_q_tlast   (axis_tlast),
+    .axis_q_tvalid  (axis_tvalid),
+    .axis_q_tready  (axis_tready)
+  );
+
+  motor_fault_gen #(
+    .SIGNED           (SIGNED)
+  )
+  mfg_i
+  (
+    .clk                (clk),
+    .resetn             (resetn),
+    .data_value         (qscale_data),
+    .over_limit         (over_limit),
+    .under_limit        (under_limit),
+    .over_limit_enable  (over_limit_enable),
+    .under_limit_enable (under_limit_enable),
+    .clear_over_error   (clear_over_error),
+    .clear_under_error  (clear_under_error),
+    .error_status       (error_status)
+  );
+
+  // Capture qscaler output for AXI-Lite reads
+  always @(posedge clk)
+  begin
+    if (resetn == 1'b0)
+    begin
+      qscale_data <= 'h0;
+
+    end
+    else if (axis_tvalid)
+    begin
+      // register is 32 bits, but data is limited to QSCALE_MAX_BITS bits
+      // So, sign extend before assigning to register
+      qscale_data <= {{32-QSCALE_MAX_BITS{axis_tdata[QSCALE_MAX_BITS-1]}}, axis_tdata};
+    end
+  end
+
+  // Capture raw input for AXI-Lite reads
+  always @(posedge clk)
+  begin
+    if (resetn == 1'b0)
+    begin
+      raw_adc <= 'h0;
+
+    end
+    else if (adc_vld)
+    begin
+      raw_adc <= adc_in;
+
+    end
+  end
+
+
+  endmodule
+
+<: } :>

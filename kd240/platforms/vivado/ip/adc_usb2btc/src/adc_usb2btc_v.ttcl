@@ -1,0 +1,81 @@
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+// TTCL file to generate Verilog file with configurable input and output ports
+
+<: set ComponentName     [getComponentNameString]                                      :>
+<: setFileExtension      ".v"                                                          :>
+<: setFileName           [ttcl_string_concat $ComponentName "_top"]                    :>
+<: setOutputDirectory    "./"                                                          :>
+<: set NUM_CHANNELS      [get_property CONFIG.NUM_CHANNELS   [::ipxit::current_inst]]  :>
+<: set L0_ADC_BITS       [get_property CONFIG.L0_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L1_ADC_BITS       [get_property CONFIG.L1_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L2_ADC_BITS       [get_property CONFIG.L2_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L3_ADC_BITS       [get_property CONFIG.L3_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L4_ADC_BITS       [get_property CONFIG.L4_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L5_ADC_BITS       [get_property CONFIG.L5_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L6_ADC_BITS       [get_property CONFIG.L6_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L7_ADC_BITS       [get_property CONFIG.L7_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L8_ADC_BITS       [get_property CONFIG.L8_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L9_ADC_BITS       [get_property CONFIG.L9_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L10_ADC_BITS      [get_property CONFIG.L10_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L11_ADC_BITS      [get_property CONFIG.L11_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L12_ADC_BITS      [get_property CONFIG.L12_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L13_ADC_BITS      [get_property CONFIG.L13_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L14_ADC_BITS      [get_property CONFIG.L14_ADC_BITS   [::ipxit::current_inst]]  :>
+<: set L15_ADC_BITS      [get_property CONFIG.L15_ADC_BITS   [::ipxit::current_inst]]  :>
+
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+// Convert USB (Unipolar Straight Binary) to BTC (Binary Two's Complement)
+
+`timescale 1 ns / 1 ps
+
+module <=: $ComponentName :>_top #(
+  // Per channel parameters
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+  parameter L<=: $i :>_ADC_BITS = 12,
+<: } :>
+
+  parameter integer NUM_CHANNELS = 1
+)
+(
+
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+  input  [L<=: $i :>_ADC_BITS-1:0] L<=: $i :>_DIN,
+  input  L<=: $i :>_DIN_VLD,
+<: } :>
+
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+  output reg [L<=: $i :>_ADC_BITS-1:0] L<=: $i :>_DOUT,
+  output reg L<=: $i :>_DOUT_VLD,
+<: } :>
+
+  input  wire CLK,
+  input  wire RESETn
+);
+
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+  always @(posedge CLK)
+    begin
+      if (RESETn == 1'b0)
+        begin
+          L<=: $i :>_DOUT <= 'h0;
+          L<=: $i :>_DOUT_VLD <= 1'b0;
+        end
+      else
+        if (L<=: $i :>_DIN_VLD)
+          begin
+            // Shift right to drop LSB and always use positive for output (MSB=0)
+            //L<=: $i :>_DOUT <= {~L<=: $i :>_DIN[L<=: $i :>_ADC_BITS-1], L<=: $i :>_DIN[L<=: $i :>_ADC_BITS-2:0]};
+            L<=: $i :>_DOUT <= L<=: $i :>_DIN >> 1;
+            L<=: $i :>_DOUT_VLD <= 1'b1;
+          end
+        else
+          L<=: $i :>_DOUT_VLD <= 1'b0;
+    end
+
+<: } :>
+
+endmodule

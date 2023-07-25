@@ -1,0 +1,304 @@
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+// TTCL file to generate Verilog file with configurable input and output ports
+
+<: set ComponentName     [getComponentNameString]                                                                :>
+<: setFileExtension      ".v"                                                                                    :>
+<: setFileName           [ttcl_string_concat $ComponentName "_top"]                                              :>
+<: setOutputDirectory    "./"                                                                                    :>
+<: set NUM_CHANNELS      [get_property CONFIG.NUM_CHANNELS    [::ipxit::current_inst]]  :>
+<: set L0_ADC_BITS       [get_property CONFIG.L0_ADC_BITS     [::ipxit::current_inst]]  :>
+<: set L0_TYPE           [get_property CONFIG.L0_TYPE         [::ipxit::current_inst]]  :>
+<: set L0_CODE           [get_property CONFIG.L0_CODE         [::ipxit::current_inst]]  :>
+<: set L1_ADC_BITS       [get_property CONFIG.L1_ADC_BITS     [::ipxit::current_inst]]  :>
+<: set L1_TYPE           [get_property CONFIG.L1_TYPE         [::ipxit::current_inst]]  :>
+<: set L1_CODE           [get_property CONFIG.L1_CODE         [::ipxit::current_inst]]  :>
+<: set L2_ADC_BITS       [get_property CONFIG.L2_ADC_BITS     [::ipxit::current_inst]]  :>
+<: set L2_TYPE           [get_property CONFIG.L2_TYPE         [::ipxit::current_inst]]  :>
+<: set L2_CODE           [get_property CONFIG.L2_CODE         [::ipxit::current_inst]]  :>
+<: set L3_ADC_BITS       [get_property CONFIG.L3_ADC_BITS     [::ipxit::current_inst]]  :>
+<: set L3_TYPE           [get_property CONFIG.L3_TYPE         [::ipxit::current_inst]]  :>
+<: set L3_CODE           [get_property CONFIG.L3_CODE         [::ipxit::current_inst]]  :>
+<: set L4_ADC_BITS       [get_property CONFIG.L4_ADC_BITS     [::ipxit::current_inst]]  :>
+<: set L4_TYPE           [get_property CONFIG.L4_TYPE         [::ipxit::current_inst]]  :>
+<: set L4_CODE           [get_property CONFIG.L4_CODE         [::ipxit::current_inst]]  :>
+<: set L5_ADC_BITS       [get_property CONFIG.L5_ADC_BITS     [::ipxit::current_inst]]  :>
+<: set L5_TYPE           [get_property CONFIG.L5_TYPE         [::ipxit::current_inst]]  :>
+<: set L5_CODE           [get_property CONFIG.L5_CODE         [::ipxit::current_inst]]  :>
+<: set L6_ADC_BITS       [get_property CONFIG.L6_ADC_BITS     [::ipxit::current_inst]]  :>
+<: set L6_TYPE           [get_property CONFIG.L6_TYPE         [::ipxit::current_inst]]  :>
+<: set L6_CODE           [get_property CONFIG.L6_CODE         [::ipxit::current_inst]]  :>
+<: set L7_ADC_BITS       [get_property CONFIG.L7_ADC_BITS     [::ipxit::current_inst]]  :>
+<: set L7_TYPE           [get_property CONFIG.L7_TYPE         [::ipxit::current_inst]]  :>
+<: set L7_CODE           [get_property CONFIG.L7_CODE         [::ipxit::current_inst]]  :>
+<: set L8_ADC_BITS       [get_property CONFIG.L8_ADC_BITS     [::ipxit::current_inst]]  :>
+<: set L8_TYPE           [get_property CONFIG.L8_TYPE         [::ipxit::current_inst]]  :>
+<: set L8_CODE           [get_property CONFIG.L8_CODE         [::ipxit::current_inst]]  :>
+<: set L9_ADC_BITS       [get_property CONFIG.L9_ADC_BITS     [::ipxit::current_inst]]  :>
+<: set L9_TYPE           [get_property CONFIG.L9_TYPE         [::ipxit::current_inst]]  :>
+<: set L9_CODE           [get_property CONFIG.L9_CODE         [::ipxit::current_inst]]  :>
+<: set L10_ADC_BITS      [get_property CONFIG.L10_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L10_TYPE          [get_property CONFIG.L10_TYPE        [::ipxit::current_inst]]  :>
+<: set L10_CODE          [get_property CONFIG.L10_CODE        [::ipxit::current_inst]]  :>
+<: set L11_ADC_BITS      [get_property CONFIG.L11_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L11_TYPE          [get_property CONFIG.L11_TYPE        [::ipxit::current_inst]]  :>
+<: set L11_CODE          [get_property CONFIG.L11_CODE        [::ipxit::current_inst]]  :>
+<: set L12_ADC_BITS      [get_property CONFIG.L12_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L12_TYPE          [get_property CONFIG.L12_TYPE        [::ipxit::current_inst]]  :>
+<: set L12_CODE          [get_property CONFIG.L12_CODE        [::ipxit::current_inst]]  :>
+<: set L13_ADC_BITS      [get_property CONFIG.L13_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L13_TYPE          [get_property CONFIG.L13_TYPE        [::ipxit::current_inst]]  :>
+<: set L13_CODE          [get_property CONFIG.L13_CODE        [::ipxit::current_inst]]  :>
+<: set L14_ADC_BITS      [get_property CONFIG.L14_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L14_TYPE          [get_property CONFIG.L14_TYPE        [::ipxit::current_inst]]  :>
+<: set L14_CODE          [get_property CONFIG.L14_CODE        [::ipxit::current_inst]]  :>
+<: set L15_ADC_BITS      [get_property CONFIG.L15_ADC_BITS    [::ipxit::current_inst]]  :>
+<: set L15_TYPE          [get_property CONFIG.L15_TYPE        [::ipxit::current_inst]]  :>
+<: set L15_CODE          [get_property CONFIG.L15_CODE        [::ipxit::current_inst]]  :>
+<: set CODE              [list $L0_CODE $L1_CODE $L2_CODE $L3_CODE $L4_CODE \           :>
+<:                             $L5_CODE $L6_CODE $L7_CODE $L8_CODE $L9_CODE \           :>
+<:                             $L10_CODE $L11_CODE $L12_CODE $L13_CODE $L14_CODE \      :>
+<:                             $L15_CODE]                                               :>
+<: set TYPE              [list $L0_TYPE $L1_TYPE $L2_TYPE $L3_TYPE $L4_TYPE $L5_TYPE \  :>
+<:                             $L6_TYPE $L7_TYPE $L8_TYPE $L9_TYPE $L10_TYPE \          :>
+<:                             $L11_TYPE $L12_TYPE $L13_TYPE $L14_TYPE $L15_TYPE]       :>
+
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+`timescale 1 ns / 1 ps
+
+// This module contains multiple adc_pipe modules (parameterized by NUM_CHANNELS)
+// and one AXI interface block to provide status/control to each pipeline.
+// Due to limitations in IPI, 2D ports could not be used, so it is up to the user
+// of this module to break out the channels at the upper level.
+
+module <=: $ComponentName :>_top #(
+
+    // Per channel parameters
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+    parameter         L<=: $i :>_CODE = "USB",
+    parameter         L<=: $i :>_TYPE = "CURRENT",
+    parameter integer L<=: $i :>_ADC_BITS = 12,
+<: } :>
+    parameter integer QSCALE_MAX_BITS = 24,
+    parameter integer NUM_CHANNELS = 1,
+    parameter integer C_S_AXI_DATA_WIDTH  = 32,
+    parameter integer C_S_AXI_ADDR_WIDTH  = 12
+)
+(
+
+    // Global Clock Signal
+    input wire  S_AXI_ACLK,
+    // Global Reset Signal. This Signal is Active LOW
+    input wire  S_AXI_ARESETN,
+    // Write address (issued by master, accepted by Slave)
+    input wire [C_S_AXI_ADDR_WIDTH-1 : 0] S_AXI_AWADDR,
+    // Write channel Protection type. This signal indicates the
+        // privilege and security level of the transaction, and whether
+        // the transaction is a data access or an instruction access.
+    input wire [2 : 0] S_AXI_AWPROT,
+    // Write address valid. This signal indicates that the master signaling
+        // valid write address and control information.
+    input wire  S_AXI_AWVALID,
+    // Write address ready. This signal indicates that the slave is ready
+        // to accept an address and associated control signals.
+    output wire  S_AXI_AWREADY,
+    // Write data (issued by master, accepted by Slave)
+    input wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_WDATA,
+    // Write strobes. This signal indicates which byte lanes hold
+        // valid data. There is one write strobe bit for each eight
+        // bits of the write data bus.
+    input wire [(C_S_AXI_DATA_WIDTH/8)-1 : 0] S_AXI_WSTRB,
+    // Write valid. This signal indicates that valid write
+        // data and strobes are available.
+    input wire  S_AXI_WVALID,
+    // Write ready. This signal indicates that the slave
+        // can accept the write data.
+    output wire  S_AXI_WREADY,
+    // Write response. This signal indicates the status
+        // of the write transaction.
+    output wire [1 : 0] S_AXI_BRESP,
+    // Write response valid. This signal indicates that the channel
+        // is signaling a valid write response.
+    output wire  S_AXI_BVALID,
+    // Response ready. This signal indicates that the master
+        // can accept a write response.
+    input wire  S_AXI_BREADY,
+    // Read address (issued by master, acceped by Slave)
+    input wire [C_S_AXI_ADDR_WIDTH-1 : 0] S_AXI_ARADDR,
+    // Protection type. This signal indicates the privilege
+        // and security level of the transaction, and whether the
+        // transaction is a data access or an instruction access.
+    input wire [2 : 0] S_AXI_ARPROT,
+    // Read address valid. This signal indicates that the channel
+        // is signaling valid read address and control information.
+    input wire  S_AXI_ARVALID,
+    // Read address ready. This signal indicates that the slave is
+        // ready to accept an address and associated control signals.
+    output wire  S_AXI_ARREADY,
+    // Read data (issued by slave)
+    output wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_RDATA,
+    // Read response. This signal indicates the status of the
+        // read transfer.
+    output wire [1 : 0] S_AXI_RRESP,
+    // Read valid. This signal indicates that the channel is
+        // signaling the required read data.
+    output wire  S_AXI_RVALID,
+    // Read ready. This signal indicates that the master can
+        // accept the read data and response information.
+    input wire  S_AXI_RREADY,
+
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+    // AXI4 Stream Interface(s) - Based on NUM_CHANNELS
+
+    output wire [QSCALE_MAX_BITS-1:0] L<=: $i :>_axis_tdata,
+    output wire L<=: $i :>_axis_tlast,
+    output wire L<=: $i :>_axis_tvalid,
+    input wire L<=: $i :>_axis_tready,
+
+    // Interface to ADC
+    input wire [L<=: $i :>_ADC_BITS-1:0] L<=: $i :>_adc_in,
+    input wire L<=: $i :>_adc_vld,
+<: } :>
+
+    // Interface to System
+    output wire interrupt,
+    output wire [NUM_CHANNELS-1:0] over_fault,
+    output wire [NUM_CHANNELS-1:0] under_fault
+
+
+);
+
+    // Signal declarations
+    // Interface to AXI Control/Status
+    wire [(32*NUM_CHANNELS)-1:0] scale_factor;
+    wire [(32*NUM_CHANNELS)-1:0] num_samples;
+    wire [(32*NUM_CHANNELS)-1:0] over_limit;
+    wire [(32*NUM_CHANNELS)-1:0] under_limit;
+    wire [(32*NUM_CHANNELS)-1:0] over_limit_enable;
+    wire [(32*NUM_CHANNELS)-1:0] under_limit_enable;
+    wire [(32*NUM_CHANNELS)-1:0] global_irq_disable;
+    wire [(32*NUM_CHANNELS)-1:0] clear_over_error;
+    wire [(32*NUM_CHANNELS)-1:0] clear_under_error;
+    wire [(32*NUM_CHANNELS)-1:0] raw_adc;
+    wire [(32*NUM_CHANNELS)-1:0] qscale_data;
+    wire [(32*NUM_CHANNELS)-1:0] error_status;
+    wire [(2*NUM_CHANNELS)-1:0] interrupts;
+    wire  [NUM_CHANNELS-1:0] data_signed;
+    wire  [NUM_CHANNELS-1:0] data_type;
+    wire  [NUM_CHANNELS-1:0] irq_disable;
+    wire  [(32*NUM_CHANNELS)-1:0] offset;
+    wire clk;
+    wire resetn;
+
+    assign clk = S_AXI_ACLK;
+    assign resetn = S_AXI_ARESETN;
+    assign interrupt = |interrupts;
+
+
+    genvar chan;
+
+generate
+    for (chan=0 ; chan < NUM_CHANNELS ; chan = chan + 1)
+    begin
+        // Interrupt on over_fault or under_fault per channel (bits 1 downto 0)
+        // Only interrupt if irq_disable bit is not set
+        assign irq_disable[chan] = global_irq_disable[(32*chan)+:1];
+        assign interrupts[(2*chan)+:2] = (irq_disable[chan]) ? 'h0 : error_status[(32*chan)+:2];
+        assign over_fault[chan] = error_status[(32*chan)+0];
+        assign under_fault[chan] = error_status[(32*chan)+1];
+    end
+endgenerate
+
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+    assign data_signed[<=: $i :>] = (L<=: $i :>_CODE == "BTC") ? 1'b1 : 1'b0;
+<: } :>
+
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+    assign data_type[<=: $i :>] = (L<=: $i :>_TYPE == "VOLTAGE") ? 1'b1 : 1'b0;
+<: } :>
+
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+    <=: $ComponentName :>_adc_pipe_l<=: $i :> #
+    (
+      .ADC_BITS           (L<=: $i :>_ADC_BITS),
+      .SIGNED             ((L<=: $i :>_CODE == "BTC") ? 1'b1 : 1'b0),
+      .QSCALE_MAX_BITS    (QSCALE_MAX_BITS)
+    ) L<=: $i :>_adc_pipe_i (
+      .clk                (clk),
+      .resetn             (resetn),
+
+      .scale_factor       (scale_factor[(32*<=: $i :>)+:32]),
+      .num_samples        (num_samples[(32*<=: $i :>)+:32]),
+      .over_limit         (over_limit[(32*<=: $i :>)+:32]),
+      .under_limit        (under_limit[(32*<=: $i :>)+:32]),
+      .over_limit_enable  (over_limit_enable[(32*<=: $i :>)+:32]),
+      .under_limit_enable (under_limit_enable[(32*<=: $i :>)+:32]),
+      .clear_over_error   (clear_over_error[(32*<=: $i :>)+:32]),
+      .clear_under_error  (clear_under_error[(32*<=: $i :>)+:32]),
+      .raw_adc            (raw_adc[(32*<=: $i :>)+:32]),
+      .offset             (offset[(32*<=: $i :>)+:32]),
+      .qscale_data        (qscale_data[(32*<=: $i :>)+:32]),
+      .error_status       (error_status[(32*<=: $i :>)+:32]),
+
+      .axis_tdata         (L<=: $i :>_axis_tdata),
+      .axis_tlast         (L<=: $i :>_axis_tlast),
+      .axis_tvalid        (L<=: $i :>_axis_tvalid),
+      .axis_tready        (L<=: $i :>_axis_tready),
+
+      .adc_in             (L<=: $i :>_adc_in),
+      .adc_vld            (L<=: $i :>_adc_vld)
+
+    );
+<: } :>
+
+// Instantiation of Axi Bus Interface s_axi_cntrl
+// Control/Status bits are mostly combined channels based on
+// NUM_CHANNELS
+
+  adc_hub_axi_cntrl # (
+    .C_S_AXI_DATA_WIDTH(C_S_AXI_DATA_WIDTH),
+    .C_S_AXI_ADDR_WIDTH(C_S_AXI_ADDR_WIDTH),
+    .NUM_CHANNELS(NUM_CHANNELS)
+  ) adc_hub_axi_inst (
+    .S_AXI_ACLK(S_AXI_ACLK),
+    .S_AXI_ARESETN(S_AXI_ARESETN),
+    .S_AXI_AWADDR(S_AXI_AWADDR),
+    .S_AXI_AWPROT(S_AXI_AWPROT),
+    .S_AXI_AWVALID(S_AXI_AWVALID),
+    .S_AXI_AWREADY(S_AXI_AWREADY),
+    .S_AXI_WDATA(S_AXI_WDATA),
+    .S_AXI_WSTRB(S_AXI_WSTRB),
+    .S_AXI_WVALID(S_AXI_WVALID),
+    .S_AXI_WREADY(S_AXI_WREADY),
+    .S_AXI_BRESP(S_AXI_BRESP),
+    .S_AXI_BVALID(S_AXI_BVALID),
+    .S_AXI_BREADY(S_AXI_BREADY),
+    .S_AXI_ARADDR(S_AXI_ARADDR),
+    .S_AXI_ARPROT(S_AXI_ARPROT),
+    .S_AXI_ARVALID(S_AXI_ARVALID),
+    .S_AXI_ARREADY(S_AXI_ARREADY),
+    .S_AXI_RDATA(S_AXI_RDATA),
+    .S_AXI_RRESP(S_AXI_RRESP),
+    .S_AXI_RVALID(S_AXI_RVALID),
+    .S_AXI_RREADY(S_AXI_RREADY),
+    .over_limit(over_limit),
+    .under_limit(under_limit),
+    .over_limit_enable(over_limit_enable),
+    .under_limit_enable(under_limit_enable),
+    .global_irq_disable(global_irq_disable),
+    .offset(offset),
+    .scale_factor(scale_factor),
+    .num_samples(num_samples),
+    .raw_adc(raw_adc),
+    .qscale_data(qscale_data),
+    .error_status(error_status),
+    .data_signed(data_signed),
+    .data_type(data_type),
+    .clear_under_error(clear_under_error),
+    .clear_over_error(clear_over_error)
+  );
+
+endmodule

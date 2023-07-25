@@ -1,0 +1,185 @@
+# Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+namespace eval adc_hub_v1 {
+
+set NUM_CHANNELS                    [get_property CONFIG.NUM_CHANNELS               [::ipxit::current_inst]]
+set L0_USE_DSP                      [get_property CONFIG.L0_USE_DSP                 [::ipxit::current_inst]]
+set L1_USE_DSP                      [get_property CONFIG.L1_USE_DSP                 [::ipxit::current_inst]]
+set L2_USE_DSP                      [get_property CONFIG.L2_USE_DSP                 [::ipxit::current_inst]]
+set L3_USE_DSP                      [get_property CONFIG.L3_USE_DSP                 [::ipxit::current_inst]]
+set L4_USE_DSP                      [get_property CONFIG.L4_USE_DSP                 [::ipxit::current_inst]]
+set L5_USE_DSP                      [get_property CONFIG.L5_USE_DSP                 [::ipxit::current_inst]]
+set L6_USE_DSP                      [get_property CONFIG.L6_USE_DSP                 [::ipxit::current_inst]]
+set L7_USE_DSP                      [get_property CONFIG.L7_USE_DSP                 [::ipxit::current_inst]]
+set L8_USE_DSP                      [get_property CONFIG.L8_USE_DSP                 [::ipxit::current_inst]]
+set L9_USE_DSP                      [get_property CONFIG.L9_USE_DSP                 [::ipxit::current_inst]]
+set L10_USE_DSP                     [get_property CONFIG.L10_USE_DSP                [::ipxit::current_inst]]
+set L11_USE_DSP                     [get_property CONFIG.L11_USE_DSP                [::ipxit::current_inst]]
+set L12_USE_DSP                     [get_property CONFIG.L12_USE_DSP                [::ipxit::current_inst]]
+set L13_USE_DSP                     [get_property CONFIG.L13_USE_DSP                [::ipxit::current_inst]]
+set L14_USE_DSP                     [get_property CONFIG.L14_USE_DSP                [::ipxit::current_inst]]
+set L15_USE_DSP                     [get_property CONFIG.L15_USE_DSP                [::ipxit::current_inst]]
+set L0_ADC_BITS                     [get_property CONFIG.L0_ADC_BITS                [::ipxit::current_inst]]
+set L1_ADC_BITS                     [get_property CONFIG.L1_ADC_BITS                [::ipxit::current_inst]]
+set L2_ADC_BITS                     [get_property CONFIG.L2_ADC_BITS                [::ipxit::current_inst]]
+set L3_ADC_BITS                     [get_property CONFIG.L3_ADC_BITS                [::ipxit::current_inst]]
+set L4_ADC_BITS                     [get_property CONFIG.L4_ADC_BITS                [::ipxit::current_inst]]
+set L5_ADC_BITS                     [get_property CONFIG.L5_ADC_BITS                [::ipxit::current_inst]]
+set L6_ADC_BITS                     [get_property CONFIG.L6_ADC_BITS                [::ipxit::current_inst]]
+set L7_ADC_BITS                     [get_property CONFIG.L7_ADC_BITS                [::ipxit::current_inst]]
+set L8_ADC_BITS                     [get_property CONFIG.L8_ADC_BITS                [::ipxit::current_inst]]
+set L9_ADC_BITS                     [get_property CONFIG.L9_ADC_BITS                [::ipxit::current_inst]]
+set L10_ADC_BITS                    [get_property CONFIG.L10_ADC_BITS               [::ipxit::current_inst]]
+set L11_ADC_BITS                    [get_property CONFIG.L11_ADC_BITS               [::ipxit::current_inst]]
+set L12_ADC_BITS                    [get_property CONFIG.L12_ADC_BITS               [::ipxit::current_inst]]
+set L13_ADC_BITS                    [get_property CONFIG.L13_ADC_BITS               [::ipxit::current_inst]]
+set L14_ADC_BITS                    [get_property CONFIG.L14_ADC_BITS               [::ipxit::current_inst]]
+set L15_ADC_BITS                    [get_property CONFIG.L15_ADC_BITS               [::ipxit::current_inst]]
+set L0_CODE                       [get_property CONFIG.L0_CODE                  [::ipxit::current_inst]]
+set L1_CODE                       [get_property CONFIG.L1_CODE                  [::ipxit::current_inst]]
+set L2_CODE                       [get_property CONFIG.L2_CODE                  [::ipxit::current_inst]]
+set L3_CODE                       [get_property CONFIG.L3_CODE                  [::ipxit::current_inst]]
+set L4_CODE                       [get_property CONFIG.L4_CODE                  [::ipxit::current_inst]]
+set L5_CODE                       [get_property CONFIG.L5_CODE                  [::ipxit::current_inst]]
+set L6_CODE                       [get_property CONFIG.L6_CODE                  [::ipxit::current_inst]]
+set L7_CODE                       [get_property CONFIG.L7_CODE                  [::ipxit::current_inst]]
+set L8_CODE                       [get_property CONFIG.L8_CODE                  [::ipxit::current_inst]]
+set L9_CODE                       [get_property CONFIG.L9_CODE                  [::ipxit::current_inst]]
+set L10_CODE                      [get_property CONFIG.L10_CODE                 [::ipxit::current_inst]]
+set L11_CODE                      [get_property CONFIG.L11_CODE                 [::ipxit::current_inst]]
+set L12_CODE                      [get_property CONFIG.L12_CODE                 [::ipxit::current_inst]]
+set L13_CODE                      [get_property CONFIG.L13_CODE                 [::ipxit::current_inst]]
+set L14_CODE                      [get_property CONFIG.L14_CODE                 [::ipxit::current_inst]]
+set L15_CODE                      [get_property CONFIG.L15_CODE                 [::ipxit::current_inst]]
+
+set L0_CONFIG [list $L0_CODE $L0_USE_DSP $L0_ADC_BITS 0]
+set L1_CONFIG [list $L1_CODE $L1_USE_DSP $L1_ADC_BITS 1]
+set L2_CONFIG [list $L2_CODE $L2_USE_DSP $L2_ADC_BITS 2]
+set L3_CONFIG [list $L3_CODE $L3_USE_DSP $L3_ADC_BITS 3]
+set L4_CONFIG [list $L4_CODE $L4_USE_DSP $L4_ADC_BITS 4]
+set L5_CONFIG [list $L5_CODE $L5_USE_DSP $L5_ADC_BITS 5]
+set L6_CONFIG [list $L6_CODE $L6_USE_DSP $L6_ADC_BITS 6]
+set L7_CONFIG [list $L7_CODE $L7_USE_DSP $L7_ADC_BITS 7]
+set L8_CONFIG [list $L8_CODE $L8_USE_DSP $L8_ADC_BITS 8]
+set L9_CONFIG [list $L9_CODE $L9_USE_DSP $L9_ADC_BITS 9]
+set L10_CONFIG [list $L10_CODE $L10_USE_DSP $L10_ADC_BITS 10]
+set L11_CONFIG [list $L11_CODE $L11_USE_DSP $L11_ADC_BITS 11]
+set L12_CONFIG [list $L12_CODE $L12_USE_DSP $L12_ADC_BITS 12]
+set L13_CONFIG [list $L13_CODE $L13_USE_DSP $L13_ADC_BITS 13]
+set L14_CONFIG [list $L14_CODE $L14_USE_DSP $L14_ADC_BITS 14]
+set L15_CONFIG [list $L15_CODE $L15_USE_DSP $L15_ADC_BITS 15]
+
+set LANE_CONFIG [list $L0_CONFIG $L1_CONFIG $L2_CONFIG $L3_CONFIG \
+                      $L4_CONFIG $L5_CONFIG $L6_CONFIG $L7_CONFIG \
+                      $L8_CONFIG $L9_CONFIG $L10_CONFIG $L11_CONFIG \
+                      $L12_CONFIG $L13_CONFIG $L14_CONFIG $L15_CONFIG]
+set used_LANE_CONFIG [lrange $LANE_CONFIG 0 $NUM_CHANNELS-1]
+set USE_BRAM_FIFO 1
+
+
+foreach config $used_LANE_CONFIG {
+  set lane [expr {[lindex $config end]}]
+  set sign [expr {[lindex $config 0] == "BTC" ? "s" : "u" }]
+  set sign_long [expr {[lindex $config 0] == "BTC" ? "Signed" : "Unsigned" }]
+  set dsp  [expr {[lindex $config 1] ? "d" : "l" }]
+  set dsp_long [expr {[lindex $config 1] ? "Use_Mults" : "Use_LUTs" }]
+  set adc_width [expr {[lindex $config 2]}]
+  set offset 1
+  if {$USE_BRAM_FIFO == 0} {
+    set overflow 3
+  } else {
+    set overflow 6
+  }
+  set adc_offset [expr $adc_width + $offset]
+  set adc_overflow [expr $adc_width + $offset + $overflow]
+
+  # Configure addsub IP - one per lane
+  set sub_sub_core_vlnv           xilinx.com:ip:c_addsub:12.0
+  set sub_sub_core_name           "sub_ip_l${lane}"
+  set sub_sub_core  [create_sub_core $sub_sub_core_vlnv $sub_sub_core_name]
+
+  set_property -dict [list \
+    CONFIG.A_Width $adc_overflow \
+    CONFIG.B_Width $adc_offset \
+    CONFIG.Add_Mode {Subtract} \
+    CONFIG.SCLR {true} \
+    CONFIG.CE {true} \
+    CONFIG.Out_Width $adc_overflow \
+    CONFIG.Latency {1} \
+    CONFIG.A_Type $sign_long \
+    CONFIG.B_Type $sign_long \
+  ] $sub_sub_core
+
+  # Configure adder IP
+  set adder_sub_core_vlnv           xilinx.com:ip:c_addsub:12.0
+  set adder_sub_core_name           "adder_ip_l${lane}"
+  set adder_sub_core                [create_sub_core $adder_sub_core_vlnv $adder_sub_core_name]
+  set_property -dict [list \
+    CONFIG.A_Width $adc_offset \
+    CONFIG.B_Width $adc_overflow \
+    CONFIG.Add_Mode {Add} \
+    CONFIG.SCLR {true} \
+    CONFIG.CE {true} \
+    CONFIG.Out_Width $adc_overflow \
+    CONFIG.Latency {1} \
+    CONFIG.A_Type $sign_long \
+    CONFIG.B_Type $sign_long \
+  ] $adder_sub_core
+
+  # Configure offset IP
+  set offset_sub_core_vlnv           xilinx.com:ip:c_addsub:12.0
+  set offset_sub_core_name           "offset_ip_l${lane}"
+  set offset_sub_core                [create_sub_core $offset_sub_core_vlnv $offset_sub_core_name]
+  set_property -dict [list \
+    CONFIG.A_Width $adc_width \
+    CONFIG.B_Width $adc_width \
+    CONFIG.Add_Mode {Subtract} \
+    CONFIG.SCLR {true} \
+    CONFIG.CE {true} \
+    CONFIG.Out_Width $adc_offset \
+    CONFIG.Latency {1} \
+    CONFIG.A_Type $sign_long \
+    CONFIG.B_Type $sign_long \
+  ] $offset_sub_core
+
+#  Configure Scaling multipler
+  set multscale_sub_core_vlnv           xilinx.com:ip:mult_gen:12.0
+  set multscale_sub_core_name           "qscaler_scaling_mult_l${lane}"
+  set multscale_sub_core                [create_sub_core $multscale_sub_core_vlnv $multscale_sub_core_name]
+  # Currently not selectable at the GUI level (and same value for entire hub)
+  set qscale_max_bits 24
+  set qscale_max [expr {$qscale_max_bits - 1}]
+  set_property -dict [list \
+    CONFIG.PortAWidth $adc_overflow \
+    CONFIG.PortBWidth $qscale_max_bits \
+    CONFIG.Multiplier_Construction $dsp_long \
+    CONFIG.Use_Custom_Output_Width {true} \
+    CONFIG.OutputWidthHigh $qscale_max \
+    CONFIG.OutputWidthLow {0} \
+    CONFIG.PipeStages {6} \
+    CONFIG.ClockEnable {true} \
+    CONFIG.SyncClear {true}  \
+    CONFIG.PortAType $sign_long \
+    CONFIG.PortBType {Unsigned} \
+  ] $multscale_sub_core
+
+if {$USE_BRAM_FIFO == 1} {
+  # Configure FIFO Generator IP for samples pipeline
+  set sample_fifo_sub_core_vlnv           xilinx.com:ip:fifo_generator:13.2
+  set sample_fifo_sub_core_name           "sample_fifo_generator_l${lane}"
+  set sample_fifo_sub_core                [create_sub_core $sample_fifo_sub_core_vlnv $sample_fifo_sub_core_name]
+  set_property -dict [list \
+    CONFIG.Fifo_Implementation {Common_Clock_Builtin_FIFO} \
+    CONFIG.Performance_Options {Standard_FIFO} \
+    CONFIG.Input_Data_Width $adc_offset \
+    CONFIG.Input_Depth {512} \
+    CONFIG.Output_Data_Width $adc_offset \
+    CONFIG.Output_Depth {512} \
+    CONFIG.Use_Embedded_Registers {false} \
+    CONFIG.Valid_Flag {true} \
+  ] $sample_fifo_sub_core
+}
+}
+
+}

@@ -1,0 +1,236 @@
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+// TTCL file to generate Verilog file with configurable input and output ports
+
+<: set ComponentName       [getComponentNameString]                                          :>
+<: setFileExtension        ".v"                                                              :>
+<: setFileName             $ComponentName                                                    :>
+<: setOutputDirectory      "./"                                                              :>
+<: set NUM_CHANNELS        [get_property CONFIG.NUM_CHANNELS        [::ipxit::current_inst]] :>
+<: set C_S_AXI_DATA_WIDTH  [get_property CONFIG.C_S_AXI_DATA_WIDTH  [::ipxit::current_inst]] :>
+<: set C_S_AXI_ADDR_WIDTH  [get_property CONFIG.C_S_AXI_ADDR_WIDTH  [::ipxit::current_inst]] :>
+<: set L0_ADC_BITS         [get_property CONFIG.L0_ADC_BITS         [::ipxit::current_inst]] :>
+<: set L0_TYPE             [get_property CONFIG.L0_TYPE             [::ipxit::current_inst]] :>
+<: set L0_CODE             [get_property CONFIG.L0_CODE             [::ipxit::current_inst]] :>
+<: set L1_ADC_BITS         [get_property CONFIG.L1_ADC_BITS         [::ipxit::current_inst]] :>
+<: set L1_TYPE             [get_property CONFIG.L1_TYPE             [::ipxit::current_inst]] :>
+<: set L1_CODE             [get_property CONFIG.L1_CODE             [::ipxit::current_inst]] :>
+<: set L2_ADC_BITS         [get_property CONFIG.L2_ADC_BITS         [::ipxit::current_inst]] :>
+<: set L2_TYPE             [get_property CONFIG.L2_TYPE             [::ipxit::current_inst]] :>
+<: set L2_CODE             [get_property CONFIG.L2_CODE             [::ipxit::current_inst]] :>
+<: set L3_ADC_BITS         [get_property CONFIG.L3_ADC_BITS         [::ipxit::current_inst]] :>
+<: set L3_TYPE             [get_property CONFIG.L3_TYPE             [::ipxit::current_inst]] :>
+<: set L3_CODE             [get_property CONFIG.L3_CODE             [::ipxit::current_inst]] :>
+<: set L4_ADC_BITS         [get_property CONFIG.L4_ADC_BITS         [::ipxit::current_inst]] :>
+<: set L4_TYPE             [get_property CONFIG.L4_TYPE             [::ipxit::current_inst]] :>
+<: set L4_CODE             [get_property CONFIG.L4_CODE             [::ipxit::current_inst]] :>
+<: set L5_ADC_BITS         [get_property CONFIG.L5_ADC_BITS         [::ipxit::current_inst]] :>
+<: set L5_TYPE             [get_property CONFIG.L5_TYPE             [::ipxit::current_inst]] :>
+<: set L5_CODE             [get_property CONFIG.L5_CODE             [::ipxit::current_inst]] :>
+<: set L6_ADC_BITS         [get_property CONFIG.L6_ADC_BITS         [::ipxit::current_inst]] :>
+<: set L6_TYPE             [get_property CONFIG.L6_TYPE             [::ipxit::current_inst]] :>
+<: set L6_CODE             [get_property CONFIG.L6_CODE             [::ipxit::current_inst]] :>
+<: set L7_ADC_BITS         [get_property CONFIG.L7_ADC_BITS         [::ipxit::current_inst]] :>
+<: set L7_TYPE             [get_property CONFIG.L7_TYPE             [::ipxit::current_inst]] :>
+<: set L7_CODE             [get_property CONFIG.L7_CODE             [::ipxit::current_inst]] :>
+<: set L8_ADC_BITS         [get_property CONFIG.L8_ADC_BITS         [::ipxit::current_inst]] :>
+<: set L8_TYPE             [get_property CONFIG.L8_TYPE             [::ipxit::current_inst]] :>
+<: set L8_CODE             [get_property CONFIG.L8_CODE             [::ipxit::current_inst]] :>
+<: set L9_ADC_BITS         [get_property CONFIG.L9_ADC_BITS         [::ipxit::current_inst]] :>
+<: set L9_TYPE             [get_property CONFIG.L9_TYPE             [::ipxit::current_inst]] :>
+<: set L9_CODE             [get_property CONFIG.L9_CODE             [::ipxit::current_inst]] :>
+<: set L10_ADC_BITS        [get_property CONFIG.L10_ADC_BITS        [::ipxit::current_inst]] :>
+<: set L10_TYPE            [get_property CONFIG.L10_TYPE            [::ipxit::current_inst]] :>
+<: set L10_CODE            [get_property CONFIG.L10_CODE            [::ipxit::current_inst]] :>
+<: set L11_ADC_BITS        [get_property CONFIG.L11_ADC_BITS        [::ipxit::current_inst]] :>
+<: set L11_TYPE            [get_property CONFIG.L11_TYPE            [::ipxit::current_inst]] :>
+<: set L11_CODE            [get_property CONFIG.L11_CODE            [::ipxit::current_inst]] :>
+<: set L12_ADC_BITS        [get_property CONFIG.L12_ADC_BITS        [::ipxit::current_inst]] :>
+<: set L12_TYPE            [get_property CONFIG.L12_TYPE            [::ipxit::current_inst]] :>
+<: set L12_CODE            [get_property CONFIG.L12_CODE            [::ipxit::current_inst]] :>
+<: set L13_ADC_BITS        [get_property CONFIG.L13_ADC_BITS        [::ipxit::current_inst]] :>
+<: set L13_TYPE            [get_property CONFIG.L13_TYPE            [::ipxit::current_inst]] :>
+<: set L13_CODE            [get_property CONFIG.L13_CODE            [::ipxit::current_inst]] :>
+<: set L14_ADC_BITS        [get_property CONFIG.L14_ADC_BITS        [::ipxit::current_inst]] :>
+<: set L14_TYPE            [get_property CONFIG.L14_TYPE            [::ipxit::current_inst]] :>
+<: set L14_CODE            [get_property CONFIG.L14_CODE            [::ipxit::current_inst]] :>
+<: set L15_ADC_BITS        [get_property CONFIG.L15_ADC_BITS        [::ipxit::current_inst]] :>
+<: set L15_TYPE            [get_property CONFIG.L15_TYPE            [::ipxit::current_inst]] :>
+<: set L15_CODE            [get_property CONFIG.L15_CODE            [::ipxit::current_inst]] :>
+<: set ADC_BITS            [list $L0_ADC_BITS $L1_ADC_BITS $L2_ADC_BITS $L3_ADC_BITS \       :>
+<:                               $L4_ADC_BITS $L5_ADC_BITS $L6_ADC_BITS $L7_ADC_BITS \       :>
+<:                               $L8_ADC_BITS $L9_ADC_BITS $L10_ADC_BITS $L11_ADC_BITS \     :>
+<:                               $L12_ADC_BITS $L13_ADC_BITS $L14_ADC_BITS $L15_ADC_BITS]    :>
+<: set TYPE                [list $L0_TYPE $L1_TYPE $L2_TYPE $L3_TYPE $L4_TYPE $L5_TYPE \     :>
+<:                               $L6_TYPE $L7_TYPE $L8_TYPE $L9_TYPE $L10_TYPE $L11_TYPE \   :>
+<:                               $L12_TYPE $L13_TYPE $L14_TYPE $L15_TYPE]                    :>
+<: set CODE                [list $L0_CODE $L1_CODE $L2_CODE $L3_CODE $L4_CODE \              :>
+<:                               $L5_CODE $L6_CODE $L7_CODE $L8_CODE $L9_CODE \              :>
+<:                               $L10_CODE $L11_CODE $L12_CODE $L13_CODE $L14_CODE \         :>
+<:                               $L15_CODE]                                                  :>
+
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+`timescale 1 ns / 1 ps
+
+module <=: $ComponentName :> #(
+
+    // Per channel parameters
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+
+  <: if {"[lindex $CODE $i]" == "USB"} { :>
+    parameter         L<=: $i :>_CODE             = "USB",
+  <: } else { :>
+    parameter         L<=: $i :>_CODE             = "BTC",
+  <: } :>
+  <: if {"[lindex $TYPE $i]" == "VOLTAGE"} { :>
+    parameter         L<=: $i :>_TYPE             = "VOLTAGE",
+  <: } else { :>
+    parameter         L<=: $i :>_TYPE             = "CURRENT",
+  <: } :>
+    parameter integer L<=: $i :>_ADC_BITS         = <=: [lindex $ADC_BITS $i] :>,
+<: } :>
+
+    // System parameters
+    parameter integer QSCALE_MAX_BITS             = 24,
+    parameter integer NUM_CHANNELS                = <=: $NUM_CHANNELS :>,
+    parameter integer C_S_AXI_DATA_WIDTH          = <=: $C_S_AXI_DATA_WIDTH :>,
+    parameter integer C_S_AXI_ADDR_WIDTH          = <=: $C_S_AXI_ADDR_WIDTH :>
+)
+(
+
+    // Global Clock Signal
+    input wire  S_AXI_ACLK,
+    // Global Reset Signal. This Signal is Active LOW
+    input wire  S_AXI_ARESETN,
+    // Write address (issued by master, accepted by Slave)
+    input wire [C_S_AXI_ADDR_WIDTH-1 : 0] S_AXI_AWADDR,
+    // Write channel Protection type. This signal indicates the
+        // privilege and security level of the transaction, and whether
+        // the transaction is a data access or an instruction access.
+    input wire [2 : 0] S_AXI_AWPROT,
+    // Write address valid. This signal indicates that the master signaling
+        // valid write address and control information.
+    input wire  S_AXI_AWVALID,
+    // Write address ready. This signal indicates that the slave is ready
+        // to accept an address and associated control signals.
+    output wire  S_AXI_AWREADY,
+    // Write data (issued by master, accepted by Slave)
+    input wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_WDATA,
+    // Write strobes. This signal indicates which byte lanes hold
+        // valid data. There is one write strobe bit for each eight
+        // bits of the write data bus.
+    input wire [(C_S_AXI_DATA_WIDTH/8)-1 : 0] S_AXI_WSTRB,
+    // Write valid. This signal indicates that valid write
+        // data and strobes are available.
+    input wire  S_AXI_WVALID,
+    // Write ready. This signal indicates that the slave
+        // can accept the write data.
+    output wire  S_AXI_WREADY,
+    // Write response. This signal indicates the status
+        // of the write transaction.
+    output wire [1 : 0] S_AXI_BRESP,
+    // Write response valid. This signal indicates that the channel
+        // is signaling a valid write response.
+    output wire  S_AXI_BVALID,
+    // Response ready. This signal indicates that the master
+        // can accept a write response.
+    input wire  S_AXI_BREADY,
+    // Read address (issued by master, acceped by Slave)
+    input wire [C_S_AXI_ADDR_WIDTH-1 : 0] S_AXI_ARADDR,
+    // Protection type. This signal indicates the privilege
+        // and security level of the transaction, and whether the
+        // transaction is a data access or an instruction access.
+    input wire [2 : 0] S_AXI_ARPROT,
+    // Read address valid. This signal indicates that the channel
+        // is signaling valid read address and control information.
+    input wire  S_AXI_ARVALID,
+    // Read address ready. This signal indicates that the slave is
+        // ready to accept an address and associated control signals.
+    output wire  S_AXI_ARREADY,
+    // Read data (issued by slave)
+    output wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_RDATA,
+    // Read response. This signal indicates the status of the
+        // read transfer.
+    output wire [1 : 0] S_AXI_RRESP,
+    // Read valid. This signal indicates that the channel is
+        // signaling the required read data.
+    output wire  S_AXI_RVALID,
+    // Read ready. This signal indicates that the master can
+        // accept the read data and response information.
+    input wire  S_AXI_RREADY,
+
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+    // AXI4 Stream Interface(s) - Based on NUM_CHANNELS
+
+    output wire [QSCALE_MAX_BITS-1:0] L<=: $i :>_axis_tdata,
+    output wire L<=: $i :>_axis_tlast,
+    output wire L<=: $i :>_axis_tvalid,
+    input wire L<=: $i :>_axis_tready,
+
+    // Interface to ADC
+    input wire [L<=: $i :>_ADC_BITS-1:0] L<=: $i :>_adc_in,
+    input wire L<=: $i :>_adc_vld,
+<: } :>
+
+    // Interface to System
+    output wire interrupt,
+    output wire [NUM_CHANNELS-1:0] over_fault,
+    output wire [NUM_CHANNELS-1:0] under_fault
+
+
+);
+
+
+<=: $ComponentName :>_top #(
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+    .L<=: $i :>_ADC_BITS          (L<=: $i :>_ADC_BITS),
+    .L<=: $i :>_CODE              (L<=: $i :>_CODE),
+    .L<=: $i :>_TYPE              (L<=: $i :>_TYPE),
+<: } :>
+    .QSCALE_MAX_BITS        (QSCALE_MAX_BITS),
+    .NUM_CHANNELS           (NUM_CHANNELS),
+    .C_S_AXI_DATA_WIDTH     (C_S_AXI_DATA_WIDTH),
+    .C_S_AXI_ADDR_WIDTH     (C_S_AXI_ADDR_WIDTH)
+) inst (
+    .S_AXI_ACLK             (S_AXI_ACLK),
+    .S_AXI_ARESETN          (S_AXI_ARESETN),
+    .S_AXI_AWADDR           (S_AXI_AWADDR),
+    .S_AXI_AWPROT           (S_AXI_AWPROT),
+    .S_AXI_AWVALID          (S_AXI_AWVALID),
+    .S_AXI_AWREADY          (S_AXI_AWREADY),
+    .S_AXI_WDATA            (S_AXI_WDATA),
+    .S_AXI_WSTRB            (S_AXI_WSTRB),
+    .S_AXI_WVALID           (S_AXI_WVALID),
+    .S_AXI_WREADY           (S_AXI_WREADY),
+    .S_AXI_BRESP            (S_AXI_BRESP),
+    .S_AXI_BVALID           (S_AXI_BVALID),
+    .S_AXI_BREADY           (S_AXI_BREADY),
+    .S_AXI_ARADDR           (S_AXI_ARADDR),
+    .S_AXI_ARPROT           (S_AXI_ARPROT),
+    .S_AXI_ARVALID          (S_AXI_ARVALID),
+    .S_AXI_ARREADY          (S_AXI_ARREADY),
+    .S_AXI_RDATA            (S_AXI_RDATA),
+    .S_AXI_RRESP            (S_AXI_RRESP),
+    .S_AXI_RVALID           (S_AXI_RVALID),
+    .S_AXI_RREADY           (S_AXI_RREADY),
+
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+    .L<=: $i :>_axis_tdata  (L<=: $i :>_axis_tdata),
+    .L<=: $i :>_axis_tlast  (L<=: $i :>_axis_tlast),
+    .L<=: $i :>_axis_tvalid (L<=: $i :>_axis_tvalid),
+    .L<=: $i :>_axis_tready (L<=: $i :>_axis_tready),
+
+    .L<=: $i :>_adc_in      (L<=: $i :>_adc_in),
+    .L<=: $i :>_adc_vld     (L<=: $i :>_adc_vld),
+<: } :>
+
+    // Interface to System
+    .interrupt              (interrupt),
+    .over_fault             (over_fault),
+    .under_fault            (under_fault)
+  );
+
+endmodule

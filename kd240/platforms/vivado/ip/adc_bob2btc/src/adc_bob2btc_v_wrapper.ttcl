@@ -1,0 +1,84 @@
+// Copyright (C) 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+// TTCL file to generate Verilog file with configurable input and output ports
+
+<: set ComponentName   [getComponentNameString]                                         :>
+<: setFileExtension    ".v"                                                             :>
+<: setFileName         $ComponentName                                                   :>
+<: setOutputDirectory  "./"                                                             :>
+<: set NUM_CHANNELS    [get_property CONFIG.NUM_CHANNELS     [::ipxit::current_inst]]   :>
+<: set L0_ADC_BITS     [get_property CONFIG.L0_ADC_BITS      [::ipxit::current_inst]]   :>
+<: set L1_ADC_BITS     [get_property CONFIG.L1_ADC_BITS      [::ipxit::current_inst]]   :>
+<: set L2_ADC_BITS     [get_property CONFIG.L2_ADC_BITS      [::ipxit::current_inst]]   :>
+<: set L3_ADC_BITS     [get_property CONFIG.L3_ADC_BITS      [::ipxit::current_inst]]   :>
+<: set L4_ADC_BITS     [get_property CONFIG.L4_ADC_BITS      [::ipxit::current_inst]]   :>
+<: set L5_ADC_BITS     [get_property CONFIG.L5_ADC_BITS      [::ipxit::current_inst]]   :>
+<: set L6_ADC_BITS     [get_property CONFIG.L6_ADC_BITS      [::ipxit::current_inst]]   :>
+<: set L7_ADC_BITS     [get_property CONFIG.L7_ADC_BITS      [::ipxit::current_inst]]   :>
+<: set L8_ADC_BITS     [get_property CONFIG.L8_ADC_BITS      [::ipxit::current_inst]]   :>
+<: set L9_ADC_BITS     [get_property CONFIG.L9_ADC_BITS      [::ipxit::current_inst]]   :>
+<: set L10_ADC_BITS    [get_property CONFIG.L10_ADC_BITS     [::ipxit::current_inst]]   :>
+<: set L11_ADC_BITS    [get_property CONFIG.L11_ADC_BITS     [::ipxit::current_inst]]   :>
+<: set L12_ADC_BITS    [get_property CONFIG.L12_ADC_BITS     [::ipxit::current_inst]]   :>
+<: set L13_ADC_BITS    [get_property CONFIG.L13_ADC_BITS     [::ipxit::current_inst]]   :>
+<: set L14_ADC_BITS    [get_property CONFIG.L14_ADC_BITS     [::ipxit::current_inst]]   :>
+<: set L15_ADC_BITS    [get_property CONFIG.L15_ADC_BITS     [::ipxit::current_inst]]   :>
+<: set ADC_BITS        [list $L0_ADC_BITS $L1_ADC_BITS $L2_ADC_BITS $L3_ADC_BITS \      :>
+<:                           $L4_ADC_BITS $L5_ADC_BITS $L6_ADC_BITS $L7_ADC_BITS \      :>
+<:                           $L8_ADC_BITS $L9_ADC_BITS $L10_ADC_BITS $L11_ADC_BITS \    :>
+<:                           $L12_ADC_BITS $L13_ADC_BITS $L14_ADC_BITS $L15_ADC_BITS]   :>
+
+// Copyright (C) 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+//
+// Wrapper for multiple instantiations of the adc_bob2btc converter.
+
+`timescale 1 ns / 1 ps
+
+module <=: $ComponentName :> #(
+  // Per channel parameters
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+  parameter L<=: $i :>_ADC_BITS         = <=: [lindex $ADC_BITS $i]  :>,
+<: } :>
+
+  parameter integer NUM_CHANNELS = <=: $NUM_CHANNELS :>
+)
+(
+
+  // Interface to ADC Hub
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+  output wire [L<=: $i :>_ADC_BITS-1:0] L<=: $i :>_DOUT,
+  output wire L<=: $i :>_DOUT_VLD,
+<: } :>
+
+  // Interface to ADC Interface
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+  input wire [L<=: $i :>_ADC_BITS-1:0] L<=: $i :>_DIN,
+  input wire L<=: $i :>_DIN_VLD,
+<: } :>
+
+  // Interface to System
+  input  wire CLK,
+  input  wire RESETn
+
+);
+
+<=: $ComponentName :>_top #(
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+    .L<=: $i :>_ADC_BITS    (L<=: $i :>_ADC_BITS),
+<: } :>
+    .NUM_CHANNELS           (NUM_CHANNELS)
+) inst (
+
+<: for {set i 0} {$i < $NUM_CHANNELS} {incr i} { :>
+    .L<=: $i :>_DIN         (L<=: $i :>_DIN),
+    .L<=: $i :>_DIN_VLD     (L<=: $i :>_DIN_VLD),
+    .L<=: $i :>_DOUT        (L<=: $i :>_DOUT),
+    .L<=: $i :>_DOUT_VLD    (L<=: $i :>_DOUT_VLD),
+
+<: } :>
+    .CLK                    (CLK),
+    .RESETn                 (RESETn)
+  );
+
+endmodule

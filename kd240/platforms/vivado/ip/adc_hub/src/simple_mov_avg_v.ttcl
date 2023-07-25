@@ -1,0 +1,424 @@
+// Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+// TTCL file to generate Verilog file with multiple modules with configurable module names
+
+<: set ComponentName   [getComponentNameString]                                    :>
+<: setFileExtension    ".v"                                                        :>
+<: setFileName         [ttcl_string_concat $ComponentName "_simple_mov_avg"]       :>
+<: setOutputDirectory  "./"                                                        :>
+<: set NUM_CHANNELS    [get_property CONFIG.NUM_CHANNELS  [::ipxit::current_inst]] :>
+<: set USE_BRAM_FIFO 1                                                             :>
+// Copyright (C) 2022, Advanced Micro Devices, Inc.
+// SPDX-License-Identifier: Apache-2.0
+
+// The simple moving average function is implemented here using two instances
+// of an adder.  One adder is a pure adder, and the other switches between
+// add and subtract.
+// The theory behind the implementation is in http://en.wikipedia.org/wiki/Moving_average
+//
+// This module does the following:
+// There is a two stage operation, an adder followed by a subtractor.
+// 1. Adder A input is always new data.
+// 2. Adder B input is always the result from the subtractor.
+// 3. Subtractor does not subtract anything from the first NUM_SAMPLES, just passes input A to result
+//    because the sub_b_in value is 0 up to that point.
+// 4. On NUM_SAMPLES+1, a new sample is added to previous total and subtractor subtracts the oldest
+//    sample, leaving the new result as the total of the most recent NUM_SAMPLES samples.
+// 5. The result of the subtractor is then shifted as the averaged output.
+
+`timescale 1 ns / 1 ps
+<: for {set i 0} { $i < $NUM_CHANNELS } { incr i } { :>
+    module <=: $ComponentName :>_simple_mov_avg_l<=: $i :> #
+    (
+      parameter integer ADC_BITS = 12,
+      parameter integer SIGNED = 1,
+      parameter integer DATA_WIDTH = 16
+    )
+
+    (
+      input CLK,
+      input RESETn,
+      input [ADC_BITS-1:0] DATA,
+      input DATA_VLD,
+      input [31:0] OFFSET,
+      input [31:0] NUM_SAMPLES,
+
+      output wire [DATA_WIDTH-1:0] SMA_DATA,
+      output wire SMA_DATA_VLD
+    );
+
+    localparam integer OFFSET_WIDTH = ADC_BITS;
+
+    // Maximum values
+  <: if {$USE_BRAM_FIFO == 0} { :>
+    localparam integer MAXK = 16;
+    localparam integer OFLOW = 0;
+  <: } else { :>
+    localparam integer MAXK = 128;
+    localparam integer OFLOW = 3;
+  <: } :>
+    localparam integer MAXS = $clog2(MAXK);
+    localparam integer BITS = $clog2(MAXS) + 1;
+
+
+  <: if {$USE_BRAM_FIFO  == 0} { :>
+    // Memory to hold sample window (set to maximum value)
+    reg [ADC_BITS:0] samples [0:MAXK] ;
+    integer i;
+    integer s;
+  <: } else { :>
+    reg [ADC_BITS:0] bram_input_reg;
+    wire [ADC_BITS:0] bram_output;
+    wire                bram_output_vld;
+    wire rd_en;
+    wire full;
+    wire empty;
+    reg bram_rst;
+  <: } :>
+
+    wire signed [ADC_BITS:0] adder_a_in;
+    wire signed [DATA_WIDTH+OFLOW-1:0] adder_b_in;
+    wire signed [DATA_WIDTH+OFLOW-1:0] adder_result;
+
+    wire adder_en;
+    reg adder_sclr = 1'b1;
+    reg [3:0] vld_reg;
+
+    wire signed [DATA_WIDTH+OFLOW-1:0] sub_a_in;
+    wire signed [ADC_BITS:0] sub_b_in;
+    wire signed [DATA_WIDTH+OFLOW-1:0] sub_result;
+    reg signed [DATA_WIDTH+OFLOW-1:0] sub_result_div;
+    wire sub_en;
+    reg sub_sclr;
+
+    wire signed [ADC_BITS-1:0] offset_a_in;
+    wire signed [OFFSET_WIDTH-1:0] offset_b_in;
+    wire signed [ADC_BITS:0] offset_result;
+    wire offset_en;
+    reg offset_sclr;
+
+    wire  start_shift;
+    reg  offset_done;
+    reg  shift_done;
+    reg  adder_done;
+    reg  sub_done;
+    wire [BITS-1:0] sval;
+
+    reg [MAXS:0] last_num_samples_val;
+    reg tap_changed;
+    reg [31:0] last_offset_val;
+    reg offset_changed;
+
+
+    // State machines for simple moving average
+
+    localparam [1:0]    sm_IDLE = 'h0,
+                        sm_FILL = 'h1,
+                        sm_NORMAL = 'h2;
+
+    localparam [1:0]    sm_sub_IDLE = 'h0,
+                        sm_sub_PASS_THROUGH = 'h1,
+                        sm_sub_SUB_LAST = 'h2;
+
+    localparam [1:0]    sm_adder_IDLE = 'h0,
+                        sm_adder_ADD_NEW = 'h1;
+
+
+    reg [MAXS:0] sample_cnt;
+    reg [1:0] sm_sma = sm_IDLE;
+    reg [1:0] sm_sub = sm_sub_IDLE;
+    reg [1:0] sm_adder = sm_adder_IDLE;
+
+  <: if {$USE_BRAM_FIFO  == 0} { :>
+    assign sval = (NUM_SAMPLES == 2) ? 1 :
+                  (NUM_SAMPLES == 4) ? 2 :
+                  (NUM_SAMPLES == 8) ? 3 :
+                  (NUM_SAMPLES == 16) ? 4 : 0;
+
+    always @(posedge CLK)
+    begin
+      if (RESETn == 1'b0 || tap_changed == 1'b1 || offset_changed == 1'b1) begin
+        for( i = 0; i <= MAXK; i = i + 1 )
+          samples[i] <= 'h0;
+        s <= 0;
+
+      end else if (vld_reg[0]) begin
+        //samples shift register
+        for (i = MAXK; i > 0; i=i-1)
+          samples[i] <= samples[i-1];
+
+        samples[0] <= offset_result;
+      end
+    end
+  <: } else { :>
+    assign sval = (NUM_SAMPLES == 2) ? 1 :
+                  (NUM_SAMPLES == 4) ? 2 :
+                  (NUM_SAMPLES == 8) ? 3 :
+                  (NUM_SAMPLES == 16) ? 4 :
+                  (NUM_SAMPLES == 32) ? 5 :
+                  (NUM_SAMPLES == 64) ? 6 :
+                  (NUM_SAMPLES == 128) ? 7 : 0;
+
+    assign rd_en = (sample_cnt >= (NUM_SAMPLES) && vld_reg[1]);
+    always @(posedge CLK)
+      if (~RESETn || tap_changed || offset_changed)
+        bram_rst <= 1'b1;
+      else
+        bram_rst <= 1'b0;
+
+    sample_fifo_generator_l<=: $i :> sample_fifo_bram
+    (
+      .clk(CLK),
+      .srst(bram_rst),
+      .din(offset_result),
+      .wr_en(offset_done),
+      .rd_en(rd_en),
+      .dout(bram_output),
+      .full(full),
+      .empty(empty),
+      .valid(bram_output_vld),
+      .wr_rst_busy(),
+      .rd_rst_busy()
+    );
+
+    // Need a copy for adder
+    always @(posedge CLK)
+      if (RESETn == 1'b0)
+        bram_input_reg <= 0;
+      else if (offset_done)
+        bram_input_reg <= offset_result;
+  <: } :>
+
+    // Used to coordinate computation
+    always @(posedge CLK)
+      if (RESETn == 1'b0)
+        vld_reg <= 'h0;
+      else
+        vld_reg <= {vld_reg[2:0],DATA_VLD};
+
+    assign vld_rising = !vld_reg[0] && DATA_VLD;
+
+    // This state machine tracks the Add/Sub IP inputs.  The inputs to the
+    // sub will be set based on these states.
+    always @(posedge CLK)
+    begin
+      if (RESETn == 1'b0 || tap_changed == 1'b1 || offset_changed == 1'b1)
+        begin
+          sm_sub <= sm_sub_IDLE;
+          sub_sclr <= 1'b1;
+        end
+      else begin
+        sub_sclr <= 1'b0;
+
+        case (sm_sub)
+          sm_sub_IDLE:
+            if (tap_changed || offset_changed)
+              sm_sub <= sm_sub_IDLE;
+            else if (vld_reg[1])
+              sm_sub <= sm_sub_PASS_THROUGH;
+          sm_sub_PASS_THROUGH:
+            if (vld_reg[2] && sample_cnt == (NUM_SAMPLES-1))
+                sm_sub <= sm_sub_SUB_LAST;
+          sm_sub_SUB_LAST:
+              sm_sub <= sm_sub_SUB_LAST;
+          default:
+            sm_sub <= sm_sub_IDLE;
+        endcase
+      end
+    end
+
+    // This state machine tracks the Adder inputs.  The inputs to the
+    // adder will be set based on these states.
+    always @(posedge CLK)
+    begin
+      if (RESETn == 1'b0 || tap_changed == 1'b1 || offset_changed)
+        begin
+          sm_adder <= sm_adder_IDLE;
+          adder_sclr <= 1'b1;
+        end
+      else begin
+        adder_sclr <= 1'b0;
+
+        case (sm_adder)
+          sm_adder_IDLE:
+            if (vld_reg[1])
+              sm_adder <= sm_adder_ADD_NEW;
+          sm_adder_ADD_NEW:
+            sm_adder <= sm_adder_ADD_NEW;
+          default:
+            sm_adder <= sm_adder_IDLE;
+        endcase
+      end
+    end
+
+    always @(posedge CLK)
+    begin
+      if (RESETn == 1'b0 || tap_changed == 1'b1 || offset_changed == 1'b1) begin
+        sm_sma <= sm_IDLE;
+        offset_sclr <= 1'b1;
+      end else begin
+        offset_sclr <= 1'b0;
+
+        case (sm_sma)
+          sm_IDLE:
+            if (vld_reg[1])
+              sm_sma <= sm_FILL;
+          // This state is just for the start.  Add all incoming samples and wait to
+          // perform the divide when NUM_SAMPLES have been added
+          sm_FILL:
+            if (vld_reg[1] && sample_cnt == (NUM_SAMPLES-1))
+              sm_sma <= sm_NORMAL;
+          // This state starts the process of adding new sample and subtracting the
+          // oldest sample and then dividing by the number of samples.  This state
+          // only exits with a reset.
+          sm_NORMAL:
+            sm_sma <= sm_NORMAL;
+
+          default:
+            sm_sma <= sm_IDLE;
+        endcase
+      end
+    end
+
+    integer signed tmp;
+
+    // Misc logic around state machine
+    always @(posedge CLK)
+    begin
+      tmp = 0;
+      if (RESETn == 1'b0) begin
+        sample_cnt <= 'h0;
+        sub_result_div <= 'h0;
+        shift_done <= 1'b0;
+        last_num_samples_val <= 'h0;
+        last_offset_val <= 'h0;
+        tap_changed <= 1'b0;
+        offset_changed <= 1'b0;
+
+      end else begin
+        if (last_num_samples_val != NUM_SAMPLES)
+          begin
+            last_num_samples_val <= NUM_SAMPLES;
+            tap_changed <= 1'b1;
+          end
+        else if (tap_changed && sm_sma == sm_IDLE)
+          tap_changed <= 1'b0;
+
+        if (last_offset_val != OFFSET)
+          begin
+            last_offset_val <= OFFSET;
+            offset_changed <= 1'b1;
+          end
+        else if (offset_changed && sm_sma == sm_IDLE)
+          offset_changed <= 1'b0;
+
+        if (sm_sma == sm_IDLE && vld_reg[1] == 1'b0)
+          sample_cnt <= 0;
+        // This is to catch the first samples and add them up until the full
+        // window of samples has been reached.
+        // sample_cnt will go from 1 to NUM_SAMPLES (not 0 to NUN_SAMPLES-1)
+        else if (vld_reg[2] && sample_cnt < NUM_SAMPLES)
+          sample_cnt <= sample_cnt + 1'b1;
+
+        // This is to only enable the second adder when the first adder is done
+        // (modify if latency through adder changes)
+        if (tap_changed == 1'b1 || offset_changed == 1'b1)
+          begin
+            shift_done <= 1'b0;
+            adder_done <= 1'b0;
+            offset_done <= 1'b0;
+            sub_done <= 1'b0;
+          end
+        else
+          begin
+            shift_done <= start_shift;
+            offset_done <= offset_en;
+            adder_done <= adder_en;
+            sub_done <= sub_en;
+          end
+
+        if (tap_changed == 1'b1 || offset_changed == 1'b1)
+          sub_result_div <= 'h0;
+        else
+          if (start_shift)
+            // Check for negative value because right shifting a small value will
+            // not result in 0 like is expected, but instead will be -1.  This will
+            // fix that problem.  Both SIGNED and UNSIGNED will need this because
+            // we are subtracting two numbers, so result COULD be negative
+            if (sub_result[DATA_WIDTH+OFLOW-1] == 1'b1)
+              begin
+                // check for small values that shifted will be -1 instead of 0
+                tmp = (-1)*NUM_SAMPLES;
+                if (sub_result > tmp)
+                  sub_result_div <= 0;
+                else
+                  sub_result_div <= sub_result >>> sval;
+              end
+            else
+              sub_result_div <= sub_result >>> sval;
+      end
+    end
+
+// Offset subtractor - subtract fixed offset (can be negative) to raw ADC values
+    offset_ip_l<=: $i :> offset_inst
+    (
+      .A      (offset_a_in),
+      .B      (offset_b_in),
+      .CLK    (CLK),
+      .CE     (offset_en),
+      .SCLR   (offset_sclr),
+      .S      (offset_result)
+    );
+
+    assign offset_en = DATA_VLD;
+    assign offset_a_in = DATA;
+    assign offset_b_in = OFFSET[OFFSET_WIDTH-1:0];
+
+    // The adder is used to add the new sample to the output of the subtractor.
+    assign adder_en = vld_reg[1];
+    assign adder_b_in = sub_result;
+
+  <: if {$USE_BRAM_FIFO  == 0} { :>
+    assign adder_a_in = samples[0];
+  <: } else { :>
+    assign adder_a_in = bram_input_reg;
+  <: } :>
+
+    // Adder instantiation (only does add function)
+    adder_ip_l<=: $i :> adder_inst
+    (
+      .A      (adder_a_in),
+      .B      (adder_b_in),
+      .CLK    (CLK),
+      .CE     (adder_en),
+      .SCLR   (adder_sclr),
+      .S      (adder_result)
+    );
+
+    // sub Instance and controls. This subtracts the oldest sample from the total.
+    assign sub_a_in = adder_result;
+    assign sub_en = vld_reg[2];
+  <: if {$USE_BRAM_FIFO  == 0} { :>
+    assign sub_b_in = samples[NUM_SAMPLES];
+  <: } else { :>
+    assign sub_b_in = bram_output;
+  <: } :>
+
+    assign start_shift = sub_done && sm_sub == sm_sub_SUB_LAST;
+
+    assign SMA_DATA = sub_result_div;
+    assign SMA_DATA_VLD = shift_done;
+
+    sub_ip_l<=: $i :> sub_inst
+    (
+      .A      (sub_a_in),
+      .B      (sub_b_in),
+      .CLK    (CLK),
+      .CE     (sub_en),
+      .SCLR   (sub_sclr),
+      .S      (sub_result)
+    );
+    endmodule
+
+<: } :>
