@@ -146,48 +146,6 @@ set_property IOSTANDARD LVCMOS18 [get_ports {gem1_rgmii_rd[2]}]
 set_property PACKAGE_PIN N1 [get_ports {gem1_rgmii_rd[3]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {gem1_rgmii_rd[3]}]
 
-## Test PMOD constraints
-
-set_property PACKAGE_PIN D9 [get_ports {GPIO_tri_io[0]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {GPIO_tri_io[0]}]
-set_property SLEW SLOW [get_ports {GPIO_tri_io[0]}]
-set_property DRIVE 4 [get_ports {GPIO_tri_io[0]}]
-
-set_property PACKAGE_PIN D13 [get_ports {GPIO_tri_io[1]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {GPIO_tri_io[1]}]
-set_property SLEW SLOW [get_ports {GPIO_tri_io[1]}]
-set_property DRIVE 4 [get_ports {GPIO_tri_io[1]}]
-
-set_property PACKAGE_PIN C13 [get_ports {GPIO_tri_io[2]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {GPIO_tri_io[2]}]
-set_property SLEW SLOW [get_ports {GPIO_tri_io[2]}]
-set_property DRIVE 4 [get_ports {GPIO_tri_io[2]}]
-
-set_property PACKAGE_PIN C10 [get_ports {GPIO_tri_io[3]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {GPIO_tri_io[3]}]
-set_property SLEW SLOW [get_ports {GPIO_tri_io[3]}]
-set_property DRIVE 4 [get_ports {GPIO_tri_io[3]}]
-
-set_property PACKAGE_PIN E9 [get_ports {GPIO_tri_io[4]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {GPIO_tri_io[4]}]
-set_property SLEW SLOW [get_ports {GPIO_tri_io[4]}]
-set_property DRIVE 4 [get_ports {GPIO_tri_io[4]}]
-
-set_property PACKAGE_PIN F13 [get_ports {GPIO_tri_io[5]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {GPIO_tri_io[5]}]
-set_property SLEW SLOW [get_ports {GPIO_tri_io[5]}]
-set_property DRIVE 4 [get_ports {GPIO_tri_io[5]}]
-
-set_property PACKAGE_PIN E12 [get_ports {GPIO_tri_io[6]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {GPIO_tri_io[6]}]
-set_property SLEW SLOW [get_ports {GPIO_tri_io[6]}]
-set_property DRIVE 4 [get_ports {GPIO_tri_io[6]}]
-
-set_property PACKAGE_PIN D10 [get_ports {GPIO_tri_io[7]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {GPIO_tri_io[7]}]
-set_property SLEW SLOW [get_ports {GPIO_tri_io[7]}]
-set_property DRIVE 4 [get_ports {GPIO_tri_io[7]}]
-
 ##Fan Speed Enable
 set_property PACKAGE_PIN G12 [get_ports {fan_en_b[0]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {fan_en_b[0]}]
@@ -212,6 +170,35 @@ set_property DRIVE 4 [get_ports TQ_SDI]
 
 set_property PACKAGE_PIN F4 [get_ports TQ_SDO]
 set_property IOSTANDARD LVCMOS18 [get_ports TQ_SDO]
+
+## CAN PMOD constraints
+set_property PACKAGE_PIN E9 [get_ports {CAN_CSn[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {CAN_CSn[0]}]
+set_property SLEW SLOW [get_ports {CAN_CSn[0]}]
+set_property DRIVE 4 [get_ports {CAN_CSn[0]}]
+
+set_property PACKAGE_PIN F13 [get_ports CAN_MOSI]
+set_property IOSTANDARD LVCMOS33 [get_ports CAN_MOSI]
+set_property SLEW SLOW [get_ports CAN_MOSI]
+set_property DRIVE 4 [get_ports CAN_MOSI]
+
+set_property PACKAGE_PIN E12 [get_ports CAN_MISO]
+set_property IOSTANDARD LVCMOS33 [get_ports CAN_MISO]
+
+set_property PACKAGE_PIN D9 [get_ports CAN_INT]
+set_property IOSTANDARD LVCMOS33 [get_ports CAN_INT]
+
+set_property PACKAGE_PIN D10 [get_ports CAN_SCLK]
+set_property IOSTANDARD LVCMOS33 [get_ports CAN_SCLK]
+set_property SLEW SLOW [get_ports CAN_SCLK]
+set_property DRIVE 4 [get_ports CAN_SCLK]
+
+set_property PACKAGE_PIN D13 [get_ports CAN_RST[0]]
+set_property IOSTANDARD LVCMOS33 [get_ports CAN_RST[0]]
+set_property SLEW SLOW [get_ports CAN_RST[0]]
+set_property DRIVE 4 [get_ports CAN_RST[0]]
+
+
 
 ## ADC Constraints
 set_property PACKAGE_PIN K1 [get_ports {dc_link_adc_cs_n[0]}]
