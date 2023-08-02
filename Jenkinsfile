@@ -625,6 +625,40 @@ pipeline {
                         }
                     }
                 }
+                stage('kd240_bist') {
+                    environment {
+                        pfm_base="kd240_bist"
+                        pfm="xilinx_${pfm_base}_${pfm_ver}"
+                        work_dir="${ws}/build/${pfm_base}"
+                        board="kd240"
+                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
+                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                    }
+                    stages {
+                        stage('kd240_bist platform build')  {
+                            environment {
+                                PAEG_LSF_MEM=65536
+                                PAEG_LSF_QUEUE="long"
+                            }
+                            when {
+                                anyOf {
+                                    changeset "**/kd240/platforms/vivado/kd240_bist/**"
+                                    triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
+                                }
+                            }
+                            steps {
+                                createWorkDir()
+                                buildPlatform()
+                            }
+                            post {
+                                success {
+                                    deployPlatformFirmware()
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
