@@ -10,7 +10,7 @@ PFM_DIR = $(PWD)/platforms
 PFM_VER = 202310_1
 
 # valid platforms / overlays
-PFM_LIST = kv260_ispMipiRx_vcu_DP kv260_vcuDecode_vmixDP kv260_ispMipiRx_vmixDP kv260_ispMipiRx_rpiMipiRx_DP
+PFM_LIST = kv260_ispMipiRx_vcu_DP kv260_vcuDecode_vmixDP kv260_ispMipiRx_vmixDP kv260_ispMipiRx_rpiMipiRx_DP kv260_bist
 OVERLAY_LIST = smartcam aibox-reid defect-detect nlp-smartvision benchmark
 
 # override platform name based on overlay
