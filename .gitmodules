@@ -5,4 +5,4 @@
 [submodule "common/Vitis_Libraries/motorcontrol"]
 	path = common/Vitis_Libraries/motorcontrol
 	url = https://gitenterprise.xilinx.com/FaaSApps/xf_motorcontrol.git
-	branch = sensorless
+	branch = next
