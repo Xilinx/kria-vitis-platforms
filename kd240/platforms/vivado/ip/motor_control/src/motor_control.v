@@ -115,9 +115,13 @@
   
   reg phase_imbal;
    
-  reg signed [C_S_AXIS_TDATA_WIDTH:0] phase_a_i;
-  reg signed [C_S_AXIS_TDATA_WIDTH:0] phase_b_i;
-  reg signed [C_S_AXIS_TDATA_WIDTH:0] phase_c_i;
+  reg signed [C_S_AXIS_TDATA_WIDTH-1:0] phase_a_i;
+  reg signed [C_S_AXIS_TDATA_WIDTH-1:0] phase_b_i;
+  reg signed [C_S_AXIS_TDATA_WIDTH-1:0] phase_c_i;
+  
+  wire signed [C_S_AXIS_TDATA_WIDTH-1:0] phase_total;
+  
+  assign phase_total = phase_a_i + phase_b_i + phase_c_i;
   
 //C_S_AXIS_TDATA_WIDTH  = 1 (Sign bit) + Q_INTEGER + Q_FRACTIONAL
 //Max width supported on the limit register is 32 bit, so C_S_AXIS_TDATA_WIDTH cannot be more than 32-bits
@@ -214,13 +218,20 @@
           phase_imbal  <= 1'b0;
         end 
       else
-        begin                   
-          // When adding 2 negative number say in Q7.Q16 format the resultant value
-          // may need an extra bit on the MSB side 
-          // Not accouting for overflow when adding negative numbers
-          // as not expecting a value of -2^8
-          if ((phase_a_i + phase_b_i + phase_c_i > phase_imbal_limit_q) && (phase_imbal_err_en == 1'b1))
-            phase_imbal <= 1'b1;               
+        begin                          
+          // When adding  negative numbers say in Q8.Q16 format (Sign bit=1 + Q_INTEGER =7 + Q_FRACTIONAL =16)
+          // the resultant value may need an extra bit on the MSB side 
+          // Code is not accouting for overflow when adding negative numbers
+          // as not expecting a sum less than -2^7 (-128).
+          // Similary for positive numbers not expecting the sum to go over 2^7 (128)
+          // For this motor control application worst case would be ~+/-30A
+          
+          // If phase imbal limit is +ve check for phase total greater than limit
+          if ((phase_imbal_limit_q[C_S_AXIS_TDATA_WIDTH-1] == 1'b0) && (phase_total > phase_imbal_limit_q) && (phase_imbal_err_en == 1'b1))
+                phase_imbal <= 1'b1; 
+          // If phase imbal limit is -ve check for phase total less than limit
+          else if ((phase_imbal_limit_q[C_S_AXIS_TDATA_WIDTH-1] == 1'b1) && (phase_total < phase_imbal_limit_q) && (phase_imbal_err_en == 1'b1))
+                phase_imbal <= 1'b1;              
           else if (phase_imbal_clr == 32'h0bad00ff)
             phase_imbal <= 1'b0;
           // Hold error until clear bit is set
