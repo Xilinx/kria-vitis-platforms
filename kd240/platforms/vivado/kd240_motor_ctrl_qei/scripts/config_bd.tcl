@@ -947,11 +947,6 @@ proc create_hier_cell_TSN_subsystem { parentCell nameHier } {
   ] $axi_mcdma_0
 
 
-  # Create instance: axi_smc, and set properties
-  set axi_smc [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect axi_smc ]
-  set_property CONFIG.NUM_SI {4} $axi_smc
-
-
   # Create instance: axis_switch_0, and set properties
   set axis_switch_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_switch axis_switch_0 ]
   set_property -dict [list \
@@ -1294,13 +1289,22 @@ proc create_hier_cell_TSN_subsystem { parentCell nameHier } {
   ] $xlslice_trdy_1
 
 
+  # Create instance: axi_ic, and set properties
+  set axi_ic [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_ic ]
+  set_property -dict [list \
+    CONFIG.NUM_MI {1} \
+    CONFIG.NUM_SI {4} \
+  ] $axi_ic
+
+
   # Create interface connections
   connect_bd_intf_net -intf_net PS_0_M_AXI_HPM0_LPD [get_bd_intf_pins S00_AXI] [get_bd_intf_pins ps8_0_axi_periph/S00_AXI]
+  connect_bd_intf_net -intf_net S00_AXI_1 [get_bd_intf_pins axi_ic/S00_AXI] [get_bd_intf_pins axi_mcdma_0/M_AXI_SG]
+  connect_bd_intf_net -intf_net S01_AXI_1 [get_bd_intf_pins axi_ic/S01_AXI] [get_bd_intf_pins axi_mcdma_0/M_AXI_MM2S]
+  connect_bd_intf_net -intf_net S02_AXI_1 [get_bd_intf_pins axi_ic/S02_AXI] [get_bd_intf_pins axi_mcdma_0/M_AXI_S2MM]
+  connect_bd_intf_net -intf_net S03_AXI_1 [get_bd_intf_pins axi_ic/S03_AXI] [get_bd_intf_pins ta_dma_0/M_AXI]
+  connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins M00_AXI] [get_bd_intf_pins axi_ic/M00_AXI]
   connect_bd_intf_net -intf_net axi_mcdma_0_M_AXIS_MM2S [get_bd_intf_pins axi_mcdma_0/M_AXIS_MM2S] [get_bd_intf_pins my_tsn_ip/tx_axis_be]
-  connect_bd_intf_net -intf_net axi_mcdma_0_M_AXI_MM2S [get_bd_intf_pins axi_mcdma_0/M_AXI_MM2S] [get_bd_intf_pins axi_smc/S01_AXI]
-  connect_bd_intf_net -intf_net axi_mcdma_0_M_AXI_S2MM [get_bd_intf_pins axi_mcdma_0/M_AXI_S2MM] [get_bd_intf_pins axi_smc/S02_AXI]
-  connect_bd_intf_net -intf_net axi_mcdma_0_M_AXI_SG [get_bd_intf_pins axi_mcdma_0/M_AXI_SG] [get_bd_intf_pins axi_smc/S00_AXI]
-  connect_bd_intf_net -intf_net axi_smc_M00_AXI [get_bd_intf_pins M00_AXI] [get_bd_intf_pins axi_smc/M00_AXI]
   connect_bd_intf_net -intf_net axis_switch_0_M00_AXIS [get_bd_intf_pins axi_mcdma_0/S_AXIS_S2MM] [get_bd_intf_pins axis_switch_0/M00_AXIS]
   connect_bd_intf_net -intf_net my_tsn_ip_rx_axis_be [get_bd_intf_pins axis_switch_0/S01_AXIS] [get_bd_intf_pins my_tsn_ip/rx_axis_be]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M00_AXI [get_bd_intf_pins axi_mcdma_0/S_AXI_LITE] [get_bd_intf_pins ps8_0_axi_periph/M00_AXI]
@@ -1308,7 +1312,6 @@ proc create_hier_cell_TSN_subsystem { parentCell nameHier } {
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M02_AXI [get_bd_intf_pins my_tsn_ip/s_axi] [get_bd_intf_pins ps8_0_axi_periph/M02_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M03_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins ps8_0_axi_periph/M03_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M04_AXI [get_bd_intf_pins ps8_0_axi_periph/M04_AXI] [get_bd_intf_pins test_pmod_controller_0/S00_AXI]
-  connect_bd_intf_net -intf_net ta_dma_0_M_AXI [get_bd_intf_pins axi_smc/S03_AXI] [get_bd_intf_pins ta_dma_0/M_AXI]
   connect_bd_intf_net -intf_net ta_dma_0_M_AXIS_ST_INTF [get_bd_intf_pins my_tsn_ip/tx_axis_st] [get_bd_intf_pins ta_dma_0/M_AXIS_ST_INTF]
   connect_bd_intf_net -intf_net tsn_endpoint_ethernet_mac_0_mdio_external1 [get_bd_intf_pins mdio] [get_bd_intf_pins my_tsn_ip/mdio_external1]
   connect_bd_intf_net -intf_net tsn_endpoint_ethernet_mac_0_mdio_external2 [get_bd_intf_pins mdio2] [get_bd_intf_pins my_tsn_ip/mdio_external2]
@@ -1317,6 +1320,7 @@ proc create_hier_cell_TSN_subsystem { parentCell nameHier } {
   connect_bd_intf_net -intf_net tsn_endpoint_ethernet_mac_0_rx_axis_st [get_bd_intf_pins axis_switch_0/S00_AXIS] [get_bd_intf_pins my_tsn_ip/rx_axis_st]
 
   # Create port connections
+  connect_bd_net -net ARESETN_1 [get_bd_pins rst_clk_wiz_0_200M/interconnect_aresetn] [get_bd_pins axi_ic/ARESETN]
   connect_bd_net -net Op2_1 [get_bd_pins my_tsn_ip/tx_axis_st_tready] [get_bd_pins ta_dma_0/m_axis_st_tready] -boundary_type upper
   connect_bd_net -net Op2_1 [get_bd_pins my_tsn_ip/tx_axis_st_tready] [get_bd_pins tx_s/tready] -boundary_type upper
   connect_bd_net -net axi_intc_0_irq [get_bd_pins irq] [get_bd_pins axi_intc_0/irq]
@@ -1334,7 +1338,12 @@ proc create_hier_cell_TSN_subsystem { parentCell nameHier } {
   connect_bd_net -net axis_switch_0_s_axis_tready [get_bd_pins axis_switch_0/s_axis_tready] [get_bd_pins xlslice_trdy_1/Din] -boundary_type upper
   connect_bd_net -net clk_in1_0_1 [get_bd_pins CLK_IN_gem] [get_bd_pins clk_wiz_0/clk_in1]
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins axi_mcdma_0/s_axi_aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins axi_smc/aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins axi_ic/ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins axi_ic/S00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins axi_ic/M00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins axi_ic/S01_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins axi_ic/S02_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins axi_ic/S03_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins axis_switch_0/aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins clk_wiz_0/clk_out1] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins my_tsn_ip/host_rxfifo_aclk] -boundary_type upper
@@ -1391,9 +1400,13 @@ proc create_hier_cell_TSN_subsystem { parentCell nameHier } {
   connect_bd_net -net rst_clk_wiz_0_100M_1_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins rst_clk_wiz_0_100M/peripheral_aresetn] -boundary_type upper
   connect_bd_net -net rst_clk_wiz_0_100M_1_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins ta_dma_0/global_resetn] -boundary_type upper
   connect_bd_net -net rst_clk_wiz_0_100M_1_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins test_pmod_controller_0/s00_axi_aresetn] -boundary_type upper
-  connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins axi_smc/aresetn] [get_bd_pins axis_switch_0/aresetn] -boundary_type upper
-  connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins axi_smc/aresetn] [get_bd_pins ps8_0_axi_periph/M01_ARESETN] -boundary_type upper
-  connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins axi_smc/aresetn] [get_bd_pins rst_clk_wiz_0_200M/peripheral_aresetn] -boundary_type upper
+  connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins rst_clk_wiz_0_200M/peripheral_aresetn] [get_bd_pins axi_ic/S00_ARESETN] -boundary_type upper
+  connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins rst_clk_wiz_0_200M/peripheral_aresetn] [get_bd_pins axi_ic/M00_ARESETN] -boundary_type upper
+  connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins rst_clk_wiz_0_200M/peripheral_aresetn] [get_bd_pins axi_ic/S01_ARESETN] -boundary_type upper
+  connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins rst_clk_wiz_0_200M/peripheral_aresetn] [get_bd_pins axi_ic/S02_ARESETN] -boundary_type upper
+  connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins rst_clk_wiz_0_200M/peripheral_aresetn] [get_bd_pins axi_ic/S03_ARESETN] -boundary_type upper
+  connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins rst_clk_wiz_0_200M/peripheral_aresetn] [get_bd_pins axis_switch_0/aresetn] -boundary_type upper
+  connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins rst_clk_wiz_0_200M/peripheral_aresetn] [get_bd_pins ps8_0_axi_periph/M01_ARESETN] -boundary_type upper
   connect_bd_net -net rx_b_and_l_v_r [get_bd_pins rx_b/and_l_v_r] [get_bd_pins test_pmod_controller_0/in_rx_b]
   connect_bd_net -net rx_s_and_l_v_r [get_bd_pins rx_s/and_l_v_r] [get_bd_pins test_pmod_controller_0/in_rx_s]
   connect_bd_net -net ta_dma_0_introut [get_bd_pins interrupts_concat_0/In0] [get_bd_pins ta_dma_0/introut]
