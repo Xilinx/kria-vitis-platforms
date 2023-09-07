@@ -3,7 +3,7 @@
 
 source settings.tcl 
 
-set VITIS_LIBS ../../../../../common/Vitis_Libraries/motorcontrol
+set VITIS_LIBS ../../../../../common/Vitis_Libraries/motor_control
 set SVPWM_IP ${VITIS_LIBS}/L1/tests/IP_SVPWM
 
 set PROJ "ip_svpwm_duty.prj"

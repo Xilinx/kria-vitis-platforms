@@ -3,7 +3,7 @@
 
 source settings.tcl 
 
-set VITIS_LIBS ../../../../../common/Vitis_Libraries/motorcontrol
+set VITIS_LIBS ../../../../../common/Vitis_Libraries/motor_control
 set FOC_IP ${VITIS_LIBS}/L1/tests/IP_FOC
 
 set PROJ "ip_foc_periodic.prj"
