@@ -4,6 +4,10 @@
 
 CP = cp -rf
 PWD = $(shell readlink -f .)
+MKDIR = mkdir -p
+RM = rm -rf
+XSCT = $(XILINX_VITIS)/bin/xsct
+JOBS ?= 8
 
 BOARD_LIST = k26 kv260 kr260 kd240
 BOARD = $(word 1,$(subst _, ,$(PFM)))
@@ -12,7 +16,13 @@ $(foreach b,$(BOARD_LIST),$(eval include $(b)/$(b).mk))
 # the platform directory has to be an absolute path when passed to v++
 PFM_DIR = $(PWD)/$(BOARD)/platforms
 PFM_VER = 202320_1
-PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
+PFM_NAME = xilinx_$(PFM)_$(PFM_VER)
+PFM_XPFM = $(PFM_DIR)/$(PFM_NAME)/$(PFM).xpfm
+PFM_PRJ_DIR = $(PFM_DIR)/xsct/$(PFM)/$(PFM)/export/$(PFM)
+PFM_TCL = $(PWD)/common/scripts/pfm.tcl
+
+VIV_DIR = $(PFM_DIR)/vivado/$(PFM)
+VIV_XSA = $(VIV_DIR)/project/$(PFM).xsa
 
 VITIS_DIR = $(BOARD)/overlays/examples
 VITIS_OVERLAY_DIR = $(VITIS_DIR)/$(OVERLAY)
@@ -60,7 +70,7 @@ $(VITIS_OVERLAY_BIT): $(PFM_XPFM)
 
 .PHONY: platform
 platform: $(PFM_XPFM)
-$(PFM_XPFM):
+$(PFM_XPFM): $(VIV_XSA)
 	@valid=0; \
 	for p in $(PFM_LIST); do \
 	  if [ "$$p" = "$(PFM)" ]; then \
@@ -73,9 +83,15 @@ $(PFM_XPFM):
 	  exit 1; \
 	fi; \
 	echo 'Create Vitis platform $(PFM)'; \
-	$(MAKE) -C $(PFM_DIR) platform PLATFORM=$(PFM) VERSION=$(PFM_VER)
+	cd $(PFM_DIR); \
+	$(XSCT) $(PFM_TCL) -xsa $(VIV_XSA); \
+	$(CP) $(PFM_PRJ_DIR) $(PFM_NAME); \
+	cd -
+
+$(VIV_XSA):
+	make -C $(VIV_DIR) xsa JOBS=$(JOBS)
 
 .PHONY: clean
 clean:
 	$(foreach o, $(OVERLAY_LIST), $(MAKE) -C $(VITIS_DIR)/$(o) clean;)
-	$(foreach p, $(PFM_LIST), $(MAKE) -C $(PFM_DIR) clean PLATFORM=$(p) VERSION=$(PFM_VER);)
+	$(foreach p, $(PFM_LIST), $(MAKE) -C $(VIV_DIR) clean;)
