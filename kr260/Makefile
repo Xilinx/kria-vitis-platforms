@@ -1,17 +1,14 @@
 # (C) Copyright 2020 - 2022 Xilinx, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-CP = cp -f
+include kr260.mk
 
+CP = cp -f
 PWD = $(shell readlink -f .)
 
 # the platform directory has to be an absolute path when passed to v++
 PFM_DIR = $(PWD)/platforms
 PFM_VER = 202320_1
-
-# valid platforms
-PFM_LIST = kr260_tsn_rs485pmod kr260_pmod_gps
-
 PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
 
 .PHONY: help

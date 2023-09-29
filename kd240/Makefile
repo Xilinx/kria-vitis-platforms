@@ -1,17 +1,14 @@
 # Copyright (C) 2022, Advanced Micro Devices, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-CP = cp -f
+include kd240.mk
 
+CP = cp -f
 PWD = $(shell readlink -f .)
 
 # the platform directory has to be an absolute path when passed to v++
 PFM_DIR = $(PWD)/platforms
 PFM_VER = 202320_1
-
-# valid platforms
-PFM_LIST = kd240_motor_ctrl_qei kd240_bist
-
 PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
 
 .PHONY: help

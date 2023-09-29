@@ -1,17 +1,14 @@
 # (C) Copyright 2022 Xilinx, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-CP = cp -f
+include k26.mk
 
+CP = cp -f
 PWD = $(shell readlink -f .)
 
 # the platform directory has to be an absolute path when passed to v++
 PFM_DIR = $(PWD)/platforms
 PFM_VER = 202320_1
-
-# valid platforms
-PFM_LIST = k26_base_starter_kit
-
 PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
 
 .PHONY: help
