@@ -3,10 +3,10 @@
 
 source settings.tcl 
 
-set VITIS_LIBS ../../../../../common/Vitis_Libraries/motor_control
-set FOC_IP ${VITIS_LIBS}/L1/tests/IP_FOC
+set VITIS_LIBS ../../../../common/Vitis_Libraries/motor_control
+set SVPWM_IP ${VITIS_LIBS}/L1/tests/IP_SVPWM
 
-set PROJ "ip_foc_periodic.prj"
+set PROJ "ip_svpwm_duty.prj"
 set SOLN "sol1"
 
 if {![info exists CLKP]} {
@@ -19,9 +19,9 @@ if {![info exists XPART]} {
 
 open_project -reset $PROJ
 
-add_files "${FOC_IP}/src/ip_foc.cpp" -cflags "-I${VITIS_LIBS}/L1/include/hw -I${FOC_IP}/src"
-add_files -tb "${FOC_IP}/src/test_ip_foc.cpp" -cflags "-I${VITIS_LIBS}/L1/include/hw -I${FOC_IP}/src" 
-set_top hls_foc_periodic_ap_fixed
+add_files "${SVPWM_IP}/src/ip_svpwm.cpp" -cflags "-I${VITIS_LIBS}/L1/include/hw -I${SVPWM_IP}/src"
+add_files -tb "${SVPWM_IP}/src/test_svpwm.cpp" -cflags "-I${VITIS_LIBS}/L1/include/hw -I${SVPWM_IP}/src" 
+set_top hls_svpwm_duty
 
 open_solution -reset $SOLN
 
@@ -30,7 +30,7 @@ create_clock -period $CLKP
 set_clock_uncertainty 1.25
 
 csynth_design
-config_export -ipname hls_foc_periodic
+config_export -ipname hls_svpwm_duty
 export_design -rtl verilog -format ip_catalog
 
 exit

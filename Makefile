@@ -21,7 +21,7 @@ PFM_XPFM = $(PFM_DIR)/$(PFM_NAME)/$(PFM).xpfm
 PFM_PRJ_DIR = $(PFM_DIR)/xsct/$(PFM)/$(PFM)/export/$(PFM)
 PFM_TCL = $(PWD)/common/scripts/pfm.tcl
 
-VIV_DIR = $(PFM_DIR)/vivado/$(PFM)
+VIV_DIR = $(PFM_DIR)/$(PFM)
 VIV_XSA = $(VIV_DIR)/project/$(PFM).xsa
 
 VITIS_DIR = $(BOARD)/overlays/examples

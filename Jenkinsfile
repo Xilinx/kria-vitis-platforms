@@ -199,7 +199,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_vcu_DP/**"
+                                    changeset "**/kv260/platforms/kv260_ispMipiRx_vcu_DP/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -286,7 +286,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/platforms/vivado/kv260_vcuDecode_vmixDP/**"
+                                    changeset "**/kv260/platforms/kv260_vcuDecode_vmixDP/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -348,7 +348,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_vmixDP/**"
+                                    changeset "**/kv260/platforms/kv260_ispMipiRx_vmixDP/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -410,7 +410,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_rpiMipiRx_DP/**"
+                                    changeset "**/kv260/platforms/kv260_ispMipiRx_rpiMipiRx_DP/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -472,7 +472,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kr260/platforms/vivado/kr260_tsn_rs485pmod/**"
+                                    changeset "**/kr260/platforms/kr260_tsn_rs485pmod/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -506,7 +506,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kr260/platforms/vivado/kr260_pmod_gps/**"
+                                    changeset "**/kr260/platforms/kr260_pmod_gps/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -540,7 +540,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/k26/platforms/vivado/k26_base_starter_kit/**"
+                                    changeset "**/k26/platforms/k26_base_starter_kit/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -574,7 +574,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kd240/platforms/vivado/kd240_motor_ctrl_qei/**"
+                                    changeset "**/kd240/platforms/kd240_motor_ctrl_qei/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -608,7 +608,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/platforms/vivado/kv260_bist/**"
+                                    changeset "**/kv260/platforms/kv260_bist/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -642,7 +642,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kd240/platforms/vivado/kd240_bist/**"
+                                    changeset "**/kd240/platforms/kd240_bist/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
