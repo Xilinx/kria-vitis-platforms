@@ -40,7 +40,7 @@ def createWorkDir() {
 def buildPlatform() {
     sh label: 'platform build',
     script: '''
-        pushd ${work_dir}/${board}
+        pushd ${work_dir}
         source ${setup} -r ${tool_release} && set -e
         ${lsf} make platform PFM=${pfm_base} JOBS=32
         popd
@@ -51,10 +51,10 @@ def deployPlatform() {
     sh label: 'platform deploy',
     script: '''
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            pushd ${work_dir}/${board}
+            pushd ${work_dir}
             DST=${DEPLOYDIR}/platforms
             mkdir -p ${DST}
-            cp -rf platforms/${pfm} ${DST}
+            cp -rf ${board}/platforms/${pfm} ${DST}
             popd
             cp ${ws}/commitIDs ${DST}/${pfm}
         fi
@@ -65,9 +65,9 @@ def deployPlatformFirmware() {
     sh label: 'platform firmware deploy',
     script: '''
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            pushd ${work_dir}/${board}
+            pushd ${work_dir}
             mkdir -p tmp
-            unzip platforms/${pfm}/hw/${pfm_base}.xsa -d tmp
+            unzip ${board}/platforms/${pfm}/hw/${pfm_base}.xsa -d tmp
             pushd tmp
             source ${setup} -r ${tool_release} && set -e
             echo "all: { ${pfm_base}.bit }" > bootgen.bif
@@ -87,12 +87,12 @@ def deployPlatformFirmware() {
 def buildOverlay() {
     sh label: 'overlay build',
     script: '''
-        pushd ${work_dir}/${board}
-        if [ -d platforms/${pfm} ]; then
+        pushd ${work_dir}
+        if [ -d ${board}/platforms/${pfm} ]; then
             echo "Using platform from local build"
         elif [ -d ${DEPLOYDIR}/platforms/${pfm} ]; then
             echo "Using platform from build artifacts"
-            ln -s ${DEPLOYDIR}/platforms/${pfm} platforms/
+            ln -s ${DEPLOYDIR}/platforms/${pfm} ${board}/platforms/
         else
             echo "No valid platform found: ${pfm}"
             exit 1
