@@ -1,17 +1,20 @@
-# (C) Copyright 2020 - 2022 Xilinx, Inc.
+# Copyright (C) 2020 - 2022 Xilinx, Inc.
+# Copyright (C) 2023 Advanced Micro Devices, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-include kv260.mk
-
-CP = cp -f
+CP = cp -rf
 PWD = $(shell readlink -f .)
 
+BOARD_LIST = k26 kv260 kr260 kd240
+BOARD = $(word 1,$(subst _, ,$(PFM)))
+$(foreach b,$(BOARD_LIST),$(eval include $(b)/$(b).mk))
+
 # the platform directory has to be an absolute path when passed to v++
-PFM_DIR = $(PWD)/platforms
+PFM_DIR = $(PWD)/$(BOARD)/platforms
 PFM_VER = 202320_1
 PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
 
-VITIS_DIR = overlays/examples
+VITIS_DIR = $(BOARD)/overlays/examples
 VITIS_OVERLAY_DIR = $(VITIS_DIR)/$(OVERLAY)
 VITIS_OVERLAY_BIT = $(VITIS_OVERLAY_DIR)/binary_container_1/link/int/system.bit
 
