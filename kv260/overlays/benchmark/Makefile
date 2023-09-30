@@ -29,17 +29,17 @@ help::
 # # v++ flags
 VPP ?= v++
 
-XOCC_OPTS = -t ${TARGET} --platform ${PLATFORM} --save-temps --config ${DIR_PRJ}/prj_conf/prj_config_1dpu 
+XOCC_OPTS = -t ${TARGET} --platform ${PLATFORM} --save-temps --config ${DIR_PRJ}/prj_conf/prj_config_1dpu
 
 dpu_HDLSRCS=kernel_xml/dpu/kernel.xml\
 	     scripts/package_dpu_kernel.tcl\
 	     scripts/gen_dpu_xo.tcl\
-	     ../../dpu_ip/Vitis/dpu/hdl/DPUCZDX8G.v\
-	     ../../dpu_ip/Vitis/dpu/inc/arch_def.vh\
-	     ../../dpu_ip/Vitis/dpu/xdc/*.xdc\
-	     ../../dpu_ip/DPUCZDX8G_*/hdl/DPUCZDX8G_*_dpu.sv\
-	     ../../dpu_ip/DPUCZDX8G_*/inc/function.vh\
-             ../../dpu_ip/DPUCZDX8G_*/inc/arch_para.vh
+	     ../dpu_ip/Vitis/dpu/hdl/DPUCZDX8G.v\
+	     ../dpu_ip/Vitis/dpu/inc/arch_def.vh\
+	     ../dpu_ip/Vitis/dpu/xdc/*.xdc\
+	     ../dpu_ip/DPUCZDX8G_*/hdl/DPUCZDX8G_*_dpu.sv\
+	     ../dpu_ip/DPUCZDX8G_*/inc/function.vh\
+             ../dpu_ip/DPUCZDX8G_*/inc/arch_para.vh
 
 dpu_TCL=scripts/gen_dpu_xo.tcl
 DPU_KERN_NAME = DPUCZDX8G

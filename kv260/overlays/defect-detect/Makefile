@@ -38,7 +38,7 @@ VPP ?= v++
 
 XOCC_OPTS = -t ${TARGET} --platform ${PLATFORM} --save-temps --config $(CONFIG_FILE) --config ${DIR_PRJ}/system.cfg
 
-XFOPENCV_INCDIR = ../../../../common/Vitis_Libraries/vision/L1/include/
+XFOPENCV_INCDIR = ../../../common/Vitis_Libraries/vision/L1/include/
 KERNEL_XO_FLAGS =  -I$(XFOPENCV_INCDIR) -D__SDSVHLS__ -DHLS_NO_XIL_FPO_LIB --advanced.prop kernel.preprocess_accel.kernel_flags="-std=c++0x"
 JOBS = 32
 

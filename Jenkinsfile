@@ -101,7 +101,7 @@ def buildOverlay() {
         ${lsf} make overlay OVERLAY=${overlay}
         popd
 
-        pushd ${example_dir}/binary_container_1/link/int
+        pushd ${overlay_dir}/binary_container_1/link/int
         echo 'all: { system.bit }' > bootgen.bif
         bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
         popd
@@ -114,9 +114,9 @@ def deployOverlay() {
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
             DST=${DEPLOYDIR}/firmware/${board}-${overlay}
             mkdir -p ${DST}
-            cp -f ${example_dir}/binary_container_1/*.xclbin ${DST}/${board}-${overlay}.xclbin
-            cp -f ${example_dir}/binary_container_1/link/int/system.bit ${DST}/${board}-${overlay}.bit
-            cp -f ${example_dir}/binary_container_1/link/int/system.bit.bin ${DST}/${board}-${overlay}.bin
+            cp -f ${overlay_dir}/binary_container_1/*.xclbin ${DST}/${board}-${overlay}.xclbin
+            cp -f ${overlay_dir}/binary_container_1/link/int/system.bit ${DST}/${board}-${overlay}.bit
+            cp -f ${overlay_dir}/binary_container_1/link/int/system.bit.bin ${DST}/${board}-${overlay}.bin
             cp ${ws}/commitIDs ${DST}
         fi
     '''
@@ -222,11 +222,11 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="smartcam"
-                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
+                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/overlays/examples/smartcam/**"
+                                    changeset "**/kv260/overlays/smartcam/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_SMARTCAM', value: '1'
@@ -247,11 +247,11 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="benchmark"
-                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
+                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/overlays/examples/benchmark/**"
+                                    changeset "**/kv260/overlays/benchmark/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_SMARTCAM', value: '1'
@@ -309,11 +309,11 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="aibox-reid"
-                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
+                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/overlays/examples/aibox-reid/**"
+                                    changeset "**/kv260/overlays/aibox-reid/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_AIBOX_REID', value: '1'
@@ -371,11 +371,11 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="defect-detect"
-                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
+                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/overlays/examples/defect-detect/**"
+                                    changeset "**/kv260/overlays/defect-detect/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_DEFECT_DETECT', value: '1'
@@ -433,11 +433,11 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="nlp-smartvision"
-                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
+                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/overlays/examples/nlp-smartvision/**"
+                                    changeset "**/kv260/overlays/nlp-smartvision/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_NLP_SMARTVISION', value: '1'

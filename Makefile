@@ -24,7 +24,7 @@ PFM_TCL = $(PWD)/common/scripts/pfm.tcl
 VIV_DIR = $(PFM_DIR)/$(PFM)
 VIV_XSA = $(VIV_DIR)/project/$(PFM).xsa
 
-VITIS_DIR = $(BOARD)/overlays/examples
+VITIS_DIR = $(BOARD)/overlays
 VITIS_OVERLAY_DIR = $(VITIS_DIR)/$(OVERLAY)
 VITIS_OVERLAY_BIT = $(VITIS_OVERLAY_DIR)/binary_container_1/link/int/system.bit
 
