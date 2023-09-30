@@ -1,0 +1,321 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * dts file for Xilinx KV260 smartcam
+ *
+ * (C) Copyright 2020 - 2021, Xilinx, Inc.
+ *
+ */
+
+/dts-v1/;
+/plugin/;
+
+&fpga_full {
+	#address-cells = <2>;
+	#size-cells = <2>;
+	firmware-name = "kv260-smartcam.bit.bin";
+	resets = <&zynqmp_reset 116>, <&zynqmp_reset 117>, <&zynqmp_reset 118>, <&zynqmp_reset 119>;
+};
+
+&amba {
+	afi0: afi0 {
+		compatible = "xlnx,afi-fpga";
+		config-afi = <0 0>, <1 0>, <2 0>, <3 0>, <4 0>, <5 0>, <6 0>, <7 0>, <8 0>, <9 0>, <10 0>, <11 0>, <12 0>, <13 0>, <14 0x0>, <15 0x000>;
+	};
+
+	clocking0: clocking0 {
+		#clock-cells = <0>;
+		assigned-clock-rates = <99999001>;
+		assigned-clocks = <&zynqmp_clk 71>;
+		clock-output-names = "fabric_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,fclk";
+	};
+
+	clocking1: clocking1 {
+		#clock-cells = <0>;
+		assigned-clock-rates = <99999001>;
+		assigned-clocks = <&zynqmp_clk 72>;
+		clock-output-names = "fabric_clk";
+		clocks = <&zynqmp_clk 72>;
+		compatible = "xlnx,fclk";
+	};
+
+	/* fpga clocks */
+	misc_clk_0: misc_clk_0 {
+		#clock-cells = <0x0>;
+		clock-frequency = <99999000>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_1: misc_clk_1 {
+		#clock-cells = <0x0>;
+		clock-frequency = <199998000>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_2: misc_clk_2 {
+		#clock-cells = <0x0>;
+		clock-frequency = <299997000>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_5: misc_clk_5 {
+		#clock-cells = <0x0>;
+		clock-frequency = <49999500>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_6: misc_clk_6 {
+		#clock-cells = <0x0>;
+		clock-frequency = <18432019>;
+		compatible = "fixed-clock";
+	};
+
+	/* ar1335 isp mipi rx pipeline */
+	ap1302_clk: sensor_clk {
+		#clock-cells = <0x0>;
+		compatible = "fixed-clock";
+		clock-frequency = <0x48000000>;
+	};
+
+	ap1302_vdd: fixedregulator@0 {
+		compatible = "regulator-fixed";
+		regulator-name = "ap1302_vdd";
+		regulator-min-microvolt = <2800000>;
+		regulator-max-microvolt = <2800000>;
+		enable-active-high;
+	};
+
+	ap1302_vaa: fixedregulator@1 {
+		compatible = "regulator-fixed";
+		regulator-name = "ap1302_vaa";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+	};
+
+	ap1302_vddio: fixedregulator@2 {
+		compatible = "regulator-fixed";
+		regulator-name = "ap1302_vddio";
+		regulator-min-microvolt = <1200000>;
+		regulator-max-microvolt = <1200000>;
+	};
+
+	axi_iic: i2c@80030000 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		clock-names = "s_axi_aclk";
+		clocks = <&misc_clk_0>;
+		compatible = "xlnx,axi-iic-2.0", "xlnx,xps-iic-2.00.a";
+		interrupt-names = "iic2intc_irpt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 107 4>;
+		reg = <0x0 0x80030000 0x0 0x10000>;
+
+		i2c_mux: i2c-mux@74 {
+			compatible = "nxp,pca9546";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x74>;
+			i2c@0 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <0>;
+				ap1302: isp@3c {
+					compatible = "onnn,ap1302";
+					reg = <0x3c>;
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reset-gpios = <&gpio 79 1>;
+					clocks = <&ap1302_clk>;
+					sensors {
+						#address-cells = <1>;
+						#size-cells = <0>;
+						onnn,model = "onnn,ar1335";
+						sensor@0 {
+							reg = <0>;
+							vdd-supply = <&ap1302_vdd>;
+							vaa-supply = <&ap1302_vaa>;
+							vddio-supply = <&ap1302_vddio>;
+						};
+					};
+					ports {
+						#address-cells = <1>;
+						#size-cells = <0>;
+						port@0 {
+							reg = <2>;
+							isp_out: endpoint {
+								remote-endpoint = <&isp_csiss_in>;
+								data-lanes = <1 2 3 4>;
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+
+	isp_csiss: csiss@80000000 {
+		compatible = "xlnx,mipi-csi2-rx-subsystem-5.0";
+		reg = <0x0 0x80000000 0x0 0x10000>;
+		clock-names = "lite_aclk", "dphy_clk_200M", "video_aclk";
+		clocks = <&misc_clk_0>, <&misc_clk_1>, <&misc_clk_2>;
+		interrupt-parent = <&gic>;
+		interrupts = <0 104 4>;
+		xlnx,csi-pxl-format = <0x18>;
+		xlnx,axis-tdata-width = <32>;
+		xlnx,max-lanes = <4>;
+		xlnx,en-active-lanes;
+		xlnx,ppc = <2>;
+		xlnx,vfb;
+
+		ports {
+			#address-cells = <0x1>;
+			#size-cells = <0x0>;
+
+			port@1 {
+				reg = <0x1>;
+
+				isp_csiss_out: endpoint {
+					remote-endpoint = <&isp_vcap_csi_in>;
+				};
+			};
+			port@0 {
+				reg = <0x0>;
+
+				isp_csiss_in: endpoint {
+					data-lanes = <1 2 3 4>;
+					remote-endpoint = <&isp_out>;
+				};
+			};
+		};
+	};
+
+	isp_fb_wr_csi: fb_wr@b0010000 {
+		compatible = "xlnx,axi-frmbuf-wr-v2.1";
+		reg = <0x0 0xb0010000 0x0 0x10000>;
+		#dma-cells = <1>;
+		interrupt-parent = <&gic>;
+		interrupts = <0 105 4>;
+		xlnx,vid-formats = "nv12";
+		reset-gpios = <&gpio 78 1>;
+		xlnx,dma-addr-width = <32>;
+		xlnx,pixels-per-clock = <2>;
+		xlnx,max-width = <3840>;
+		xlnx,max-height = <2160>;
+		clocks = <&misc_clk_2>;
+		clock-names = "ap_clk";
+	};
+
+	isp_vcap_csi {
+		compatible = "xlnx,video";
+		dmas = <&isp_fb_wr_csi 0>;
+		dma-names = "port0";
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				direction = "input";
+
+				isp_vcap_csi_in: endpoint {
+					remote-endpoint = <&isp_csiss_out>;
+				};
+			};
+		};
+	};
+
+	/* i2s rx/tx audio pipeline */
+/*	i2s_audio_formatter: audio_formatter@80040000 {
+		clock-names = "s_axi_lite_aclk", "m_axis_mm2s_aclk", "aud_mclk", "s_axis_s2mm_aclk";
+		clocks = <&misc_clk_0>, <&misc_clk_6>, <&misc_clk_6>, <&misc_clk_0>;
+		compatible = "xlnx,audio-formatter-1.0", "xlnx,audio-formatter-1.0";
+		interrupt-names = "irq_mm2s", "irq_s2mm";
+		interrupt-parent = <&gic>;
+		interrupts = <0 111 4 0 110 4>;
+		reg = <0x0 0x80040000 0x0 0x10000>;
+		xlnx,include-mm2s = <0x1>;
+		xlnx,include-s2mm = <0x1>;
+		xlnx,max-num-channels-mm2s = <0x2>;
+		xlnx,max-num-channels-s2mm = <0x2>;
+		xlnx,mm2s-addr-width = <0x40>;
+		xlnx,mm2s-async-clock = <0x1>;
+		xlnx,mm2s-dataformat = <0x3>;
+		xlnx,packing-mode-mm2s = <0x0>;
+		xlnx,packing-mode-s2mm = <0x0>;
+		xlnx,rx = <&audio_rx>;
+		xlnx,s2mm-addr-width = <0x40>;
+		xlnx,s2mm-async-clock = <0x1>;
+		xlnx,s2mm-dataformat = <0x1>;
+		xlnx,tx = <&audio_tx>;
+	};
+
+	audio_rx: i2s_receiver@80060000 {
+		clock-names = "s_axi_ctrl_aclk", "aud_mclk", "m_axis_aud_aclk";
+		clocks = <&misc_clk_0>, <&misc_clk_6>, <&misc_clk_0>;
+		compatible = "xlnx,i2s-receiver-1.0", "xlnx,i2s-receiver-1.0";
+		interrupt-names = "irq";
+		interrupt-parent = <&gic>;
+		interrupts = <0 108 4>;
+		reg = <0x0 0x80060000 0x0 0x10000>;
+		xlnx,depth = <0x80>;
+		xlnx,dwidth = <0x18>;
+		xlnx,num-channels = <0x1>;
+		xlnx,snd-pcm = <&i2s_audio_formatter>;
+	};
+
+	audio_tx: i2s_transmitter@80070000 {
+		clock-names = "s_axi_ctrl_aclk", "aud_mclk", "s_axis_aud_aclk";
+		clocks = <&misc_clk_0>, <&misc_clk_6>, <&misc_clk_0>;
+		compatible = "xlnx,i2s-transmitter-1.0", "xlnx,i2s-transmitter-1.0";
+		interrupt-names = "irq";
+		interrupt-parent = <&gic>;
+		interrupts = <0 109 4>;
+		reg = <0x0 0x80070000 0x0 0x10000>;
+		xlnx,depth = <0x80>;
+		xlnx,dwidth = <0x18>;
+		xlnx,num-channels = <0x1>;
+		xlnx,snd-pcm = <&i2s_audio_formatter>;
+	}; */
+
+	/* vcu encode/decode */
+	vcu: vcu@80100000 {
+		#address-cells = <2>;
+		#clock-cells = <1>;
+		#size-cells = <2>;
+		clock-names = "pll_ref", "aclk", "vcu_core_enc", "vcu_mcu_enc", "vcu_core_dec", "vcu_mcu_dec";
+		clocks = <&misc_clk_5>, <&misc_clk_0>, <&vcu 0>, <&vcu 1>, <&vcu 2>, <&vcu 3>;
+		compatible = "xlnx,vcu-1.2", "xlnx,vcu";
+		interrupt-names = "vcu_host_interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 106 4>;
+		ranges;
+		reg = <0x0 0x80140000 0x0 0x1000>, <0x0 0x80141000 0x0 0x1000>;
+		reg-names = "vcu_slcr", "logicore";
+		reset-gpios = <&gpio 80 0>;
+
+		al5e: al5e@80100000 {
+			compatible = "al,al5e-1.2", "al,al5e";
+			interrupt-parent = <&gic>;
+			interrupts = <0 106 4>;
+			reg = <0x0 0x80100000 0x0 0x10000>;
+		};
+
+		al5d: al5d@80120000 {
+			compatible = "al,al5d-1.2", "al,al5d";
+			interrupt-parent = <&gic>;
+			interrupts = <0 106 4>;
+			reg = <0x0 0x80120000 0x0 0x10000>;
+		};
+	};
+
+	/* zocl */
+	zocl: zyxclmm_drm {
+		compatible = "xlnx,zocl";
+		status = "okay";
+		interrupt-parent = <&gic>;
+		interrupts = <0 89  4>, <0 90  4>, <0 91  4>, <0 92  4>,
+			     <0 93  4>, <0 94  4>, <0 95  4>, <0 96  4>;
+	};
+};

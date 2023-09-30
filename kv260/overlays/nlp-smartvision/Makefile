@@ -57,7 +57,7 @@ dpu_pp_xo = $(dpu_xo)
 
 .PHONY: all clean package
 
-all : binary_container_1/dpu.xclbin package
+all : binary_container_1/system.xclbin package
 
 # 	# Rules
 
@@ -66,7 +66,7 @@ binary_container_1/dpu.xo: $(dpu_HDLSRCS)
 	-@$(RM) $@
 	$(VIVADO) -mode batch -source $(dpu_TCL) -tclargs $@ $(DPU_KERN_NAME) ${TARGET} mpsoc
 
-binary_container_1/dpu.xclbin: $(dpu_pp_xo)
+binary_container_1/system.xclbin: $(dpu_pp_xo)
 	$(VPP) $(XOCC_OPTS) -l --temp_dir binary_container_1 --log_dir binary_container_1/logs --remote_ip_cache binary_container_1/ip_cache -o "$@" $(+)
 	$(XBU) $(XBU_FLAGS) --input $@ --output strip.xclbin
 	@mv strip.xclbin $@

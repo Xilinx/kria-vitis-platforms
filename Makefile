@@ -23,14 +23,43 @@ PFM_TCL = $(PWD)/common/scripts/pfm.tcl
 
 VIV_DIR = $(PFM_DIR)/$(PFM)
 VIV_XSA = $(VIV_DIR)/project/$(PFM).xsa
+VIV_BIT = $(VIV_DIR)/project/$(PFM).runs/impl_1/$(PFM)_wrapper.bit
 
 VITIS_DIR = $(BOARD)/overlays
 VITIS_OVERLAY_DIR = $(VITIS_DIR)/$(OVERLAY)
 VITIS_OVERLAY_BIT = $(VITIS_OVERLAY_DIR)/binary_container_1/link/int/system.bit
+VITIS_OVERLAY_XCLBIN = $(VITIS_OVERLAY_DIR)/binary_container_1/system.xclbin
+
+BIF_TEMPLATE = $(PWD)/common/firmware/template.bif
+JSON_TEMPLATE = $(PWD)/common/firmware/shell.json
+
+FW_DIR = $(PWD)/$(BOARD)/firmware/$(FW)
+FW_BIF = $(PWD)/$(BOARD)/firmware/$(FW).bif
+FW_BIN = $(PWD)/$(BOARD)/firmware/$(FW).bin
+FW_XCLBIN = $(PWD)/$(BOARD)/firmware/$(FW).xclbin
+FW_DTSI = $(FW_DT_DIR)/dtsi/$(FW).dtsi
+FW_DTBO = $(FW_DT_DIR)/dtsi/$(FW).dtbo
+FW_DEPS = $(FW_DTBO) $(FW_BIN) $(JSON_TEMPLATE)
+
+ifdef OVERLAY
+FW_BIT = $(VITIS_OVERLAY_BIT)
+FW_DT_DIR = $(VITIS_OVERLAY_DIR)
+FW_DEPS += $(FW_XCLBIN)
+else
+FW_BIT = $(VIV_BIT)
+FW_DT_DIR = $(VIV_DIR)
+endif
 
 .PHONY: help
 help:
 	@echo 'Usage:'
+	@echo ''
+	@echo '  make firmware FW=<val>'
+	@echo '    Build the firmware artifacts for a given platform or overlay.'
+	@echo ''
+	@echo '    FW: valid options'
+	@echo -n '        '
+	@echo '${FW_LIST}' | sed -r 's/ /\n        /g'
 	@echo ''
 	@echo '  make overlay OVERLAY=<val>'
 	@echo '    Build the Vitis application overlay.'
@@ -51,8 +80,41 @@ help:
 	@echo '    Clean runs'
 	@echo ''
 
+.PHONY: firmware
+firmware: $(FW_DEPS)
+	@valid=0; \
+	for f in $(FW_LIST); do \
+	  if [ "$$f" = "$(FW)" ]; then \
+	    valid=1; \
+	    break; \
+	  fi \
+	done; \
+	if [ "$$valid" -ne 1 ]; then \
+	  echo 'Invalid parameter FW=$(FW). Choose one of: $(FW_LIST)'; \
+	  exit 1; \
+	fi; \
+	echo 'Generate $(FW) firmware artifacts and copy to $(FW_DIR)'; \
+	mkdir -p $(FW_DIR); \
+	cp -f $^ $(FW_DIR)
+
+$(FW_DTBO): $(FW_DTSI)
+	dtc -I dts -O dtb -o $@ $<
+
+$(FW_BIN): $(FW_BIF)
+	mkdir -p $(FW_DIR)
+	bootgen -image $< -arch zynqmp -o $@ -w
+
+$(FW_BIF): $(FW_BIT) $(BIF_TEMPLATE)
+	mkdir -p $(FW_DIR)
+	sed 's#@BIT@#$<#' <$(BIF_TEMPLATE) >$@
+
+$(FW_XCLBIN): $(VITIS_OVERLAY_XCLBIN)
+	mkdir -p $(FW_DIR)
+	cp -f $< $@
+
 .PHONY: overlay
-overlay: $(VITIS_OVERLAY_BIT)
+overlay: $(VITIS_OVERLAY_XCLBIN)
+$(VITIS_OVERLAY_XCLBIN): $(VITIS_OVERLAY_BIT)
 $(VITIS_OVERLAY_BIT): $(PFM_XPFM)
 	@valid=0; \
 	for o in $(OVERLAY_LIST); do \
@@ -88,6 +150,7 @@ $(PFM_XPFM): $(VIV_XSA)
 	$(CP) $(PFM_PRJ_DIR) $(PFM_NAME); \
 	cd -
 
+$(VIV_BIT): $(VIV_XSA)
 $(VIV_XSA):
 	make -C $(VIV_DIR) xsa JOBS=$(JOBS)
 

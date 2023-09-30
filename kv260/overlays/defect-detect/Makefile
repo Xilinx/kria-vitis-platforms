@@ -52,7 +52,7 @@ defect_detect_xo += $(CCA_KERNEL_XO)
 
 .PHONY: all clean package
 
-all : binary_container_1/defect-detect.xclbin package
+all : binary_container_1/system.xclbin package
 
 # 	# Rules
 $(GAUSSIAN_KERNEL_XO): xf_gaussian_otsu_accel.cpp
@@ -76,9 +76,10 @@ $(CCA_KERNEL_XO): xf_cca_custom_accel.cpp
 	$(VPP) -k $(CCA_KERNEL) $(VPP_XO_FLAGS) -o '$@' '$<'
 	-@$(RM) .Xil
 
-binary_container_1/defect-detect.xclbin: $(defect_detect_xo)
+binary_container_1/system.xclbin: $(defect_detect_xo)
 	$(VPP) $(XOCC_OPTS) -l --temp_dir binary_container_1 --log_dir binary_container_1/logs --remote_ip_cache binary_container_1/ip_cache -o "$@" $(+)
 	$(XBU) $(XBU_FLAGS) --input $@ --output strip.xclbin
+	@mv strip.xclbin $@
 
 package:
 	-@mkdir -p binary_container_1/sd_card

@@ -1,0 +1,283 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * dts file for Xilinx KD240 motor drives
+ *
+ * (C) Copyright 2023, Advanced Micro Devices, Inc.
+ *
+ */
+
+/dts-v1/;
+/plugin/;
+
+&fpga_full {
+	#address-cells = <2>;
+	#size-cells = <2>;
+	firmware-name = "kd240_motor_ctrl_qei.bit.bin";
+	resets = <&zynqmp_reset 116>, <&zynqmp_reset 117>;
+};
+
+&amba {
+	afi0: afi0 {
+		compatible = "xlnx,afi-fpga";
+		config-afi = < 0 0>, <1 0>, <2 0>, <3 0>, <4 0>, <5 0>, <6 0>, <7 0>, <8 0>, <9 0>, <10 0>, <11 0>, <12 0>, <13 0>, <14 0x800>, <15 0>;
+	};
+
+	clocking0: clocking0 {
+		#clock-cells = <0>;
+		assigned-clock-rates = <99999001>;
+		assigned-clocks = <&zynqmp_clk 71>;
+		clock-output-names = "fabric_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,fclk";
+	};
+
+	clocking1: clocking1 {
+		#clock-cells = <0>;
+		assigned-clock-rates = <19999800>;
+		assigned-clocks = <&zynqmp_clk 72>;
+		clock-output-names = "fabric_clk";
+		clocks = <&zynqmp_clk 72>;
+		compatible = "xlnx,fclk";
+	};
+
+
+	hls_foc_periodic_0: hls_foc_periodic@a0000000 {
+		clock-names = "ap_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,hls-foc-periodic-1.0";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 93 4>;
+		reg = <0 0xa0000000 0 0x1000>;
+	};
+
+	hls_pwm_gen_0: hls_pwm_gen@a0040000 {
+		clock-names = "ap_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,hls-pwm-gen-1.0";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 95 4>;
+		reg = <0 0xa0040000 0 0x1000>;
+	};
+
+	hls_qei_axi_0: hls_qei_axi@a0030000 {
+		clock-names = "ap_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,hls-qei-axi-1.0";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 92 4>;
+		reg = <0 0xa0030000 0 0x1000>;
+	};
+
+	hls_svpwm_duty_0: hls_svpwm_duty@a0050000 {
+		clock-names = "ap_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,hls-svpwm-duty-1.0";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 94 4>;
+		reg = <0 0xa0050000 0 0x1000>;
+	};
+
+	axi_intc_0: interrupt-controller@80020000 {
+		#interrupt-cells = <2>;
+		compatible = "xlnx,xps-intc-1.00.a";
+		interrupt-controller ;
+		interrupt-parent = <&gic>;
+		interrupts = <0 96 4>;
+		reg = <0x0 0x80020000 0x0 0x1000>;
+		xlnx,kind-of-intr = <0x000>;
+		xlnx,num-intr-inputs = <0x20>;
+	};
+
+	axi_mcdma_0: axi_mcdma@80000000 {
+		#dma-cells = <1>;
+		compatible = "xlnx,eth-dma";
+		interrupt-names = "mm2s_ch1_introut", "mm2s_ch2_introut", "s2mm_ch1_introut", "s2mm_ch2_introut", "s2mm_ch3_introut", "s2mm_ch4_introut";
+		interrupt-parent = <&axi_intc_0>;
+		interrupts = <9 2 10 2 11 2 12 2 13 2 14 2>;
+		reg = <0x0 0x80000000 0x0 0x1000>;
+		xlnx,addrwidth = <0x20>;
+		xlnx,include-dre ;
+		xlnx,num-mm2s-channels = <0x2>;
+		xlnx,num-s2mm-channels = <0x4>;
+	};
+
+	motor_control_0: motor_control@a0020000 {
+		clock-names = "s_axi_cntrl_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "generic-uio";
+		linux,uio-name = "motor_control";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 90 4>;
+		reg = <0 0xa0020000 0 0x100>;
+	};
+
+	ADC_adc_hub_0: adc_hub@a0010000 {
+		compatible = "xlnx,adc-hub-1.0";
+		interrupt-names = "adc_hub-irq";
+		interrupt-parent = <&gic>;
+		interrupts = <0 89 4>;
+		xlnx,numchannels = /bits/8 <8>;
+		reg = <0 0xa0010000 0 0x1000>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		channel@0 {
+			reg = <0>;
+			xlnx,type = "voltage";
+			xlnx,bipolar;
+		};
+		channel@1 {
+			reg = <1>;
+			xlnx,type = "current";
+			xlnx,bipolar;
+		};
+		channel@2 {
+			reg = <2>;
+			xlnx,type = "voltage";
+			xlnx,bipolar;
+		};
+		channel@3 {
+			reg = <3>;
+			xlnx,type = "current";
+			xlnx,bipolar;
+		};
+		channel@4 {
+			reg = <4>;
+			xlnx,type = "voltage";
+			xlnx,bipolar;
+		};
+		channel@5 {
+			reg = <5>;
+			xlnx,type = "current";
+			xlnx,bipolar;
+		};
+		channel@6 {
+			reg = <6>;
+			xlnx,type = "voltage";
+		};
+		channel@7 {
+			reg = <7>;
+			xlnx,type = "current";
+		};
+	};
+
+	tsn_endpoint_ip_0: tsn_endpoint_ip_0 {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		compatible = "xlnx,tsn-endpoint-ethernet-mac-2.0";
+		interrupt-names = "interrupt_ptp_rx_1", "interrupt_ptp_tx_1", "mac_irq_1", "tsn_ep_scheduler_irq", "interrupt_ptp_timer", "interrupt_ptp_rx_2", "interrupt_ptp_tx_2", "mac_irq_2";
+		interrupt-parent = <&axi_intc_0>;
+		interrupts = <0 2 2 2 4 2 7 2 6 2 1 2 3 2 5 2>;
+		ranges ;
+		reg = <0x0 0x80040000 0x0 0x40000>;
+
+		tsn_emac_1: tsn_emac_1@80060000 {
+			compatible = "xlnx,tsn-ethernet-1.00.a";
+			interrupt-names = "interrupt_ptp_rx_2", "interrupt_ptp_tx_2", "mac_irq_2";
+			interrupt-parent = <&axi_intc_0>;
+			interrupts = <1 2 3 2 5 2>;
+			local-mac-address = [00 0A 35 00 01 0f];
+			phy-handle = <&phy20>;
+			phy-mode = "rgmii-id";
+			reg = <0x0 0x80060000 0x0 0x14000>;
+			tsn,endpoint = <&tsn_ep>;
+			xlnx,eth-hasnobuf ;
+			xlnx,num-queues = /bits/ 16 <0x4>;
+			xlnx,num-tc = /bits/ 16 <0x2>;
+			xlnx,phy-type = <0x3>;
+			xlnx,qbv-addr = <0x80074000>;
+			xlnx,qbv-size = <0x4000>;
+			xlnx,rxsum = <0>;
+			xlnx,tsn ;
+			xlnx,tsn-slave ;
+			xlnx,txsum = <0>;
+			my_tsn_ip_mdio1: mdio {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				phy20: phy@3 {
+					reg = <0x3>;
+					adi,rx-internal-delay-ps = <2000>;
+					adi,tx-internal-delay-ps = <2000>;
+					adi,fifo-depth-bits = <8>;
+				};
+			};
+		};
+
+		tsn_emac_0: tsn_emac_0@80040000 {
+			axistream-connected-rx = <&axi_mcdma_0>, <&axi_mcdma_0>;
+			axistream-connected-tx = <&axi_mcdma_0>, <&ta_dma_0>;
+			compatible = "xlnx,tsn-ethernet-1.00.a";
+			interrupt-names = "interrupt_ptp_rx_1", "interrupt_ptp_tx_1", "mac_irq_1", "interrupt_ptp_timer";
+			interrupt-parent = <&axi_intc_0>;
+			interrupts = <0 2 2 2 4 2 6 2>;
+			local-mac-address = [00 0A 35 00 01 0e];
+			phy-handle = <&phy10>;
+			phy-mode = "rgmii-id";
+			reg = <0x0 0x80040000 0x0 0x14000>;
+			tsn,endpoint = <&tsn_ep>;
+			xlnx,channel-ids = "1","2","3","4";
+			xlnx,eth-hasnobuf ;
+			xlnx,num-queues = /bits/ 16 <0x4>;
+			xlnx,num-tc = /bits/ 16 <0x2>;
+			xlnx,phy-type = <0x3>;
+			xlnx,qbv-addr = <0x80054000>;
+			xlnx,qbv-size = <0x2000>;
+			xlnx,rxsum = <0>;
+			xlnx,tsn ;
+			xlnx,txsum = <0>;
+			my_tsn_ip_mdio0: mdio {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				phy10: phy@2 {
+					reg = <0x2>;
+					adi,rx-internal-delay-ps = <2000>;
+					adi,tx-internal-delay-ps = <2000>;
+					adi,fifo-depth-bits = <8>;
+				};
+			};
+		};
+
+		epswitch: tsn_switch@80078000 {
+			compatible = "xlnx,tsn-switch";
+			ports = <&tsn_ep>, <&tsn_emac_0>, <&tsn_emac_1>;
+			reg = <0x0 0x80078000 0x0 0x00008000>;
+			xlnx,has-hwaddr-learning ;
+			xlnx,num-ports = /bits/ 16 <0x3>;
+			xlnx,num-tc = /bits/ 16 <0x2>;
+		};
+
+		tsn_ep: tsn_ep@80056000 {
+			axistream-connected-rx = <&axi_mcdma_0>, <&axi_mcdma_0>;
+			axistream-connected-tx = <&axi_mcdma_0>, <&ta_dma_0>;
+			compatible = "xlnx,tsn-ep";
+			interrupt-names = "tsn_ep_scheduler_irq", "mm2s_ch1_introut", "mm2s_ch2_introut", "s2mm_ch1_introut", "s2mm_ch2_introut", "s2mm_ch3_introut", "s2mm_ch4_introut";
+			interrupt-parent = <&axi_intc_0>;
+			interrupts = <7 2 9 2 10 2 11 2 12 2 13 2 14 2>;
+			local-mac-address = [00 0A 35 00 01 05];
+			reg = <0x0 0x80056000 0x0 0xA000>;
+			xlnx,channel-ids = "1","2","3","4";
+			xlnx,eth-hasnobuf ;
+			xlnx,num-tc = /bits/ 16 <0x2>;
+		};
+	};
+
+	ta_dma_0: ta_dma@90000000 {
+		interrupt-names = "introut";
+		interrupt-parent = <&axi_intc_0>;
+		interrupts = <8 2>;
+		reg = <0x0 0x90000000 0x0 0x800000>;
+		xlnx,num-buffers-per-stream = <0x40>;
+		xlnx,num-fetch-entries = <0x8>;
+		xlnx,num-streams = <0x8>;
+	};
+
+	tpmod_ctrl_0: tpmod_ctrl@80030000 {
+		compatible = "generic-uio";
+		linux,uio-name = "tpmod_ctrl";
+		reg = <0x0 0x80030000 0x0 0x1000>;
+	};
+};

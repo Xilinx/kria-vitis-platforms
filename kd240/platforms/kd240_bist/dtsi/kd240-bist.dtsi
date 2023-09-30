@@ -1,0 +1,354 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * dts file for Xilinx KD240 motor drives
+ *
+ * (C) Copyright 2023, Advanced Micro Devices, Inc.
+ *
+ */
+
+/dts-v1/;
+/plugin/;
+
+&fpga_full {
+	#address-cells = <2>;
+	#size-cells = <2>;
+	firmware-name = "kd240-bist.bit.bin";
+	resets = <&zynqmp_reset 116>, <&zynqmp_reset 117>;
+};
+
+&amba {
+	afi0: afi0 {
+		compatible = "xlnx,afi-fpga";
+		config-afi = < 0 0>, <1 0>, <2 0>, <3 0>, <4 0>, <5 0>, <6 0>, <7 0>, <8 0>, <9 0>, <10 0>, <11 0>, <12 0>, <13 0>, <14 0x800>, <15 0x000>;
+	};
+
+	clocking0: clocking0 {
+		#clock-cells = <0>;
+		assigned-clock-rates = <99999001>;
+		assigned-clocks = <&zynqmp_clk 71>;
+		clock-output-names = "fabric_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,fclk";
+	};
+
+	clocking1: clocking1 {
+		#clock-cells = <0>;
+		assigned-clock-rates = <99999001>;
+		assigned-clocks = <&zynqmp_clk 72>;
+		clock-output-names = "fabric_clk";
+		clocks = <&zynqmp_clk 72>;
+		compatible = "xlnx,fclk";
+	};
+
+	/* fpga clocks */
+	misc_clk_0: misc_clk_0 {
+		#clock-cells = <0x0>;
+		clock-frequency = <125000000>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_1: misc_clk_1 {
+		#clock-cells = <0x0>;
+		clock-frequency = <333333333>;
+		compatible = "fixed-clock";
+	};
+
+	clk20m: clk20m {
+                compatible = "fixed-clock";
+                #clock-cells = <0>;
+                clock-frequency = <20000000>;
+                clock-output-names = "clk20m";
+	};
+
+	hls_foc_periodic_0: hls_foc_periodic@a0000000 {
+		clock-names = "ap_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,hls-foc-periodic-1.0";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 108 4>;
+		reg = <0 0xa0000000 0 0x10000>;
+	};
+
+	hls_pwm_gen_0: hls_pwm_gen@a0040000 {
+		clock-names = "ap_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,hls-pwm-gen-1.0";
+		reg = <0 0xa0040000 0 0x10000>;
+	};
+
+	hls_qei_axi_0: hls_qei_axi@a0030000 {
+		clock-names = "ap_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,hls-qei-axi-1.0";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 107 4>;
+		reg = <0 0xa0030000 0 0x10000>;
+	};
+
+	hls_svpwm_duty_0: hls_svpwm_duty@a0050000 {
+		clock-names = "ap_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,hls-svpwm-duty-1.0";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 109 4>;
+		reg = <0 0xa0050000 0 0x10000>;
+	};
+
+	motor_control_0: motor_control@a0020000 {
+		clock-names = "s_axi_cntrl_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "generic-uio";
+		linux,uio-name = "motor_control";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 105 4>;
+		reg = <0 0xa0020000 0 0x1000>;
+	};
+
+	axi_gpio_0: gpio@a0070000 {
+		#gpio-cells = <2>;
+		compatible = "xlnx,axi-gpio-2.0","xlnx,xps-gpio-1.00.a";
+		clocks = <&zynqmp_clk 71>;
+		gpio-controller ;
+		reg = <0x0 0xa0070000 0x0 0x10000>;
+		xlnx,all-inputs = <0x0>;
+		xlnx,all-inputs-2 = <0x0>;
+		xlnx,all-outputs = <0x0>;
+		xlnx,all-outputs-2 = <0x0>;
+		xlnx,dout-default = <0x00000000>;
+		xlnx,dout-default-2 = <0x00000000>;
+		xlnx,gpio-width = <0x8>;
+		xlnx,gpio2-width = <0x3>;
+		xlnx,interrupt-present = <0x0>;
+		xlnx,is-dual = <0x1>;
+		xlnx,tri-default = <0xFFFFFFFF>;
+		xlnx,tri-default-2 = <0xFFFFFFFF>;
+	};
+
+	ADC_adc_hub_0: adc_hub@a0010000 {
+		compatible = "xlnx,adc-hub-1.0";
+		interrupt-names = "adc_hub-irq";
+		interrupt-parent = <&gic>;
+		interrupts = <0 104 4>;
+		xlnx,numchannels = /bits/8 <8>;
+		reg = <0 0xa0010000 0 0x1000>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+		channel@0 {
+			reg = <0>;
+			xlnx,type = "voltage";
+			xlnx,bipolar;
+		};
+		channel@1 {
+			reg = <1>;
+			xlnx,type = "current";
+			xlnx,bipolar;
+		};
+		channel@2 {
+			reg = <2>;
+			xlnx,type = "voltage";
+			xlnx,bipolar;
+		};
+		channel@3 {
+			reg = <3>;
+			xlnx,type = "current";
+			xlnx,bipolar;
+		};
+		channel@4 {
+			reg = <4>;
+			xlnx,type = "voltage";
+			xlnx,bipolar;
+		};
+		channel@5 {
+			reg = <5>;
+			xlnx,type = "current";
+			xlnx,bipolar;
+		};
+		channel@6 {
+			reg = <6>;
+			xlnx,type = "voltage";
+		};
+		channel@7 {
+			reg = <7>;
+			xlnx,type = "current";
+		};
+	};
+
+	axi_quad_spi_0: axi_quad_spi@a0060000 {
+		bits-per-word = <8>;
+		clock-names = "ext_spi_clk", "s_axi_aclk";
+		clocks = <&zynqmp_clk 71>, <&zynqmp_clk 71>;
+		compatible = "xlnx,axi-quad-spi-3.2", "xlnx,xps-spi-2.00.a";
+		fifo-size = <16>;
+		interrupt-names = "ip2intc_irpt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 106 1>;
+		num-cs = <0x1>;
+		reg = <0x0 0xa0060000 0x0 0x10000>;
+		xlnx,num-ss-bits = <0x1>;
+		xlnx,spi-mode = <0>;
+		spidev@0 {
+			compatible = "rohm,dh2228fv"; /*spidev alternative*/
+			reg = <0>;
+			spi-max-frequency = <1000000>;
+		};
+	};
+
+	axi_quad_spi_CAN: axi_quad_spi@a0080000 {
+		bits-per-word = <8>;
+		clock-names = "ext_spi_clk", "s_axi_aclk";
+		clocks = <&misc_clk_0>, <&misc_clk_0>;
+		compatible = "xlnx,axi-quad-spi-3.2", "xlnx,xps-spi-2.00.a";
+		fifo-size = <16>;
+		interrupt-names = "ip2intc_irpt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 111 1>;
+		num-cs = <0x1>;
+		reg = <0x0 0xa0080000 0x0 0x10000>;
+		xlnx,num-ss-bits = <0x1>;
+		xlnx,spi-mode = <0>;
+    		can@0 {
+			compatible = "microchip,mcp25625";
+			reg = <0>;
+			clocks = <&clk20m>;
+			interrupt-names = "can_int";
+                       	interrupt-parent = <&gic>; 
+			interrupts = <0 110 4>;
+			spi-max-frequency = <10000000>;
+		};
+	};
+
+	ethernet_subsystem_axi_dma_gem1: dma@80010000 {
+		#dma-cells = <1>;
+		clock-names = "s_axi_lite_aclk", "m_axi_sg_aclk", "m_axi_mm2s_aclk", "m_axi_s2mm_aclk";
+		clocks = <&zynqmp_clk 71>, <&zynqmp_clk 71>, <&zynqmp_clk 71>, <&zynqmp_clk 71>;
+		compatible = "xlnx,eth-dma";
+		interrupt-names = "mm2s_introut", "s2mm_introut";
+		interrupt-parent = <&gic>;
+		interrupts = <0 93 4 0 94 4>;
+		reg = <0x0 0x80010000 0x0 0x10000>;
+		xlnx,addrwidth = /bits/ 8 <0x20>;
+		xlnx,num-queues = /bits/ 16 <0x1>;
+	};
+	ethernet_subsystem_axi_ethernet_gem1: ethernet@80080000 {
+		axistream-connected = <&ethernet_subsystem_axi_dma_gem1>;
+		axistream-control-connected = <&ethernet_subsystem_axi_dma_gem1>;
+		clock-frequency = <100000000>;
+		clock-names = "s_axi_lite_clk", "axis_clk", "gtx_clk";
+		clocks = <&zynqmp_clk 71>, <&zynqmp_clk 71>, <&misc_clk_0>;
+		compatible = "xlnx,axi-ethernet-7.2", "xlnx,axi-ethernet-1.00.a";
+		device_type = "network";
+		interrupt-names = "mac_irq", "interrupt", "mm2s_introut", "s2mm_introut";
+		interrupt-parent = <&gic>;
+		interrupts = <0 95 1 0 96 4 0 93 4 0 94 4>;
+		local-mac-address = [00 0a 35 00 00 00];
+		phy-mode = "rgmii-id";
+		reg = <0x0 0x80080000 0x0 0x40000>;
+		xlnx = <0x0>;
+		xlnx,axiliteclkrate = <0x0>;
+		xlnx,axisclkrate = <0x0>;
+		xlnx,channel-ids = <0x1>;
+		xlnx,clockselection = <0x0>;
+		xlnx,enableasyncsgmii = <0x0>;
+		xlnx,gt-type = <0x0>;
+		xlnx,gtinex = <0x0>;
+		xlnx,gtlocation = <0x0>;
+		xlnx,gtrefclksrc = <0x0>;
+		xlnx,instantiatebitslice0 = <0x0>;
+		xlnx,num-queues = /bits/ 16 <0x1>;
+		xlnx,phyrst-board-interface-dummy-port = <0x0>;
+		xlnx,rable = <0x0>;
+		xlnx,rxcsum = <0x0>;
+		xlnx,rxlane0-placement = <0x0>;
+		xlnx,rxlane1-placement = <0x0>;
+		xlnx,rxmem = <0x1000>;
+		xlnx,rxnibblebitslice0used = <0x0>;
+		xlnx,tx-in-upper-nibble = <0x1>;
+		xlnx,txcsum = <0x0>;
+		xlnx,txlane0-placement = <0x0>;
+		xlnx,txlane1-placement = <0x0>;
+		xlnx,versal-gt-board-flow = <0x0>;
+		zclock-names = "NULL";
+		zclocks = "NULL";
+		phy-handle = <&phy2>;
+		ethernet_subsystem_axi_ethernet_gem1_mdio: mdio {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			phy2: phy@2 {
+				reg = <0x2>;
+				adi,rx-internal-delay-ps = <2000>;
+				adi,tx-internal-delay-ps = <2000>;
+				adi,fifo-depth-bits = <8>;
+			};
+		};
+	};
+
+	ethernet_subsystem_axi_dma_gem2: dma@80000000 {
+		#dma-cells = <1>;
+		clock-names = "s_axi_lite_aclk", "m_axi_sg_aclk", "m_axi_mm2s_aclk", "m_axi_s2mm_aclk";
+		clocks = <&zynqmp_clk 71>, <&zynqmp_clk 71>, <&zynqmp_clk 71>, <&zynqmp_clk 71>;
+		compatible = "xlnx,eth-dma";
+		interrupt-names = "mm2s_introut", "s2mm_introut";
+		interrupt-parent = <&gic>;
+		interrupts = <0 91 4 0 92 4>;
+		reg = <0x0 0x80000000 0x0 0x10000>;
+		xlnx,addrwidth = /bits/ 8 <0x20>;
+		xlnx,num-queues = /bits/ 16 <0x1>;
+	};
+
+	ethernet_subsystem_axi_ethernet_gem2: ethernet@80040000 {
+		axistream-connected = <&ethernet_subsystem_axi_dma_gem2>;
+		axistream-control-connected = <&ethernet_subsystem_axi_dma_gem2>;
+		clock-frequency = <100000000>;
+		clock-names = "s_axi_lite_clk", "axis_clk", "gtx_clk", "ref_clk";
+		clocks = <&zynqmp_clk 71>, <&zynqmp_clk 71>, <&misc_clk_0>, <&misc_clk_1>;
+		compatible = "xlnx,axi-ethernet-7.2", "xlnx,axi-ethernet-1.00.a";
+		device_type = "network";
+		interrupt-names = "mac_irq", "interrupt", "mm2s_introut", "s2mm_introut";
+		interrupt-parent = <&gic>;
+		interrupts = <0 89 1 0 90 4 0 91 4 0 92 4>;
+		local-mac-address = [00 0a 35 00 00 01];
+		phy-mode = "rgmii-id";
+		reg = <0x0 0x80040000 0x0 0x40000>;
+		xlnx = <0x0>;
+		xlnx,axiliteclkrate = <0x0>;
+		xlnx,axisclkrate = <0x0>;
+		xlnx,channel-ids = <0x1>;
+		xlnx,clockselection = <0x0>;
+		xlnx,enableasyncsgmii = <0x0>;
+		xlnx,gt-type = <0x0>;
+		xlnx,gtinex = <0x0>;
+		xlnx,gtlocation = <0x0>;
+		xlnx,gtrefclksrc = <0x0>;
+		xlnx,instantiatebitslice0 = <0x0>;
+		xlnx,num-queues = /bits/ 16 <0x1>;
+		xlnx,phyrst-board-interface-dummy-port = <0x0>;
+		xlnx,rable = <0x0>;
+		xlnx,rxcsum = <0x0>;
+		xlnx,rxlane0-placement = <0x0>;
+		xlnx,rxlane1-placement = <0x0>;
+		xlnx,rxmem = <0x1000>;
+		xlnx,rxnibblebitslice0used = <0x0>;
+		xlnx,tx-in-upper-nibble = <0x1>;
+		xlnx,txcsum = <0x0>;
+		xlnx,txlane0-placement = <0x0>;
+		xlnx,txlane1-placement = <0x0>;
+		xlnx,versal-gt-board-flow = <0x0>;
+		zclock-names = "NULL";
+		zclocks = "NULL";
+		phy-handle = <&phy3>;
+		ethernet_subsystem_axi_ethernet_gem2_mdio: mdio {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			phy3: phy@3 {
+				reg = <0x3>;
+				adi,rx-internal-delay-ps = <2000>;
+				adi,tx-internal-delay-ps = <2000>;
+				adi,fifo-depth-bits = <8>;
+			};
+		};
+	};
+};
