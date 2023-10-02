@@ -61,29 +61,6 @@ def deployPlatform() {
     '''
 }
 
-def deployPlatformFirmware() {
-    sh label: 'platform firmware deploy',
-    script: '''
-        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            pushd ${work_dir}
-            mkdir -p tmp
-            unzip ${board}/platforms/${pfm}/hw/${pfm_base}.xsa -d tmp
-            pushd tmp
-            source ${setup} -r ${tool_release} && set -e
-            echo "all: { ${pfm_base}.bit }" > bootgen.bif
-            bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
-            popd
-            fw=$(echo ${pfm_base} | tr _ -)
-            DST=${DEPLOYDIR}/firmware/${fw}
-            mkdir -p ${DST}
-            cp -f tmp/${pfm_base}.bit ${DST}/${fw}.bit
-            cp -f tmp/${pfm_base}.bit.bin ${DST}/${fw}.bin
-            popd
-            cp ${ws}/commitIDs ${DST}
-        fi
-    '''
-}
-
 def buildOverlay() {
     sh label: 'overlay build',
     script: '''
@@ -100,24 +77,27 @@ def buildOverlay() {
         source ${setup} -r ${tool_release} && set -e
         ${lsf} make overlay OVERLAY=${overlay}
         popd
+    '''
+}
 
-        pushd ${overlay_dir}/binary_container_1/link/int
-        echo 'all: { system.bit }' > bootgen.bif
-        bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
+def buildFirmware() {
+    sh label: 'firmware build',
+    script: '''
+        pushd ${work_dir}
+        source ${setup} -r ${tool_release} && set -e
+        ${lsf} make firmware FW=${fw}
         popd
     '''
 }
 
-def deployOverlay() {
-    sh label: 'overlay deploy',
+def deployFirmware() {
+    sh label: 'firmware deploy',
     script: '''
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            DST=${DEPLOYDIR}/firmware/${board}-${overlay}
+            DST=${DEPLOYDIR}/firmware
             mkdir -p ${DST}
-            cp -f ${overlay_dir}/binary_container_1/*.xclbin ${DST}/${board}-${overlay}.xclbin
-            cp -f ${overlay_dir}/binary_container_1/link/int/system.bit ${DST}/${board}-${overlay}.bit
-            cp -f ${overlay_dir}/binary_container_1/link/int/system.bit.bin ${DST}/${board}-${overlay}.bin
-            cp ${ws}/commitIDs ${DST}
+            cp -rf ${fw_dir} ${DST}
+            cp ${ws}/commitIDs ${DST}/${fw}
         fi
     '''
 }
@@ -223,6 +203,8 @@ pipeline {
                                 PAEG_LSF_QUEUE="long"
                                 overlay="smartcam"
                                 overlay_dir="${work_dir}/${board}/overlays/${overlay}"
+                                fw="kv260-smartcam"
+                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
@@ -235,10 +217,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildOverlay()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployOverlay()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -248,6 +231,8 @@ pipeline {
                                 PAEG_LSF_QUEUE="long"
                                 overlay="benchmark"
                                 overlay_dir="${work_dir}/${board}/overlays/${overlay}"
+                                fw="kv260-benchmark"
+                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
@@ -260,10 +245,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildOverlay()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployOverlay()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -310,6 +296,8 @@ pipeline {
                                 PAEG_LSF_QUEUE="long"
                                 overlay="aibox-reid"
                                 overlay_dir="${work_dir}/${board}/overlays/${overlay}"
+                                fw="kv260-aibox-reid"
+                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
@@ -322,10 +310,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildOverlay()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployOverlay()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -372,6 +361,8 @@ pipeline {
                                 PAEG_LSF_QUEUE="long"
                                 overlay="defect-detect"
                                 overlay_dir="${work_dir}/${board}/overlays/${overlay}"
+                                fw="kv260-defect-detect"
+                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
@@ -384,10 +375,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildOverlay()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployOverlay()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -434,6 +426,8 @@ pipeline {
                                 PAEG_LSF_QUEUE="long"
                                 overlay="nlp-smartvision"
                                 overlay_dir="${work_dir}/${board}/overlays/${overlay}"
+                                fw="kv260-nlp-smartvision"
+                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
@@ -446,10 +440,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildOverlay()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployOverlay()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -463,6 +458,8 @@ pipeline {
                         board="kr260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                        fw="kr260-tsn-rs485pmod"
+                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kr260_tsn_rs485pmod platform build')  {
@@ -480,10 +477,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildPlatform()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployPlatformFirmware()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -497,6 +495,8 @@ pipeline {
                         board="kr260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                        fw="kr260-pmod-gps"
+                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kr260_pmod_gps platform build')  {
@@ -514,10 +514,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildPlatform()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployPlatformFirmware()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -549,11 +550,6 @@ pipeline {
                                 createWorkDir()
                                 buildPlatform()
                             }
-                            post {
-                                success {
-                                    deployPlatformFirmware()
-                                }
-                            }
                         }
                     }
                 }
@@ -565,6 +561,8 @@ pipeline {
                         board="kd240"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                        fw="kd240-motor-ctrl-qei"
+                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kd240_motor_ctrl_qei platform build')  {
@@ -582,10 +580,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildPlatform()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployPlatformFirmware()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -599,6 +598,8 @@ pipeline {
                         board="kv260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                        fw="kv260-bist"
+                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kv260_bist platform build')  {
@@ -616,10 +617,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildPlatform()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployPlatformFirmware()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -633,6 +635,8 @@ pipeline {
                         board="kd240"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                        fw="kd240-bist"
+                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kd240_bist platform build')  {
@@ -650,10 +654,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildPlatform()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployPlatformFirmware()
+                                    deployFirmware()
                                 }
                             }
                         }
