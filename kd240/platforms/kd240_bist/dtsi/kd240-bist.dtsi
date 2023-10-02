@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: Apache-2.0
 /*
  * dts file for Xilinx KD240 motor drives
  *
@@ -215,7 +215,7 @@
 			reg = <0>;
 			clocks = <&clk20m>;
 			interrupt-names = "can_int";
-                       	interrupt-parent = <&gic>; 
+			interrupt-parent = <&gic>;
 			interrupts = <0 110 4>;
 			spi-max-frequency = <10000000>;
 		};

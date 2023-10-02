@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: Apache-2.0
 /*
  * dts file for Xilinx Kr260 GPS-1588-PTP
  *
@@ -36,7 +36,7 @@
 &zynqmp_dp_snd_codec0 {
 	status = "okay";
 };
-		
+
 
 &amba {
 	#address-cells = <2>;
@@ -63,7 +63,7 @@
 		xlnx,s-axi-aclk-freq-hz-d = "100.0";
 		xlnx,txen-delay = <0x0>;
 		xlnx,use-parity = <0x0>;
-	};         
+	};
 	misc_clk_0: misc_clk_0 {
 		#clock-cells = <0>;
 		clock-frequency = <100000000>;

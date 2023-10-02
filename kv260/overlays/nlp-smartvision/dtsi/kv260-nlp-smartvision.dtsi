@@ -1,8 +1,9 @@
-// SPDX-License-Identifier: GPL-2.0
+// SPDX-License-Identifier: Apache-2.0
 /*
  * dts file for Xilinx KV260 nlp-smartvision
  *
  * (C) Copyright 2020 - 2021, Xilinx, Inc.
+ * Copyright (C) 2023, Advanced Micro Devices, Inc.
  *
  */
 
@@ -155,7 +156,7 @@
 		regulator-min-microvolt = <1200000>;
 		regulator-max-microvolt = <1200000>;
 	};
-	
+
 	imx219_vana: fixedregulator@3 {
 		compatible = "regulator-fixed";
 		regulator-name = "imx219_vana";
@@ -365,7 +366,7 @@
 			};
 		};
 	};
-	
+
 	imx_csiss_1: csiss@0x80002000 {
 		compatible = "xlnx,mipi-csi2-rx-subsystem-5.1", "xlnx,mipi-csi2-rx-subsystem-5.0";
 		reg = <0x0 0x80002000 0x0 0x2000>;
@@ -389,7 +390,7 @@
 				reg = <0x1>;
 				xlnx,video-format = <12>;
 				xlnx,video-width = <8>;
-				
+
 				imx_csiss_out: endpoint {
 				   remote-endpoint = <&imx_demosaic_in>;
 				};
@@ -398,7 +399,7 @@
 				reg = <0x0>;
 				xlnx,video-format = <12>;
 				xlnx,video-width = <8>;
-				
+
 				imx_csiss_in: endpoint {
 				   data-lanes = <1 2>;
 				   remote-endpoint = <&imx219_0>;
@@ -439,7 +440,7 @@
 				reg = <1>;
 				xlnx,video-width = <8>;
 				xlnx,cfa-pattern = "rggb";
-				
+
 				imx_demosaic_out: endpoint {
 					remote-endpoint = <&imx_scaler_in>;
 				};
