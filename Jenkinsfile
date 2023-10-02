@@ -225,34 +225,6 @@ pipeline {
                                 }
                             }
                         }
-                        stage('benchmark overlay build') {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                                overlay="benchmark"
-                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
-                                fw="kv260-benchmark"
-                                fw_dir="${work_dir}/${board}/firmware/${fw}"
-                            }
-                            when {
-                                anyOf {
-                                    changeset "**/kv260/overlays/benchmark/**"
-                                    triggeredBy 'TimerTrigger'
-                                    triggeredBy 'UserIdCause'
-                                    environment name: 'BUILD_SMARTCAM', value: '1'
-                                }
-                            }
-                            steps {
-                                createWorkDir()
-                                buildOverlay()
-                                buildFirmware()
-                            }
-                            post {
-                                success {
-                                    deployFirmware()
-                                }
-                            }
-                        }
                     }
                 }
                 stage('kv260_vcuDecode_vmixDP') {
@@ -520,35 +492,6 @@ pipeline {
                                 success {
                                     deployFirmware()
                                 }
-                            }
-                        }
-                    }
-                }
-                stage('k26_base_starter_kit') {
-                    environment {
-                        pfm_base="k26_base_starter_kit"
-                        pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/build/${pfm_base}"
-                        board="k26"
-                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
-                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
-                    }
-                    stages {
-                        stage('k26_base_starter_kit platform build')  {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                            }
-                            when {
-                                anyOf {
-                                    changeset "**/k26/platforms/k26_base_starter_kit/**"
-                                    triggeredBy 'TimerTrigger'
-                                    triggeredBy 'UserIdCause'
-                                }
-                            }
-                            steps {
-                                createWorkDir()
-                                buildPlatform()
                             }
                         }
                     }
