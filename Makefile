@@ -80,8 +80,8 @@ help:
 	@echo '    Clean runs'
 	@echo ''
 
-.PHONY: firmware
-firmware: $(FW_DEPS)
+.PHONY: check-firmware
+check-firmware:
 	@valid=0; \
 	for f in $(FW_LIST); do \
 	  if [ "$$f" = "$(FW)" ]; then \
@@ -90,12 +90,18 @@ firmware: $(FW_DEPS)
 	  fi \
 	done; \
 	if [ "$$valid" -ne 1 ]; then \
-	  echo 'Invalid parameter FW=$(FW). Choose one of: $(FW_LIST)'; \
+	  echo 'Invalid parameter FW=$(FW). Choose one of:'; \
+	  echo -n '        '; \
+	  echo '${FW_LIST}' | sed -r 's/ /\n        /g'; \
+	  echo ''; \
 	  exit 1; \
-	fi; \
-	echo 'Generate $(FW) firmware artifacts and copy to $(FW_DIR)'; \
-	mkdir -p $(FW_DIR); \
-	cp -f $^ $(FW_DIR)
+	fi
+
+.PHONY: firmware
+firmware: check-firmware $(FW_DEPS)
+	@echo 'Generate $(FW) firmware artifacts and copy to $(FW_DIR)'
+	mkdir -p $(FW_DIR)
+	cp -f $(filter-out $<,$^) $(FW_DIR)
 
 $(FW_DTBO): $(FW_DTSI)
 	dtc -I dts -O dtb -o $@ $<
@@ -112,10 +118,8 @@ $(FW_XCLBIN): $(VITIS_OVERLAY_XCLBIN)
 	mkdir -p $(FW_DIR)
 	cp -f $< $@
 
-.PHONY: overlay
-overlay: $(VITIS_OVERLAY_XCLBIN)
-$(VITIS_OVERLAY_XCLBIN): $(VITIS_OVERLAY_BIT)
-$(VITIS_OVERLAY_BIT): $(PFM_XPFM)
+.PHONY: check-overlay
+check-overlay:
 	@valid=0; \
 	for o in $(OVERLAY_LIST); do \
 	  if [ "$$o" = "$(OVERLAY)" ]; then \
@@ -124,15 +128,22 @@ $(VITIS_OVERLAY_BIT): $(PFM_XPFM)
 	  fi \
 	done; \
 	if [ "$$valid" -ne 1 ]; then \
-	  echo 'Invalid parameter OVERLAY=$(OVERLAY). Choose one of: $(OVERLAY_LIST)'; \
+	  echo 'Invalid parameter OVERLAY=$(OVERLAY). Choose one of'; \
+	  echo -n '        '; \
+	  echo '${OVERLAY_LIST}' | sed -r 's/ /\n        /g'; \
+	  echo ''; \
 	  exit 1; \
-	fi; \
-	echo 'Build $(OVERLAY) Vitis overlay using platform $(PFM)'; \
+	fi
+
+.PHONY: overlay
+overlay: check-overlay $(VITIS_OVERLAY_XCLBIN)
+$(VITIS_OVERLAY_XCLBIN): $(VITIS_OVERLAY_BIT)
+$(VITIS_OVERLAY_BIT): $(PFM_XPFM)
+	@echo 'Build $(OVERLAY) Vitis overlay using platform $(PFM)'
 	$(MAKE) -C $(VITIS_OVERLAY_DIR) all PLATFORM=$(PFM_XPFM)
 
-.PHONY: platform
-platform: $(PFM_XPFM)
-$(PFM_XPFM): $(VIV_XSA)
+.PHONY: check-platform
+check-platform:
 	@valid=0; \
 	for p in $(PFM_LIST); do \
 	  if [ "$$p" = "$(PFM)" ]; then \
@@ -141,14 +152,19 @@ $(PFM_XPFM): $(VIV_XSA)
 	  fi \
 	done; \
 	if [ "$$valid" -ne 1 ]; then \
-	  echo 'Invalid parameter PFM=$(PFM). Choose one of: $(PFM_LIST)'; \
+	  echo 'Invalid parameter PFM=$(PFM). Choose one of:'; \
+	  echo -n '        '; \
+	  echo '${PFM_LIST}' | sed -r 's/ /\n        /g'; \
+	  echo ''; \
 	  exit 1; \
-	fi; \
-	echo 'Create Vitis platform $(PFM)'; \
-	cd $(PFM_DIR); \
-	$(XSCT) $(PFM_TCL) -xsa $(VIV_XSA); \
-	$(CP) $(PFM_PRJ_DIR) $(PFM_NAME); \
-	cd -
+	fi
+
+.PHONY: platform
+platform: check-platform $(PFM_XPFM)
+$(PFM_XPFM): $(VIV_XSA)
+	@echo 'Create Vitis platform $(PFM)'
+	cd $(PFM_DIR) && $(XSCT) $(PFM_TCL) -xsa $(VIV_XSA)
+	$(CP) $(PFM_PRJ_DIR) $(PFM_DIR)/$(PFM_NAME)
 
 $(VIV_BIT): $(VIV_XSA)
 $(VIV_XSA):
