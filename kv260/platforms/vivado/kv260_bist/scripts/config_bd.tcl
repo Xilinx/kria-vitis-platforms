@@ -112,12 +112,6 @@ proc create_hier_cell_vcu { parentCell nameHier } {
   # Create instance: axi_register_slice_0, and set properties
   set axi_register_slice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_register_slice axi_register_slice_0 ]
 
-  # Create instance: smartconnect_vcu_dec, and set properties
-  set smartconnect_vcu_dec [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_vcu_dec ]
-
-  # Create instance: smartconnect_vcu_en, and set properties
-  set smartconnect_vcu_en [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_vcu_en ]
-
   # Create instance: vcu_0, and set properties
   set vcu_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:vcu vcu_0 ]
   set_property -dict [ list \
@@ -144,16 +138,38 @@ proc create_hier_cell_vcu { parentCell nameHier } {
    CONFIG.TABLE_NO {2} \
  ] $vcu_0
 
+  # Create instance: axi_interconnect_vcu_en, and set properties
+  set axi_interconnect_vcu_en [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_interconnect_vcu_en ]
+  set_property -dict [list \
+    CONFIG.M00_HAS_REGSLICE {1} \
+    CONFIG.NUM_MI {1} \
+    CONFIG.NUM_SI {2} \
+    CONFIG.S00_HAS_REGSLICE {1} \
+    CONFIG.S01_HAS_REGSLICE {1} \
+  ] $axi_interconnect_vcu_en
+
+
+  # Create instance: axi_interconnect_vcu_dec, and set properties
+  set axi_interconnect_vcu_dec [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_interconnect_vcu_dec ]
+  set_property -dict [list \
+    CONFIG.M00_HAS_REGSLICE {1} \
+    CONFIG.NUM_MI {1} \
+    CONFIG.NUM_SI {2} \
+    CONFIG.S00_HAS_REGSLICE {1} \
+    CONFIG.S01_HAS_REGSLICE {1} \
+  ] $axi_interconnect_vcu_dec
+
+
   # Create interface connections
-  connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins M00_AXI_VCU_DEC] [get_bd_intf_pins smartconnect_vcu_dec/M00_AXI]
+  connect_bd_intf_net -intf_net S00_AXI_1 [get_bd_intf_pins axi_interconnect_vcu_dec/S00_AXI] [get_bd_intf_pins vcu_0/M_AXI_DEC0]
+  connect_bd_intf_net -intf_net S01_AXI_1 [get_bd_intf_pins axi_interconnect_vcu_dec/S01_AXI] [get_bd_intf_pins vcu_0/M_AXI_DEC1]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins M_AXI_VCU_MCU] [get_bd_intf_pins axi_interconnect_0/M00_AXI]
+  connect_bd_intf_net -intf_net axi_interconnect_vcu_dec_M00_AXI [get_bd_intf_pins M00_AXI_VCU_DEC] [get_bd_intf_pins axi_interconnect_vcu_dec/M00_AXI]
+  connect_bd_intf_net -intf_net axi_interconnect_vcu_en_M00_AXI [get_bd_intf_pins M00_AXI_VCU_EN] [get_bd_intf_pins axi_interconnect_vcu_en/M00_AXI]
   connect_bd_intf_net -intf_net axi_register_slice_0_M_AXI [get_bd_intf_pins axi_interconnect_0/S00_AXI] [get_bd_intf_pins axi_register_slice_0/M_AXI]
   connect_bd_intf_net -intf_net smartconnect_0_M02_AXI [get_bd_intf_pins S_AXI_LITE] [get_bd_intf_pins vcu_0/S_AXI_LITE]
-  connect_bd_intf_net -intf_net smartconnect_vcu_M00_AXI [get_bd_intf_pins M00_AXI_VCU_EN] [get_bd_intf_pins smartconnect_vcu_en/M00_AXI]
-  connect_bd_intf_net -intf_net vcu_0_M_AXI_DEC0 [get_bd_intf_pins smartconnect_vcu_dec/S00_AXI] [get_bd_intf_pins vcu_0/M_AXI_DEC0]
-  connect_bd_intf_net -intf_net vcu_0_M_AXI_DEC1 [get_bd_intf_pins smartconnect_vcu_dec/S01_AXI] [get_bd_intf_pins vcu_0/M_AXI_DEC1]
-  connect_bd_intf_net -intf_net vcu_0_M_AXI_ENC0 [get_bd_intf_pins smartconnect_vcu_en/S00_AXI] [get_bd_intf_pins vcu_0/M_AXI_ENC0]
-  connect_bd_intf_net -intf_net vcu_0_M_AXI_ENC1 [get_bd_intf_pins smartconnect_vcu_en/S01_AXI] [get_bd_intf_pins vcu_0/M_AXI_ENC1]
+  connect_bd_intf_net -intf_net vcu_0_M_AXI_ENC0 [get_bd_intf_pins vcu_0/M_AXI_ENC0] [get_bd_intf_pins axi_interconnect_vcu_en/S00_AXI]
+  connect_bd_intf_net -intf_net vcu_0_M_AXI_ENC1 [get_bd_intf_pins vcu_0/M_AXI_ENC1] [get_bd_intf_pins axi_interconnect_vcu_en/S01_AXI]
   connect_bd_intf_net -intf_net vcu_0_M_AXI_MCU [get_bd_intf_pins axi_register_slice_0/S_AXI] [get_bd_intf_pins vcu_0/M_AXI_MCU]
 
   # Create port connections
@@ -162,20 +178,32 @@ proc create_hier_cell_vcu { parentCell nameHier } {
   connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins axi_interconnect_0/M00_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins axi_interconnect_0/S00_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins axi_register_slice_0/aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins smartconnect_vcu_dec/aclk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins smartconnect_vcu_en/aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins vcu_0/m_axi_dec_aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins vcu_0/m_axi_enc_aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins vcu_0/m_axi_mcu_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins axi_interconnect_vcu_en/ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins axi_interconnect_vcu_en/S00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins axi_interconnect_vcu_en/M00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins axi_interconnect_vcu_en/S01_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins axi_interconnect_vcu_dec/ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins axi_interconnect_vcu_dec/S00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins axi_interconnect_vcu_dec/M00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins m_axi_dec_aclk] [get_bd_pins axi_interconnect_vcu_dec/S01_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_50M [get_bd_pins pll_ref_clk] [get_bd_pins vcu_0/pll_ref_clk]
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_interconnect_0/ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_interconnect_0/M00_ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_interconnect_0/S00_ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_register_slice_0/aresetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins smartconnect_vcu_dec/aresetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins smartconnect_vcu_en/aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_interconnect_vcu_en/ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_interconnect_vcu_en/S00_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_interconnect_vcu_en/M00_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_interconnect_vcu_en/S01_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_interconnect_vcu_dec/ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_interconnect_vcu_dec/S00_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_interconnect_vcu_dec/M00_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins axi_interconnect_vcu_dec/S01_ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins vcu_resetn] [get_bd_pins vcu_0/vcu_resetn]
-  connect_bd_net -net vcu_0_vcu_host_interrupt [get_bd_pins vcu_host_interrupt] [get_bd_pins vcu_0/vcu_host_interrupt]
+  connect_bd_net -net vcu_0_vcu_host_interrupt [get_bd_pins vcu_0/vcu_host_interrupt] [get_bd_pins vcu_host_interrupt]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -926,13 +954,6 @@ proc create_root_design { parentCell } {
   # Create instance: proc_sys_reset_300MHz, and set properties
   set proc_sys_reset_300MHz [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset proc_sys_reset_300MHz ]
 
-  # Create instance: smartconnect_cap, and set properties
-  set smartconnect_cap [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect smartconnect_cap ]
-  set_property -dict [ list \
-   CONFIG.NUM_CLKS {1} \
-   CONFIG.NUM_SI {3} \
- ] $smartconnect_cap
-
   # Create instance: vcu
   create_hier_cell_vcu [current_bd_instance .] vcu
 
@@ -966,14 +987,26 @@ proc create_root_design { parentCell } {
    CONFIG.DOUT_WIDTH {1} \
  ] $xlslice_fan
 
+  # Create instance: axi_interconnect_cap, and set properties
+  set axi_interconnect_cap [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_interconnect_cap ]
+  set_property -dict [list \
+    CONFIG.NUM_MI {1} \
+    CONFIG.NUM_SI {3} \
+  ] $axi_interconnect_cap
+
+
   # Create interface connections
   connect_bd_intf_net -intf_net PS_0_M_AXI_HPM1_FPD [get_bd_intf_pins PS_0/M_AXI_HPM1_FPD] [get_bd_intf_pins axi_interconnect_ctrl_300/S00_AXI]
   connect_bd_intf_net -intf_net S00_AXI_1 [get_bd_intf_pins PS_0/M_AXI_HPM0_LPD] [get_bd_intf_pins axi_interconnect_ctrl_100/S00_AXI]
+  connect_bd_intf_net -intf_net S00_AXI_2 [get_bd_intf_pins axi_interconnect_cap/S00_AXI] [get_bd_intf_pins capture_pipeline_isp/m_axi_mm_video]
+  connect_bd_intf_net -intf_net S01_AXI_1 [get_bd_intf_pins axi_interconnect_cap/S01_AXI] [get_bd_intf_pins capture_pipeline_ias/m_axi_mm_video]
+  connect_bd_intf_net -intf_net S02_AXI_1 [get_bd_intf_pins axi_interconnect_cap/S02_AXI] [get_bd_intf_pins capture_pipeline_raspi/m_axi_mm_video]
   connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports GPIO] [get_bd_intf_pins axi_gpio_0/GPIO]
   connect_bd_intf_net -intf_net axi_gpio_pmod_in_GPIO [get_bd_intf_ports PMOD_GPIO] [get_bd_intf_pins axi_gpio_1/GPIO]
   connect_bd_intf_net -intf_net axi_iic_0_IIC [get_bd_intf_ports iic] [get_bd_intf_pins axi_iic_0/IIC]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_interconnect_ctrl_100/M00_AXI] [get_bd_intf_pins capture_pipeline_isp/csirxss_s_axi]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI1 [get_bd_intf_pins axi_interconnect_ctrl_300/M00_AXI] [get_bd_intf_pins capture_pipeline_isp/s_axi_ctrl_frmbuf]
+  connect_bd_intf_net -intf_net axi_interconnect_cap_M00_AXI [get_bd_intf_pins axi_interconnect_cap/M00_AXI] [get_bd_intf_pins PS_0/S_AXI_HP0_FPD]
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M01_AXI [get_bd_intf_pins axi_interconnect_ctrl_100/M01_AXI] [get_bd_intf_pins vcu/S_AXI_LITE]
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M02_AXI [get_bd_intf_pins axi_gpio_1/S_AXI] [get_bd_intf_pins axi_interconnect_ctrl_100/M02_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_100_M04_AXI [get_bd_intf_pins axi_iic_0/S_AXI] [get_bd_intf_pins axi_interconnect_ctrl_100/M04_AXI]
@@ -982,9 +1015,6 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_300_M01_AXI [get_bd_intf_pins axi_interconnect_ctrl_300/M01_AXI] [get_bd_intf_pins capture_pipeline_ias/s_axi_ctrl_frmbuf]
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_300_M02_AXI [get_bd_intf_pins axi_interconnect_ctrl_300/M02_AXI] [get_bd_intf_pins capture_pipeline_ias/s_axi_ctrl_dem]
   connect_bd_intf_net -intf_net axi_interconnect_ctrl_300_M03_AXI [get_bd_intf_pins axi_interconnect_ctrl_300/M03_AXI] [get_bd_intf_pins capture_pipeline_ias/s_axi_ctrl_vpss]
-  connect_bd_intf_net -intf_net capture_pipeline_ias_m_axi_mm_video [get_bd_intf_pins capture_pipeline_ias/m_axi_mm_video] [get_bd_intf_pins smartconnect_cap/S01_AXI]
-  connect_bd_intf_net -intf_net capture_pipeline_m_axi_mm_video [get_bd_intf_pins capture_pipeline_isp/m_axi_mm_video] [get_bd_intf_pins smartconnect_cap/S00_AXI]
-  connect_bd_intf_net -intf_net capture_pipeline_raspi_m_axi_mm_video [get_bd_intf_pins capture_pipeline_raspi/m_axi_mm_video] [get_bd_intf_pins smartconnect_cap/S02_AXI]
   connect_bd_intf_net -intf_net csirxss_s_axi_1 [get_bd_intf_pins axi_interconnect_ctrl_100/M03_AXI] [get_bd_intf_pins capture_pipeline_raspi/csirxss_s_axi]
   connect_bd_intf_net -intf_net mipi_phy_if_0_1 [get_bd_intf_ports mipi_phy_if_ias] [get_bd_intf_pins capture_pipeline_ias/mipi_phy_if]
   connect_bd_intf_net -intf_net mipi_phy_if_0_2 [get_bd_intf_ports mipi_phy_if_raspi] [get_bd_intf_pins capture_pipeline_raspi/mipi_phy_if]
@@ -992,7 +1022,6 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net s_axi_ctrl_dem_1 [get_bd_intf_pins axi_interconnect_ctrl_300/M05_AXI] [get_bd_intf_pins capture_pipeline_raspi/s_axi_ctrl_dem]
   connect_bd_intf_net -intf_net s_axi_ctrl_frmbuf_1 [get_bd_intf_pins axi_interconnect_ctrl_300/M04_AXI] [get_bd_intf_pins capture_pipeline_raspi/s_axi_ctrl_frmbuf]
   connect_bd_intf_net -intf_net s_axi_ctrl_vpss_1 [get_bd_intf_pins axi_interconnect_ctrl_300/M06_AXI] [get_bd_intf_pins capture_pipeline_raspi/s_axi_ctrl_vpss]
-  connect_bd_intf_net -intf_net smartconnect_cap_M00_AXI [get_bd_intf_pins PS_0/S_AXI_HP0_FPD] [get_bd_intf_pins smartconnect_cap/M00_AXI]
   connect_bd_intf_net -intf_net vcu_M00_AXI [get_bd_intf_pins PS_0/S_AXI_HP2_FPD] [get_bd_intf_pins vcu/M00_AXI_VCU_DEC]
   connect_bd_intf_net -intf_net vcu_M00_AXI_VCU_EN [get_bd_intf_pins PS_0/S_AXI_HP1_FPD] [get_bd_intf_pins vcu/M00_AXI_VCU_EN]
   connect_bd_intf_net -intf_net vcu_M_AXI_VCU_MCU [get_bd_intf_pins PS_0/S_AXI_LPD] [get_bd_intf_pins vcu/M_AXI_VCU_MCU]
@@ -1060,7 +1089,11 @@ proc create_root_design { parentCell } {
   connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins PS_0/maxihpm0_fpd_aclk] [get_bd_pins capture_pipeline_raspi/aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins PS_0/maxihpm0_fpd_aclk] [get_bd_pins clk_wiz_0/clk_300M] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins PS_0/maxihpm0_fpd_aclk] [get_bd_pins proc_sys_reset_300MHz/slowest_sync_clk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins PS_0/maxihpm0_fpd_aclk] [get_bd_pins smartconnect_cap/aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins clk_wiz_0/clk_300M] [get_bd_pins axi_interconnect_cap/ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins clk_wiz_0/clk_300M] [get_bd_pins axi_interconnect_cap/S00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins clk_wiz_0/clk_300M] [get_bd_pins axi_interconnect_cap/M00_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins clk_wiz_0/clk_300M] [get_bd_pins axi_interconnect_cap/S01_ACLK] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins clk_wiz_0/clk_300M] [get_bd_pins axi_interconnect_cap/S02_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_300M [get_bd_pins PS_0/maxihpm0_fpd_aclk] [get_bd_pins vcu/m_axi_dec_aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_50M [get_bd_pins clk_wiz_0/clk_50M] [get_bd_pins vcu/pll_ref_clk]
   connect_bd_net -net mipi_csi2_rx_subsyst_0_csirxss_csi_irq [get_bd_pins capture_pipeline_isp/csirxss_csi_irq] [get_bd_pins xlconcat_irq1/In0]
@@ -1076,7 +1109,11 @@ proc create_root_design { parentCell } {
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl_300/M00_ARESETN] [get_bd_pins capture_pipeline_isp/aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl_300/M00_ARESETN] [get_bd_pins capture_pipeline_raspi/aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl_300/M00_ARESETN] [get_bd_pins proc_sys_reset_300MHz/peripheral_aresetn] -boundary_type upper
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl_300/M00_ARESETN] [get_bd_pins smartconnect_cap/aresetn] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins proc_sys_reset_300MHz/peripheral_aresetn] [get_bd_pins axi_interconnect_cap/ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins proc_sys_reset_300MHz/peripheral_aresetn] [get_bd_pins axi_interconnect_cap/S00_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins proc_sys_reset_300MHz/peripheral_aresetn] [get_bd_pins axi_interconnect_cap/M00_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins proc_sys_reset_300MHz/peripheral_aresetn] [get_bd_pins axi_interconnect_cap/S01_ARESETN] -boundary_type upper
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins proc_sys_reset_300MHz/peripheral_aresetn] [get_bd_pins axi_interconnect_cap/S02_ARESETN] -boundary_type upper
   connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins axi_interconnect_ctrl_300/M00_ARESETN] [get_bd_pins vcu/aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_gpio_1/s_axi_aresetn] -boundary_type upper
   connect_bd_net -net proc_sys_reset_2_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_iic_0/s_axi_aresetn] -boundary_type upper
