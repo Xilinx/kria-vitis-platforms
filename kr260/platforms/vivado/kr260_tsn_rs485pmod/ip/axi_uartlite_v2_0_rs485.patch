@@ -64,15 +64,6 @@ diff -u -r axi_uartlite_v2_0/component.xml rs485_uartlite_v2_0/component.xml
 diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd
 --- axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd	2019-05-25 01:50:49.000000000 +0200
 +++ rs485_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd	2020-03-23 10:27:28.529251948 +0100
-@@ -38,7 +38,7 @@
- -- ** expressly prohibited.                                               **
- -- **                                                                     **
- -- ** Any modifications that are made to the Source Code are              **
---- ** done at the user’s sole risk and will be unsupported.               **
-+-- ** done at the userï¿½s sole risk and will be unsupported.               **
- -- ** The Xilinx Support Hotline does not have access to source           **
- -- ** code and therefore cannot answer specific questions related         **
- -- ** to source HDL. The Xilinx Hotline support of original source        **
 @@ -358,6 +358,8 @@
  --  C_USE_PARITY    -- Determines whether parity is used or not
  --  C_ODD_PARITY    -- If parity is used determines whether parity
