@@ -112,6 +112,8 @@ set_property platform.version "1.0" [current_project]
             
 set_property synth_checkpoint_mode Hierarchical [get_files $proj_dir/${proj_name}.srcs/sources_1/bd/$proj_name/${proj_name}.bd]
 
+set_property strategy Performance_ExploreWithRemap  [get_runs impl_1]
+
 launch_runs synth_1 -jobs $jobs
 wait_on_run synth_1
 
