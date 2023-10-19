@@ -1,9 +1,6 @@
 # Copyright (C) 2022, Advanced Micro Devices, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-#Set Board Preset
-set_param board.repoPaths {../board_files/kd240_som/1.0 ../board_files/kd240_carrier/1.0}
-
 set proj_name kd240_bist
 set proj_dir ./project
 set proj_board [get_board_parts "*:kd240_som:*" -latest_file_version]

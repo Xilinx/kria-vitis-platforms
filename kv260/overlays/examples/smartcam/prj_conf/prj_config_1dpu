@@ -41,5 +41,5 @@ param=compiler.addOutputTypes=hw_export
 #param=compiler.skipTimingCheckAndFrequencyScaling=1
 
 [vivado]
-prop=run.impl_1.strategy=Performance_NetDelay_high
+prop=run.impl_1.strategy=Performance_NetDelay_low
 

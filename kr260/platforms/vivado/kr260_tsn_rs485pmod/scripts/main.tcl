@@ -1,9 +1,6 @@
 # (C) Copyright 2020 - 2022 Xilinx, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
-#Set Board Preset 
-set_param board.repoPaths {../board_files/kr260_carrier/1.0 ../board_files/kr260_som/1.0}
-
 set proj_name kr260_tsn_rs485pmod
 set proj_dir ./project
 set proj_board [get_board_parts "*:kr260_som:*" -latest_file_version]

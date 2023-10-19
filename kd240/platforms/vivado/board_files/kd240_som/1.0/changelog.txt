@@ -1,3 +1,0 @@
-######### KD240 SOM changelog ############
-1.0 (2022.2)
-Initial release
