@@ -22,7 +22,7 @@ following kits are supported:
 
 ## Tools Version
 
-This branch is targeting the Vivado and Vitis 2023.1 tools version. Note that
+This branch is targeting the Vivado and Vitis 2023.2 tools version. Note that
 not all platforms and overlays may be validated with this tools version. Consult
 the application specific documentation for the latest validated version.
 
