@@ -51,3 +51,5 @@ static constexpr int MAXDOWNSCALE = 9;
 static constexpr int INTERPOLATION = 1;
 
 static constexpr int XF_CV_DEPTH = 2;
+
+static constexpr bool URAM = false;
