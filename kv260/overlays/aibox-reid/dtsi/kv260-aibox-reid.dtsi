@@ -1,0 +1,207 @@
+// SPDX-License-Identifier: Apache-2.0
+/*
+ * dts file for Xilinx KV260 aibox-reid
+ *
+ * (C) Copyright 2020 - 2021, Xilinx, Inc.
+ * Copyright (C) 2023, Advanced Micro Devices, Inc.
+ *
+ */
+
+/dts-v1/;
+/plugin/;
+
+&fpga_full {
+	#address-cells = <2>;
+	#size-cells = <2>;
+	firmware-name = "kv260-aibox-reid.bit.bin";
+	resets = <&zynqmp_reset 116>, <&zynqmp_reset 117>, <&zynqmp_reset 118>, <&zynqmp_reset 119>;
+};
+
+&zynqmp_dpsub {
+	status = "okay";
+	clocks = <&dp_aclk>, <&zynqmp_clk 17>, <&zynqmp_clk 16>, <&dp_video_clk 0>;
+	clock-names = "dp_apb_clk", "dp_aud_clk",
+                  "dp_vtc_pixel_clk_in",
+                  "dp_live_video_in_clk";
+	xlnx,bridge = <&v_tc>;
+
+	dp_port: port@0 {
+		reg = <0>;
+		dp_encoder: endpoint {
+			remote-endpoint = <&mixer_crtc>;
+		};
+	};
+};
+
+&zynqmp_dp_snd_pcm0 {
+	status = "okay";
+};
+
+&zynqmp_dp_snd_pcm1 {
+	status = "okay";
+};
+
+&zynqmp_dp_snd_card0 {
+	status = "okay";
+};
+
+&zynqmp_dp_snd_codec0 {
+	status = "okay";
+};
+
+&amba {
+	afi0: afi0 {
+		compatible = "xlnx,afi-fpga";
+		config-afi = <0 0>, <1 0>, <2 0>, <3 0>, <4 1>, <5 1>, <6 0>, <7 0>, <8 0>, <9 0>, <10 2>, <11 2>, <12 2>, <13 2>, <14 0x000>, <15 0x000>;
+	};
+
+	clocking0: clocking0 {
+		#clock-cells = <0>;
+		assigned-clock-rates = <99999001>;
+		assigned-clocks = <&zynqmp_clk 71>;
+		clock-output-names = "fabric_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,fclk";
+	};
+
+	/* fpga clocks */
+	misc_clk_0: misc_clk_0 {
+		#clock-cells = <0>;
+		clock-frequency = <274997250>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_1: misc_clk_1 {
+		#clock-cells = <0>;
+		clock-frequency = <549994500>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_2: misc_clk_2 {
+		#clock-cells = <0>;
+		clock-frequency = <99999000>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_3: misc_clk_3 {
+		#clock-cells = <0>;
+		clock-frequency = <49999500>;
+		compatible = "fixed-clock";
+	};
+
+	/* vcu decode */
+	vcu: vcu@80100000 {
+		#address-cells = <2>;
+		#clock-cells = <1>;
+		#size-cells = <2>;
+		clock-names = "pll_ref", "aclk", "vcu_core_enc", "vcu_mcu_enc", "vcu_core_dec","vcu_mcu_dec";
+		clocks = <&misc_clk_3>, <&misc_clk_2>, <&vcu 0>, <&vcu 1>, <&vcu 2>, <&vcu 3>;
+		compatible = "xlnx,vcu-1.2", "xlnx,vcu";
+		interrupt-names = "vcu_host_interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 106 4>;
+		ranges;
+		reg = <0x0 0x80140000 0x0 0x1000>, <0x0 0x80141000 0x0 0x1000>;
+		reg-names = "vcu_slcr", "logicore";
+		reset-gpios = <&gpio 79 0>;
+
+		al5d: al5d@80120000 {
+			compatible = "al,al5d-1.2", "al,al5d";
+			interrupt-parent = <&gic>;
+			interrupts = <0 106 4>;
+			reg = <0x0 0x80120000 0x0 0x10000>;
+		};
+	};
+
+	/* video mixer display pipeline */
+	dp_video_clk: clock-generator@80000000 {
+		#address-cells = <2>;
+		#clock-cells = <1>;
+		clock-names = "clk_in1", "s_axi_aclk";
+		clock-output-names = "clk_out1";
+		clocks = <&misc_clk_0>, <&misc_clk_2>;
+		compatible = "xlnx,clocking-wizard";
+		reg = <0x0 0x80000000 0x0 0x10000>;
+		speed-grade = <2>;
+	};
+
+	v_tc: v_tc@80010000 {
+		clock-names = "clk", "s_axi_aclk";
+		clocks = <&dp_video_clk 0>, <&misc_clk_2>;
+		compatible = "xlnx,bridge-v-tc-6.1";
+		reg = <0x0 0x80010000 0x0 0x10000>;
+		xlnx,generator;
+		xlnx,pixels-per-clock = <1>;
+	};
+
+	v_mix: v_mix@B0000000 {
+		clocks = <&misc_clk_0>;
+		compatible = "xlnx,v-mix-5.1", "xlnx,mixer-3.0", "xlnx,mixer-4.0", "xlnx,mixer-5.0";
+		interrupt-names = "interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 104 4>;
+		reg = <0x0 0xB0000000 0x0 0x10000>;
+		xlnx,bpc = <8>;
+		xlnx,dma-addr-width = <32>;
+		xlnx,num-layers = <6>;
+		xlnx,ppc = <1>;
+		xlnx,disp-bridge = <&zynqmp_dpsub>;
+		reset-gpios = <&gpio 78 1>;
+
+		mixer_port: port {
+			reg = <0>;
+
+			mixer_crtc: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&dp_encoder>;
+			};
+		};
+
+		layer_0 {
+			xlnx,layer-id = <0>;
+			xlnx,layer-max-height = <2160>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,layer-primary;
+			xlnx,vformat = "NV16";
+		};
+
+		layer_1 {
+			xlnx,layer-id = <1>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "NV12";
+		};
+
+		layer_2 {
+			xlnx,layer-id = <2>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "NV12";
+		};
+
+		layer_3 {
+			xlnx,layer-id = <3>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "NV12";
+		};
+
+		layer_4 {
+			xlnx,layer-id = <4>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "NV12";
+		};
+
+		layer_5 {
+			xlnx,layer-id = <5>;
+			xlnx,layer-max-width = <3840>;
+			xlnx,vformat = "AR24";
+		};
+	};
+
+	/* zocl */
+	zocl: zyxclmm_drm {
+		compatible = "xlnx,zocl";
+		status = "okay";
+		interrupt-parent = <&gic>;
+		interrupts = <0 89  4>, <0 90  4>, <0 91  4>, <0 92  4>,
+			     <0 93  4>, <0 94  4>, <0 95  4>, <0 96  4>;
+	};
+};

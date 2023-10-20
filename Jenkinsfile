@@ -40,7 +40,7 @@ def createWorkDir() {
 def buildPlatform() {
     sh label: 'platform build',
     script: '''
-        pushd ${work_dir}/${board}
+        pushd ${work_dir}
         source ${setup} -r ${tool_release} && set -e
         ${lsf} make platform PFM=${pfm_base} JOBS=32
         popd
@@ -51,35 +51,12 @@ def deployPlatform() {
     sh label: 'platform deploy',
     script: '''
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            pushd ${work_dir}/${board}
+            pushd ${work_dir}
             DST=${DEPLOYDIR}/platforms
             mkdir -p ${DST}
-            cp -rf platforms/${pfm} ${DST}
+            cp -rf ${board}/platforms/${pfm} ${DST}
             popd
             cp ${ws}/commitIDs ${DST}/${pfm}
-        fi
-    '''
-}
-
-def deployPlatformFirmware() {
-    sh label: 'platform firmware deploy',
-    script: '''
-        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            pushd ${work_dir}/${board}
-            mkdir -p tmp
-            unzip platforms/${pfm}/hw/${pfm_base}.xsa -d tmp
-            pushd tmp
-            source ${setup} -r ${tool_release} && set -e
-            echo "all: { ${pfm_base}.bit }" > bootgen.bif
-            bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
-            popd
-            fw=$(echo ${pfm_base} | tr _ -)
-            DST=${DEPLOYDIR}/firmware/${fw}
-            mkdir -p ${DST}
-            cp -f tmp/${pfm_base}.bit ${DST}/${fw}.bit
-            cp -f tmp/${pfm_base}.bit.bin ${DST}/${fw}.bin
-            popd
-            cp ${ws}/commitIDs ${DST}
         fi
     '''
 }
@@ -87,12 +64,12 @@ def deployPlatformFirmware() {
 def buildOverlay() {
     sh label: 'overlay build',
     script: '''
-        pushd ${work_dir}/${board}
-        if [ -d platforms/${pfm} ]; then
+        pushd ${work_dir}
+        if [ -d ${board}/platforms/${pfm} ]; then
             echo "Using platform from local build"
         elif [ -d ${DEPLOYDIR}/platforms/${pfm} ]; then
             echo "Using platform from build artifacts"
-            ln -s ${DEPLOYDIR}/platforms/${pfm} platforms/
+            ln -s ${DEPLOYDIR}/platforms/${pfm} ${board}/platforms/
         else
             echo "No valid platform found: ${pfm}"
             exit 1
@@ -100,24 +77,27 @@ def buildOverlay() {
         source ${setup} -r ${tool_release} && set -e
         ${lsf} make overlay OVERLAY=${overlay}
         popd
+    '''
+}
 
-        pushd ${example_dir}/binary_container_1/link/int
-        echo 'all: { system.bit }' > bootgen.bif
-        bootgen -arch zynqmp -process_bitstream bin -image bootgen.bif
+def buildFirmware() {
+    sh label: 'firmware build',
+    script: '''
+        pushd ${work_dir}
+        source ${setup} -r ${tool_release} && set -e
+        ${lsf} make firmware FW=${fw}
         popd
     '''
 }
 
-def deployOverlay() {
-    sh label: 'overlay deploy',
+def deployFirmware() {
+    sh label: 'firmware deploy',
     script: '''
         if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            DST=${DEPLOYDIR}/firmware/${board}-${overlay}
+            DST=${DEPLOYDIR}/firmware
             mkdir -p ${DST}
-            cp -f ${example_dir}/binary_container_1/*.xclbin ${DST}/${board}-${overlay}.xclbin
-            cp -f ${example_dir}/binary_container_1/link/int/system.bit ${DST}/${board}-${overlay}.bit
-            cp -f ${example_dir}/binary_container_1/link/int/system.bit.bin ${DST}/${board}-${overlay}.bin
-            cp ${ws}/commitIDs ${DST}
+            cp -rf ${fw_dir} ${DST}
+            cp ${ws}/commitIDs ${DST}/${fw}
         fi
     '''
 }
@@ -199,7 +179,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_vcu_DP/**"
+                                    changeset "**/kv260/platforms/kv260_ispMipiRx_vcu_DP/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -222,11 +202,13 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="smartcam"
-                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
+                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
+                                fw="kv260-smartcam"
+                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/overlays/examples/smartcam/**"
+                                    changeset "**/kv260/overlays/smartcam/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_SMARTCAM', value: '1'
@@ -235,35 +217,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildOverlay()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployOverlay()
-                                }
-                            }
-                        }
-                        stage('benchmark overlay build') {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                                overlay="benchmark"
-                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
-                            }
-                            when {
-                                anyOf {
-                                    changeset "**/kv260/overlays/examples/benchmark/**"
-                                    triggeredBy 'TimerTrigger'
-                                    triggeredBy 'UserIdCause'
-                                    environment name: 'BUILD_SMARTCAM', value: '1'
-                                }
-                            }
-                            steps {
-                                createWorkDir()
-                                buildOverlay()
-                            }
-                            post {
-                                success {
-                                    deployOverlay()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -286,7 +244,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/platforms/vivado/kv260_vcuDecode_vmixDP/**"
+                                    changeset "**/kv260/platforms/kv260_vcuDecode_vmixDP/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -309,11 +267,13 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="aibox-reid"
-                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
+                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
+                                fw="kv260-aibox-reid"
+                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/overlays/examples/aibox-reid/**"
+                                    changeset "**/kv260/overlays/aibox-reid/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_AIBOX_REID', value: '1'
@@ -322,10 +282,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildOverlay()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployOverlay()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -348,7 +309,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_vmixDP/**"
+                                    changeset "**/kv260/platforms/kv260_ispMipiRx_vmixDP/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -371,11 +332,13 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="defect-detect"
-                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
+                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
+                                fw="kv260-defect-detect"
+                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/overlays/examples/defect-detect/**"
+                                    changeset "**/kv260/overlays/defect-detect/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_DEFECT_DETECT', value: '1'
@@ -384,10 +347,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildOverlay()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployOverlay()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -410,7 +374,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/platforms/vivado/kv260_ispMipiRx_rpiMipiRx_DP/**"
+                                    changeset "**/kv260/platforms/kv260_ispMipiRx_rpiMipiRx_DP/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -433,11 +397,13 @@ pipeline {
                                 PAEG_LSF_MEM=65536
                                 PAEG_LSF_QUEUE="long"
                                 overlay="nlp-smartvision"
-                                example_dir="${work_dir}/${board}/overlays/examples/${overlay}"
+                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
+                                fw="kv260-nlp-smartvision"
+                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/overlays/examples/nlp-smartvision/**"
+                                    changeset "**/kv260/overlays/nlp-smartvision/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                     environment name: 'BUILD_NLP_SMARTVISION', value: '1'
@@ -446,10 +412,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildOverlay()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployOverlay()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -463,6 +430,8 @@ pipeline {
                         board="kr260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                        fw="kr260-tsn-rs485pmod"
+                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kr260_tsn_rs485pmod platform build')  {
@@ -472,7 +441,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kr260/platforms/vivado/kr260_tsn_rs485pmod/**"
+                                    changeset "**/kr260/platforms/kr260_tsn_rs485pmod/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -480,10 +449,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildPlatform()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployPlatformFirmware()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -497,6 +467,8 @@ pipeline {
                         board="kr260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                        fw="kr260-pmod-gps"
+                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kr260_pmod_gps platform build')  {
@@ -506,7 +478,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kr260/platforms/vivado/kr260_pmod_gps/**"
+                                    changeset "**/kr260/platforms/kr260_pmod_gps/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -514,44 +486,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildPlatform()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployPlatformFirmware()
-                                }
-                            }
-                        }
-                    }
-                }
-                stage('k26_base_starter_kit') {
-                    environment {
-                        pfm_base="k26_base_starter_kit"
-                        pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/build/${pfm_base}"
-                        board="k26"
-                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
-                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
-                    }
-                    stages {
-                        stage('k26_base_starter_kit platform build')  {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                            }
-                            when {
-                                anyOf {
-                                    changeset "**/k26/platforms/vivado/k26_base_starter_kit/**"
-                                    triggeredBy 'TimerTrigger'
-                                    triggeredBy 'UserIdCause'
-                                }
-                            }
-                            steps {
-                                createWorkDir()
-                                buildPlatform()
-                            }
-                            post {
-                                success {
-                                    deployPlatformFirmware()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -565,6 +504,8 @@ pipeline {
                         board="kd240"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                        fw="kd240-motor-ctrl-qei"
+                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kd240_motor_ctrl_qei platform build')  {
@@ -574,7 +515,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kd240/platforms/vivado/kd240_motor_ctrl_qei/**"
+                                    changeset "**/kd240/platforms/kd240_motor_ctrl_qei/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -582,10 +523,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildPlatform()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployPlatformFirmware()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -599,6 +541,8 @@ pipeline {
                         board="kv260"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                        fw="kv260-bist"
+                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kv260_bist platform build')  {
@@ -608,7 +552,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kv260/platforms/vivado/kv260_bist/**"
+                                    changeset "**/kv260/platforms/kv260_bist/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -616,10 +560,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildPlatform()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployPlatformFirmware()
+                                    deployFirmware()
                                 }
                             }
                         }
@@ -633,6 +578,8 @@ pipeline {
                         board="kd240"
                         pfm_dir="${work_dir}/${board}/platforms/${pfm}"
                         xpfm="${pfm_dir}/${pfm_base}.xpfm"
+                        fw="kd240-bist"
+                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kd240_bist platform build')  {
@@ -642,7 +589,7 @@ pipeline {
                             }
                             when {
                                 anyOf {
-                                    changeset "**/kd240/platforms/vivado/kd240_bist/**"
+                                    changeset "**/kd240/platforms/kd240_bist/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
                                 }
@@ -650,10 +597,11 @@ pipeline {
                             steps {
                                 createWorkDir()
                                 buildPlatform()
+                                buildFirmware()
                             }
                             post {
                                 success {
-                                    deployPlatformFirmware()
+                                    deployFirmware()
                                 }
                             }
                         }
