@@ -61,10 +61,10 @@ void pp_pipeline_accel(ap_uint<INPUT_PTR_WIDTH>* img_inp_y,  // Y Input image po
  
 #if BGR2RGB
     xf::cv::bgr2rgb<IN_TYPE, OUT_TYPE, HEIGHT, WIDTH, NPC,XF_CV_DEPTH,XF_CV_DEPTH>(rgb_mat, ch_swap_mat);
-    xf::cv::resize<INTERPOLATION, IN_TYPE, HEIGHT, WIDTH, NEWHEIGHT, NEWWIDTH, NPC, MAXDOWNSCALE,XF_CV_DEPTH,XF_CV_DEPTH>(ch_swap_mat,
+    xf::cv::resize<INTERPOLATION, IN_TYPE, HEIGHT, WIDTH, NEWHEIGHT, NEWWIDTH, NPC, URAM, MAXDOWNSCALE,XF_CV_DEPTH,XF_CV_DEPTH>(ch_swap_mat,
                                                                                                   resize_out_mat);
 #else
-    xf::cv::resize<INTERPOLATION, IN_TYPE, HEIGHT, WIDTH, NEWHEIGHT, NEWWIDTH, NPC,MAXDOWNSCALE,XF_CV_DEPTH,XF_CV_DEPTH>(rgb_mat,
+    xf::cv::resize<INTERPOLATION, IN_TYPE, HEIGHT, WIDTH, NEWHEIGHT, NEWWIDTH, NPC, URAM, MAXDOWNSCALE,XF_CV_DEPTH,XF_CV_DEPTH>(rgb_mat,
                                                                                                   resize_out_mat);
 #endif
     xf::cv::preProcess<IN_TYPE, OUT_TYPE, NEWHEIGHT, NEWWIDTH, NPC,WIDTH_A, IBITS_A, WIDTH_B, IBITS_B, WIDTH_OUT,IBITS_OUT,XF_CV_DEPTH,XF_CV_DEPTH>(resize_out_mat, out_mat, params);
