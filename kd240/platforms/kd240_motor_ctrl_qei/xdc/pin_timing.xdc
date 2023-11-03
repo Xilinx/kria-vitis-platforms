@@ -219,6 +219,12 @@ set_property IOSTANDARD LVCMOS33 [get_ports {fan_en_b}]
 set_property SLEW SLOW [get_ports {fan_en_b}]
 set_property DRIVE 4 [get_ports {fan_en_b}]
 
+# One wire
+set_property PACKAGE_PIN H13 [get_ports {w1_bus}]
+set_property IOSTANDARD LVCMOS33 [get_ports {w1_bus}]
+set_property SLEW SLOW [get_ports {w1_bus_0}]
+set_property DRIVE 4 [get_ports {w1_bus_0}]
+
 ## Gate Drive
 
 set_property PACKAGE_PIN G9 [get_ports {gate_drive_en[0]}]

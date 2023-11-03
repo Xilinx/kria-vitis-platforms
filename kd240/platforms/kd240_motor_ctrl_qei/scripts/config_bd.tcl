@@ -1781,6 +1781,7 @@ proc create_root_design { parentCell } {
   set TQ_SDO [ create_bd_port -dir I TQ_SDO ]
   set TQ_SCLK [ create_bd_port -dir O TQ_SCLK ]
   set TQ_CSn [ create_bd_port -dir O -from 0 -to 0 TQ_CSn ]
+  set w1_bus [ create_bd_port -dir IO w1_bus ]
 
   # Create instance: ADC
   create_hier_cell_ADC [current_bd_instance .] ADC
@@ -1815,7 +1816,7 @@ proc create_root_design { parentCell } {
 
   # Create instance: axi_interconnect_cntrl, and set properties
   set axi_interconnect_cntrl [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect axi_interconnect_cntrl ]
-  set_property CONFIG.NUM_MI {7} $axi_interconnect_cntrl
+  set_property CONFIG.NUM_MI {8} $axi_interconnect_cntrl
 
 
   # Create instance: broadcast_i
@@ -1902,6 +1903,14 @@ proc create_root_design { parentCell } {
   set_property CONFIG.Multiples16 {2} $axi_quad_spi_0
 
 
+  # Create instance: axi_1wire_host_0, and set properties
+  set axi_1wire_host_0 [ create_bd_cell -type ip -vlnv AMD:AMD:axi_1wire_host axi_1wire_host_0 ]
+
+  # Create instance: xlconcat_pl_ps_irq1, and set properties
+  set xlconcat_pl_ps_irq1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_pl_ps_irq1 ]
+  set_property CONFIG.NUM_PORTS {8} $xlconcat_pl_ps_irq1
+
+
   # Create interface connections
   connect_bd_intf_net -intf_net ADC_L0_AXIS [get_bd_intf_pins ADC/pa_i_AXIS] [get_bd_intf_pins broadcast_i/S_AXIS0]
   connect_bd_intf_net -intf_net ADC_dc_v_AXIS [get_bd_intf_pins ADC/dc_v_AXIS] [get_bd_intf_pins hls_svpwm_duty_0/strm_dc_link]
@@ -1915,6 +1924,7 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net axi_interconnect_cntrl_M04_AXI [get_bd_intf_pins axi_interconnect_cntrl/M04_AXI] [get_bd_intf_pins hls_pwm_gen_0/s_axi_pwm_args]
   connect_bd_intf_net -intf_net axi_interconnect_cntrl_M05_AXI [get_bd_intf_pins axi_interconnect_cntrl/M05_AXI] [get_bd_intf_pins hls_svpwm_duty_0/s_axi_pwm_args]
   connect_bd_intf_net -intf_net axi_interconnect_cntrl_M06_AXI [get_bd_intf_pins axi_quad_spi_0/AXI_LITE] [get_bd_intf_pins axi_interconnect_cntrl/M06_AXI]
+  connect_bd_intf_net -intf_net axi_interconnect_cntrl_M07_AXI [get_bd_intf_pins axi_interconnect_cntrl/M07_AXI] [get_bd_intf_pins axi_1wire_host_0/S00_AXI]
   connect_bd_intf_net -intf_net broadcast_i_M00_AXIS [get_bd_intf_pins broadcast_i/M00_AXIS0] [get_bd_intf_pins motor_control_0/s_axis_phase_a_i]
   connect_bd_intf_net -intf_net broadcast_i_M00_AXIS1 [get_bd_intf_pins broadcast_i/M00_AXIS1] [get_bd_intf_pins motor_control_0/s_axis_phase_b_i]
   connect_bd_intf_net -intf_net broadcast_i_M00_AXIS2 [get_bd_intf_pins broadcast_i/M00_AXIS2] [get_bd_intf_pins motor_control_0/s_axis_phase_c_i]
@@ -1962,6 +1972,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net In6_0_1 [get_bd_ports dc_link_data_v] [get_bd_pins xlconcat_0/In6]
   connect_bd_net -net In7_0_1 [get_bd_ports dc_link_data_i] [get_bd_pins xlconcat_0/In7]
   connect_bd_net -net SDATA_1 [get_bd_pins ADC/SDATA] [get_bd_pins xlconcat_0/dout]
+  connect_bd_net -net Net [get_bd_ports w1_bus] [get_bd_pins axi_1wire_host_0/w1_bus]
   connect_bd_net -net TSN_subsystem_clk_out1 [get_bd_pins PS_0/saxihp0_fpd_aclk] [get_bd_pins TSN_subsystem/clk_out1]
   connect_bd_net -net TSN_subsystem_clk_out4 [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins TSN_subsystem/clk_out4]
   connect_bd_net -net TSN_subsystem_irq [get_bd_pins TSN_subsystem/irq] [get_bd_pins xlconcat_int/In7]
@@ -1971,6 +1982,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net TSN_subsystem_pub1_txs_0 [get_bd_ports p1_txs] [get_bd_pins TSN_subsystem/pub1_txs_0]
   connect_bd_net -net TSN_subsystem_pub2_txb_0 [get_bd_ports p2_txb] [get_bd_pins TSN_subsystem/pub2_txb_0]
   connect_bd_net -net adc_hub_1_interrupt [get_bd_pins ADC/interrupt] [get_bd_pins xlconcat_int/In0]
+  connect_bd_net -net axi_1wire_host_0_w1_irq [get_bd_pins axi_1wire_host_0/w1_irq] [get_bd_pins xlconcat_pl_ps_irq1/In0]
   connect_bd_net -net axi_quad_spi_0_io0_o [get_bd_pins axi_quad_spi_0/io0_o] [get_bd_ports TQ_SDI]
   connect_bd_net -net axi_quad_spi_0_ip2intc_irpt [get_bd_pins axi_quad_spi_0/ip2intc_irpt] [get_bd_pins xlconcat_int/In2]
   connect_bd_net -net axi_quad_spi_0_sck_o [get_bd_pins axi_quad_spi_0/sck_o] [get_bd_ports TQ_SCLK]
@@ -2011,6 +2023,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net xlconcat_irq [get_bd_pins PS_0/pl_ps_irq0] [get_bd_pins xlconcat_int/dout]
   connect_bd_net -net xlconstant_0_dout [get_bd_ports Phy_reset_n] [get_bd_pins TSN_subsystem/Phy_reset_n]
   connect_bd_net -net xlslice_0_Dout1 [get_bd_ports fan_en_b] [get_bd_pins xlslice_fan/Dout]
+  connect_bd_net -net xlconcat_pl_ps_irq1_dout [get_bd_pins xlconcat_pl_ps_irq1/dout] [get_bd_pins PS_0/pl_ps_irq1]
   connect_bd_net -net zynq_ultra_ps_e_0_emio_ttc0_wave_o [get_bd_pins PS_0/emio_ttc0_wave_o] [get_bd_pins xlslice_fan/Din]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins PS_0/maxihpm0_fpd_aclk] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins ADC/CLK] [get_bd_pins axi_interconnect_cntrl/ACLK] -boundary_type upper
@@ -2033,6 +2046,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins clk_wiz_0/clk_out_100M] [get_bd_pins axi_quad_spi_0/s_axi_aclk] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins clk_wiz_0/clk_out_100M] [get_bd_pins axi_interconnect_cntrl/M06_ACLK] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins clk_wiz_0/clk_out_100M] [get_bd_pins axi_quad_spi_0/ext_spi_clk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins clk_wiz_0/clk_out_100M] [get_bd_pins axi_1wire_host_0/s00_axi_aclk] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins clk_wiz_0/clk_out_100M] [get_bd_pins axi_interconnect_cntrl/M07_ACLK] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins PS_0/pl_clk0] [get_bd_pins clk_wiz_0/clk_in1]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins axi_interconnect_cntrl/M00_ARESETN] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins axi_interconnect_cntrl/M01_ARESETN] -boundary_type upper
@@ -2051,6 +2066,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins axi_quad_spi_0/s_axi_aresetn] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins axi_interconnect_cntrl/M06_ARESETN] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins ADC/RESETn] [get_bd_pins proc_sys_reset_0/peripheral_aresetn] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins axi_1wire_host_0/s00_axi_aresetn] -boundary_type upper
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins proc_sys_reset_0/peripheral_aresetn] [get_bd_pins axi_interconnect_cntrl/M07_ARESETN] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn1 [get_bd_pins PS_0/pl_resetn0] [get_bd_pins TSN_subsystem/ext_reset_in] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn1 [get_bd_pins PS_0/pl_resetn0] [get_bd_pins clk_wiz_0/resetn] -boundary_type upper
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn1 [get_bd_pins PS_0/pl_resetn0] [get_bd_pins proc_sys_reset_0/ext_reset_in] -boundary_type upper
@@ -2058,6 +2075,7 @@ proc create_root_design { parentCell } {
 
   # Create address segments
   assign_bd_address -offset 0xA0010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs ADC/adc_hub_phase_dc/S_AXI/Reg] -force
+  assign_bd_address -offset 0xA0070000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_1wire_host_0/S00_AXI/S00_AXI_reg] -force
   assign_bd_address -offset 0x80020000 -range 0x00001000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs TSN_subsystem/axi_intc_0/S_AXI/Reg] -force
   assign_bd_address -offset 0x80000000 -range 0x00001000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs TSN_subsystem/axi_mcdma_0/S_AXI_LITE/Reg] -force
   assign_bd_address -offset 0xA0060000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_quad_spi_0/AXI_LITE/Reg] -force
@@ -2082,8 +2100,7 @@ proc create_root_design { parentCell } {
   set_property PFM_NAME {xilinx:kd240_motor_ctrl_qei:kd240_motor_ctrl_qei:1.0} [get_files [current_bd_design].bd]
   set_property PFM.AXI_PORT {M_AXI_HPM1_FPD {memport "M_AXI_GP" sptag "" memory "" is_range "false"} S_AXI_HPC0_FPD {memport "S_AXI_HP" sptag "HPC0" memory "PS_0 HPC0_DDR_LOW" is_range "false"} S_AXI_HPC1_FPD {memport "S_AXI_HP" sptag "HPC1" memory "PS_0 HPC1_DDR_LOW" is_range "false"} S_AXI_HP1_FPD {memport "S_AXI_HP" sptag "HP1" memory "PS_0 HP1_DDR_LOW" is_range "false"} S_AXI_HP2_FPD {memport "S_AXI_HP" sptag "HP2" memory "PS_0 HP2_DDR_LOW" is_range "false"} S_AXI_HP3_FPD {memport "S_AXI_HP" sptag "HP3" memory "PS_0 HP3_DDR_LOW" is_range "false"} S_AXI_LPD {memport "MIG" sptag "LPD" memory "PS_0 LPD_DDR_LOW" is_range "false"}} [get_bd_cells /PS_0]
   set_property PFM.CLOCK {clk_out_100M {id "4" is_default "true" proc_sys_reset "/proc_sys_reset_0" status "fixed" freq_hz "99999000"} clk_out_48M {id "5" is_default "false" proc_sys_reset "/proc_sys_reset_1" status "fixed" freq_hz "4999952"}} [get_bd_cells /clk_wiz_0]
-  set_property PFM.IRQ {pl_ps_irq1 {id 0 range 7}} [get_bd_cells /PS_0]
-  
+  set_property PFM.IRQ {In1 {is_range "true"} In2 {is_range "true"} In3 {is_range "true"} In4 {is_range "true"} In5 {is_range "true"} In6 {is_range "true"} In7 {is_range "true"}} [get_bd_cells /xlconcat_pl_ps_irq1]
 
 
   validate_bd_design
