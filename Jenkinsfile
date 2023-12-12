@@ -4,103 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-def logCommitIDs() {
-    sh label: 'log commit IDs',
-    script: '''
-        idfile=${ws}/commitIDs
-        pushd ${ws}/src
-        echo -n "src : " >> ${idfile}
-        git rev-parse HEAD >> ${idfile}
-        subm=($(cat .gitmodules | grep path | cut -d "=" -f2))
-        for sm in "${subm[@]}"; do
-            pushd ${sm}
-            echo -n "${sm} : " >> ${idfile}
-            git rev-parse HEAD >> ${idfile}
-            popd
-        done
-        popd
-        pushd ${ws}/paeg-helper
-        echo -n "paeg-helper : " >> ${idfile}
-        git rev-parse HEAD >> ${idfile}
-        popd
-        cat ${idfile}
-    '''
-}
-
-def createWorkDir() {
-    sh label: 'create work dir',
-    script: '''
-        if [ ! -d ${work_dir} ]; then
-            mkdir -p ${work_dir}
-            cp -rf ${ws}/src/* ${work_dir}
-        fi
-    '''
-}
-
-def buildPlatform() {
-    sh label: 'platform build',
-    script: '''
-        pushd ${work_dir}
-        source ${setup} -r ${tool_release} && set -e
-        ${lsf} make platform PFM=${pfm_base} JOBS=32
-        popd
-    '''
-}
-
-def deployPlatform() {
-    sh label: 'platform deploy',
-    script: '''
-        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            pushd ${work_dir}
-            DST=${DEPLOYDIR}/platforms
-            mkdir -p ${DST}
-            cp -rf ${board}/platforms/${pfm} ${DST}
-            popd
-            cp ${ws}/commitIDs ${DST}/${pfm}
-        fi
-    '''
-}
-
-def buildOverlay() {
-    sh label: 'overlay build',
-    script: '''
-        pushd ${work_dir}
-        if [ -d ${board}/platforms/${pfm} ]; then
-            echo "Using platform from local build"
-        elif [ -d ${DEPLOYDIR}/platforms/${pfm} ]; then
-            echo "Using platform from build artifacts"
-            ln -s ${DEPLOYDIR}/platforms/${pfm} ${board}/platforms/
-        else
-            echo "No valid platform found: ${pfm}"
-            exit 1
-        fi
-        source ${setup} -r ${tool_release} && set -e
-        ${lsf} make overlay OVERLAY=${overlay}
-        popd
-    '''
-}
-
-def buildFirmware() {
-    sh label: 'firmware build',
-    script: '''
-        pushd ${work_dir}
-        source ${setup} -r ${tool_release} && set -e
-        ${lsf} make firmware FW=${fw}
-        popd
-    '''
-}
-
-def deployFirmware() {
-    sh label: 'firmware deploy',
-    script: '''
-        if [ "${BRANCH_NAME}" == "${deploy_branch}" ]; then
-            DST=${DEPLOYDIR}/firmware
-            mkdir -p ${DST}
-            cp -rf ${fw_dir} ${DST}
-            cp ${ws}/commitIDs ${DST}/${fw}
-        fi
-    '''
-}
+@Library("lib") _
 
 pipeline {
     agent {
@@ -116,6 +20,9 @@ pipeline {
         setup="${ws}/paeg-helper/env-setup.sh"
         lsf="${ws}/paeg-helper/scripts/lsf"
         DEPLOYDIR="/wrk/paeg_builds/build-artifacts/kria-vitis-platforms/${tool_release}"
+        PAEG_LSF_MEM=65536
+        PAEG_LSF_QUEUE="long"
+        build_overlay="false"
     }
     options {
         // don't let the implicit checkout happen
@@ -157,7 +64,9 @@ pipeline {
                         url: 'https://gitenterprise.xilinx.com/PAEG/paeg-automation.git'
                     ]]
                 ])
-                logCommitIDs()
+                script {
+                    utils.logCommitIDs()
+                }
             }
         }
         stage('Vitis Builds') {
@@ -165,18 +74,9 @@ pipeline {
                 stage('kv260_ispMipiRx_vcu_DP') {
                     environment {
                         pfm_base="kv260_ispMipiRx_vcu_DP"
-                        pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/build/${pfm_base}"
-                        board="kv260"
-                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
-                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
                         stage('kv260_ispMipiRx_vcu_DP platform build')  {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                            }
                             when {
                                 anyOf {
                                     changeset "**/kv260/platforms/kv260_ispMipiRx_vcu_DP/**"
@@ -186,42 +86,67 @@ pipeline {
                             }
                             steps {
                                 script {
-                                    env.BUILD_SMARTCAM = '1'
+                                    hw.buildPlatform()
                                 }
-                                createWorkDir()
-                                buildPlatform()
                             }
                             post {
                                 success {
-                                    deployPlatform()
+                                    script {
+                                        env.build_overlay="true"
+                                        hw.deployPlatform()
+                                    }
                                 }
                             }
                         }
                         stage('smartcam overlay build') {
                             environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                                overlay="smartcam"
-                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
                                 fw="kv260-smartcam"
-                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
                                     changeset "**/kv260/overlays/smartcam/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
-                                    environment name: 'BUILD_SMARTCAM', value: '1'
+                                    environment name: 'build_overlay', value: "true"
                                 }
                             }
                             steps {
-                                createWorkDir()
-                                buildOverlay()
-                                buildFirmware()
+                                script {
+                                    hw.buildOverlay()
+                                    hw.buildFirmware()
+                                }
                             }
                             post {
                                 success {
-                                    deployFirmware()
+                                    script {
+                                        hw.deployFirmware()
+                                    }
+                                }
+                            }
+                        }
+                        stage('benchmark overlay build') {
+                            environment {
+                                fw="kv260-benchmark"
+                            }
+                            when {
+                                anyOf {
+                                    changeset "**/kv260/overlays/benchmark/**"
+                                    triggeredBy 'TimerTrigger'
+                                    triggeredBy 'UserIdCause'
+                                    environment name: 'build_overlay', value: "true"
+                                }
+                            }
+                            steps {
+                                script {
+                                    hw.buildOverlay()
+                                    hw.buildFirmware()
+                                }
+                            }
+                            post {
+                                success {
+                                    script {
+                                        hw.deployFirmware()
+                                    }
                                 }
                             }
                         }
@@ -230,18 +155,9 @@ pipeline {
                 stage('kv260_vcuDecode_vmixDP') {
                     environment {
                         pfm_base="kv260_vcuDecode_vmixDP"
-                        pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/build/${pfm_base}"
-                        board="kv260"
-                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
-                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
                         stage('kv260_vcuDecode_vmixDP platform build')  {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                            }
                             when {
                                 anyOf {
                                     changeset "**/kv260/platforms/kv260_vcuDecode_vmixDP/**"
@@ -251,42 +167,41 @@ pipeline {
                             }
                             steps {
                                 script {
-                                    env.BUILD_AIBOX_REID = '1'
+                                    hw.buildPlatform()
                                 }
-                                createWorkDir()
-                                buildPlatform()
                             }
                             post {
                                 success {
-                                    deployPlatform()
+                                    script {
+                                        env.build_overlay="true"
+                                        hw.deployPlatform()
+                                    }
                                 }
                             }
                         }
                         stage('aibox-reid overlay build') {
                             environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                                overlay="aibox-reid"
-                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
                                 fw="kv260-aibox-reid"
-                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
                                     changeset "**/kv260/overlays/aibox-reid/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
-                                    environment name: 'BUILD_AIBOX_REID', value: '1'
+                                    environment name: 'build_overlay', value: "true"
                                 }
                             }
                             steps {
-                                createWorkDir()
-                                buildOverlay()
-                                buildFirmware()
+                                script {
+                                    hw.buildOverlay()
+                                    hw.buildFirmware()
+                                }
                             }
                             post {
                                 success {
-                                    deployFirmware()
+                                    script {
+                                        hw.deployFirmware()
+                                    }
                                 }
                             }
                         }
@@ -295,18 +210,9 @@ pipeline {
                 stage('kv260_ispMipiRx_vmixDP') {
                     environment {
                         pfm_base="kv260_ispMipiRx_vmixDP"
-                        pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/build/${pfm_base}"
-                        board="kv260"
-                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
-                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
                         stage('kv260_ispMipiRx_vmixDP platform build')  {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                            }
                             when {
                                 anyOf {
                                     changeset "**/kv260/platforms/kv260_ispMipiRx_vmixDP/**"
@@ -316,42 +222,41 @@ pipeline {
                             }
                             steps {
                                 script {
-                                    env.BUILD_DEFECT_DETECT = '1'
+                                    hw.buildPlatform()
                                 }
-                                createWorkDir()
-                                buildPlatform()
                             }
                             post {
                                 success {
-                                    deployPlatform()
+                                    script {
+                                        env.build_overlay="true"
+                                        hw.deployPlatform()
+                                    }
                                 }
                             }
                         }
                         stage('defect-detect overlay build') {
                             environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                                overlay="defect-detect"
-                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
                                 fw="kv260-defect-detect"
-                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
                                     changeset "**/kv260/overlays/defect-detect/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
-                                    environment name: 'BUILD_DEFECT_DETECT', value: '1'
+                                    environment name: 'build_overlay', value: "true"
                                 }
                             }
                             steps {
-                                createWorkDir()
-                                buildOverlay()
-                                buildFirmware()
+                                script {
+                                    hw.buildOverlay()
+                                    hw.buildFirmware()
+                                }
                             }
                             post {
                                 success {
-                                    deployFirmware()
+                                    script {
+                                        hw.deployFirmware()
+                                    }
                                 }
                             }
                         }
@@ -360,18 +265,9 @@ pipeline {
                 stage('kv260_ispMipiRx_rpiMipiRx_DP') {
                     environment {
                         pfm_base="kv260_ispMipiRx_rpiMipiRx_DP"
-                        pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/build/${pfm_base}"
-                        board="kv260"
-                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
-                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
                     }
                     stages {
                         stage('kv260_ispMipiRx_rpiMipiRx_DP platform build')  {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                            }
                             when {
                                 anyOf {
                                     changeset "**/kv260/platforms/kv260_ispMipiRx_rpiMipiRx_DP/**"
@@ -381,42 +277,41 @@ pipeline {
                             }
                             steps {
                                 script {
-                                    env.BUILD_NLP_SMARTVISION = '1'
+                                    hw.buildPlatform()
                                 }
-                                createWorkDir()
-                                buildPlatform()
                             }
                             post {
                                 success {
-                                    deployPlatform()
+                                    script {
+                                        env.build_overlay="true"
+                                        hw.deployPlatform()
+                                    }
                                 }
                             }
                         }
                         stage('nlp-smartvision overlay build') {
                             environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                                overlay="nlp-smartvision"
-                                overlay_dir="${work_dir}/${board}/overlays/${overlay}"
                                 fw="kv260-nlp-smartvision"
-                                fw_dir="${work_dir}/${board}/firmware/${fw}"
                             }
                             when {
                                 anyOf {
                                     changeset "**/kv260/overlays/nlp-smartvision/**"
                                     triggeredBy 'TimerTrigger'
                                     triggeredBy 'UserIdCause'
-                                    environment name: 'BUILD_NLP_SMARTVISION', value: '1'
+                                    environment name: 'build_overlay', value: "true"
                                 }
                             }
                             steps {
-                                createWorkDir()
-                                buildOverlay()
-                                buildFirmware()
+                                script {
+                                    hw.buildOverlay()
+                                    hw.buildFirmware()
+                                }
                             }
                             post {
                                 success {
-                                    deployFirmware()
+                                    script {
+                                        hw.deployFirmware()
+                                    }
                                 }
                             }
                         }
@@ -425,20 +320,10 @@ pipeline {
                 stage('kr260_tsn_rs485pmod') {
                     environment {
                         pfm_base="kr260_tsn_rs485pmod"
-                        pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/build/${pfm_base}"
-                        board="kr260"
-                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
-                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
                         fw="kr260-tsn-rs485pmod"
-                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kr260_tsn_rs485pmod platform build')  {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                            }
                             when {
                                 anyOf {
                                     changeset "**/kr260/platforms/kr260_tsn_rs485pmod/**"
@@ -447,13 +332,15 @@ pipeline {
                                 }
                             }
                             steps {
-                                createWorkDir()
-                                buildPlatform()
-                                buildFirmware()
+                                script {
+                                    hw.buildFirmware()
+                                }
                             }
                             post {
                                 success {
-                                    deployFirmware()
+                                    script {
+                                        hw.deployFirmware()
+                                    }
                                 }
                             }
                         }
@@ -462,20 +349,10 @@ pipeline {
                 stage('kr260_pmod_gps') {
                     environment {
                         pfm_base="kr260_pmod_gps"
-                        pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/build/${pfm_base}"
-                        board="kr260"
-                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
-                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
                         fw="kr260-pmod-gps"
-                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kr260_pmod_gps platform build')  {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                            }
                             when {
                                 anyOf {
                                     changeset "**/kr260/platforms/kr260_pmod_gps/**"
@@ -484,13 +361,15 @@ pipeline {
                                 }
                             }
                             steps {
-                                createWorkDir()
-                                buildPlatform()
-                                buildFirmware()
+                                script {
+                                    hw.buildFirmware()
+                                }
                             }
                             post {
                                 success {
-                                    deployFirmware()
+                                    script {
+                                        hw.deployFirmware()
+                                    }
                                 }
                             }
                         }
@@ -499,20 +378,10 @@ pipeline {
                 stage('kd240_motor_ctrl_qei') {
                     environment {
                         pfm_base="kd240_motor_ctrl_qei"
-                        pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/build/${pfm_base}"
-                        board="kd240"
-                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
-                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
                         fw="kd240-motor-ctrl-qei"
-                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kd240_motor_ctrl_qei platform build')  {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                            }
                             when {
                                 anyOf {
                                     changeset "**/kd240/platforms/kd240_motor_ctrl_qei/**"
@@ -521,13 +390,15 @@ pipeline {
                                 }
                             }
                             steps {
-                                createWorkDir()
-                                buildPlatform()
-                                buildFirmware()
+                                script {
+                                    hw.buildFirmware()
+                                }
                             }
                             post {
                                 success {
-                                    deployFirmware()
+                                    script {
+                                        hw.deployFirmware()
+                                    }
                                 }
                             }
                         }
@@ -536,20 +407,10 @@ pipeline {
                 stage('kv260_bist') {
                     environment {
                         pfm_base="kv260_bist"
-                        pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/build/${pfm_base}"
-                        board="kv260"
-                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
-                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
                         fw="kv260-bist"
-                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kv260_bist platform build')  {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                            }
                             when {
                                 anyOf {
                                     changeset "**/kv260/platforms/kv260_bist/**"
@@ -558,13 +419,15 @@ pipeline {
                                 }
                             }
                             steps {
-                                createWorkDir()
-                                buildPlatform()
-                                buildFirmware()
+                                script {
+                                    hw.buildFirmware()
+                                }
                             }
                             post {
                                 success {
-                                    deployFirmware()
+                                    script {
+                                        hw.deployFirmware()
+                                    }
                                 }
                             }
                         }
@@ -573,20 +436,10 @@ pipeline {
                 stage('kd240_bist') {
                     environment {
                         pfm_base="kd240_bist"
-                        pfm="xilinx_${pfm_base}_${pfm_ver}"
-                        work_dir="${ws}/build/${pfm_base}"
-                        board="kd240"
-                        pfm_dir="${work_dir}/${board}/platforms/${pfm}"
-                        xpfm="${pfm_dir}/${pfm_base}.xpfm"
                         fw="kd240-bist"
-                        fw_dir="${work_dir}/${board}/firmware/${fw}"
                     }
                     stages {
                         stage('kd240_bist platform build')  {
-                            environment {
-                                PAEG_LSF_MEM=65536
-                                PAEG_LSF_QUEUE="long"
-                            }
                             when {
                                 anyOf {
                                     changeset "**/kd240/platforms/kd240_bist/**"
@@ -595,13 +448,15 @@ pipeline {
                                 }
                             }
                             steps {
-                                createWorkDir()
-                                buildPlatform()
-                                buildFirmware()
+                                script {
+                                    hw.buildFirmware()
+                                }
                             }
                             post {
                                 success {
-                                    deployFirmware()
+                                    script {
+                                        hw.deployFirmware()
+                                    }
                                 }
                             }
                         }
