@@ -69,4 +69,26 @@ domain config -bif $biffile
 platform config -remove-boot-bsp
 
 # Generate platform
+#platform -generate
+
+
+#check for microblaze in design
+set proclist [getprocessors $xsafile]
+if {[lsearch -inline $proclist microblaze*] > -1} {
+
+   set proc [lsearch -inline $proclist microblaze*]
+   puts "Microblaze $proc found"
+   # Create domain
+
+   domain create \
+	-name mb_baremetal \
+	-os standalone \
+	-proc $proc
+
+} else {
+   puts "No Microblaze found"
+}
+
+platform write
+# Generate platform
 platform -generate
