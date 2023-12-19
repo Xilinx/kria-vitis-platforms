@@ -1,4 +1,5 @@
 # (C) Copyright 2020 - 2022 Xilinx, Inc.
+# Copyright (C) 2022- 2023, Advanced Micro Devices, Inc
 # SPDX-License-Identifier: Apache-2.0
 
 CP = cp -f
@@ -10,7 +11,10 @@ PFM_DIR = $(PWD)/platforms
 PFM_VER = 202210_1
 
 # valid platforms
-PFM_LIST = kr260_tsn_rs485pmod
+PFM_LIST = \
+kr260_tsn_rs485pmod \
+kr260_4mb_4pmod
+
 
 PFM_XPFM = $(PFM_DIR)/xilinx_$(PFM)_$(PFM_VER)/$(PFM).xpfm
 
