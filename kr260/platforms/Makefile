@@ -24,7 +24,7 @@ VIV_XSA = $(VIV_DIR)/project/$(PLATFORM).xsa
 help:
 	@echo 'Usage:'
 	@echo ''
-	@echo '  make platform'
+	@echo '  make platform PLATFORM=<supported platform>'
 	@echo '    Generate Vitis platform'
 	@echo ''
 
@@ -43,6 +43,6 @@ $(VIV_XSA):
 
 .PHONY: clean
 clean:
-	-@$(RM) .Xil boot image linux.bif ws $(PFM_DIR)
+	-@$(RM) .Xil xsct boot image linux.bif ws $(PFM_DIR)
 	make -C $(VIV_DIR) clean
 
