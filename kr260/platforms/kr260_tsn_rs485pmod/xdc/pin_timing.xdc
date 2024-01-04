@@ -169,7 +169,7 @@ set_property DRIVE 4 [get_ports {rgmii2_rd[3]}]
 
 
 
-## RS485 AXI uartlite PMOD constraints
+## RS485 AXI uartlite PMOD 1 constraints
 
 set_property PACKAGE_PIN B10 [get_ports UART_0_rxen]
 set_property IOSTANDARD LVCMOS33 [get_ports UART_0_rxen]
@@ -194,7 +194,7 @@ set_property IOSTANDARD LVCMOS33 [get_ports UART_0_txen]
 set_property SLEW SLOW [get_ports UART_0_txen]
 set_property DRIVE 4 [get_ports UART_0_txen]
 
-## Test PMOD constraints
+## Test PMOD 2 constraints
 
 set_property PACKAGE_PIN J11 [get_ports ptp_timer]
 set_property IOSTANDARD LVCMOS33 [get_ports ptp_timer]
@@ -230,6 +230,33 @@ set_property PACKAGE_PIN K12 [get_ports l3_rxx]
 set_property IOSTANDARD LVCMOS33 [get_ports l3_rxx]
 set_property SLEW SLOW [get_ports l3_rxx]
 set_property DRIVE 4 [get_ports l3_rxx]
+
+## CAN PMOD 3 constraints
+set_property PACKAGE_PIN AE12 [get_ports {CAN_CSn[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {CAN_CSn[0]}]
+set_property SLEW SLOW [get_ports {CAN_CSn[0]}]
+set_property DRIVE 4 [get_ports {CAN_CSn[0]}]
+
+set_property PACKAGE_PIN AF12 [get_ports CAN_MOSI]
+set_property IOSTANDARD LVCMOS33 [get_ports CAN_MOSI]
+set_property SLEW SLOW [get_ports CAN_MOSI]
+set_property DRIVE 4 [get_ports CAN_MOSI]
+
+set_property PACKAGE_PIN AG10 [get_ports CAN_MISO]
+set_property IOSTANDARD LVCMOS33 [get_ports CAN_MISO]
+
+set_property PACKAGE_PIN AH10 [get_ports CAN_SCLK]
+set_property IOSTANDARD LVCMOS33 [get_ports CAN_SCLK]
+set_property SLEW SLOW [get_ports CAN_SCLK]
+set_property DRIVE 4 [get_ports CAN_SCLK]
+
+set_property PACKAGE_PIN AF11 [get_ports CAN_INT]
+set_property IOSTANDARD LVCMOS33 [get_ports CAN_INT]
+
+set_property PACKAGE_PIN AG11 [get_ports CAN_RST[0]]
+set_property IOSTANDARD LVCMOS33 [get_ports CAN_RST[0]]
+set_property SLEW SLOW [get_ports CAN_RST[0]]
+set_property DRIVE 4 [get_ports CAN_RST[0]]
 
 #Fan Speed Enable
 set_property PACKAGE_PIN A12 [get_ports {fan_en_b}]

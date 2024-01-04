@@ -339,6 +339,12 @@ proc create_root_design { parentCell } {
   set p2_txb [ create_bd_port -dir O p2_txb ]
   set p3_txx [ create_bd_port -dir O p3_txx ]
   set ptp_timer [ create_bd_port -dir O ptp_timer ]
+  set CAN_CSn [ create_bd_port -dir O -from 0 -to 0 CAN_CSn ]
+  set CAN_SCLK [ create_bd_port -dir O CAN_SCLK ]
+  set CAN_MOSI [ create_bd_port -dir O CAN_MOSI ]
+  set CAN_MISO [ create_bd_port -dir I CAN_MISO ]
+  set CAN_RST [ create_bd_port -dir O -from 0 -to 0 CAN_RST ]
+  set CAN_INT [ create_bd_port -dir I -from 0 -to 0 CAN_INT ]
 
   # Create instance: axi_intc_0, and set properties
   set axi_intc_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc axi_intc_0 ]
@@ -466,7 +472,7 @@ proc create_root_design { parentCell } {
   set ps8_0_axi_periph [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect ps8_0_axi_periph ]
   set_property -dict [ list \
    CONFIG.M01_HAS_REGSLICE {3} \
-   CONFIG.NUM_MI {6} \
+   CONFIG.NUM_MI {7} \
  ] $ps8_0_axi_periph
 
   # Create instance: test_pmod_controller_0, and set properties
@@ -502,7 +508,7 @@ proc create_root_design { parentCell } {
   # Create instance: xlconcat_2, and set properties
   set xlconcat_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat xlconcat_2 ]
   set_property -dict [ list \
-   CONFIG.NUM_PORTS {3} \
+   CONFIG.NUM_PORTS {5} \
  ] $xlconcat_2
 
   # Create instance: xlconcat_7, and set properties
@@ -706,7 +712,21 @@ proc create_root_design { parentCell } {
    CONFIG.DOUT_WIDTH {1} \
  ] $xlslice_ttc_0
 
-  # Create interface connections
+  # Create instance: axi_quad_spi_CAN, and set properties
+  set axi_quad_spi_CAN [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_quad_spi axi_quad_spi_CAN ]
+
+  # Create instance: xlconstant_can_rstn, and set properties
+  set xlconstant_can_rstn [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant xlconstant_can_rstn ]
+
+  # Create instance: invert_can_int, and set properties
+  set invert_can_int [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic invert_can_int ]
+  set_property -dict [list \
+    CONFIG.C_OPERATION {not} \
+    CONFIG.C_SIZE {1} \
+  ] $invert_can_int
+
+
+   # Create interface connections
   connect_bd_intf_net -intf_net PS_0_M_AXI_HPM0_LPD [get_bd_intf_pins PS_0/M_AXI_HPM0_LPD] [get_bd_intf_pins ps8_0_axi_periph/S00_AXI]
   connect_bd_intf_net -intf_net axi_mcdma_0_M_AXIS_MM2S [get_bd_intf_pins axi_mcdma_0/M_AXIS_MM2S] [get_bd_intf_pins my_tsn_ip/tx_axis_be]
   connect_bd_intf_net -intf_net axi_mcdma_0_M_AXI_MM2S [get_bd_intf_pins axi_mcdma_0/M_AXI_MM2S] [get_bd_intf_pins axi_smc/S01_AXI]
@@ -721,6 +741,7 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M03_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins ps8_0_axi_periph/M03_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M04_AXI [get_bd_intf_pins axi_uartlite_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M04_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M05_AXI [get_bd_intf_pins ps8_0_axi_periph/M05_AXI] [get_bd_intf_pins test_pmod_controller_0/S00_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M06_AXI [get_bd_intf_pins axi_quad_spi_CAN/AXI_LITE] [get_bd_intf_pins ps8_0_axi_periph/M06_AXI]
   connect_bd_intf_net -intf_net ta_dma_0_M_AXI [get_bd_intf_pins axi_smc/S03_AXI] [get_bd_intf_pins ta_dma_0/M_AXI]
   connect_bd_intf_net -intf_net ta_dma_0_M_AXIS_ST_INTF [get_bd_intf_pins my_tsn_ip/tx_axis_st] [get_bd_intf_pins ta_dma_0/M_AXIS_ST_INTF]
   connect_bd_intf_net -intf_net tsn_endpoint_ethernet_mac_0_mdio_external1 [get_bd_intf_ports mdio] [get_bd_intf_pins my_tsn_ip/mdio_external1]
@@ -730,10 +751,11 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net tsn_endpoint_ethernet_mac_0_rx_axis_st [get_bd_intf_pins axis_switch_0/S00_AXIS] [get_bd_intf_pins my_tsn_ip/rx_axis_st]
 
   # Create port connections
+  connect_bd_net -net Op1_0_1 [get_bd_ports CAN_INT] [get_bd_pins invert_can_int/Op1]
   connect_bd_net -net Op2_1 [get_bd_pins my_tsn_ip/tx_axis_st_tready] [get_bd_pins ta_dma_0/m_axis_st_tready] -boundary_type upper
   connect_bd_net -net Op2_1 [get_bd_pins my_tsn_ip/tx_axis_st_tready] [get_bd_pins tx_s/tready] -boundary_type upper
   connect_bd_net -net PS_0_emio_ttc0_wave_o [get_bd_pins PS_0/emio_ttc0_wave_o] [get_bd_pins xlslice_ttc_0/Din]
-  connect_bd_net -net axi_intc_0_irq [get_bd_pins PS_0/pl_ps_irq0] [get_bd_pins axi_intc_0/irq]
+  connect_bd_net -net axi_intc_0_irq [get_bd_pins axi_intc_0/irq] [get_bd_pins PS_0/pl_ps_irq0]
   connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tlast [get_bd_pins axi_mcdma_0/m_axis_mm2s_tlast] [get_bd_pins my_tsn_ip/tx_axis_be_tlast] -boundary_type upper
   connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tlast [get_bd_pins axi_mcdma_0/m_axis_mm2s_tlast] [get_bd_pins tx_b/tlast] -boundary_type upper
   connect_bd_net -net axi_mcdma_0_m_axis_mm2s_tvalid [get_bd_pins axi_mcdma_0/m_axis_mm2s_tvalid] [get_bd_pins my_tsn_ip/tx_axis_be_tvalid] -boundary_type upper
@@ -744,6 +766,10 @@ proc create_root_design { parentCell } {
   connect_bd_net -net axi_mcdma_0_s2mm_ch2_introut [get_bd_pins axi_mcdma_0/s2mm_ch2_introut] [get_bd_pins interrupts_concat_0/In4]
   connect_bd_net -net axi_mcdma_0_s2mm_ch3_introut [get_bd_pins axi_mcdma_0/s2mm_ch3_introut] [get_bd_pins interrupts_concat_0/In5]
   connect_bd_net -net axi_mcdma_0_s2mm_ch4_introut [get_bd_pins axi_mcdma_0/s2mm_ch4_introut] [get_bd_pins interrupts_concat_0/In6]
+  connect_bd_net -net axi_quad_spi_CAN_io0_o [get_bd_pins axi_quad_spi_CAN/io0_o] [get_bd_ports CAN_MOSI]
+  connect_bd_net -net axi_quad_spi_CAN_ip2intc_irpt [get_bd_pins axi_quad_spi_CAN/ip2intc_irpt] [get_bd_pins xlconcat_2/In4]
+  connect_bd_net -net axi_quad_spi_CAN_sck_o [get_bd_pins axi_quad_spi_CAN/sck_o] [get_bd_ports CAN_SCLK]
+  connect_bd_net -net axi_quad_spi_CAN_ss_o [get_bd_pins axi_quad_spi_CAN/ss_o] [get_bd_ports CAN_CSn]
   connect_bd_net -net axi_uartlite_0_interrupt [get_bd_pins axi_uartlite_0/interrupt] [get_bd_pins xlconcat_2/In2]
   connect_bd_net -net axi_uartlite_0_tx [get_bd_ports UART_0_txd] [get_bd_pins axi_uartlite_0/tx]
   connect_bd_net -net axi_uartlite_0_txen [get_bd_ports UART_0_rxen] [get_bd_ports UART_0_txen] -boundary_type upper
@@ -780,6 +806,9 @@ proc create_root_design { parentCell } {
   connect_bd_net -net clk_wiz_0_clk_out4 [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins ps8_0_axi_periph/S00_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out4 [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins test_pmod_controller_0/s00_axi_aclk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out4 [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins rst_clk_wiz_0_100M/slowest_sync_clk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out4 [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_quad_spi_CAN/s_axi_aclk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out4 [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins axi_quad_spi_CAN/ext_spi_clk] -boundary_type upper
+  connect_bd_net -net clk_wiz_0_clk_out4 [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins ps8_0_axi_periph/M06_ACLK] -boundary_type upper
   connect_bd_net -net clk_wiz_0_locked [get_bd_pins clk_wiz_0/locked] [get_bd_pins my_tsn_ip/gtx_dcm_locked] -boundary_type upper
   connect_bd_net -net clk_wiz_0_locked [get_bd_pins clk_wiz_0/locked] [get_bd_pins rst_clk_wiz_0_100M/dcm_locked] -boundary_type upper
   connect_bd_net -net clk_wiz_0_locked [get_bd_pins clk_wiz_0/locked] [get_bd_pins rst_clk_wiz_0_125M/dcm_locked] -boundary_type upper
@@ -787,6 +816,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net clk_wiz_0_locked [get_bd_pins clk_wiz_0/locked] [get_bd_pins rst_clk_wiz_0_300M/dcm_locked] -boundary_type upper
   connect_bd_net -net interrupts_concat_0_dout [get_bd_pins interrupts_concat_0/dout] [get_bd_pins xlconcat_2/In1]
   connect_bd_net -net interrupts_concat_1_dout [get_bd_pins interrupts_concat_1/dout] [get_bd_pins xlconcat_2/In0]
+  connect_bd_net -net invert_can_int_Res [get_bd_pins invert_can_int/Res] [get_bd_pins xlconcat_2/In3]
+  connect_bd_net -net io1_i_0_1 [get_bd_ports CAN_MISO] [get_bd_pins axi_quad_spi_CAN/io1_i]
   connect_bd_net -net my_tsn_ip_ptp_timers_clk8k [get_bd_ports ptp_timer] [get_bd_pins my_tsn_ip/ptp_timers_clk8k] -boundary_type upper
   connect_bd_net -net my_tsn_ip_ptp_timers_clk8k [get_bd_ports ptp_timer] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] -boundary_type upper
   connect_bd_net -net my_tsn_ip_rx_axis_be_tlast [get_bd_pins my_tsn_ip/rx_axis_be_tlast] [get_bd_pins rx_b/tlast] -boundary_type upper
@@ -819,6 +850,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net rst_clk_wiz_0_100M_1_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins test_pmod_controller_0/s00_axi_aresetn] -boundary_type upper
   connect_bd_net -net rst_clk_wiz_0_100M_1_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins rst_clk_wiz_0_100M/peripheral_aresetn] -boundary_type upper
   connect_bd_net -net rst_clk_wiz_0_100M_1_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins ta_dma_0/global_resetn] -boundary_type upper
+  connect_bd_net -net rst_clk_wiz_0_100M_1_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_quad_spi_CAN/s_axi_aresetn] -boundary_type upper
+  connect_bd_net -net rst_clk_wiz_0_100M_1_peripheral_aresetn [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins ps8_0_axi_periph/M06_ARESETN] -boundary_type upper
   connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins axi_smc/aresetn] [get_bd_pins axis_switch_0/aresetn] -boundary_type upper
   connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins axi_smc/aresetn] [get_bd_pins ps8_0_axi_periph/M01_ARESETN] -boundary_type upper
   connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_pins axi_smc/aresetn] [get_bd_pins rst_clk_wiz_0_200M/peripheral_aresetn] -boundary_type upper
@@ -883,7 +916,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net xlslice_17_Dout [get_bd_pins my_tsn_ip/rx_axis_be_tready] [get_bd_pins rx_b/tready] -boundary_type upper
   connect_bd_net -net xlslice_17_Dout [get_bd_pins my_tsn_ip/rx_axis_be_tready] [get_bd_pins xlslice_trdy_1/Dout] -boundary_type upper
   connect_bd_net -net xlslice_ttc_0_Dout [get_bd_ports fan_en_b] [get_bd_pins xlslice_ttc_0/Dout]
-
+  connect_bd_net -net xlconstant_can_rstn_dout [get_bd_pins xlconstant_can_rstn/dout] [get_bd_ports CAN_RST]
+  
   # Create address segments
   assign_bd_address -offset 0x80020000 -range 0x00001000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_intc_0/S_AXI/Reg] -force
   assign_bd_address -offset 0x80000000 -range 0x00001000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_mcdma_0/S_AXI_LITE/Reg] -force
@@ -891,7 +925,7 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0x90000000 -range 0x00800000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs ta_dma_0/S_AXI/Reg] -force
   assign_bd_address -offset 0x80040000 -range 0x00040000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs my_tsn_ip/s_axi/Reg] -force
   assign_bd_address -offset 0x80030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs test_pmod_controller_0/S00_AXI/S00_AXI_reg] -force
-  
+  assign_bd_address -offset 0x80080000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_quad_spi_CAN/AXI_LITE/Reg] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces axi_mcdma_0/Data_SG] [get_bd_addr_segs PS_0/SAXIGP2/HP0_DDR_LOW] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces axi_mcdma_0/Data_MM2S] [get_bd_addr_segs PS_0/SAXIGP2/HP0_DDR_LOW] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces axi_mcdma_0/Data_S2MM] [get_bd_addr_segs PS_0/SAXIGP2/HP0_DDR_LOW] -force
@@ -900,7 +934,7 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0xC0000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces axi_mcdma_0/Data_S2MM] [get_bd_addr_segs PS_0/SAXIGP2/HP0_QSPI] -force
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces ta_dma_0/Data] [get_bd_addr_segs PS_0/SAXIGP2/HP0_DDR_LOW] -force
   assign_bd_address -offset 0xC0000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces ta_dma_0/Data] [get_bd_addr_segs PS_0/SAXIGP2/HP0_QSPI] -force
- 
+  
   # Restore current instance
   current_bd_instance $oldCurInst
 
