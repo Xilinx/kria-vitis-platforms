@@ -1,3 +1,8 @@
+# (C) Copyright 2020 - 2022 Xilinx, Inc.
+# Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc
+# SPDX-License-Identifier: Apache-2.0
+
+
 proc create_ipi_design { offsetfile design_name } {
 	create_bd_design $design_name
 	open_bd_design $design_name

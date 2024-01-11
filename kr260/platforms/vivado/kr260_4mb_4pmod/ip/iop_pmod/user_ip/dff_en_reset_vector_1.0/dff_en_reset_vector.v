@@ -1,3 +1,8 @@
+// --(C) Copyright 2020 - 2021 Xilinx, Inc. 
+// --Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc 
+// --SPDX-License-Identifier: Apache-2.0
+
+
 `timescale 1ns / 1ps
 /////////////////////////////////////////////////////////////////
 // Module Name: dff_en_reset_vector

@@ -1,3 +1,6 @@
+# (C) Copyright 2020 - 2022 Xilinx, Inc.
+# Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc
+# SPDX-License-Identifier: Apache-2.0
 
 # Loading additional proc with user specified bodies to compute parameter values.
 source [file join [file dirname [file dirname [info script]]] gui/io_switch_v1_1.gtcl]
