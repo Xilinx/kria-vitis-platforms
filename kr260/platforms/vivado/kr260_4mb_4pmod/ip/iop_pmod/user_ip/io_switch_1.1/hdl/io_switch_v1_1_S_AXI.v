@@ -1,3 +1,5 @@
+// --Copyright (C) 2024, Advanced Micro Devices, Inc
+// --SPDX-License-Identifier: Apache-2.0
 
 `timescale 1 ns / 1 ps
 

@@ -1,3 +1,6 @@
+// --Copyright (C) 2024, Advanced Micro Devices, Inc
+// --SPDX-License-Identifier: Apache-2.0
+
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Module Name: io_switch
