@@ -22,7 +22,7 @@ following kits are supported:
 
 ## Tools Version
 
-This branch is targeting the Vivado and Vitis 2023.2 tools version. Note that
+This branch is targeting the Vivado and Vitis 2024.1 tools version. Note that
 not all platforms and overlays may be validated with this tools version. Consult
 the application specific documentation for the latest validated version.
 
@@ -34,5 +34,5 @@ tutorials, visit: https://xilinx.github.io/kria-apps-docs/
 ## License
 
 (C) Copyright 2020 - 2022 Xilinx, Inc.\
-(C) Copyright 2023, Advanced Micro Devices Inc.\
+(C) Copyright 2023 - 2024, Advanced Micro Devices Inc.\
 SPDX-License-Identifier: Apache-2.0

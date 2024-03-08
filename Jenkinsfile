@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2020 - 2022 Xilinx, Inc.
- * Copyright (C) 2023, Advanced Micro Devices, Inc.
+ * Copyright (C) 2023 - 2024, Advanced Micro Devices, Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -11,11 +11,11 @@ pipeline {
         label 'Build_Master'
     }
     environment {
-        deploy_branch="2023.2"
-        tool_release="2023.2"
+        deploy_branch="master"
+        tool_release="2024.1"
         tool_build="daily_latest"
         auto_branch="2022.1"
-        pfm_ver="202320_1"
+        pfm_ver="202410_1"
         ws="${WORKSPACE}"
         setup="${ws}/paeg-helper/env-setup.sh"
         lsf="${ws}/paeg-helper/scripts/lsf"
@@ -31,7 +31,7 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '30'))
     }
     triggers {
-        cron(env.BRANCH_NAME == '2023.2' ? 'H 21 * * *' : '')
+        cron(env.BRANCH_NAME == 'master' ? 'H 21 * * *' : '')
     }
     stages {
         stage('Clone Repos') {

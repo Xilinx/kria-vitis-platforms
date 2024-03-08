@@ -1,5 +1,5 @@
 # Copyright (C) 2020 - 2022 Xilinx, Inc.
-# Copyright (C) 2023 Advanced Micro Devices, Inc.
+# Copyright (C) 2023 - 2024 Advanced Micro Devices, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
 CP = cp -rf
@@ -15,7 +15,7 @@ $(foreach b,$(BOARD_LIST),$(eval include $(b)/$(b).mk))
 
 # the platform directory has to be an absolute path when passed to v++
 PFM_DIR = $(PWD)/$(BOARD)/platforms
-PFM_VER = 202320_1
+PFM_VER = 202410_1
 PFM_NAME = xilinx_$(PFM)_$(PFM_VER)
 PFM_XPFM = $(PFM_DIR)/$(PFM_NAME)/$(PFM).xpfm
 PFM_PRJ_DIR = $(PFM_DIR)/xsct/$(PFM)/$(PFM)/export/$(PFM)
