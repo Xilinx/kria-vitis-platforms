@@ -1,6 +1,7 @@
 [submodule "common/Vitis_Libraries"]
 	path = common/Vitis_Libraries
-	url = https://github.com/Xilinx/Vitis_Libraries.git
+	url = https://gitenterprise.xilinx.com/FaaSApps/Vitis_Libraries.git
+	branch = next
 [submodule "kd240/platforms/ip/one_wire"]
 	path = kd240/platforms/ip/one_wire
 	url = https://github.com/Xilinx/axi_1wire_host-IP.git
