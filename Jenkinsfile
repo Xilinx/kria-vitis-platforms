@@ -11,7 +11,7 @@ pipeline {
         label 'Build_Master'
     }
     environment {
-        deploy_branch="master"
+        deploy_branch="2023.2"
         tool_release="2023.2"
         tool_build="daily_latest"
         auto_branch="2022.1"
@@ -31,7 +31,7 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '30'))
     }
     triggers {
-        cron(env.BRANCH_NAME == 'master' ? 'H 21 * * *' : '')
+        cron(env.BRANCH_NAME == '2023.2' ? 'H 21 * * *' : '')
     }
     stages {
         stage('Clone Repos') {
