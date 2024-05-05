@@ -3,7 +3,7 @@
  * dts file for Xilinx KR260 TSN
  *
  * (C) Copyright 2021 - 2022, Xilinx, Inc.
- * Copyright (C) 2023, Advanced Micro Devices, Inc.
+ * Copyright (C) 2023 - 2024, Advanced Micro Devices, Inc.
  *
  */
 
@@ -23,44 +23,41 @@
 		config-afi = <0 0>, <1 0>, <2 0>, <3 0>, <4 0>, <5 0>, <6 0>, <7 0>, <8 0>, <9 0>, <10 0>, <11 0>, <12 0>, <13 0>, <14 0xa00>, <15 0x000>;
 	};
 
-	ext_osc: ext_osc {
-		#clock-cells = <0>;
-		clock-frequency = <25000000>;
-		compatible = "fixed-clock";
-	};
-
-	axi_lite_clk: axi_lite_clk {
+	clk_out_200M: clk_out_200M { /* clk_out1 - clk_wiz_0 */
 		compatible = "fixed-factor-clock";
-		clocks = <&ext_osc>;
-		#clock-cells = <0>;
-		clock-div = <1>;
-		clock-mult = <4>;
-	};
-
-	axi_stream_clk: axi_stream_clk {
-		compatible = "fixed-factor-clock";
-		clocks = <&ext_osc>;
+		clocks = <&clk_25_0>; /* u92/91 - 25MHz clock - modelled in board dts */
 		#clock-cells = <0>;
 		clock-div = <1>;
 		clock-mult = <8>;
 	};
-	system_clk: system_clk {
+
+	clk_out_125M: clk_out_125M { /* clk_out2 - clk_wiz_0 */
 		compatible = "fixed-factor-clock";
-		clocks = <&ext_osc>;
+		clocks = <&clk_25_0>; /* u92/91 - 25MHz clock - modelled in board dts */
 		#clock-cells = <0>;
 		clock-div = <1>;
 		clock-mult = <5>;
 	};
 
-	ref_clk: ref_clk {
+	clk_out_300M: clk_out_300M { /* clk_out3 - clk_wiz_0 */
 		compatible = "fixed-factor-clock";
-		clocks = <&ext_osc>;
+		clocks = <&clk_25_0>; /* u92/91 - 25MHz clock - modelled in board dts */
 		#clock-cells = <0>;
 		clock-div = <1>;
 		clock-mult = <12>;
 	};
 
+	clk_out_100M: clk_out_100M { /* clk_out4 - clk_wiz_0 */
+		compatible = "fixed-factor-clock";
+		clocks = <&clk_25_0>; /* u92/91 - 25MHz clock - modelled in board dts */
+		#clock-cells = <0>;
+		clock-div = <1>;
+		clock-mult = <4>;
+	};
+
 	axi_intc_0: interrupt-controller@80020000 {
+		clock-names = "s_axi_clk";
+		clocks = <&clk_out_100M>;
 		#interrupt-cells = <2>;
 		compatible = "xlnx,xps-intc-1.00.a";
 		interrupt-controller ;
@@ -72,6 +69,8 @@
 	};
 
 	axi_uartlite_0: serial@80010000 {
+		clock-names = "s_axi_clk";
+		clocks = <&clk_out_100M>;
 		compatible = "xlnx,axi-uartlite-rs485";
 		interrupt-parent = <&axi_intc_0>;
 		interrupts = <15 0>;
@@ -80,6 +79,8 @@
 	};
 
 	axi_mcdma_0: axi_mcdma@80000000 {
+		clock-names = "s_axi_clk", "s_axi_lite_clk";
+		clocks = <&clk_out_200M>, <&clk_out_100M>;
 		#dma-cells = <1>;
 		compatible = "xlnx,axi-mcdma-1.1";
 		interrupt-names = "mm2s_ch1_introut", "mm2s_ch2_introut", "s2mm_ch1_introut", "s2mm_ch2_introut", "s2mm_ch3_introut", "s2mm_ch4_introut";
@@ -93,6 +94,8 @@
 	};
 
 	tsn_endpoint_ip_0: tsn_endpoint_ip_0 {
+		clock-names = "host_txfifo_aclk", "host_rx_fifo_aclk", "s_axi_clk", "gtx_clk", "gtx_clk90", "ref_clk";
+		clocks = <&clk_out_200M>, <&clk_out_200M>, <&clk_out_100M>, <&clk_out_125M>, <&clk_out_125M>, <&clk_out_300M>;
 		#address-cells = <2>;
 		#size-cells = <2>;
 		compatible = "xlnx,tsn-endpoint-ethernet-mac-2.0";
@@ -197,6 +200,8 @@
 	};
 
 	ta_dma_0: ta_dma@90000000 {
+		clock-names = "dma_clk", "rtc_clk";
+		clocks = <&clk_out_200M>, <&clk_out_125M>;
 		interrupt-names = "introut";
 		interrupt-parent = <&axi_intc_0>;
 		interrupts = <8 2>;
@@ -207,6 +212,8 @@
 	};
 
 	tpmod_ctrl_0: tpmod_ctrl@80030000 {
+		clock-names = "s00_axi_clk";
+		clocks = <&clk_out_100M>;
 		compatible = "generic-uio";
 		linux,uio-name = "tpmod_ctrl";
 		reg = <0x0 0x80030000 0x0 0x1000>;

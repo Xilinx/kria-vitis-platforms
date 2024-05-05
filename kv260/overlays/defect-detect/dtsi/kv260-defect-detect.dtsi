@@ -3,7 +3,7 @@
  * dts file for Xilinx KV260 defect-detect
  *
  * (C) Copyright 2020 - 2022, Xilinx, Inc.
- * Copyright (C) 2023, Advanced Micro Devices, Inc.
+ * Copyright (C) 2023 - 2024, Advanced Micro Devices, Inc.
  *
  */
 
@@ -19,7 +19,7 @@
 
 &zynqmp_dpsub {
     status = "okay";
-    clocks = <&dp_aclk>, <&zynqmp_clk 17>, <&zynqmp_clk 16>, <&dp_video_clk 0>;
+    clocks = <&zynqmp_clk 28>, <&zynqmp_clk 17>, <&zynqmp_clk 16>, <&dp_video_clk 0>;
     clock-names = "dp_apb_clk", "dp_aud_clk",
                     "dp_vtc_pixel_clk_in",
                     "dp_live_video_in_clk";
@@ -39,40 +39,31 @@
 		config-afi = <0 0>, <1 0>, <2 0>, <3 0>, <4 1>, <5 1>, <6 0>, <7 0>, <8 0>, <9 0>, <10 2>, <11 2>, <12 2>, <13 2>, <14 0x0>, <15 0x000>;
 	};
 
-	clocking0: clocking0 {
-		#clock-cells = <0>;
-		assigned-clock-rates = <99999001>;
-		assigned-clocks = <&zynqmp_clk 71>;
-		clock-output-names = "fabric_clk";
+	pl0_ref_200M: pl0_ref_200M { /* clk_out1 - clk_wiz_0 */
+		#clock-cells = <0x0>;
+		compatible = "fixed-factor-clock";
 		clocks = <&zynqmp_clk 71>;
-		compatible = "xlnx,fclk";
+		clock-div = <1>;
+		clock-mult = <2>;
 	};
 
-	misc_clk_0: misc_clk_0 {
-		#clock-cells = <0>;
-		clock-frequency = <99999000>;
-		compatible = "fixed-clock";
+	pl0_ref_100M: pl0_ref_100M { /* clk_out2 - clk_wiz_0 */
+		#clock-cells = <0x0>;
+		compatible = "fixed-factor-clock";
+		clocks = <&zynqmp_clk 71>;
+		clock-div = <11>;
+		clock-mult = <11>;
 	};
 
-	misc_clk_1: misc_clk_1 {
-		#clock-cells = <0>;
-		clock-frequency = <274997250>;
-		compatible = "fixed-clock";
-	};
-
-	misc_clk_2: misc_clk_2 {
-		#clock-cells = <0>;
-		clock-frequency = <199998000>;
-		compatible = "fixed-clock";
+	pl0_ref_275M: pl0_ref_275M { /* clk_out3 - clk_wiz_0 */
+		#clock-cells = <0x0>;
+		compatible = "fixed-factor-clock";
+		clocks = <&zynqmp_clk 71>;
+		clock-div = <4>;
+		clock-mult = <11>;
 	};
 
 	/* ar0144 isp mipi rx pipeline */
-	ap1302_clk: sensor_clk {
-		#clock-cells = <0x0>;
-		compatible = "fixed-clock";
-		clock-frequency = <0x48000000>;
-	};
-
 	ap1302_vdd: fixedregulator@0 {
 		compatible = "regulator-fixed";
 		regulator-name = "ap1302_vdd";
@@ -99,7 +90,7 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 		clock-names = "s_axi_aclk";
-		clocks = <&misc_clk_0>;
+		clocks = <&pl0_ref_100M>;
 		compatible = "xlnx,axi-iic-2.0", "xlnx,xps-iic-2.00.a";
 		interrupt-names = "iic2intc_irpt";
 		interrupt-parent = <&gic>;
@@ -122,7 +113,7 @@
 					#address-cells = <1>;
 					#size-cells = <0>;
 					reset-gpios = <&gpio 80 1>;
-					clocks = <&ap1302_clk>;
+					clocks = <&si5332_2>; /* u17 - 48MHZ clock - modelled in board dts */
 					sensors {
 						#address-cells = <1>;
 						#size-cells = <0>;
@@ -154,7 +145,7 @@
 		compatible = "xlnx,mipi-csi2-rx-subsystem-5.0";
 		reg = <0x0 0x80030000 0x0 0x10000>;
 		clock-names = "lite_aclk", "dphy_clk_200M", "video_aclk";
-		clocks = <&misc_clk_0>, <&misc_clk_2>, <&misc_clk_1>;
+		clocks = <&pl0_ref_100M>, <&pl0_ref_200M>, <&pl0_ref_275M>;
 		interrupt-parent = <&gic>;
 		interrupts = <0 107 4>;
 		xlnx,csi-pxl-format = <0x1e>;
@@ -216,7 +207,7 @@
 		xlnx,pixels-per-clock = <2>;
 		xlnx,max-width = <3840>;
 		xlnx,max-height = <2160>;
-		clocks = <&misc_clk_1>;
+		clocks = <&pl0_ref_275M>;
 		clock-names = "ap_clk";
 	};
 
@@ -246,7 +237,7 @@
 		#clock-cells = <1>;
 		clock-names = "clk_in1", "s_axi_aclk";
 		clock-output-names = "clk_out1";
-		clocks = <&misc_clk_1>, <&misc_clk_0>;
+		clocks = <&pl0_ref_275M>, <&pl0_ref_100M>;
 		compatible = "xlnx,clocking-wizard";
 		reg = <0x0 0x80020000 0x0 0x10000>;
 		speed-grade = <2>;
@@ -254,7 +245,7 @@
 
 	v_tc: v_tc@80010000 {
 		clock-names = "clk", "s_axi_aclk";
-		clocks = <&dp_video_clk 0>, <&misc_clk_0>;
+		clocks = <&dp_video_clk 0>, <&pl0_ref_100M>;
 		compatible = "xlnx,bridge-v-tc-6.1";
 		reg = <0x0 0x80010000 0x0 0x10000>;
 		xlnx,generator;
@@ -262,7 +253,7 @@
 	};
 
 	v_mix: v_mix@b0010000 {
-		clocks = <&misc_clk_1>;
+		clocks = <&pl0_ref_275M>;
 		compatible = "xlnx,v-mix-5.1", "xlnx,mixer-3.0", "xlnx,mixer-4.0", "xlnx,mixer-5.0";
 		interrupt-names = "interrupt";
 		interrupt-parent = <&gic>;

@@ -3,7 +3,7 @@
  * dts file for Xilinx KV260 aibox-reid
  *
  * (C) Copyright 2020 - 2021, Xilinx, Inc.
- * Copyright (C) 2023, Advanced Micro Devices, Inc.
+ * Copyright (C) 2023 - 2024, Advanced Micro Devices, Inc.
  *
  */
 
@@ -19,7 +19,7 @@
 
 &zynqmp_dpsub {
 	status = "okay";
-	clocks = <&dp_aclk>, <&zynqmp_clk 17>, <&zynqmp_clk 16>, <&dp_video_clk 0>;
+	clocks = <&zynqmp_clk 28>, <&zynqmp_clk 17>, <&zynqmp_clk 16>, <&dp_video_clk 0>;
 	clock-names = "dp_apb_clk", "dp_aud_clk",
                   "dp_vtc_pixel_clk_in",
                   "dp_live_video_in_clk";
@@ -55,38 +55,29 @@
 		config-afi = <0 0>, <1 0>, <2 0>, <3 0>, <4 1>, <5 1>, <6 0>, <7 0>, <8 0>, <9 0>, <10 2>, <11 2>, <12 2>, <13 2>, <14 0x000>, <15 0x000>;
 	};
 
-	clocking0: clocking0 {
-		#clock-cells = <0>;
-		assigned-clock-rates = <99999001>;
-		assigned-clocks = <&zynqmp_clk 71>;
-		clock-output-names = "fabric_clk";
-		clocks = <&zynqmp_clk 71>;
-		compatible = "xlnx,fclk";
-	};
-
 	/* fpga clocks */
-	misc_clk_0: misc_clk_0 {
-		#clock-cells = <0>;
-		clock-frequency = <274997250>;
-		compatible = "fixed-clock";
+	pl0_ref_100M: pl0_ref_100M { /* clk_out2 - clk_wiz_0 */
+		#clock-cells = <0x0>;
+		compatible = "fixed-factor-clock";
+		clocks = <&zynqmp_clk 71>;
+		clock-div = <11>;
+		clock-mult = <11>;
 	};
 
-	misc_clk_1: misc_clk_1 {
-		#clock-cells = <0>;
-		clock-frequency = <549994500>;
-		compatible = "fixed-clock";
+	pl0_ref_275M: pl0_ref_275M { /* clk_out3 - clk_wiz_0 */
+		#clock-cells = <0x0>;
+		compatible = "fixed-factor-clock";
+		clocks = <&zynqmp_clk 71>;
+		clock-div = <4>;
+		clock-mult = <11>;
 	};
 
-	misc_clk_2: misc_clk_2 {
-		#clock-cells = <0>;
-		clock-frequency = <99999000>;
-		compatible = "fixed-clock";
-	};
-
-	misc_clk_3: misc_clk_3 {
-		#clock-cells = <0>;
-		clock-frequency = <49999500>;
-		compatible = "fixed-clock";
+	pl0_ref_50M: pl0_ref_50M { /* clk_out4 - clk_wiz_0 */
+		#clock-cells = <0x0>;
+		compatible = "fixed-factor-clock";
+		clocks = <&zynqmp_clk 71>;
+		clock-div = <22>;
+		clock-mult = <11>;
 	};
 
 	/* vcu decode */
@@ -95,7 +86,7 @@
 		#clock-cells = <1>;
 		#size-cells = <2>;
 		clock-names = "pll_ref", "aclk", "vcu_core_enc", "vcu_mcu_enc", "vcu_core_dec","vcu_mcu_dec";
-		clocks = <&misc_clk_3>, <&misc_clk_2>, <&vcu 0>, <&vcu 1>, <&vcu 2>, <&vcu 3>;
+		clocks = <&pl0_ref_50M>, <&pl0_ref_100M>, <&vcu 0>, <&vcu 1>, <&vcu 2>, <&vcu 3>;
 		compatible = "xlnx,vcu-1.2", "xlnx,vcu";
 		interrupt-names = "vcu_host_interrupt";
 		interrupt-parent = <&gic>;
@@ -119,7 +110,7 @@
 		#clock-cells = <1>;
 		clock-names = "clk_in1", "s_axi_aclk";
 		clock-output-names = "clk_out1";
-		clocks = <&misc_clk_0>, <&misc_clk_2>;
+		clocks = <&pl0_ref_275M>, <&pl0_ref_100M>;
 		compatible = "xlnx,clocking-wizard";
 		reg = <0x0 0x80000000 0x0 0x10000>;
 		speed-grade = <2>;
@@ -127,7 +118,7 @@
 
 	v_tc: v_tc@80010000 {
 		clock-names = "clk", "s_axi_aclk";
-		clocks = <&dp_video_clk 0>, <&misc_clk_2>;
+		clocks = <&dp_video_clk 0>, <&pl0_ref_100M>;
 		compatible = "xlnx,bridge-v-tc-6.1";
 		reg = <0x0 0x80010000 0x0 0x10000>;
 		xlnx,generator;
@@ -135,7 +126,7 @@
 	};
 
 	v_mix: v_mix@B0000000 {
-		clocks = <&misc_clk_0>;
+		clocks = <&pl0_ref_275M>;
 		compatible = "xlnx,v-mix-5.1", "xlnx,mixer-3.0", "xlnx,mixer-4.0", "xlnx,mixer-5.0";
 		interrupt-names = "interrupt";
 		interrupt-parent = <&gic>;

@@ -2,7 +2,7 @@
 /*
  * dts file for Xilinx KV260 bist
  *
- * (C) Copyright 2022 - 2023, Advanced Micro Devices, Inc.
+ * (C) Copyright 2022 - 2024, Advanced Micro Devices, Inc.
  *
  */
 
@@ -22,65 +22,43 @@
 		config-afi = <0 0>, <1 0>, <2 0>, <3 0>, <4 0>, <5 0>, <6 0>, <7 0>, <8 0>, <9 0>, <10 0>, <11 0>, <12 0>, <13 0>, <14 0x0>, <15 0x000>;
 	};
 
-	clocking0: clocking0 {
-		#clock-cells = <0>;
-		assigned-clock-rates = <99999001>;
-		assigned-clocks = <&zynqmp_clk 71>;
-		clock-output-names = "fabric_clk";
-		clocks = <&zynqmp_clk 71>;
-		compatible = "xlnx,fclk";
-	};
-
-	clocking1: clocking1 {
-		#clock-cells = <0>;
-		assigned-clock-rates = <99999001>;
-		assigned-clocks = <&zynqmp_clk 72>;
-		clock-output-names = "fabric_clk";
-		clocks = <&zynqmp_clk 72>;
-		compatible = "xlnx,fclk";
-	};
-
 	/* fpga clocks */
-	misc_clk_0: misc_clk_0 {
+	pl0_ref_200M: pl0_ref_200M { /* clk_out1 - clk_wiz_0 */
 		#clock-cells = <0x0>;
-		clock-frequency = <99999000>;
-		compatible = "fixed-clock";
+		compatible = "fixed-factor-clock";
+		clocks = <&zynqmp_clk 71>;
+		clock-div = <6>;
+		clock-mult = <12>;
 	};
 
-	misc_clk_1: misc_clk_1 {
+	pl0_ref_100M: pl0_ref_100M { /* clk_out2 - clk_wiz_0 */
 		#clock-cells = <0x0>;
-		clock-frequency = <199998000>;
-		compatible = "fixed-clock";
+		compatible = "fixed-factor-clock";
+		clocks = <&zynqmp_clk 71>;
+		clock-div = <12>;
+		clock-mult = <12>;
 	};
 
-	misc_clk_2: misc_clk_2 {
+	pl0_ref_300M: pl0_ref_300M { /* clk_out3 - clk_wiz_0 */
 		#clock-cells = <0x0>;
-		clock-frequency = <299997000>;
-		compatible = "fixed-clock";
+		compatible = "fixed-factor-clock";
+		clocks = <&zynqmp_clk 71>;
+		clock-div = <4>;
+		clock-mult = <12>;
 	};
 
-	misc_clk_4: misc_clk_4 {
+	pl0_ref_50M: pl0_ref_50M { /* clk_out4 - clk_wiz_0 */
 		#clock-cells = <0x0>;
-		clock-frequency = <24000000>;
-		compatible = "fixed-clock";
-	};
-
-	misc_clk_5: misc_clk_5 {
-		#clock-cells = <0x0>;
-		clock-frequency = <49999500>;
-		compatible = "fixed-clock";
-	};
-
-	misc_clk_6: misc_clk_6 {
-		#clock-cells = <0x0>;
-		clock-frequency = <18432019>;
-		compatible = "fixed-clock";
+		compatible = "fixed-factor-clock";
+		clocks = <&zynqmp_clk 71>;
+		clock-div = <24>;
+		clock-mult = <12>;
 	};
 
 	axi_gpio: reset_gpio@80080000 {
 		#gpio-cells = <2>;
 		compatible = "xlnx,xps-gpio-1.00.a";
-		clocks = <&misc_clk_0>;
+		clocks = <&pl0_ref_100M>;
 		gpio-controller ;
 		reg = < 0x0 0x80080000 0x0 0x10000 >;
 		xlnx,all-inputs = <0x0>;
@@ -96,11 +74,11 @@
 		xlnx,tri-default = <0xffffffff>;
 		xlnx,tri-default-2 = <0xffffffff>;
 	};
-
+	
 	axi_gpio_pmod: gpio@80020000 {
 		#gpio-cells = <2>;
 		compatible = "xlnx,xps-gpio-1.00.a";
-		clocks = <&misc_clk_0>;
+		clocks = <&pl0_ref_100M>;
 		gpio-controller ;
 		reg = < 0x0 0x80020000 0x0 0x10000 >;
 		xlnx,all-inputs = <0x0>;
@@ -118,12 +96,6 @@
 	};
 
 	/* ar1335 isp mipi rx pipeline */
-	ap1302_clk: sensor_clk {
-		#clock-cells = <0x0>;
-		compatible = "fixed-clock";
-		clock-frequency = <0x48000000>;
-	};
-
 	ap1302_vdd: fixedregulator@0 {
 		compatible = "regulator-fixed";
 		regulator-name = "ap1302_vdd";
@@ -172,7 +144,7 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 		clock-names = "s_axi_aclk";
-		clocks = <&misc_clk_0>;
+		clocks = <&pl0_ref_100M>;
 		compatible = "xlnx,axi-iic-2.1", "xlnx,xps-iic-2.00.a";
 		interrupt-names = "iic2intc_irpt";
 		interrupt-parent = <&gic>;
@@ -194,7 +166,7 @@
 					#address-cells = <1>;
 					#size-cells = <0>;
 					reset-gpios = <&axi_gpio 0 1>;
-					clocks = <&ap1302_clk>;
+					clocks = <&si5332_2>; /* u17 - 48MHz clock - modelled in board dts */
 					sensors {
 						#address-cells = <1>;
 						#size-cells = <0>;
@@ -245,7 +217,7 @@
 				imx219: sensor@10 {
 					compatible = "sony,imx219";
 					reg = <0x10>;
-					clocks = <&misc_clk_4>;
+					clocks = <&si5332_3>; /* u17 - 24Mhz clock - modelled in board dts */
 					reset-gpios = <&axi_gpio 3 0>;
 					VANA-supply = <&imx219_vana>;   /* 2.8v */
 					VDIG-supply = <&imx219_vdig>;   /* 1.8v */
@@ -266,7 +238,7 @@
 		compatible = "xlnx,mipi-csi2-rx-subsystem-5.0";
 		reg = <0x0 0x80000000 0x0 0x10000>;
 		clock-names = "lite_aclk", "dphy_clk_200M", "video_aclk";
-		clocks = <&misc_clk_0>, <&misc_clk_1>, <&misc_clk_2>;
+		clocks = <&pl0_ref_100M>, <&pl0_ref_200M>, <&pl0_ref_300M>;
 		interrupt-parent = <&gic>;
 		interrupts = <0 104 4>;
 		xlnx,csi-pxl-format = <0x18>;
@@ -315,7 +287,7 @@
 		xlnx,pixels-per-clock = <2>;
 		xlnx,max-width = <3840>;
 		xlnx,max-height = <2160>;
-		clocks = <&misc_clk_2>;
+		clocks = <&pl0_ref_300M>;
 		clock-names = "ap_clk";
 	};
 
@@ -345,7 +317,7 @@
 		#clock-cells = <1>;
 		#size-cells = <2>;
 		clock-names = "pll_ref", "aclk", "vcu_core_enc", "vcu_mcu_enc", "vcu_core_dec", "vcu_mcu_dec";
-		clocks = <&misc_clk_5>, <&misc_clk_0>, <&vcu 0>, <&vcu 1>, <&vcu 2>, <&vcu 3>;
+		clocks = <&pl0_ref_50M>, <&pl0_ref_100M>, <&vcu 0>, <&vcu 1>, <&vcu 2>, <&vcu 3>;
 		compatible = "xlnx,vcu-1.2", "xlnx,vcu";
 		interrupt-names = "vcu_host_interrupt";
 		interrupt-parent = <&gic>;
@@ -375,7 +347,7 @@
 		compatible = "xlnx,mipi-csi2-rx-subsystem-5.0";
 		reg = <0x0 0x80050000 0x0 0x10000>;
 		clock-names = "lite_aclk", "dphy_clk_200M", "video_aclk";
-		clocks = <&misc_clk_0>, <&misc_clk_1>, <&misc_clk_2>;
+		clocks = <&pl0_ref_100M>, <&pl0_ref_200M>, <&pl0_ref_300M>;
 		interrupt-parent = <&gic>;
 		interrupts = <0 92 4>;
 		xlnx,csi-pxl-format = <0x2b>;
@@ -417,7 +389,7 @@
 	imx_v_demosaic_0: v_demosaic@b0030000 {
 		compatible = "xlnx,v-demosaic";
 		reg = <0x0 0xb0030000 0x0 0x10000>;
-		clocks = <&misc_clk_2>;
+		clocks = <&pl0_ref_300M>;
 		reset-gpios = <&gpio 82 1>;
 		xlnx,max-height = <1080>;
 		xlnx,max-width = <1920>;
@@ -451,7 +423,7 @@
 		compatible = "xlnx,v-vpss-scaler-2.2";
 		reg = <0x0 0xb0080000 0x0 0x40000>;
 		clock-names = "aclk_axis", "aclk_ctrl";
-		clocks = <&misc_clk_2>, <&misc_clk_2>;
+		clocks = <&pl0_ref_300M>, <&pl0_ref_300M>;
 		xlnx,num-hori-taps = <6>;
 		xlnx,num-vert-taps = <6>;
 		xlnx,pix-per-clk = <1>;
@@ -497,7 +469,7 @@
 		xlnx,pixels-per-clock = <1>;
 		xlnx,max-height = <1080>;
 		xlnx,max-width = <1920>;
-		clocks = <&misc_clk_2>;
+		clocks = <&pl0_ref_300M>;
 		clock-names = "ap_clk";
 	};
 
@@ -525,7 +497,7 @@
 		compatible = "xlnx,mipi-csi2-rx-subsystem-5.0";
 		reg = <0x0 0x80010000 0x0 0x10000>;
 		clock-names = "lite_aclk", "dphy_clk_200M", "video_aclk";
-		clocks = <&misc_clk_0>, <&misc_clk_1>, <&misc_clk_2>;
+		clocks = <&pl0_ref_100M>, <&pl0_ref_200M>, <&pl0_ref_300M>;
 		interrupt-parent = <&gic>;
 		interrupts = <0 89 4>;
 		xlnx,csi-pxl-format = <0x2b>;
@@ -563,7 +535,7 @@
 	ias_v_demosaic_0: v_demosaic@b0000000 {
 		compatible = "xlnx,v-demosaic";
 		reg = <0x0 0xb0000000 0x0 0x10000>;
-		clocks = <&misc_clk_2>;
+		clocks = <&pl0_ref_300M>;
 		reset-gpios = <&gpio 79 1>;
 		xlnx,max-height = <2160>;
 		xlnx,max-width = <3840>;
@@ -592,7 +564,7 @@
 		compatible = "xlnx,v-vpss-scaler-2.2";
 		reg = <0x0 0xb0040000 0x0 0x40000>;
 		clock-names = "aclk_axis", "aclk_ctrl";
-		clocks = <&misc_clk_2>, <&misc_clk_2>;
+		clocks = <&pl0_ref_300M>, <&pl0_ref_300M>;
 		xlnx,num-hori-taps = <6>;
 		xlnx,num-vert-taps = <6>;
 		xlnx,pix-per-clk = <2>;
@@ -633,7 +605,7 @@
 		xlnx,pixels-per-clock = <2>;
 		xlnx,max-height = <2160>;
 		xlnx,max-width = <3840>;
-		clocks = <&misc_clk_2>;
+		clocks = <&pl0_ref_300M>;
 		clock-names = "ap_clk";
 	};
 

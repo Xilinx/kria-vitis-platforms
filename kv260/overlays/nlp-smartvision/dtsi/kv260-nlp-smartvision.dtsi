@@ -3,7 +3,7 @@
  * dts file for Xilinx KV260 nlp-smartvision
  *
  * (C) Copyright 2020 - 2021, Xilinx, Inc.
- * Copyright (C) 2023, Advanced Micro Devices, Inc.
+ * Copyright (C) 2023 - 2024, Advanced Micro Devices, Inc.
  *
  */
 
@@ -46,93 +46,28 @@
 		config-afi = <0 0>, <1 0>, <2 0>, <3 0>, <4 1>, <5 1>, <6 0>, <7 0>, <8 1>, <9 1>, <10 2>, <11 2>, <12 2>, <13 2>, <14 0x000>, <15 0x000>;
 	};
 
-	clocking0: clocking0 {
-		#clock-cells = <0>;
-		assigned-clock-rates = <99999001>;
-		assigned-clocks = <&zynqmp_clk 71>;
-		clock-output-names = "fabric_clk";
+	pl0_ref_200M: pl0_ref_200M { /* clk_out1 - clk_wiz_0 */
+		#clock-cells = <0x0>;
+		compatible = "fixed-factor-clock";
 		clocks = <&zynqmp_clk 71>;
-		compatible = "xlnx,fclk";
+		clock-div = <6>;
+		clock-mult = <12>;
 	};
 
-	clocking1: clocking1 {
-		#clock-cells = <0>;
-		assigned-clock-rates = <99999001>;
-		assigned-clocks = <&zynqmp_clk 72>;
-		clock-output-names = "fabric_clk";
-		clocks = <&zynqmp_clk 72>;
-		compatible = "xlnx,fclk";
-	};
-
-	clocking2: clocking2 {
-		#clock-cells = <0>;
-		assigned-clock-rates = <299997009>;
-		assigned-clocks = <&zynqmp_clk 73>;
-		clock-output-names = "fabric_clk";
-		clocks = <&zynqmp_clk 73>;
-		compatible = "xlnx,fclk";
-	};
-
-	clocking3: clocking3 {
-		#clock-cells = <0>;
-		assigned-clock-rates = <374996246>;
-		assigned-clocks = <&zynqmp_clk 74>;
-		clock-output-names = "fabric_clk";
-		clocks = <&zynqmp_clk 74>;
-		compatible = "xlnx,fclk";
-	};
-
-	misc_clk_0: misc_clk_0 {
+	pl0_ref_100M: pl0_ref_100M { /* clk_out2 - clk_wiz_0 */
 		#clock-cells = <0x0>;
-		clock-frequency = <99999000>;
-		compatible = "fixed-clock";
+		compatible = "fixed-factor-clock";
+		clocks = <&zynqmp_clk 71>;
+		clock-div = <12>;
+		clock-mult = <12>;
 	};
 
-	misc_clk_1: misc_clk_1 {
+	pl0_ref_v200M: pl0_ref_v200M { /* clk_out3 - clk_wiz_0 */
 		#clock-cells = <0x0>;
-		clock-frequency = <199998000>;
-		compatible = "fixed-clock";
-	};
-
-	misc_clk_2: misc_clk_2 {
-		#clock-cells = <0x0>;
-		clock-frequency = <199998000>;
-		compatible = "fixed-clock";
-	};
-
-	misc_clk_3: misc_clk_3 {
-		#clock-cells = <0>;
-		clock-frequency = <299997000>;
-		compatible = "fixed-clock";
-	};
-	misc_clk_4: misc_clk_4 {
-		#clock-cells = <0>;
-		clock-frequency = <599994000>;
-		compatible = "fixed-clock";
-	};
-
-	misc_clk_5: misc_clk_5 {
-		#clock-cells = <0x0>;
-		clock-frequency = <49999500>;
-		compatible = "fixed-clock";
-	};
-
-	misc_clk_6: misc_clk_6 {
-		#clock-cells = <0x0>;
-		clock-frequency = <18432019>;
-		compatible = "fixed-clock";
-	};
-
-	misc_clk_7: misc_clk_7 {
-		#clock-cells = <0x0>;
-		clock-frequency = <24000000>;
-		compatible = "fixed-clock";
-	};
-
-	ap1302_clk: sensor_clk {
-		#clock-cells = <0x0>;
-		compatible = "fixed-clock";
-		clock-frequency = <0x48000000>;
+		compatible = "fixed-factor-clock";
+		clocks = <&zynqmp_clk 71>;
+		clock-div = <6>;
+		clock-mult = <12>;
 	};
 
 	ap1302_vdd: fixedregulator@0 {
@@ -183,7 +118,7 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 		clock-names = "s_axi_aclk";
-		clocks = <&misc_clk_0>;
+		clocks = <&pl0_ref_100M>;
 		compatible = "xlnx,axi-iic-2.0", "xlnx,xps-iic-2.00.a";
 		interrupt-names = "iic2intc_irpt";
 		interrupt-parent = <&gic>;
@@ -205,7 +140,7 @@
 			#address-cells = <1>;
 			#size-cells = <0>;
 			reset-gpios = <&gpio 79 1>;
-			clocks = <&ap1302_clk>;
+			clocks = <&si5332_2>; /* u17 - 48MHz clock - modelled in board dts */
 			sensors {
 				#address-cells = <1>;
 				#size-cells = <0>;
@@ -237,7 +172,7 @@
 			imx219: sensor@10 {
 				compatible = "sony,imx219";
 				reg = <0x10>;
-				clocks = <&misc_clk_7>;
+				clocks = <&si5332_3>; /* u17 - 24MHz clock - modelled in board dts */
 				VANA-supply = <&imx219_vana>;   /* 2.8v */
 				VDIG-supply = <&imx219_vdig>;   /* 1.8v */
 				VDDL-supply = <&imx219_vddl>;   /* 1.2v */
@@ -259,7 +194,7 @@
 		compatible = "xlnx,mipi-csi2-rx-subsystem-5.0";
 		reg = <0x0 0x80000000 0x0 0x1000>;
 		clock-names = "lite_aclk", "dphy_clk_200M", "video_aclk";
-		clocks = <&misc_clk_0>, <&misc_clk_1>, <&misc_clk_2>;
+		clocks = <&pl0_ref_100M>, <&pl0_ref_200M>, <&pl0_ref_v200M>;
 		interrupt-parent = <&gic>;
 		interrupts = <0 104 4>;
 		xlnx,csi-pxl-format = <0x1e>;
@@ -294,7 +229,7 @@
 		compatible = "xlnx,v-vpss-scaler-2.2";
 		reg = <0x0 0xb00c0000 0x0 0x40000>;
 		clock-names = "aclk_axis", "aclk_ctrl";
-		clocks = <&misc_clk_2>, <&misc_clk_2>;
+		clocks = <&pl0_ref_v200M>, <&pl0_ref_v200M>;
 		xlnx,num-hori-taps = <6>;
 		xlnx,num-vert-taps = <6>;
 		xlnx,pix-per-clk = <1>;
@@ -343,7 +278,7 @@
 		xlnx,pixels-per-clock = <1>;
 		xlnx,max-width = <1920>;
 		xlnx,max-height = <1080>;
-		clocks = <&misc_clk_2>;
+		clocks = <&pl0_ref_v200M>;
 		clock-names = "ap_clk";
 	};
 
@@ -371,7 +306,7 @@
 		compatible = "xlnx,mipi-csi2-rx-subsystem-5.1", "xlnx,mipi-csi2-rx-subsystem-5.0";
 		reg = <0x0 0x80002000 0x0 0x2000>;
 		clock-names = "lite_aclk", "dphy_clk_200M", "video_aclk";
-		clocks = <&misc_clk_0>, <&misc_clk_1>, <&misc_clk_2>;
+		clocks = <&pl0_ref_100M>, <&pl0_ref_200M>, <&pl0_ref_v200M>;
 		interrupt-parent = <&gic>;
 		interrupts = <0 108 4>;
 		xlnx,csi-pxl-format = <0x2b>;
@@ -410,7 +345,7 @@
 
 	imx_isp: isp_accel@b0000000 {
 			clock-names = "ap_clk";
-			clocks = <&misc_clk_2>;
+			clocks = <&pl0_ref_v200M>;
 			compatible = "xlnx,ISPPipeline_accel";
 			reset-gpios = <&gpio 82 1>;
 			reg = <0x0 0xb0000000 0x0 0x10000>;
@@ -452,7 +387,7 @@
 		compatible = "xlnx,v-vpss-scaler-2.2";
 		reg = <0x0 0xb0040000 0x0 0x40000>;
 		clock-names = "aclk_axis", "aclk_ctrl";
-		clocks = <&misc_clk_2>, <&misc_clk_2>;
+		clocks = <&pl0_ref_v200M>, <&pl0_ref_v200M>;
 		xlnx,num-hori-taps = <6>;
 		xlnx,num-vert-taps = <6>;
 		xlnx,pix-per-clk = <1>;
@@ -498,7 +433,7 @@
 		xlnx,pixels-per-clock = <1>;
 		xlnx,max-height = <1080>;
 		xlnx,max-width = <1920>;
-		clocks = <&misc_clk_2>;
+		clocks = <&pl0_ref_v200M>;
 		clock-names = "ap_clk";
 	};
 

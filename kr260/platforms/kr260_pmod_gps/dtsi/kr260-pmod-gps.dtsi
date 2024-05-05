@@ -3,7 +3,7 @@
  * dts file for Xilinx Kr260 GPS-1588-PTP
  *
  * (C) Copyright 2020 - 2021, Xilinx, Inc.
- * Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc
+ * Copyright (C) 2022 - 2024, Advanced Micro Devices, Inc
  *
  */
 
@@ -46,9 +46,18 @@
 		compatible = "xlnx,afi-fpga";
 		config-afi = <0 0>, <1 0>, <2 0>, <3 0>, <4 0>, <5 0>, <6 0>, <7 0>, <8 0>, <9 0>, <10 0>, <11 0>, <12 0>, <13 0>, <14 0x000>, <15 0x000>;
 	};
+
+	pl0_ref_100M: pl0_ref_100M {
+		#clock-cells = <0x0>;
+		compatible = "fixed-factor-clock";
+		clocks = <&zynqmp_clk 71>;
+		clock-div = <12>;
+		clock-mult = <12>;
+	};
+
 	axi_uartlite_0: serial@80000000 {
 		clock-names = "s_axi_aclk";
-		clocks = <&misc_clk_0>;
+		clocks = <&pl0_ref_100M>;
 		compatible = "xlnx,axi-uartlite-2.0", "xlnx,xps-uartlite-1.00.a";
 		current-speed = <9600>;
 		device_type = "serial";
@@ -64,11 +73,7 @@
 		xlnx,txen-delay = <0x0>;
 		xlnx,use-parity = <0x0>;
 	};
-	misc_clk_0: misc_clk_0 {
-		#clock-cells = <0>;
-		clock-frequency = <100000000>;
-		compatible = "fixed-clock";
-	};
+
 	pps_axi_gpio_0 {
 		pinctrl-names = "default";
 		gpios = <&gpio 78 0 0 >;
