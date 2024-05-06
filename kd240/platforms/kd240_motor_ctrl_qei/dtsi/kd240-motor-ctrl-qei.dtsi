@@ -102,6 +102,18 @@
 		reg = <0 0xa0050000 0 0x1000>;
 	};
 
+	axi_1wire_master_0: axi_1wire_master@a0070000 {
+		clock-names = "s00_axi_aclk";
+		clocks = <&pl0_ref_100M>;
+		compatible = "amd,axi-1wire-host";
+		interrupt-names = "w1_irq";
+		interrupt-parent = <&gic>;
+		interrupts = <0 104 4>;
+		reg = <0x0 0xa0070000 0x0 0x10000>;
+		xlnx,s00-axi-addr-width = <0x5>;
+		xlnx,s00-axi-data-width = <0x20>;
+	};
+
 	axi_intc_0: interrupt-controller@80020000 {
 		clock-names = "s_axi_clk";
 		clocks = <&clk_out_100M>;
