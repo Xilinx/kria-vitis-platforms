@@ -67,6 +67,41 @@
 		xlnx,kind-of-intr = <0x000>;
 		xlnx,num-intr-inputs = <0x20>;
 	};
+ 
+	/* ext_osc_pmodcan: External oscillator (X1) residing on Digilent PmodCAN device.
+	Supplies 20MHz fixed clock to MCP25625 CAN Controller on the device to enable
+  	communication. Refer PmodCAN schematic for details. */
+ 
+ 	ext_osc_pmodcan: ext_osc_pmodcan {
+                compatible = "fixed-clock";
+                #clock-cells = <0>;
+                clock-frequency = <20000000>;
+                clock-output-names = "ext_osc_pmodcan";
+	};
+
+	axi_quad_spi_CAN: axi_quad_spi@80080000 {
+		bits-per-word = <8>;
+		clock-names = "ext_spi_clk", "s_axi_clk";
+		clocks = <&clk_out_100M>, <&clk_out_100M>;
+		compatible = "xlnx,axi-quad-spi-3.2", "xlnx,xps-spi-2.00.a";
+		fifo-size = <16>;
+		interrupt-names = "ip2intc_irpt";
+		interrupt-parent = <&axi_intc_0>;
+		interrupts = <17 1>;
+		num-cs = <0x1>;
+		reg = <0x0 0x80080000 0x0 0x10000>;
+		xlnx,num-ss-bits = <0x1>;
+		xlnx,spi-mode = <0>;
+    		can@0 {
+			compatible = "microchip,mcp25625";
+			reg = <0>;
+			clocks = <&ext_osc_pmodcan>;
+			interrupt-names = "can_int";
+                       	interrupt-parent = <&axi_intc_0>; 
+			interrupts = <16 1>;
+			spi-max-frequency = <10000000>;
+		};
+	};
 
 	axi_uartlite_0: serial@80010000 {
 		clock-names = "s_axi_clk";
