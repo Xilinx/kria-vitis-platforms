@@ -23,6 +23,13 @@ pipeline {
         PAEG_LSF_MEM=65536
         PAEG_LSF_QUEUE="long"
         build_overlay="false"
+        MAIN_PROJECT = "${JOB_NAME.split('/')[-2]}"
+        FOLDER = JOB_NAME.split('/')[0..-3].join('%2F')
+        ACCESS_TOKEN = credentials('github-token-of-sswbot')
+        GITHUB_REPO = 'SOM/kria-vitis-platforms'
+        PR_NUMBER = "${env.CHANGE_ID}"
+        REDIRECT_URL = "${env.JENKINS_URL}blue/organizations/jenkins/${FOLDER}%2F${MAIN_PROJECT}/detail/PR-${PR_NUMBER}/${env.BUILD_NUMBER}/pipeline"
+
     }
     options {
         // don't let the implicit checkout happen
@@ -34,6 +41,19 @@ pipeline {
         cron(env.BRANCH_NAME == 'master' ? 'H 21 * * *' : '')
     }
     stages {
+        stage('Tests Started') {
+            steps {
+                script {
+                    echo "github_repo_resolved:${env.GITHUB_REPO}" 
+                    echo "FOLDER_NAME: ${env.FOLDER}"    
+                    echo "REDIRECT_URL: ${env.REDIRECT_URL}"
+                    echo "JOB_NAME: ${env.JOB_NAME}"
+                    echo "JOB_BASE_NAME: ${env.JOB_BASE_NAME}"
+                    echo "This is job name resided in the folder: ${env.MAIN_PROJECT}"
+                    utils.postComment(env.PR_NUMBER, "Test Started: ${env.REDIRECT_URL}")
+                }
+            }
+        }
         stage('Clone Repos') {
             steps {
                 // checkout main source repo
@@ -466,6 +486,28 @@ pipeline {
         }
     }
     post {
+        always {           
+            script {
+                try {
+                    def comment
+                    if (currentBuild.result == 'FAILURE') {
+                        comment = "All your tests are disqualified 😕"
+                    } else {
+                        comment = "All your tests are qualified 🚀"
+                    }
+
+                    // Posting a comment on the pull request
+                    utils.postComment(env.PR_NUMBER, comment)
+
+                    // Redirection to Blue Ocean
+                    utils.setGitHubCommitStatus(currentBuild.result)
+                } catch (Exception e) {
+                    // Handle any exception that might occur during the post-build actions
+                    echo "Error occurred during post-build actions: ${e.message}"
+                    currentBuild.result = 'FAILURE'
+                }
+            }
+        }
         cleanup {
             cleanWs()
         }
