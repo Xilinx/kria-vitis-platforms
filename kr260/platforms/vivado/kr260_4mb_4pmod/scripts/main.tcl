@@ -133,6 +133,8 @@ set_property platform.version "1.0" [current_project]
 launch_runs synth_1 -jobs $jobs
 wait_on_run synth_1
 
+set_property strategy Performance_ExplorePostRoutePhysOpt [get_runs impl_1]
+set_property STEPS.WRITE_BITSTREAM.ARGS.BIN_FILE true [get_runs impl_1]
 launch_runs impl_1 -to_step write_bitstream
 wait_on_run impl_1
 
