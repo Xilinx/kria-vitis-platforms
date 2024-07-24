@@ -10,6 +10,7 @@ To create the Vitis platform, run the following command:
 > make platform PLATFORM=<platform_name>
 
 Options for <platform_name> are
+   - kr260_4mb_4pmod
    - kr260_tsn_rs485pmod
 
 The Makefile uses the XSA from the vivado project to generate a platform.
