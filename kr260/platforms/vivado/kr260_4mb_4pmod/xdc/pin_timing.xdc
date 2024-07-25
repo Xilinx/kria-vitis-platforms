@@ -226,37 +226,37 @@ set_property IOSTANDARD LVCMOS18 [get_ports CLK_IN_gem]
 #------------------------------------------------------------------
 
 ## False paths
-set_false_path -from [get_clocks clk_out1_kr260_2mb_clk_wiz_0_0] -to [get_clocks clk_out2_kr260_2mb_clk_wiz_0_0] 
-set_false_path -from [get_clocks clk_out2_kr260_2mb_clk_wiz_0_0] -to [get_clocks clk_out1_kr260_2mb_clk_wiz_0_0] 
-set_false_path -from [get_clocks clk_out2_kr260_2mb_clk_wiz_0_0] -to [get_clocks clk_out4_kr260_2mb_clk_wiz_0_0] 
-set_false_path -from [get_clocks clk_out4_kr260_2mb_clk_wiz_0_0] -to [get_clocks clk_out2_kr260_2mb_clk_wiz_0_0] 
+set_false_path -from [get_clocks clk_out1_kr260_4mb_4pmod_clk_wiz_0_0] -to [get_clocks clk_out2_kr260_4mb_4pmod_clk_wiz_0_0] 
+set_false_path -from [get_clocks clk_out2_kr260_4mb_4pmod_clk_wiz_0_0] -to [get_clocks clk_out1_kr260_4mb_4pmod_clk_wiz_0_0] 
+set_false_path -from [get_clocks clk_out2_kr260_4mb_4pmod_clk_wiz_0_0] -to [get_clocks clk_out4_kr260_4mb_4pmod_clk_wiz_0_0] 
+set_false_path -from [get_clocks clk_out4_kr260_4mb_4pmod_clk_wiz_0_0] -to [get_clocks clk_out2_kr260_4mb_4pmod_clk_wiz_0_0] 
+set_false_path -from [get_clocks clk_out2_kr260_4mb_4pmod_clk_wiz_0_0] -to [get_clocks clk_out5_kr260_4mb_4pmod_clk_wiz_0_0] 
+set_false_path -from [get_clocks clk_out5_kr260_4mb_4pmod_clk_wiz_0_0] -to [get_clocks clk_out2_kr260_4mb_4pmod_clk_wiz_0_0] 
 
 set_property DELAY_VALUE 0 [get_cells -hier -filter {NAME =~ */rgmii_interface/delay_rgmii_tx_clk}]
 set_property DELAY_VALUE 0 [get_cells -hier -filter {NAME =~ */rgmii_interface/delay_rgmii_rx*}]
 set_property DELAY_VALUE 0 [get_cells -hier -filter {NAME =~ */rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
 
+#set_property DELAY_VALUE 1100 [get_cells -hier -filter {NAME =~ */rgmii_interface/delay_rgmii_tx_clk}]
+#set_property DELAY_VALUE 900 [get_cells -hier -filter {NAME =~ */rgmii_interface/delay_rgmii_rx*}]
+#set_property DELAY_VALUE 900 [get_cells -hier -filter {NAME =~ */rgmii_interface/rxdata_bus[*].delay_rgmii_rx*}]
+
 
 ## Refclk frequency
-set_property REFCLK_FREQUENCY 300.000 [get_cells -hier -filter {NAME =~ *delay_rgmii_tx*}]
+set_property REFCLK_FREQUENCY 333.333 [get_cells -hier -filter {NAME =~ *delay_rgmii_tx*}]
+set_property REFCLK_FREQUENCY 333.333 [get_cells -hier -filter {NAME =~ *delay_rgmii_rx*}]
 set_clock_groups -asynchronous -group [get_clocks CLK_IN_gem]
-set_clock_groups -asynchronous -group [get_clocks clk_out1_kr260_2mb_clk_wiz_0*]
-set_clock_groups -asynchronous -group [get_clocks clk_out2_kr260_2mb_clk_wiz_0*]
-set_clock_groups -asynchronous -group [get_clocks clk_out3_kr260_2mb_clk_wiz_0*]
-set_clock_groups -asynchronous -group [get_clocks clk_out4_kr260_2mb_clk_wiz_0*]
+set_clock_groups -asynchronous -group [get_clocks clk_out1_kr260_4mb_4pmod_clk_wiz_0_0*]
+set_clock_groups -asynchronous -group [get_clocks clk_out2_kr260_4mb_4pmod_clk_wiz_0_0*]
+set_clock_groups -asynchronous -group [get_clocks clk_out3_kr260_4mb_4pmod_clk_wiz_0_0*]
+set_clock_groups -asynchronous -group [get_clocks clk_out4_kr260_4mb_4pmod_clk_wiz_0_0*]
+set_clock_groups -asynchronous -group [get_clocks clk_out5_kr260_4mb_4pmod_clk_wiz_0_0*]
 set_clock_groups -asynchronous -group [get_clocks rgmii_rxc]
 set_clock_groups -asynchronous -group [get_clocks rgmii2_rxc]
 set_clock_groups -asynchronous -group [get_clocks clk_pl_0]
-#needs adaptions:
-#set_clock_groups -asynchronous -group [get_clocks kr260_2mb*_i/mb_subsystem_0/*/inst_rgmii_tx_clk]
-#set_clock_groups -asynchronous -group [get_clocks kr260_2mb*_i/mb_subsystem_1/*/inst_rgmii_tx_clk]
+#
+set_clock_groups -asynchronous -group [get_clocks kr260_4mb_4pmod_i/mb_subsystem_*/axi_ethernet_0/inst/mac/inst_rgmii_tx_clk]
 
-## fix: 
-#ERROR: [DRC PLIDC-3] IDELAYCTRLs in same group have conflicting connections: 
-#IDELAYCTRL cells 'kr260_2mb_i/mb_subsystem_0/axi_ethernet_0/inst/mac/inst/tri_mode_ethernet_mac_idelayctrl_common_i' 
-#and 'kr260_2mb_i/mb_subsystem_1/axi_ethernet_0/inst/mac/inst/tri_mode_ethernet_mac_idelayctrl_common_i' 
-#have same IODELAY_GROUP 'tri_mode_ethernet_mac_iodelay_grp' but their RST signals are different
-#set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp1 [get_cells kr260_2mb_i/mb_subsystem_0/axi_ethernet_0/inst/mac/inst/tri_mode_ethernet_mac_idelayctrl_common_i]
-#set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp2 [get_cells kr260_2mb_i/mb_subsystem_1/axi_ethernet_0/inst/mac/inst/tri_mode_ethernet_mac_idelayctrl_common_i]
 
 #for subsystem 0
 set_property IODELAY_GROUP tri_mode_ethernet_mac_iodelay_grp0 [get_cells -hierarchical -filter { PRIMITIVE_TYPE == I/O.DELAY.IDELAYCTRL && NAME =~  "*mb_subsystem_0*" } ]

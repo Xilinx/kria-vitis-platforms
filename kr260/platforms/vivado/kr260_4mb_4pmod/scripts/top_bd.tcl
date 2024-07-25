@@ -142,6 +142,7 @@ xilinx.com:ip:axi_uartlite:2.0\
 xilinx.com:ip:clk_wiz:6.0\
 xilinx.com:ip:mdm:3.2\
 xilinx.com:ip:proc_sys_reset:5.0\
+xilinx.com:ip:system_ila:1.1\
 xilinx.com:ip:xlconcat:2.1\
 xilinx.com:ip:xlconstant:1.1\
 xilinx.com:ip:xlslice:1.0\
@@ -980,7 +981,7 @@ sclk_out#miso_mo1#mo2#mo3#mosi_mi0#n_ss_out#sclk_out#gpio0[7]#gpio0[8]#n_ss_out[
    CONFIG.PSU__IOU_SLCR__WDT_CLK_SEL__SELECT {APB} \
    CONFIG.PSU__LPD_SLCR__CSUPMU__ACT_FREQMHZ {100.000000} \
    CONFIG.PSU__LPD_SLCR__CSUPMU__FREQMHZ {100.000000} \
-   CONFIG.PSU__MAXIGP0__DATA_WIDTH {128} \
+   CONFIG.PSU__MAXIGP0__DATA_WIDTH {64} \
    CONFIG.PSU__MAXIGP1__DATA_WIDTH {128} \
    CONFIG.PSU__MAXIGP2__DATA_WIDTH {64} \
    CONFIG.PSU__NUM_FABRIC_RESETS {4} \
@@ -1085,9 +1086,9 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
    CONFIG.PSU__USB__RESET__POLARITY {Active Low} \
    CONFIG.PSU__USE__IRQ0 {1} \
    CONFIG.PSU__USE__IRQ1 {1} \
-   CONFIG.PSU__USE__M_AXI_GP0 {0} \
+   CONFIG.PSU__USE__M_AXI_GP0 {1} \
    CONFIG.PSU__USE__M_AXI_GP1 {0} \
-   CONFIG.PSU__USE__M_AXI_GP2 {1} \
+   CONFIG.PSU__USE__M_AXI_GP2 {0} \
    CONFIG.PSU__USE__S_AXI_GP2 {1} \
    CONFIG.PSU__USE__S_AXI_GP3 {1} \
  ] $PS_0
@@ -1139,9 +1140,9 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
    CONFIG.CLKOUT2_PHASE_ERROR {222.521} \
    CONFIG.CLKOUT2_REQUESTED_OUT_FREQ {125.000} \
    CONFIG.CLKOUT2_USED {true} \
-   CONFIG.CLKOUT3_JITTER {135.994} \
-   CONFIG.CLKOUT3_PHASE_ERROR {222.521} \
-   CONFIG.CLKOUT3_REQUESTED_OUT_FREQ {300.000} \
+   CONFIG.CLKOUT3_JITTER {193.101} \
+   CONFIG.CLKOUT3_PHASE_ERROR {237.727} \
+   CONFIG.CLKOUT3_REQUESTED_OUT_FREQ {333.0} \
    CONFIG.CLKOUT3_USED {true} \
    CONFIG.CLKOUT4_JITTER {152.629} \
    CONFIG.CLKOUT4_PHASE_ERROR {222.521} \
@@ -1151,14 +1152,14 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
    CONFIG.CLKOUT5_PHASE_ERROR {222.521} \
    CONFIG.CLKOUT5_REQUESTED_OUT_FREQ {125.000} \
    CONFIG.CLKOUT5_USED {true} \
-   CONFIG.MMCM_CLKFBOUT_MULT_F {60.000} \
+   CONFIG.MMCM_CLKFBOUT_MULT_F {40.000} \
    CONFIG.MMCM_CLKIN1_PERIOD {40.000} \
    CONFIG.MMCM_CLKIN2_PERIOD {10.0} \
-   CONFIG.MMCM_CLKOUT0_DIVIDE_F {7.500} \
-   CONFIG.MMCM_CLKOUT1_DIVIDE {12} \
-   CONFIG.MMCM_CLKOUT2_DIVIDE {5} \
-   CONFIG.MMCM_CLKOUT3_DIVIDE {15} \
-   CONFIG.MMCM_CLKOUT4_DIVIDE {12} \
+   CONFIG.MMCM_CLKOUT0_DIVIDE_F {5.000} \
+   CONFIG.MMCM_CLKOUT1_DIVIDE {8} \
+   CONFIG.MMCM_CLKOUT2_DIVIDE {3} \
+   CONFIG.MMCM_CLKOUT3_DIVIDE {10} \
+   CONFIG.MMCM_CLKOUT4_DIVIDE {8} \
    CONFIG.MMCM_DIVCLK_DIVIDE {1} \
    CONFIG.NUM_OUT_CLKS {5} \
    CONFIG.PRIM_IN_FREQ {25} \
@@ -1180,8 +1181,8 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   set_property APERTURES {{0x4140_0000 4K}} [get_bd_intf_pins /iop_pmod_3/M_AXI]
   set_property APERTURES {{0x2000_0000 512M}} [get_bd_intf_pins /iop_pmod_3/M_AXI_DC]
   set_property APERTURES {{0x2000_0000 512M}} [get_bd_intf_pins /iop_pmod_3/M_AXI_IC]
-  set_property APERTURES {{0x8003_0000 32K}} [get_bd_intf_pins /iop_pmod_3/S_AXI]
-  set_property APERTURES {{0x8010_0000 64K}} [get_bd_intf_pins /iop_pmod_3/S_AXI_IOSWITCH]
+  set_property APERTURES {{0xA003_0000 32K}} [get_bd_intf_pins /iop_pmod_3/S_AXI]
+  set_property APERTURES {{0xA010_0000 64K}} [get_bd_intf_pins /iop_pmod_3/S_AXI_IOSWITCH]
 
   # Create instance: iop_pmod_4, and set properties
   set iop_pmod_4 [ create_bd_cell -type container -reference iop_pmod_bdc iop_pmod_4 ]
@@ -1196,8 +1197,8 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   set_property APERTURES {{0x4140_0000 4K}} [get_bd_intf_pins /iop_pmod_4/M_AXI]
   set_property APERTURES {{0x2000_0000 512M}} [get_bd_intf_pins /iop_pmod_4/M_AXI_DC]
   set_property APERTURES {{0x2000_0000 512M}} [get_bd_intf_pins /iop_pmod_4/M_AXI_IC]
-  set_property APERTURES {{0x8004_0000 32K}} [get_bd_intf_pins /iop_pmod_4/S_AXI]
-  set_property APERTURES {{0x8011_0000 64K}} [get_bd_intf_pins /iop_pmod_4/S_AXI_IOSWITCH]
+  set_property APERTURES {{0xA004_0000 32K}} [get_bd_intf_pins /iop_pmod_4/S_AXI]
+  set_property APERTURES {{0xA011_0000 64K}} [get_bd_intf_pins /iop_pmod_4/S_AXI_IOSWITCH]
 
   # Create instance: mb_subsystem_0, and set properties
   set mb_subsystem_0 [ create_bd_cell -type container -reference mb_subsystem_0 mb_subsystem_0 ]
@@ -1215,8 +1216,8 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   set_property APERTURES {{0x2000_0000 512M}} [get_bd_intf_pins /mb_subsystem_0/M_AXI_MM2S]
   set_property APERTURES {{0x2000_0000 512M}} [get_bd_intf_pins /mb_subsystem_0/M_AXI_S2MM]
   set_property APERTURES {{0x2000_0000 512M}} [get_bd_intf_pins /mb_subsystem_0/M_AXI_SG]
-  set_property APERTURES {{0x8000_0000 8K}} [get_bd_intf_pins /mb_subsystem_0/S_AXI_0]
-  set_property APERTURES {{0x8012_0000 64K}} [get_bd_intf_pins /mb_subsystem_0/S_AXI_IOSWITCH]
+  set_property APERTURES {{0xA000_0000 8K}} [get_bd_intf_pins /mb_subsystem_0/S_AXI_0]
+  set_property APERTURES {{0xA012_0000 64K}} [get_bd_intf_pins /mb_subsystem_0/S_AXI_IOSWITCH]
 
   # Create instance: mb_subsystem_1, and set properties
   set mb_subsystem_1 [ create_bd_cell -type container -reference mb_subsystem_0 mb_subsystem_1 ]
@@ -1234,8 +1235,8 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   set_property APERTURES {{0x2000_0000 512M}} [get_bd_intf_pins /mb_subsystem_1/M_AXI_MM2S]
   set_property APERTURES {{0x2000_0000 512M}} [get_bd_intf_pins /mb_subsystem_1/M_AXI_S2MM]
   set_property APERTURES {{0x2000_0000 512M}} [get_bd_intf_pins /mb_subsystem_1/M_AXI_SG]
-  set_property APERTURES {{0x8000_2000 8K}} [get_bd_intf_pins /mb_subsystem_1/S_AXI_0]
-  set_property APERTURES {{0x8013_0000 64K}} [get_bd_intf_pins /mb_subsystem_1/S_AXI_IOSWITCH]
+  set_property APERTURES {{0xA000_2000 8K}} [get_bd_intf_pins /mb_subsystem_1/S_AXI_0]
+  set_property APERTURES {{0xA013_0000 64K}} [get_bd_intf_pins /mb_subsystem_1/S_AXI_IOSWITCH]
 
   # Create instance: mdm_1, and set properties
   set mdm_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mdm:3.2 mdm_1 ]
@@ -1270,6 +1271,12 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   set_property -dict [ list \
    CONFIG.NUM_SI {4} \
  ] $smartconnect_0
+
+  # Create instance: system_ila_fpd, and set properties
+  set system_ila_fpd [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_fpd ]
+  set_property -dict [ list \
+   CONFIG.C_NUM_MONITOR_SLOTS {2} \
+ ] $system_ila_fpd
 
   # Create instance: xlconcat_0, and set properties
   set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
@@ -1391,7 +1398,8 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
  ] $xlslice_ttc_0
 
   # Create interface connections
-  connect_bd_intf_net -intf_net PS_0_M_AXI_HPM0_LPD [get_bd_intf_pins PS_0/M_AXI_HPM0_LPD] [get_bd_intf_pins ps8_0_axi_periph/S00_AXI]
+  connect_bd_intf_net -intf_net PS_0_M_AXI_HPM0_FPD [get_bd_intf_pins PS_0/M_AXI_HPM0_FPD] [get_bd_intf_pins ps8_0_axi_periph/S00_AXI]
+connect_bd_intf_net -intf_net [get_bd_intf_nets PS_0_M_AXI_HPM0_FPD] [get_bd_intf_pins PS_0/M_AXI_HPM0_FPD] [get_bd_intf_pins system_ila_fpd/SLOT_0_AXI]
   connect_bd_intf_net -intf_net S_AXI_IOSWITCH_1 [get_bd_intf_pins mb_subsystem_0/S_AXI_IOSWITCH] [get_bd_intf_pins ps8_0_axi_periph/M09_AXI]
   connect_bd_intf_net -intf_net S_AXI_IOSWITCH_2 [get_bd_intf_pins mb_subsystem_1/S_AXI_IOSWITCH] [get_bd_intf_pins ps8_0_axi_periph/M10_AXI]
   connect_bd_intf_net -intf_net axi_ethernet_0_dma_M_AXI_MM2S [get_bd_intf_pins axi_smc/S02_AXI] [get_bd_intf_pins mb_subsystem_0/M_AXI_MM2S]
@@ -1430,6 +1438,7 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M00_AXI [get_bd_intf_pins axi_intc_0/s_axi] [get_bd_intf_pins ps8_0_axi_periph/M00_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M01_AXI [get_bd_intf_pins axi_uartlite_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M01_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M02_AXI [get_bd_intf_pins mb_subsystem_0/S_AXI_0] [get_bd_intf_pins ps8_0_axi_periph/M02_AXI]
+connect_bd_intf_net -intf_net [get_bd_intf_nets ps8_0_axi_periph_M02_AXI] [get_bd_intf_pins ps8_0_axi_periph/M02_AXI] [get_bd_intf_pins system_ila_fpd/SLOT_1_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M03_AXI [get_bd_intf_pins mb_subsystem_1/S_AXI_0] [get_bd_intf_pins ps8_0_axi_periph/M03_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M04_AXI [get_bd_intf_pins iop_pmod_4/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M04_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M05_AXI [get_bd_intf_pins iop_pmod_3/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M05_AXI]
@@ -1450,7 +1459,7 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   connect_bd_net -net axi_uartlite_1_interrupt [get_bd_pins axi_uartlite_1/interrupt] [get_bd_pins xlconcat_2/In1]
   connect_bd_net -net axi_uartlite_1_tx [get_bd_pins axi_uartlite_1/tx] [get_bd_pins iop_pmod_4/uart1_tx]
   connect_bd_net -net clk_in1_0_1 [get_bd_ports CLK_IN_gem] [get_bd_pins clk_wiz_0/clk_in1]
-  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins PS_0/maxihpm0_lpd_aclk] [get_bd_pins PS_0/saxihp0_fpd_aclk] [get_bd_pins PS_0/saxihp1_fpd_aclk] [get_bd_pins axi_iic_0/s_axi_aclk] [get_bd_pins axi_intc_0/s_axi_aclk] [get_bd_pins axi_smc/aclk] [get_bd_pins axi_smc1/aclk] [get_bd_pins axi_smc1/aclk1] [get_bd_pins axi_uartlite_0/s_axi_aclk] [get_bd_pins axi_uartlite_1/s_axi_aclk] [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins iop_pmod_3/s_axi_aclk] [get_bd_pins iop_pmod_4/s_axi_aclk] [get_bd_pins mb_subsystem_0/axis_clk] [get_bd_pins mb_subsystem_1/axis_clk] [get_bd_pins mdm_1/S_AXI_ACLK] [get_bd_pins ps8_0_axi_periph/ACLK] [get_bd_pins ps8_0_axi_periph/M00_ACLK] [get_bd_pins ps8_0_axi_periph/M01_ACLK] [get_bd_pins ps8_0_axi_periph/M02_ACLK] [get_bd_pins ps8_0_axi_periph/M03_ACLK] [get_bd_pins ps8_0_axi_periph/M04_ACLK] [get_bd_pins ps8_0_axi_periph/M05_ACLK] [get_bd_pins ps8_0_axi_periph/M06_ACLK] [get_bd_pins ps8_0_axi_periph/M07_ACLK] [get_bd_pins ps8_0_axi_periph/M08_ACLK] [get_bd_pins ps8_0_axi_periph/M09_ACLK] [get_bd_pins ps8_0_axi_periph/M10_ACLK] [get_bd_pins ps8_0_axi_periph/M11_ACLK] [get_bd_pins ps8_0_axi_periph/S00_ACLK] [get_bd_pins rst_clk_wiz_0_200M/slowest_sync_clk] [get_bd_pins smartconnect_0/aclk]
+  connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins PS_0/maxihpm0_fpd_aclk] [get_bd_pins PS_0/saxihp0_fpd_aclk] [get_bd_pins PS_0/saxihp1_fpd_aclk] [get_bd_pins axi_iic_0/s_axi_aclk] [get_bd_pins axi_intc_0/s_axi_aclk] [get_bd_pins axi_smc/aclk] [get_bd_pins axi_smc1/aclk] [get_bd_pins axi_smc1/aclk1] [get_bd_pins axi_uartlite_0/s_axi_aclk] [get_bd_pins axi_uartlite_1/s_axi_aclk] [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins iop_pmod_3/s_axi_aclk] [get_bd_pins iop_pmod_4/s_axi_aclk] [get_bd_pins mb_subsystem_0/axis_clk] [get_bd_pins mb_subsystem_1/axis_clk] [get_bd_pins mdm_1/S_AXI_ACLK] [get_bd_pins ps8_0_axi_periph/ACLK] [get_bd_pins ps8_0_axi_periph/M00_ACLK] [get_bd_pins ps8_0_axi_periph/M01_ACLK] [get_bd_pins ps8_0_axi_periph/M02_ACLK] [get_bd_pins ps8_0_axi_periph/M03_ACLK] [get_bd_pins ps8_0_axi_periph/M04_ACLK] [get_bd_pins ps8_0_axi_periph/M05_ACLK] [get_bd_pins ps8_0_axi_periph/M06_ACLK] [get_bd_pins ps8_0_axi_periph/M07_ACLK] [get_bd_pins ps8_0_axi_periph/M08_ACLK] [get_bd_pins ps8_0_axi_periph/M09_ACLK] [get_bd_pins ps8_0_axi_periph/M10_ACLK] [get_bd_pins ps8_0_axi_periph/M11_ACLK] [get_bd_pins ps8_0_axi_periph/S00_ACLK] [get_bd_pins rst_clk_wiz_0_200M/slowest_sync_clk] [get_bd_pins smartconnect_0/aclk] [get_bd_pins system_ila_fpd/clk]
   connect_bd_net -net clk_wiz_0_clk_out2 [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins rst_clk_wiz_0_125M/slowest_sync_clk]
   connect_bd_net -net clk_wiz_0_clk_out3 [get_bd_pins clk_wiz_0/clk_out3] [get_bd_pins mb_subsystem_0/ref_clk] [get_bd_pins mb_subsystem_1/ref_clk] [get_bd_pins rst_clk_wiz_0_300M/slowest_sync_clk]
   connect_bd_net -net clk_wiz_0_clk_out4 [get_bd_pins clk_wiz_0/clk_out4] [get_bd_pins rst_clk_wiz_0_100M/slowest_sync_clk]
@@ -1482,7 +1491,7 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   connect_bd_net -net resetn_3 [get_bd_pins PS_0/pl_resetn3] [get_bd_pins iop_pmod_4/resetn]
   connect_bd_net -net resetn_4 [get_bd_pins mb_subsystem_0/resetn] [get_bd_pins xlslice_8/Dout]
   connect_bd_net -net rst_clk_wiz_0_125M_interconnect_aresetn [get_bd_pins axi_smc/aresetn] [get_bd_pins axi_smc1/aresetn] [get_bd_pins ps8_0_axi_periph/ARESETN] [get_bd_pins ps8_0_axi_periph/M00_ARESETN] [get_bd_pins ps8_0_axi_periph/M01_ARESETN] [get_bd_pins ps8_0_axi_periph/M02_ARESETN] [get_bd_pins ps8_0_axi_periph/M03_ARESETN] [get_bd_pins ps8_0_axi_periph/M04_ARESETN] [get_bd_pins ps8_0_axi_periph/M05_ARESETN] [get_bd_pins ps8_0_axi_periph/M06_ARESETN] [get_bd_pins ps8_0_axi_periph/M07_ARESETN] [get_bd_pins ps8_0_axi_periph/M08_ARESETN] [get_bd_pins ps8_0_axi_periph/M09_ARESETN] [get_bd_pins ps8_0_axi_periph/M10_ARESETN] [get_bd_pins ps8_0_axi_periph/M11_ARESETN] [get_bd_pins ps8_0_axi_periph/S00_ARESETN] [get_bd_pins rst_clk_wiz_0_200M/interconnect_aresetn] [get_bd_pins smartconnect_0/aresetn]
-  connect_bd_net -net rst_clk_wiz_0_125M_peripheral_aresetn [get_bd_pins axi_iic_0/s_axi_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_uartlite_0/s_axi_aresetn] [get_bd_pins axi_uartlite_1/s_axi_aresetn] [get_bd_pins mdm_1/S_AXI_ARESETN] [get_bd_pins rst_clk_wiz_0_200M/peripheral_aresetn]
+  connect_bd_net -net rst_clk_wiz_0_125M_peripheral_aresetn [get_bd_pins axi_iic_0/s_axi_aresetn] [get_bd_pins axi_intc_0/s_axi_aresetn] [get_bd_pins axi_uartlite_0/s_axi_aresetn] [get_bd_pins axi_uartlite_1/s_axi_aresetn] [get_bd_pins mdm_1/S_AXI_ARESETN] [get_bd_pins rst_clk_wiz_0_200M/peripheral_aresetn] [get_bd_pins system_ila_fpd/resetn]
   connect_bd_net -net xlconcat_0_dout [get_bd_ports Phy_reset_n] [get_bd_pins xlconcat_0/dout]
   connect_bd_net -net xlconcat_1_dout [get_bd_pins PS_0/emio_gpio_i] [get_bd_pins xlconcat_1/dout]
   connect_bd_net -net xlconcat_2_dout [get_bd_pins axi_intc_0/intr] [get_bd_pins xlconcat_2/dout]
@@ -1495,18 +1504,18 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   connect_bd_net -net xlslice_ttc_0_Dout [get_bd_ports fan_en_b] [get_bd_pins xlslice_ttc_0/Dout]
 
   # Create address segments
-  assign_bd_address -offset 0x80000000 -range 0x00002000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_0/microblaze_0_local_memory/axi_bram_ctrl_0/S_AXI/Mem0] -force
-  assign_bd_address -offset 0x80002000 -range 0x00002000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_1/microblaze_0_local_memory/axi_bram_ctrl_0/S_AXI/Mem0] -force
-  assign_bd_address -offset 0x80060000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_iic_0/S_AXI/Reg] -force
-  assign_bd_address -offset 0x80020000 -range 0x00001000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_intc_0/S_AXI/Reg] -force
-  assign_bd_address -offset 0x80010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_uartlite_0/S_AXI/Reg] -force
-  assign_bd_address -offset 0x80050000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_uartlite_1/S_AXI/Reg] -force
-  assign_bd_address -offset 0x80100000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs iop_pmod_3/io_switch/S_AXI/S_AXI_reg] -force
-  assign_bd_address -offset 0x80110000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs iop_pmod_4/io_switch/S_AXI/S_AXI_reg] -force
-  assign_bd_address -offset 0x80120000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_0/io_switch/S_AXI/S_AXI_reg] -force
-  assign_bd_address -offset 0x80130000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_1/io_switch/S_AXI/S_AXI_reg] -force
-  assign_bd_address -offset 0x80030000 -range 0x00002000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs iop_pmod_3/lmb_0/mb_bram_ctrl/S_AXI/Mem0] -force
-  assign_bd_address -offset 0x80040000 -range 0x00002000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs iop_pmod_4/lmb_0/mb_bram_ctrl/S_AXI/Mem0] -force
+  assign_bd_address -offset 0xA0000000 -range 0x00002000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_0/microblaze_0_local_memory/axi_bram_ctrl_0/S_AXI/Mem0] -force
+  assign_bd_address -offset 0xA0002000 -range 0x00002000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_1/microblaze_0_local_memory/axi_bram_ctrl_0/S_AXI/Mem0] -force
+  assign_bd_address -offset 0xA0060000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_iic_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0xA0020000 -range 0x00001000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_intc_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0xA0010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_uartlite_0/S_AXI/Reg] -force
+  assign_bd_address -offset 0xA0050000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs axi_uartlite_1/S_AXI/Reg] -force
+  assign_bd_address -offset 0xA0100000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs iop_pmod_3/io_switch/S_AXI/S_AXI_reg] -force
+  assign_bd_address -offset 0xA0110000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs iop_pmod_4/io_switch/S_AXI/S_AXI_reg] -force
+  assign_bd_address -offset 0xA0120000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_0/io_switch/S_AXI/S_AXI_reg] -force
+  assign_bd_address -offset 0xA0130000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_1/io_switch/S_AXI/S_AXI_reg] -force
+  assign_bd_address -offset 0xA0030000 -range 0x00002000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs iop_pmod_3/lmb_0/mb_bram_ctrl/S_AXI/Mem0] -force
+  assign_bd_address -offset 0xA0040000 -range 0x00002000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs iop_pmod_4/lmb_0/mb_bram_ctrl/S_AXI/Mem0] -force
   assign_bd_address -offset 0x20000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces iop_pmod_3/mb/Data] [get_bd_addr_segs PS_0/SAXIGP2/HP0_DDR_LOW] -force
   assign_bd_address -offset 0x41400000 -range 0x00001000 -target_address_space [get_bd_addr_spaces iop_pmod_3/mb/Data] [get_bd_addr_segs mdm_1/S_AXI/Reg] -force
   assign_bd_address -offset 0x20000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces iop_pmod_3/mb/Instruction] [get_bd_addr_segs PS_0/SAXIGP2/HP0_DDR_LOW] -force
@@ -1529,8 +1538,10 @@ Port;FD4A0000;FD4AFFFF;1|FPD;DPDMA;FD4C0000;FD4CFFFF;1|FPD;DDR_XMPU5_CFG;FD05000
   # Exclude Address Segments
   exclude_bd_addr_seg -offset 0x40C00000 -range 0x00040000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_0/axi_ethernet_0/s_axi/Reg0]
   exclude_bd_addr_seg -offset 0x40C00000 -range 0x00040000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_1/axi_ethernet_0/s_axi/Reg0]
-  exclude_bd_addr_seg -offset 0x80004000 -range 0x0000C000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_0/axi_ethernet_0_dma/S_AXI_LITE/Reg]
-  exclude_bd_addr_seg -offset 0x80004000 -range 0x0000C000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_1/axi_ethernet_0_dma/S_AXI_LITE/Reg]
+  exclude_bd_addr_seg -offset 0xA0004000 -range 0x0000C000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_0/axi_ethernet_0_dma/S_AXI_LITE/Reg]
+  exclude_bd_addr_seg -offset 0xA0004000 -range 0x0000C000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_1/axi_ethernet_0_dma/S_AXI_LITE/Reg]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_0/axi_gpio_0/S_AXI/Reg]
+  exclude_bd_addr_seg -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_1/axi_gpio_0/S_AXI/Reg]
   exclude_bd_addr_seg -offset 0x41C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_0/axi_timer_0/S_AXI/Reg]
   exclude_bd_addr_seg -offset 0x41C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs mb_subsystem_1/axi_timer_0/S_AXI/Reg]
   exclude_bd_addr_seg -offset 0x00060000 -range 0x00010000 -target_address_space [get_bd_addr_spaces PS_0/Data] [get_bd_addr_segs iop_pmod_3/axi_uartlite_0/S_AXI/Reg]
