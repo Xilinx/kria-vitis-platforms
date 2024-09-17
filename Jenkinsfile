@@ -27,8 +27,8 @@ pipeline {
     options {
         // don't let the implicit checkout happen
         skipDefaultCheckout true
-        // retain logs for last 30 builds
-        buildDiscarder(logRotator(numToKeepStr: '30'))
+        // retain logs for last 20 builds
+        buildDiscarder(logRotator(numToKeepStr: '20'))
     }
     triggers {
         cron(env.BRANCH_NAME == 'master' ? 'H 21 * * *' : '')
