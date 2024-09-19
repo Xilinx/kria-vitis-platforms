@@ -140,6 +140,28 @@
 		regulator-max-microvolt = <1200000>;
 	};
 
+	ar1335_vddio: ar1335fixedregulator@0 {
+		compatible = "regulator-fixed";
+		regulator-name = "ar1335_vddio";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		enable-active-high;
+	};
+
+	ar1335_vdd: ar1335fixedregulator@1 {
+		compatible = "regulator-fixed";
+		regulator-name = "ar1335_vdd";
+		regulator-min-microvolt = <1200000>;
+		regulator-max-microvolt = <1200000>;
+	};
+
+	ar1335_vaa: ar1335fixedregulator@2 {
+		compatible = "regulator-fixed";
+		regulator-name = "ar1335_vaa";
+		regulator-min-microvolt = <2700000>;
+		regulator-max-microvolt = <2700000>;
+	};
+
 	axi_iic: i2c@80030000 {
 		#address-cells = <1>;
 		#size-cells = <0>;
@@ -201,11 +223,16 @@
 					#address-cells = <1>;
 					#size-cells = <0>;
 					reset-gpios = <&axi_gpio 2 0>;
+					clocks = <&si5332_3>;
+					clock-names = "extclk";
+					vdd_io-supply = <&ar1335_vddio>;
+					vdd-supply = <&ar1335_vdd>;
+					vaa-supply = <&ar1335_vaa>;
 					port {
 						clock-lanes = <0>;
-						data-lanes = <1 2 3 4>;
 						ar1335_out: endpoint {
 							remote-endpoint = <&ias_csiss_in>;
+							data-lanes = <1 2 3 4>;
 						};
 					};
 				};
