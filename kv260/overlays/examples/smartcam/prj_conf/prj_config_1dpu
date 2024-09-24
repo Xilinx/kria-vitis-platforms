@@ -16,10 +16,10 @@
 
 
 [clock]
-
-freqHz=300000000:DPUCZDX8G_1.aclk
-freqHz=600000000:DPUCZDX8G_1.ap_clk_2
-freqHz=300000000:pp_pipeline_accel_1.ap_clk
+# Update the clocks to 200 MHz since the Raspberry Pi cameras are running at 200 MHz
+freqHz=200000000:DPUCZDX8G_1.aclk
+freqHz=400000000:DPUCZDX8G_1.ap_clk_2
+freqHz=200000000:pp_pipeline_accel_1.ap_clk
 
 #id=0:DPUCZDX8G_1.aclk
 #id=1:DPUCZDX8G_1.ap_clk_2

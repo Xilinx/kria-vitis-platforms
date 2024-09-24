@@ -1,4 +1,4 @@
-# (C) Copyright 2020 - 2022 Xilinx, Inc.
+# (C) Copyright 2020 - 2021 Xilinx, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
 #MIPI
@@ -27,6 +27,11 @@ set_property IOSTANDARD LVCMOS33 [get_ports {fan_en_b}]
 set_property SLEW SLOW [get_ports {fan_en_b}]
 set_property DRIVE 4 [get_ports {fan_en_b}]
 
+#Raspi Enable HDA09
+set_property PACKAGE_PIN F11 [get_ports {raspi_enable}]
+set_property IOSTANDARD LVCMOS33 [get_ports {raspi_enable}]
+set_property SLEW SLOW [get_ports {raspi_enable}]
+set_property DRIVE 4 [get_ports {raspi_enable}]
 
 #I2C signals --> I2C switch 0--> ISP AP1302 + Sensor AR1335
 set_property PACKAGE_PIN G11 [get_ports iic_scl_io]
@@ -76,7 +81,5 @@ set_property DRIVE 4 [get_ports sclk_rx]
 
 set_property PACKAGE_PIN B11 [get_ports sdata_rx]
 set_property IOSTANDARD LVCMOS33 [get_ports sdata_rx]
-set_property SLEW SLOW [get_ports sdata_rx]
-set_property DRIVE 4 [get_ports sdata_rx]
 
 set_property BITSTREAM.CONFIG.OVERTEMPSHUTDOWN ENABLE [current_design]
