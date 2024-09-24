@@ -1,0 +1,343 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * dts file for Xilinx KV260 smartcam
+ *
+ * (C) Copyright 2020 - 2021, Xilinx, Inc.
+ *
+ */
+
+/dts-v1/;
+/plugin/;
+
+&fpga_full {
+	#address-cells = <2>;
+	#size-cells = <2>;
+	firmware-name = "kv260-smartcam-raspi.bit.bin";
+	resets = <&zynqmp_reset 116>, <&zynqmp_reset 117>, <&zynqmp_reset 118>, <&zynqmp_reset 119>;
+};
+
+&amba {
+	afi0: afi0 {
+		compatible = "xlnx,afi-fpga";
+		config-afi = <0 0>, <1 0>, <2 0>, <3 0>, <4 1>, <5 1>, <6 0>, <7 0>, <8 0>, <9 0>, <10 0>, <11 0>, <12 0>, <13 0>, <14 0x0>, <15 0x000>;
+	};
+
+	clocking0: clocking0 {
+		#clock-cells = <0>;
+		assigned-clock-rates = <99999001>;
+		assigned-clocks = <&zynqmp_clk 71>;
+		clock-output-names = "fabric_clk";
+		clocks = <&zynqmp_clk 71>;
+		compatible = "xlnx,fclk";
+	};
+
+	clocking1: clocking1 {
+		#clock-cells = <0>;
+		assigned-clock-rates = <99999001>;
+		assigned-clocks = <&zynqmp_clk 72>;
+		clock-output-names = "fabric_clk";
+		clocks = <&zynqmp_clk 72>;
+		compatible = "xlnx,fclk";
+	};
+
+	/* fpga clocks */
+	misc_clk_0: misc_clk_0 {
+		#clock-cells = <0x0>;
+		clock-frequency = <99999000>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_1: misc_clk_1 {
+		#clock-cells = <0x0>;
+		clock-frequency = <199998000>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_2: misc_clk_2 {
+		#clock-cells = <0x0>;
+		clock-frequency = <199998000>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_5: misc_clk_5 {
+		#clock-cells = <0x0>;
+		clock-frequency = <49999500>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_6: misc_clk_6 {
+		#clock-cells = <0x0>;
+		clock-frequency = <18432019>;
+		compatible = "fixed-clock";
+	};
+
+	misc_clk_7: misc_clk_7 {
+		#clock-cells = <0x0>;
+		clock-frequency = <24000000>;
+		compatible = "fixed-clock";
+	};
+
+
+
+	imx219_vana: fixedregulator@3 {
+		compatible = "regulator-fixed";
+		regulator-name = "imx219_vana";
+		regulator-min-microvolt = <2800000>;
+		regulator-max-microvolt = <2800000>;
+		enable-active-high;
+	};
+
+	imx219_vdig: fixedregulator@4 {
+		compatible = "regulator-fixed";
+		regulator-name = "imx219_vdig";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+	};
+
+	imx219_vddl: fixedregulator@5 {
+		compatible = "regulator-fixed";
+		regulator-name = "imx219_vddl";
+		regulator-min-microvolt = <1200000>;
+		regulator-max-microvolt = <1200000>;
+	};
+
+	axi_iic: i2c@80030000 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		clock-names = "s_axi_aclk";
+		clocks = <&misc_clk_0>;
+		compatible = "xlnx,axi-iic-2.0", "xlnx,xps-iic-2.00.a";
+		interrupt-names = "iic2intc_irpt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 107 4>;
+		reg = <0x0 0x80030000 0x0 0x10000>;
+
+		i2c_mux: i2c-mux@74 {
+			compatible = "nxp,pca9546";
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0x74>;
+
+			i2c@2 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				reg = <2>;
+				imx219: sensor@10 {
+					compatible = "sony,imx219";
+					reg = <0x10>;
+					clocks = <&misc_clk_7>;
+					VANA-supply = <&imx219_vana>;   /* 2.8v */
+					VDIG-supply = <&imx219_vdig>;   /* 1.8v */
+					VDDL-supply = <&imx219_vddl>;   /* 1.2v */
+					//reset-gpios = <&axi_gpio 2 0 0>;
+
+					port {
+					     imx219_0: endpoint {
+						remote-endpoint = <&imx_csiss_in>;
+						data-lanes = <1 2>;
+						link-frequencies = /bits/ 64 <456000000>;
+						};
+					};
+				};
+			};
+		};
+	};
+
+
+	imx_csiss_1: csiss@0x80002000 {
+		compatible = "xlnx,mipi-csi2-rx-subsystem-5.1", "xlnx,mipi-csi2-rx-subsystem-5.0";
+		reg = <0x0 0x80002000 0x0 0x2000>;
+		clock-names = "lite_aclk", "dphy_clk_200M", "video_aclk";
+		clocks = <&misc_clk_0>, <&misc_clk_1>, <&misc_clk_2>;
+		interrupt-parent = <&gic>;
+		interrupts = <0 104 4>;
+		xlnx,csi-pxl-format = <0x2b>;
+		xlnx,axis-tdata-width = <32>;
+		xlnx,max-lanes = <2>;
+		xlnx,en-active-lanes;
+		xlnx,vc = <4>;
+		xlnx,ppc = <1>;
+		xlnx,vfb;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@1 {
+				reg = <0x1>;
+				xlnx,video-format = <12>;
+				xlnx,video-width = <8>;
+				
+				imx_csiss_out: endpoint {
+				   remote-endpoint = <&imx_demosaic_in>;
+				};
+			};
+			port@0 {
+				reg = <0x0>;
+				xlnx,video-format = <12>;
+				xlnx,video-width = <8>;
+				
+				imx_csiss_in: endpoint {
+				   data-lanes = <1 2>;
+				   remote-endpoint = <&imx219_0>;
+				};
+			};
+		};
+	};
+
+	imx_isp: isp_accel@b0000000 {
+			clock-names = "ap_clk";
+			clocks = <&misc_clk_2>;
+			compatible = "xlnx,ISPPipeline_accel";
+			reset-gpios = <&gpio 82 1>;
+			reg = <0x0 0xb0000000 0x0 0x10000>;
+			xlnx,s-axi-ctrl-addr-width = <0xc>;
+			xlnx,s-axi-ctrl-data-width = <0x20>;
+			xlnx,max-height = <1080>;
+			xlnx,max-width = <1920>;
+			xlnx,rgain = <128>;
+			xlnx,bgain = <210>;
+			xlnx,pawb = <350>;
+			xlnx,mode-reg = <1>;
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				xlnx,video-width = <10>;
+				xlnx,cfa-pattern = "rggb";
+
+				imx_demosaic_in: endpoint {
+					remote-endpoint = <&imx_csiss_out>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+				xlnx,video-width = <8>;
+				xlnx,cfa-pattern = "rggb";
+				
+				imx_demosaic_out: endpoint {
+					remote-endpoint = <&imx_scaler_in>;
+				};
+			};
+		};
+	};
+
+	imx_scaler_1: scaler@0xb0040000 {
+		compatible = "xlnx,v-vpss-scaler-2.2";
+		reg = <0x0 0xb0040000 0x0 0x40000>;
+		clock-names = "aclk_axis", "aclk_ctrl";
+		clocks = <&misc_clk_2>, <&misc_clk_2>;
+		xlnx,num-hori-taps = <6>;
+		xlnx,num-vert-taps = <6>;
+		xlnx,pix-per-clk = <1>;
+		reset-gpios = <&gpio 83 1>;
+		xlnx,max-height = <1080>;
+		xlnx,max-width = <1920>;
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				xlnx,video-format = <3>;
+				xlnx,video-width = <8>;
+
+				imx_scaler_in: endpoint {
+					remote-endpoint = <&imx_demosaic_out>;
+				};
+			};
+
+			port@1 {
+				reg = <1>;
+				xlnx,video-format = <3>;
+				xlnx,video-width = <8>;
+
+				imx_scaler_out: endpoint {
+					remote-endpoint = <&imx_vcap_csi_in>;
+				};
+			};
+		};
+	};
+
+	imx_fb_wr_csi: fb_wr@0xb0080000 {
+		compatible = "xlnx,v-frmbuf-wr-2.2", "xlnx,axi-frmbuf-wr-v2.1";
+		reg = <0x0 0xb0080000 0x0 0x10000>;
+		#dma-cells = <1>;
+		interrupt-parent = <&gic>;
+		interrupts = <0 108 4>;
+		reset-gpios = <&gpio 84 1>;
+		xlnx,vid-formats = "nv12", "bgr888", "rgb888";
+		xlnx,dma-addr-width = <32>;
+		xlnx,pixels-per-clock = <1>;
+		xlnx,max-height = <1080>;
+		xlnx,max-width = <1920>;
+		clocks = <&misc_clk_2>;
+		clock-names = "ap_clk";
+	};
+
+	imx_vcap_csi {
+		compatible = "xlnx,video";
+		dmas = <&imx_fb_wr_csi 0>;
+		dma-names = "port0";
+
+		ports {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			port@0 {
+				reg = <0>;
+				direction = "input";
+
+				imx_vcap_csi_in: endpoint {
+					remote-endpoint = <&imx_scaler_out>;
+				};
+			};
+		};
+	};
+
+
+	/* vcu encode/decode */
+	vcu: vcu@80100000 {
+		#address-cells = <2>;
+		#clock-cells = <1>;
+		#size-cells = <2>;
+		clock-names = "pll_ref", "aclk", "vcu_core_enc", "vcu_mcu_enc", "vcu_core_dec", "vcu_mcu_dec";
+		clocks = <&misc_clk_5>, <&misc_clk_0>, <&vcu 0>, <&vcu 1>, <&vcu 2>, <&vcu 3>;
+		compatible = "xlnx,vcu-1.2", "xlnx,vcu";
+		interrupt-names = "vcu_host_interrupt";
+		interrupt-parent = <&gic>;
+		interrupts = <0 106 4>;
+		ranges;
+		reg = <0x0 0x80140000 0x0 0x1000>, <0x0 0x80141000 0x0 0x1000>;
+		reg-names = "vcu_slcr", "logicore";
+		reset-gpios = <&gpio 80 0>;
+		xlnx,skip-isolation;
+
+		al5e: al5e@80100000 {
+			compatible = "al,al5e-1.2", "al,al5e";
+			interrupt-parent = <&gic>;
+			interrupts = <0 106 4>;
+			reg = <0x0 0x80100000 0x0 0x10000>;
+		};
+
+		al5d: al5d@80120000 {
+			compatible = "al,al5d-1.2", "al,al5d";
+			interrupt-parent = <&gic>;
+			interrupts = <0 106 4>;
+			reg = <0x0 0x80120000 0x0 0x10000>;
+		};
+	};
+
+	/* zocl */
+	zocl: zyxclmm_drm {
+		compatible = "xlnx,zocl";
+		status = "okay";
+		interrupt-parent = <&gic>;
+		interrupts = <0 89  4>, <0 90  4>, <0 91  4>, <0 92  4>,
+			     <0 93  4>, <0 94  4>, <0 95  4>, <0 96  4>;
+	};
+};

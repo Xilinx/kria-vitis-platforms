@@ -1,0 +1,26 @@
+<AutoPilot:solution xmlns:AutoPilot="com.autoesl.autopilot.solution">
+    <name>
+        <value string="sol1"/>
+    </name>
+    <project>
+        <value string="isppipeline.prj"/>
+    </project>
+    <flowTarget value="vivado"/>
+    <config>
+        <config_interface m_axi_latency="0"/>
+        <config_export format="ip_catalog" rtl="verilog"/>
+    </config>
+    <targetInfo>
+        <TargetInfo value="xck26:-sfvc784:-2LV-c"/>
+    </targetInfo>
+    <libraryList>
+        <library value="xilinx/zynquplus/zynquplus" name="DefaultPlatform"/>
+    </libraryList>
+    <clockList>
+        <clock name="default" period="3.3" default="false"/>
+    </clockList>
+    <ExportDesign askAgain="true" evaluate="false" rtl="verilog" formatName="ip_catalog">
+        <Format formatName="ip_catalog" description="" vendor="" library="" ipname="ISPPipeline_accel" version="" display_name="" taxonomy=""/>
+    </ExportDesign>
+</AutoPilot:solution>
+
