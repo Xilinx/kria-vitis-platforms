@@ -18,6 +18,7 @@ set device k26
 set rev None
 set output {xsa}
 set xdc_list {./xdc/pin_timing.xdc}
+set xdc_list_synth_late {./xdc/pin_timing_synth_late.xdc}
 set ip_repo_path {./ip ./ip/iop_pmod/user_ip}
 set src_repo_path {./src}
 set jobs 8
@@ -35,8 +36,10 @@ create_project -name $proj_name -force -dir $proj_dir -part [get_property PART_N
 set_property board_part $proj_board [current_project]
 
 import_files -fileset constrs_1 $xdc_list
+import_files -fileset constrs_1 $xdc_list_synth_late
 
-
+set_property PROCESSING_ORDER LATE [get_files pin_timing_synth_late.xdc]
+set_property USED_IN_SYNTHESIS 0 [get_files pin_timing_synth_late.xdc]
 set_property board_connections {som240_2_connector xilinx.com:kr260_carrier:som240_2_connector:1.0 som240_1_connector xilinx.com:kr260_carrier:som240_1_connector:1.0}  [current_project]
 
 set_property ip_repo_paths $ip_repo_path [current_project]
@@ -129,6 +132,9 @@ set_property platform.name $proj_name [current_project]
 set_property platform.vendor "xilinx" [current_project]
 
 set_property platform.version "1.0" [current_project]
+
+set_msg_config -suppress -id {Place 30-73}
+set_msg_config -suppress -id {Route 35-39}
 
 launch_runs synth_1 -jobs $jobs
 wait_on_run synth_1
