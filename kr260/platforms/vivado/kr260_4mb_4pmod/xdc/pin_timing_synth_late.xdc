@@ -1,5 +1,6 @@
-
-
+# (C) Copyright 2020 - 2022 Xilinx, Inc.
+# Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc
+# SPDX-License-Identifier: Apache-2.0
 
 set_clock_groups -asynchronous -group [get_clocks clk_out1_kr260_4mb_4pmod_clk_wiz_0_0*]
 set_clock_groups -asynchronous -group [get_clocks clk_out2_kr260_4mb_4pmod_clk_wiz_0_0*]
