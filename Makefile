@@ -33,10 +33,12 @@ VITIS_OVERLAY_XCLBIN = $(VITIS_OVERLAY_DIR)/binary_container_1/system.xclbin
 BIF_TEMPLATE = $(PWD)/common/firmware/template.bif
 JSON_TEMPLATE = $(PWD)/common/firmware/shell.json
 
-FW_DIR = $(PWD)/$(BOARD)/firmware/$(FW)
-FW_BIF = $(PWD)/$(BOARD)/firmware/$(FW).bif
-FW_BIN = $(PWD)/$(BOARD)/firmware/$(FW).bin
-FW_XCLBIN = $(PWD)/$(BOARD)/firmware/$(FW).xclbin
+FW_TOP_DIR = $(PWD)/$(BOARD)/firmware
+FW_TMP = $(FW_TOP_DIR)/tmp
+FW_DIR = $(FW_TMP)/$(FW)/lib/firmware/xilinx/$(FW)
+FW_BIF = $(FW_TMP)/$(FW).bif
+FW_BIN = $(FW_TMP)/$(FW).bin
+FW_XCLBIN = $(FW_TMP)/$(FW).xclbin
 FW_DTSI = $(FW_DT_DIR)/dtsi/$(FW).dtsi
 FW_DTBO = $(FW_DT_DIR)/dtsi/$(FW).dtbo
 FW_DEPS = $(FW_DTBO) $(FW_BIN) $(JSON_TEMPLATE)
@@ -102,20 +104,23 @@ firmware: check-firmware $(FW_DEPS)
 	@echo 'Generate $(FW) firmware artifacts and copy to $(FW_DIR)'
 	mkdir -p $(FW_DIR)
 	cp -f $(filter-out $<,$^) $(FW_DIR)
+	cd $(FW_TMP)/$(FW) && md5sum ./lib/firmware/xilinx/$(FW)/* > checksum.md5
+	tar -czf $(FW_TOP_DIR)/$(FW).tar.gz -C $(FW_TMP) $(FW)
+	rm -rf $(FW_TMP)
 
 $(FW_DTBO): $(FW_DTSI)
 	dtc -I dts -O dtb -o $@ $<
 
 $(FW_BIN): $(FW_BIF)
-	mkdir -p $(FW_DIR)
+	mkdir -p $(FW_TMP)
 	bootgen -image $< -arch zynqmp -o $@ -w
 
 $(FW_BIF): $(FW_BIT) $(BIF_TEMPLATE)
-	mkdir -p $(FW_DIR)
+	mkdir -p $(FW_TMP)
 	sed 's#@BIT@#$<#' <$(BIF_TEMPLATE) >$@
 
 $(FW_XCLBIN): $(VITIS_OVERLAY_XCLBIN)
-	mkdir -p $(FW_DIR)
+	mkdir -p $(FW_TMP)
 	cp -f $< $@
 
 .PHONY: check-overlay
