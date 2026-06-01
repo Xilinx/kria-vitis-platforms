@@ -1,4 +1,4 @@
-# Copyright (C) 2022, Advanced Micro Devices, Inc.
+# Copyright (C) 2022 - 2026, Advanced Micro Devices, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
 ##################################################################
@@ -1016,8 +1016,8 @@ proc create_hier_cell_TSN_subsystem { parentCell nameHier } {
     CONFIG.EN_CB_RSVD_BYTES {true} \
     CONFIG.EN_COMMON_STATS {false} \
     CONFIG.EN_FRAME_PREEMPTION_SUPPORT {true} \
-    CONFIG.EN_FRAME_PREEMPTION_SUPPORT_MAC_2 {true} \
-    CONFIG.EN_FRER {true} \
+    CONFIG.EN_FRAME_PREEMPTION_SUPPORT_MAC_2 {false} \
+    CONFIG.EN_FRER {false} \
     CONFIG.EN_HW_ADDR_LEARNING {true} \
     CONFIG.EN_MDIO_IO_BUF {true} \
     CONFIG.EN_PERVLAN_AGING_TIME {1} \
@@ -1352,7 +1352,7 @@ proc create_hier_cell_TSN_subsystem { parentCell nameHier } {
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins rst_clk_wiz_0_200M/slowest_sync_clk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_out1] [get_bd_pins ta_dma_0/dma_clk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out2 [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins my_tsn_ip/gtx_clk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out2 [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins my_tsn_ip/gtx_clk90] -boundary_type upper
+  # gtx_clk90 pin removed in TSN IP for non-7-Series (2026.1)
   connect_bd_net -net clk_wiz_0_clk_out2 [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins rst_clk_wiz_0_125M/slowest_sync_clk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out2 [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins ta_dma_0/rtc_clk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out3 [get_bd_pins clk_wiz_0/clk_out3] [get_bd_pins my_tsn_ip/refclk] -boundary_type upper

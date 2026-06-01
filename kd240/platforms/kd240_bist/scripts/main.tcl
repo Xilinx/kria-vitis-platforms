@@ -1,4 +1,4 @@
-# Copyright (C) 2022, Advanced Micro Devices, Inc.
+# Copyright (C) 2022 - 2026, Advanced Micro Devices, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
 set proj_name kd240_bist
@@ -45,6 +45,7 @@ current_bd_instance $parentObj
 source $bd_tcl_dir/config_bd.tcl
 save_bd_design
 
+upgrade_ip [get_ips]
 
 make_wrapper -files [get_files $proj_dir/${proj_name}.srcs/sources_1/bd/$proj_name/${proj_name}.bd] -top
 import_files -force -norecurse $proj_dir/${proj_name}.srcs/sources_1/bd/$proj_name/hdl/${proj_name}_wrapper.v
@@ -109,6 +110,10 @@ set_property synth_checkpoint_mode Hierarchical [get_files $proj_dir/${proj_name
  set_property platform.vendor "xilinx" [current_project]
 
  set_property platform.version "1.0" [current_project]
+
+# Demote SIM_DEVICE arch mismatch DRC via pre-bitstream hook
+# (must run inside impl_1 child process, not parent)
+set_property STEPS.WRITE_BITSTREAM.TCL.PRE [pwd]/scripts/pre_bitstream.tcl [get_runs impl_1]
 
 launch_runs synth_1 -jobs $jobs
 wait_on_run synth_1
