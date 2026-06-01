@@ -55,7 +55,7 @@ $(PWM_GEN_IP):
 
 .PHONY: clean
 clean:
-	$(RM) $(VIV_PRJ_DIR) vivado* *dynamic* *.log *.xpe vitis xilinx_*
+	$(RM) $(VIV_PRJ_DIR) vivado* .Xil *dynamic* *.log *.xpe vitis xilinx_*
 	
 .PHONY: clean_ip
 clean_ip:	

@@ -1013,16 +1013,16 @@ proc create_hier_cell_TSN_subsystem { parentCell nameHier } {
   set_property -dict [list \
     CONFIG.ADDR_TRANSLATION_TYPE {false} \
     CONFIG.ENABLE_EP_TADMA_INTERFACE {true} \
-    CONFIG.EN_CB_RSVD_BYTES {true} \
+    CONFIG.EN_CB_RSVD_BYTES {false} \
     CONFIG.EN_COMMON_STATS {false} \
     CONFIG.EN_FRAME_PREEMPTION_SUPPORT {true} \
-    CONFIG.EN_FRAME_PREEMPTION_SUPPORT_MAC_2 {false} \
+    CONFIG.EN_FRAME_PREEMPTION_SUPPORT_MAC_2 {true} \
     CONFIG.EN_FRER {false} \
     CONFIG.EN_HW_ADDR_LEARNING {true} \
     CONFIG.EN_MDIO_IO_BUF {true} \
     CONFIG.EN_PERVLAN_AGING_TIME {1} \
     CONFIG.EN_PER_PRIQ_CNFGS {false} \
-    CONFIG.EN_PSFP {true} \
+    CONFIG.EN_PSFP {false} \
     CONFIG.EN_RX_CUSTOM_TIMESTAMP {true} \
     CONFIG.EN_TX_CUSTOM_TIMESTAMP {true} \
     CONFIG.PHYSICAL_INTERFACE {RGMII} \

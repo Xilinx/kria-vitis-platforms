@@ -16,13 +16,13 @@ VIV_SRC = $(VIV_SCRIPTS_DIR)/main.tcl
 VIV_TIMING_ERROR = "CRITICAL WARNING: \[Timing 38-282\] The design failed to meet the timing requirements"
 
 QEI_DIR= ../ip/qei
-QEI_IP = $(QEI_DIR)/*.prj/sol1/impl/export.zip
+QEI_IP = $(QEI_DIR)/.ip_done
 FOC_DIR= ../ip/foc
-FOC_IP = $(FOC_DIR)/*.prj/sol1/impl/export.zip
+FOC_IP = $(FOC_DIR)/.ip_done
 SVPWM_DIR= ../ip/svpwm_duty
-SVPWM_IP = $(SVPWM_DIR)/*.prj/sol1/impl/export.zip
+SVPWM_IP = $(SVPWM_DIR)/.ip_done
 PWM_GEN_DIR= ../ip/pwm_gen
-PWM_GEN_IP = $(PWM_GEN_DIR)/*.prj/sol1/impl/export.zip
+PWM_GEN_IP = $(PWM_GEN_DIR)/.ip_done
 
 .PHONY: help
 help:
@@ -54,7 +54,7 @@ $(PWM_GEN_IP):
 
 .PHONY: clean
 clean:
-	$(RM) $(VIV_PRJ_DIR) vivado* *dynamic* *.log *.xpe vitis xilinx_*
+	$(RM) $(VIV_PRJ_DIR) vivado* .Xil *dynamic* *.log *.xpe vitis xilinx_*
 	
 .PHONY: clean_ip
 clean_ip:	
