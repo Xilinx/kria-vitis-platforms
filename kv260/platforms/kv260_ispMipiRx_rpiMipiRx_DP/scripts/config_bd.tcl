@@ -194,14 +194,9 @@ proc create_hier_cell_capture_pipeline_raspi { parentCell nameHier } {
     CONFIG.CMN_PXL_FORMAT {RAW10} \
     CONFIG.CMN_VC {All} \
     CONFIG.CSI_BUF_DEPTH {512} \
-    CONFIG.C_CLK_LANE_IO_POSITION {26} \
     CONFIG.C_CSI_EN_ACTIVELANES {false} \
     CONFIG.C_CSI_EN_CRC {false} \
     CONFIG.C_CSI_FILTER_USERDATATYPE {false} \
-    CONFIG.C_DATA_LANE0_IO_POSITION {28} \
-    CONFIG.C_DATA_LANE1_IO_POSITION {30} \
-    CONFIG.C_DATA_LANE2_IO_POSITION {19} \
-    CONFIG.C_DATA_LANE3_IO_POSITION {21} \
     CONFIG.C_DPHY_LANES {2} \
     CONFIG.C_EN_BG0_PIN0 {false} \
     CONFIG.C_EN_BG1_PIN0 {false} \
@@ -209,7 +204,6 @@ proc create_hier_cell_capture_pipeline_raspi { parentCell nameHier } {
     CONFIG.C_HS_LINE_RATE {912} \
     CONFIG.C_HS_SETTLE_NS {145} \
     CONFIG.C_STRETCH_LINE_RATE {1500} \
-    CONFIG.DPHYRX_BOARD_INTERFACE {som240_1_connector_mipi_csi_raspi} \
     CONFIG.DPY_EN_REG_IF {true} \
     CONFIG.DPY_LINE_RATE {912} \
     CONFIG.SupportLevel {0} \
@@ -398,7 +392,6 @@ proc create_hier_cell_capture_pipeline_isp { parentCell nameHier } {
     CONFIG.C_DPHY_LANES {4} \
     CONFIG.C_HS_LINE_RATE {896} \
     CONFIG.C_HS_SETTLE_NS {146} \
-    CONFIG.DPHYRX_BOARD_INTERFACE {som240_1_connector_mipi_csi_isp} \
     CONFIG.DPY_LINE_RATE {896} \
     CONFIG.SupportLevel {1} \
   ] $mipi_csi2_rx_subsyst_0

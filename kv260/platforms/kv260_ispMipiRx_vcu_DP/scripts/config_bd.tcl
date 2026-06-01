@@ -283,7 +283,6 @@ proc create_hier_cell_capture_pipeline { parentCell nameHier } {
   # Create instance: mipi_csi2_rx_subsyst_0, and set properties
   set mipi_csi2_rx_subsyst_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mipi_csi2_rx_subsystem mipi_csi2_rx_subsyst_0 ]
   set_property -dict [ list \
-   CONFIG.DPHYRX_BOARD_INTERFACE {som240_1_connector_mipi_csi_isp} \
    CONFIG.CMN_NUM_PIXELS {2} \
    CONFIG.CMN_VC {0} \
    CONFIG.CSI_BUF_DEPTH {4096} \

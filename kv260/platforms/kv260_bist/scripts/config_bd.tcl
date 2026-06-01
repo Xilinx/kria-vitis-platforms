@@ -289,21 +289,14 @@ proc create_hier_cell_capture_pipeline_raspi { parentCell nameHier } {
   set mipi_csi2_rx_subsyst_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mipi_csi2_rx_subsystem mipi_csi2_rx_subsyst_0 ]
   set_property -dict [ list \
    CONFIG.AXIS_TDEST_WIDTH {4} \
-   CONFIG.CLK_LANE_IO_LOC {D7} \
-   CONFIG.CLK_LANE_IO_LOC_NAME {IO_L13P_T2L_N0_GC_QBC_66} \
    CONFIG.CMN_NUM_LANES {2} \
    CONFIG.CMN_NUM_PIXELS {1} \
    CONFIG.CMN_PXL_FORMAT {RAW10} \
    CONFIG.CMN_VC {All} \
    CONFIG.CSI_BUF_DEPTH {512} \
-   CONFIG.C_CLK_LANE_IO_POSITION {26} \
    CONFIG.C_CSI_EN_ACTIVELANES {false} \
    CONFIG.C_CSI_EN_CRC {true} \
    CONFIG.C_CSI_FILTER_USERDATATYPE {false} \
-   CONFIG.C_DATA_LANE0_IO_POSITION {28} \
-   CONFIG.C_DATA_LANE1_IO_POSITION {30} \
-   CONFIG.C_DATA_LANE2_IO_POSITION {19} \
-   CONFIG.C_DATA_LANE3_IO_POSITION {21} \
    CONFIG.C_DPHY_LANES {2} \
    CONFIG.C_EN_BG0_PIN0 {false} \
    CONFIG.C_EN_BG1_PIN0 {false} \
@@ -311,14 +304,8 @@ proc create_hier_cell_capture_pipeline_raspi { parentCell nameHier } {
    CONFIG.C_HS_LINE_RATE {912} \
    CONFIG.C_HS_SETTLE_NS {145} \
    CONFIG.C_STRETCH_LINE_RATE {1500} \
-   CONFIG.DATA_LANE0_IO_LOC {E5} \
-   CONFIG.DATA_LANE0_IO_LOC_NAME {IO_L14P_T2L_N2_GC_66} \
-   CONFIG.DATA_LANE1_IO_LOC {G6} \
-   CONFIG.DATA_LANE1_IO_LOC_NAME {IO_L15P_T2L_N4_AD11P_66} \
-   CONFIG.DPHYRX_BOARD_INTERFACE {som240_1_connector_mipi_csi_raspi} \
    CONFIG.DPY_EN_REG_IF {false} \
    CONFIG.DPY_LINE_RATE {912} \
-   CONFIG.HP_IO_BANK_SELECTION {66} \
    CONFIG.SupportLevel {0} \
  ] $mipi_csi2_rx_subsyst_0
 
@@ -504,8 +491,6 @@ proc create_hier_cell_capture_pipeline_isp { parentCell nameHier } {
   set mipi_csi2_rx_subsyst_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mipi_csi2_rx_subsystem mipi_csi2_rx_subsyst_0 ]
   set_property -dict [ list \
    CONFIG.AXIS_TDEST_WIDTH {4} \
-   CONFIG.CLK_LANE_IO_LOC {G1} \
-   CONFIG.CLK_LANE_IO_LOC_NAME {IO_L1P_T0L_N0_DBC_66} \
    CONFIG.CMN_NUM_LANES {4} \
    CONFIG.CMN_NUM_PIXELS {2} \
    CONFIG.CMN_PXL_FORMAT {YUV420_8bit} \
@@ -513,27 +498,13 @@ proc create_hier_cell_capture_pipeline_isp { parentCell nameHier } {
    CONFIG.CSI_BUF_DEPTH {4096} \
    CONFIG.C_CSI_EN_ACTIVELANES {false} \
    CONFIG.C_CSI_FILTER_USERDATATYPE {true} \
-   CONFIG.C_DATA_LANE0_IO_POSITION {2} \
-   CONFIG.C_DATA_LANE1_IO_POSITION {4} \
-   CONFIG.C_DATA_LANE2_IO_POSITION {6} \
-   CONFIG.C_DATA_LANE3_IO_POSITION {8} \
    CONFIG.C_DPHY_LANES {4} \
    CONFIG.C_EN_CSI_V2_0 {false} \
    CONFIG.C_HS_LINE_RATE {896} \
    CONFIG.C_HS_SETTLE_NS {146} \
    CONFIG.C_STRETCH_LINE_RATE {1500} \
-   CONFIG.DATA_LANE0_IO_LOC {E1} \
-   CONFIG.DATA_LANE0_IO_LOC_NAME {IO_L2P_T0L_N2_66} \
-   CONFIG.DATA_LANE1_IO_LOC {F2} \
-   CONFIG.DATA_LANE1_IO_LOC_NAME {IO_L3P_T0L_N4_AD15P_66} \
-   CONFIG.DATA_LANE2_IO_LOC {G3} \
-   CONFIG.DATA_LANE2_IO_LOC_NAME {IO_L4P_T0U_N6_DBC_AD7P_66} \
-   CONFIG.DATA_LANE3_IO_LOC {E4} \
-   CONFIG.DATA_LANE3_IO_LOC_NAME {IO_L5P_T0U_N8_AD14P_66} \
-   CONFIG.DPHYRX_BOARD_INTERFACE {som240_1_connector_mipi_csi_isp} \
    CONFIG.DPY_EN_REG_IF {false} \
    CONFIG.DPY_LINE_RATE {896} \
-   CONFIG.HP_IO_BANK_SELECTION {66} \
    CONFIG.SupportLevel {1} \
    CONFIG.YUV420_BUF_DPTH {4096} \
  ] $mipi_csi2_rx_subsyst_0
@@ -674,38 +645,21 @@ proc create_hier_cell_capture_pipeline_ias { parentCell nameHier } {
   set mipi_csi2_rx_subsyst_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mipi_csi2_rx_subsystem mipi_csi2_rx_subsyst_0 ]
   set_property -dict [ list \
    CONFIG.AXIS_TDEST_WIDTH {4} \
-   CONFIG.CLK_LANE_IO_LOC {C1} \
-   CONFIG.CLK_LANE_IO_LOC_NAME {IO_L7P_T1L_N0_QBC_AD13P_66} \
    CONFIG.CMN_NUM_LANES {4} \
    CONFIG.CMN_NUM_PIXELS {2} \
    CONFIG.CMN_PXL_FORMAT {RAW10} \
    CONFIG.CMN_VC {All} \
    CONFIG.CSI_BUF_DEPTH {4096} \
-   CONFIG.C_CLK_LANE_IO_POSITION {13} \
    CONFIG.C_CSI_EN_ACTIVELANES {false} \
    CONFIG.C_CSI_FILTER_USERDATATYPE {true} \
-   CONFIG.C_DATA_LANE0_IO_POSITION {15} \
-   CONFIG.C_DATA_LANE1_IO_POSITION {17} \
-   CONFIG.C_DATA_LANE2_IO_POSITION {19} \
-   CONFIG.C_DATA_LANE3_IO_POSITION {21} \
    CONFIG.C_DPHY_LANES {4} \
    CONFIG.C_EN_BG0_PIN0 {false} \
    CONFIG.C_EN_CSI_V2_0 {false} \
    CONFIG.C_HS_LINE_RATE {880} \
    CONFIG.C_HS_SETTLE_NS {146} \
    CONFIG.C_STRETCH_LINE_RATE {1500} \
-   CONFIG.DATA_LANE0_IO_LOC {A2} \
-   CONFIG.DATA_LANE0_IO_LOC_NAME {IO_L8P_T1L_N2_AD5P_66} \
-   CONFIG.DATA_LANE1_IO_LOC {B3} \
-   CONFIG.DATA_LANE1_IO_LOC_NAME {IO_L9P_T1L_N4_AD12P_66} \
-   CONFIG.DATA_LANE2_IO_LOC {B4} \
-   CONFIG.DATA_LANE2_IO_LOC_NAME {IO_L10P_T1U_N6_QBC_AD4P_66} \
-   CONFIG.DATA_LANE3_IO_LOC {D4} \
-   CONFIG.DATA_LANE3_IO_LOC_NAME {IO_L11P_T1U_N8_GC_66} \
-   CONFIG.DPHYRX_BOARD_INTERFACE {som240_1_connector_mipi_csi_ias} \
    CONFIG.DPY_EN_REG_IF {false} \
    CONFIG.DPY_LINE_RATE {880} \
-   CONFIG.HP_IO_BANK_SELECTION {66} \
    CONFIG.SupportLevel {1} \
  ] $mipi_csi2_rx_subsyst_0
 
