@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2020 - 2022 Xilinx, Inc.
- * Copyright (C) 2023 - 2024, Advanced Micro Devices, Inc.
+ * Copyright (C) 2023 - 2026, Advanced Micro Devices, Inc.
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -12,10 +12,10 @@ pipeline {
     }
     environment {
         deploy_branch="main"
-        tool_release="2024.1"
+        tool_release="2026.1"
         tool_build="daily_latest"
         auto_branch="2022.1"
-        pfm_ver="202410_1"
+        pfm_ver="202610_1"
         ws="${WORKSPACE}"
         setup="${ws}/paeg-helper/env-setup.sh"
         lsf="${ws}/paeg-helper/scripts/lsf"
