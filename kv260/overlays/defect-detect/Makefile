@@ -90,6 +90,7 @@ package:
 #.PHONY: clean
 clean:
 	-$(RM) $(KERNEL) *.log _x *.jou v++* *.xclbin *.ini *.xsa
-	-$(RM) $(GAUSSIAN_KERNEL_XO) *.compile_summary
+	-$(RM) $(GAUSSIAN_KERNEL_XO) $(CCA_KERNEL_XO) *.compile_summary
 	-$(RM) binary_container_1
 	-$(RM) packaged* tmp_*
+	-$(RM) analyzer_input dtsi/*.dtbo

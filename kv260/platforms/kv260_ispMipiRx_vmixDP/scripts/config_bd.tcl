@@ -414,15 +414,9 @@ proc create_hier_cell_capture_pipeline { parentCell nameHier } {
    CONFIG.C_DPHY_LANES {1} \
    CONFIG.C_HS_LINE_RATE {1088} \
    CONFIG.C_HS_SETTLE_NS {144} \
-   CONFIG.DPHYRX_BOARD_INTERFACE {som240_1_connector_mipi_csi_isp} \
    CONFIG.DPY_LINE_RATE {1088} \
    CONFIG.SupportLevel {1} \
  ] $mipi_csi2_rx_subsyst_0
-
-set_property -dict [ list \
-   CONFIG.CMN_NUM_LANES {1} \
-   CONFIG.C_DPHY_LANES {1} 
-  ] $mipi_csi2_rx_subsyst_0
 
   # Create instance: v_frmbuf_wr_0, and set properties
   set v_frmbuf_wr_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:v_frmbuf_wr v_frmbuf_wr_0 ]

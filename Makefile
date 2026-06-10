@@ -1,12 +1,12 @@
 # Copyright (C) 2020 - 2022 Xilinx, Inc.
-# Copyright (C) 2023 - 2024 Advanced Micro Devices, Inc.
+# Copyright (C) 2023 - 2026 Advanced Micro Devices, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
 CP = cp -rf
 PWD = $(shell readlink -f .)
 MKDIR = mkdir -p
 RM = rm -rf
-XSCT = $(XILINX_VITIS)/bin/xsct
+VITIS_CMD = $(XILINX_VITIS)/bin/vitis
 JOBS ?= 8
 
 BOARD_LIST = k26 kv260 kr260 kd240
@@ -15,11 +15,11 @@ $(foreach b,$(BOARD_LIST),$(eval include $(b)/$(b).mk))
 
 # the platform directory has to be an absolute path when passed to v++
 PFM_DIR = $(PWD)/$(BOARD)/platforms
-PFM_VER = 202410_1
+PFM_VER = 202610_1
 PFM_NAME = xilinx_$(PFM)_$(PFM_VER)
 PFM_XPFM = $(PFM_DIR)/$(PFM_NAME)/$(PFM).xpfm
-PFM_PRJ_DIR = $(PFM_DIR)/xsct/$(PFM)/$(PFM)/export/$(PFM)
-PFM_TCL = $(PWD)/common/scripts/pfm.tcl
+PFM_PRJ_DIR = $(PFM_DIR)/vitis/$(PFM)/$(PFM)/export/$(PFM)
+PFM_PY = $(PWD)/common/scripts/pfm.py
 
 VIV_DIR = $(PFM_DIR)/$(PFM)
 VIV_XSA = $(VIV_DIR)/project/$(PFM).xsa
@@ -168,7 +168,7 @@ check-platform:
 platform: check-platform $(PFM_XPFM)
 $(PFM_XPFM): $(VIV_XSA)
 	@echo 'Create Vitis platform $(PFM)'
-	cd $(PFM_DIR) && $(XSCT) $(PFM_TCL) -xsa $(VIV_XSA)
+	cd $(PFM_DIR) && $(VITIS_CMD) -s $(PFM_PY) -xsa $(VIV_XSA)
 	$(CP) $(PFM_PRJ_DIR) $(PFM_DIR)/$(PFM_NAME)
 
 $(VIV_BIT): $(VIV_XSA)
@@ -177,5 +177,9 @@ $(VIV_XSA):
 
 .PHONY: clean
 clean:
-	$(foreach o, $(OVERLAY_LIST), $(MAKE) -C $(VITIS_DIR)/$(o) clean;)
-	$(foreach p, $(PFM_LIST), $(MAKE) -C $(VIV_DIR) clean;)
+	$(foreach o, $(OVERLAY_LIST), $(MAKE) -C $(PWD)/kv260/overlays/$(o) clean;)
+	$(foreach p, $(PFM_LIST), $(MAKE) -C $(PWD)/$(word 1,$(subst _, ,$(p)))/platforms/$(p) clean;)
+	$(foreach d, $(wildcard $(PWD)/kd240/platforms/ip/*), $(if $(wildcard $(d)/Makefile), $(MAKE) -C $(d) clean;))
+	$(foreach b, $(BOARD_LIST), $(RM) $(PWD)/$(b)/platforms/linux.bif $(PWD)/$(b)/platforms/vitis $(PWD)/$(b)/platforms/xilinx_*_$(PFM_VER) $(PWD)/$(b)/firmware $(PWD)/$(b)/platforms/hs_err_pid*.log;)
+	$(foreach p, $(PFM_LIST), $(RM) $(PWD)/$(word 1,$(subst _, ,$(p)))/platforms/$(p)/dtsi/*.dtbo;)
+	$(foreach o, $(OVERLAY_LIST), $(RM) $(PWD)/kv260/overlays/$(o)/dtsi/*.dtbo;)

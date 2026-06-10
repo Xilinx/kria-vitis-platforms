@@ -1,5 +1,5 @@
 # Copyright (C) 2020 - 2022 Xilinx, Inc.
-# Copyright (C) 2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2023 - 2026, Advanced Micro Devices, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
 RM = rm -rf
@@ -34,5 +34,5 @@ $(VIV_XSA): $(VIV_SRC)
 
 .PHONY: clean
 clean:
-	$(RM) $(VIV_PRJ_DIR) vivado* .Xil *dynamic* *.log *.xpe
+	$(RM) $(VIV_PRJ_DIR) vivado* .Xil *dynamic* *.log *.xpe vitis xilinx_*
 

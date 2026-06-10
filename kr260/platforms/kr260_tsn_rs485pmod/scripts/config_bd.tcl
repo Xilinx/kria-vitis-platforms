@@ -787,7 +787,7 @@ proc create_root_design { parentCell } {
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins PS_0/saxihp0_fpd_aclk] [get_bd_pins rst_clk_wiz_0_200M/slowest_sync_clk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins PS_0/saxihp0_fpd_aclk] [get_bd_pins ta_dma_0/dma_clk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out2 [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins my_tsn_ip/gtx_clk] -boundary_type upper
-  connect_bd_net -net clk_wiz_0_clk_out2 [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins my_tsn_ip/gtx_clk90] -boundary_type upper
+  # gtx_clk90 pin removed in TSN IP for non-7-Series (2026.1)
   connect_bd_net -net clk_wiz_0_clk_out2 [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins rst_clk_wiz_0_125M/slowest_sync_clk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out2 [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins ta_dma_0/rtc_clk] -boundary_type upper
   connect_bd_net -net clk_wiz_0_clk_out3 [get_bd_pins clk_wiz_0/clk_out3] [get_bd_pins my_tsn_ip/refclk] -boundary_type upper

@@ -1,7 +1,6 @@
-diff -u -r axi_uartlite_v2_0/component.xml rs485_uartlite_v2_0/component.xml
---- axi_uartlite_v2_0/component.xml	2019-05-25 01:50:49.000000000 +0200
-+++ rs485_uartlite_v2_0/component.xml	2020-03-22 18:48:53.968977718 +0100
-@@ -246,6 +246,14 @@
+--- axi_uartlite_v2_0/component.xml	2026-05-29 12:38:01.120528140 -0700
++++ rs485_uartlite_v2_0/component.xml	2026-05-29 12:38:01.185529021 -0700
+@@ -254,6 +254,14 @@
              <spirit:name>tx</spirit:name>
            </spirit:physicalPort>
          </spirit:portMap>
@@ -16,7 +15,7 @@ diff -u -r axi_uartlite_v2_0/component.xml rs485_uartlite_v2_0/component.xml
        </spirit:portMaps>
        <spirit:parameters>
          <spirit:parameter>
-@@ -1073,6 +1081,19 @@
+@@ -1078,6 +1086,19 @@
            </spirit:wireTypeDefs>
          </spirit:wire>
        </spirit:port>
@@ -36,7 +35,7 @@ diff -u -r axi_uartlite_v2_0/component.xml rs485_uartlite_v2_0/component.xml
      </spirit:ports>
      <spirit:modelParameters>
        <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="string">
-@@ -1105,6 +1126,11 @@
+@@ -1110,6 +1131,11 @@
          <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_DATA_BITS" spirit:minimum="5" spirit:maximum="8" spirit:rangeType="long">8</spirit:value>
        </spirit:modelParameter>
        <spirit:modelParameter spirit:dataType="integer">
@@ -48,7 +47,7 @@ diff -u -r axi_uartlite_v2_0/component.xml rs485_uartlite_v2_0/component.xml
          <spirit:name>C_USE_PARITY</spirit:name>
          <spirit:displayName>Use Parity</spirit:displayName>
          <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.C_USE_PARITY" spirit:minimum="0" spirit:maximum="1" spirit:rangeType="long">0</spirit:value>
-@@ -1404,6 +1430,12 @@
+@@ -1327,6 +1353,12 @@
    <spirit:description>Generic UART (Universal Asynchronous Receiver/Transmitter) for AXI Interface</spirit:description>
    <spirit:parameters>
      <spirit:parameter>
@@ -61,27 +60,9 @@ diff -u -r axi_uartlite_v2_0/component.xml rs485_uartlite_v2_0/component.xml
        <spirit:name>C_DATA_BITS</spirit:name>
        <spirit:displayName>Data Bits</spirit:displayName>
        <spirit:description>The number of data bits in the serial frame.</spirit:description>
-diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd
---- axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd	2019-05-25 01:50:49.000000000 +0200
-+++ rs485_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd	2020-03-23 10:27:28.529251948 +0100
-@@ -358,6 +358,8 @@
- --  C_USE_PARITY    -- Determines whether parity is used or not
- --  C_ODD_PARITY    -- If parity is used determines whether parity
- --                     is even or odd
-+--  C_TXEN_DELAY    -- Determines the number of bit times to delay
-+--                     the initial startbit after transmit enable
- -- System generics
- --  C_FAMILY        -- Xilinx FPGA Family
- -------------------------------------------------------------------------------
-@@ -369,6 +371,7 @@
- --  Rst               --  Reset signal
- -- UART Lite interface
- --  TX                --  Transmit Data
-+--  TXEN              --  Transmit Enable
- -- Internal UART interface signals
- --  EN_16x_Baud       --  Enable signal which is 16x times baud rate
- --  Write_TX_FIFO     --  Write transmit FIFO
-@@ -386,7 +389,8 @@
+--- axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_rfs.vhd	2026-05-29 12:38:01.124528195 -0700
++++ rs485_uartlite_v2_0/hdl/axi_uartlite_v2_0_rfs.vhd	2026-05-29 12:38:01.167528777 -0700
+@@ -284,7 +284,8 @@
      C_FAMILY        : string               := "virtex7";
      C_DATA_BITS     : integer range 5 to 8 := 8;
      C_USE_PARITY    : integer range 0 to 1 := 0;
@@ -91,7 +72,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
     );
    port
     (
-@@ -394,6 +398,7 @@
+@@ -292,6 +293,7 @@
      Reset           : in  std_logic;
      EN_16x_Baud     : in  std_logic;
      TX              : out std_logic;
@@ -99,7 +80,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
      Write_TX_FIFO   : in  std_logic;
      Reset_TX_FIFO   : in  std_logic;
      TX_Data         : in  std_logic_vector(0 to C_DATA_BITS-1);
-@@ -428,8 +433,11 @@
+@@ -326,8 +328,11 @@
      signal data_to_transfer  : std_logic_vector(0 to C_DATA_BITS-1);
      signal div16             : std_logic;
      signal tx_Data_Enable    : std_logic;
@@ -111,7 +92,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
      signal tx_Run            : std_logic;
      signal mux_sel           : std_logic_vector(0 to 2);
      signal mux_sel_is_zero   : std_logic;
-@@ -449,6 +457,7 @@
+@@ -347,6 +352,7 @@
      signal fifo_rd           : std_logic;
      signal tx_buffer_full_i  : std_logic;
      signal TX_FIFO_Reset     : std_logic;
@@ -119,7 +100,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
      signal data_shift : std_logic_vector(15 downto 0);
  
  begin  -- architecture IMP
-@@ -522,7 +531,7 @@
+@@ -401,7 +407,7 @@
                  tx_Start <= '0';
              else 
                  tx_Start <= (not(tx_Run) and (tx_Start or 
@@ -128,7 +109,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
              end if;
          end if;
      end process TX_START_DFF;
-@@ -542,6 +551,78 @@
+@@ -421,6 +427,74 @@
          end if;
      end process TX_DATA_DFF;
  
@@ -192,14 +173,10 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
 +        if Clk'event and Clk = '1' then -- rising clock edge
 +            if Reset = '1' then         -- synchronous reset (active high)
 +                tx_Enable <= '0';
-+--                start_Enable <= '0';
-+--            elsif txen_delay_is_0 then
 +            elsif start_Enable = '1' then
 +                tx_Enable <= (tx_Start or tx_DataBits or tx_Stop or fifo_Data_Present);
-+--                start_Enable <= '1';
 +            else
 +                tx_Enable <= fifo_Data_Present;
-+--                start_Enable <= '0';
 +            end if;
 +        end if;
 +    end process TX_EN_DFF;
@@ -207,7 +184,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
      -------------------------------------------------------------------------
      -- COUNTER : If mux_sel is zero then reload with the init value else if 
      --           tx_DataBits = '1', decrement
-@@ -664,8 +745,10 @@
+@@ -543,8 +617,10 @@
          if Clk'event and Clk = '1' then -- rising clock edge
              if Reset = '1' then         -- synchronous reset (active high)
                  TX <= '1';
@@ -218,24 +195,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
              end if;
          end if;
      end process SERIAL_OUT_DFF;
-@@ -1589,6 +1672,8 @@
- --  C_USE_PARITY          -- Determines whether parity is used or not
- --  C_ODD_PARITY          -- If parity is used determines whether parity
- --                           is even or odd
-+--  C_TXEN_DELAY          -- Determines the number of bit times to delay
-+--                           the initial startbit after transmit enable
- -- System generics
- --  C_FAMILY              -- Xilinx FPGA Family
- -------------------------------------------------------------------------------
-@@ -1609,6 +1694,7 @@
- -- UART Lite interface
- --  RX                    --  Receive Data
- --  TX                    --  Transmit Data
-+--  TXEN                  --  Transmit Enable
- --  Interrupt             --  UART Interrupt
- -------------------------------------------------------------------------------
- -------------------------------------------------------------------------------
-@@ -1622,7 +1708,8 @@
+@@ -1451,7 +1527,8 @@
      C_BAUDRATE          : integer              := 9600;
      C_DATA_BITS         : integer range 5 to 8 := 8;
      C_USE_PARITY        : integer range 0 to 1 := 0;
@@ -245,7 +205,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
     );
    port
     (
-@@ -1640,6 +1727,7 @@
+@@ -1469,6 +1546,7 @@
      -- UART signals
      RX           : in  std_logic;
      TX           : out std_logic;
@@ -253,7 +213,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
      Interrupt    : out std_logic
     );
  end entity uartlite_core;
-@@ -1958,7 +2046,8 @@
+@@ -1787,7 +1865,8 @@
          C_FAMILY        => C_FAMILY,
          C_DATA_BITS     => C_DATA_BITS,
          C_USE_PARITY    => C_USE_PARITY,
@@ -263,7 +223,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
         )
        port map
         (
-@@ -1966,6 +2055,7 @@
+@@ -1795,6 +1874,7 @@
          Reset           => Reset,
          EN_16x_Baud     => en_16x_Baud,
          TX              => TX,
@@ -271,24 +231,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
          Write_TX_FIFO   => bus2ip_wrce(1),
          Reset_TX_FIFO   => reset_TX_FIFO,
          TX_Data         => bus2ip_data(8-C_DATA_BITS to 7),
-@@ -2092,6 +2182,8 @@
- --  C_USE_PARITY          -- Determines whether parity is used or not
- --  C_ODD_PARITY          -- If parity is used determines whether parity
- --                           is even or odd
-+--  C_TXEN_DELAY          -- Determines the number of bit times to delay
-+--                           the initial startbit after transmit enable
- -------------------------------------------------------------------------------
- -------------------------------------------------------------------------------
- -- Definition of Ports :
-@@ -2121,6 +2213,7 @@
- --UARTLite Interface Signals
- --  rx                   --  Receive Data
- --  tx                   --  Transmit Data
-+--  txen                 --  Transmit Enable
- -------------------------------------------------------------------------------
- -------------------------------------------------------------------------------
- --                  Entity Section
-@@ -2138,7 +2231,8 @@
+@@ -1961,7 +2041,8 @@
      C_BAUDRATE            : integer                       := 9600;
      C_DATA_BITS           : integer range 5 to 8          := 8;
      C_USE_PARITY          : integer range 0 to 1          := 0;
@@ -298,7 +241,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
     );
    port
     (
-@@ -2174,7 +2268,8 @@
+@@ -1997,7 +2078,8 @@
  
  -- UARTLite Interface Signals
        rx                    : in  std_logic;
@@ -308,7 +251,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
     );
  
  -------------------------------------------------------------------------------
-@@ -2264,7 +2359,8 @@
+@@ -2087,7 +2169,8 @@
          C_BAUDRATE           => C_BAUDRATE,
          C_DATA_BITS          => C_DATA_BITS,
          C_USE_PARITY         => C_USE_PARITY,
@@ -318,7 +261,7 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
         )
        port map
         (
-@@ -2280,6 +2376,7 @@
+@@ -2103,6 +2186,7 @@
          SIn_DBus     => ip2bus_data(7 downto 0),
          RX           => rx,
          TX           => tx,
@@ -326,10 +269,9 @@ diff -u -r axi_uartlite_v2_0/hdl/axi_uartlite_v2_0_vh_rfs.vhd rs485_uartlite_v2_
          Interrupt    => Interrupt
         );
  
-diff -u -r axi_uartlite_v2_0/xgui/axi_uartlite_v2_0.tcl rs485_uartlite_v2_0/xgui/axi_uartlite_v2_0.tcl
---- axi_uartlite_v2_0/xgui/axi_uartlite_v2_0.tcl	2019-05-25 01:50:49.000000000 +0200
-+++ rs485_uartlite_v2_0/xgui/axi_uartlite_v2_0.tcl	2020-03-22 18:47:24.700977718 +0100
-@@ -13,6 +13,8 @@
+--- axi_uartlite_v2_0/xgui/axi_uartlite_v2_0.tcl	2026-05-29 12:38:01.107527964 -0700
++++ rs485_uartlite_v2_0/xgui/axi_uartlite_v2_0.tcl	2026-05-29 12:38:01.173528859 -0700
+@@ -58,6 +58,8 @@
  	set C_BAUDRATE [ipgui::add_param $IPINST -parent $panel1 -name C_BAUDRATE -widget comboBox]
  	ipgui::add_row $IPINST -parent $panel1 	
  	set C_DATA_BITS [ipgui::add_param $IPINST -parent $panel1 -name C_DATA_BITS ]
@@ -338,7 +280,7 @@ diff -u -r axi_uartlite_v2_0/xgui/axi_uartlite_v2_0.tcl rs485_uartlite_v2_0/xgui
  	set PARITY [ipgui::add_param $IPINST -parent $Page0 -name PARITY -widget radioGroup -layout horizontal]
  
  	set C_USE_PARITY [ipgui::add_param $IPINST -name C_USE_PARITY]
-@@ -29,6 +31,7 @@
+@@ -74,6 +76,7 @@
  	set_property tooltip "Baud rate of the AXI UART Lite in bits per second." $C_BAUDRATE
  	set_property display_name "Data Bits" $C_DATA_BITS
  	set_property tooltip "The number of data bits in the serial frame." $C_DATA_BITS

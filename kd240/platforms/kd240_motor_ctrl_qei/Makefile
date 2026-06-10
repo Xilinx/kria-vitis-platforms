@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2023, Advanced Micro Devices, Inc.
+# Copyright (C) 2022 - 2026, Advanced Micro Devices, Inc.
 # SPDX-License-Identifier: Apache-2.0
 
 RM = rm -rf
@@ -54,7 +54,7 @@ $(PWM_GEN_IP):
 
 .PHONY: clean
 clean:
-	$(RM) $(VIV_PRJ_DIR) vivado* *dynamic* *.log *.xpe
+	$(RM) $(VIV_PRJ_DIR) vivado* *dynamic* *.log *.xpe vitis xilinx_*
 	
 .PHONY: clean_ip
 clean_ip:	

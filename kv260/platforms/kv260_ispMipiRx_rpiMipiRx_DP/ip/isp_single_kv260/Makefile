@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 RM = rm -rf
-HLS = vitis_hls
+HLS = $(XILINX_VITIS)/bin/vitis
 CLKP ?= 3.3
 XPART ?= xck26-sfvc784-2LV-c
 
@@ -19,11 +19,9 @@ help:
 all: ip
 
 ip:  
-	@echo 'set CLKP $(CLKP)' >> ./settings.tcl
-	@echo 'set XPART $(XPART)' >> ./settings.tcl
-	$(HLS) -f run_hls.tcl
+	CLKP=$(CLKP) XPART=$(XPART) $(HLS) -s run_hls.py
 
 .PHONY: clean
 clean:
-	$(RM) settings.tcl *.prj *.log
+	$(RM) settings.tcl *.prj *.log isppipeline.prj
 
