@@ -104,6 +104,7 @@ firmware: check-firmware $(FW_DEPS)
 	@echo 'Generate $(FW) firmware artifacts and copy to $(FW_DIR)'
 	mkdir -p $(FW_DIR)
 	cp -f $(filter-out $<,$^) $(FW_DIR)
+	cp -f $(PWD)/LICENSE.binaries $(FW_TMP)/$(FW)/LICENSE
 	cd $(FW_TMP)/$(FW) && md5sum ./lib/firmware/xilinx/$(FW)/* > checksum.md5
 	tar -czf $(FW_TOP_DIR)/$(FW).tar.gz -C $(FW_TMP) $(FW)
 	rm -rf $(FW_TMP)

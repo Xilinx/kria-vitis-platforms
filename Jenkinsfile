@@ -14,7 +14,7 @@ pipeline {
         deploy_branch="main"
         tool_release="2026.1"
         tool_build="daily_latest"
-        auto_branch="2022.1"
+        auto_branch="2025.1"
         pfm_ver="202610_1"
         ws="${WORKSPACE}"
         setup="${ws}/paeg-helper/env-setup.sh"
