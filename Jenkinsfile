@@ -22,7 +22,6 @@ pipeline {
         DEPLOYDIR="/wrk/paeg_builds/build-artifacts/kria-vitis-platforms/${tool_release}"
         PAEG_LSF_MEM=65536
         PAEG_LSF_QUEUE="long"
-        build_overlay="false"
         MAIN_PROJECT = "${JOB_NAME.split('/')[-2]}"
         FOLDER = JOB_NAME.split('/')[0..-3].join('%2F')
         ACCESS_TOKEN = credentials('github-token-of-sswbot')
@@ -112,60 +111,7 @@ pipeline {
                             post {
                                 success {
                                     script {
-                                        env.build_overlay="true"
                                         hw.deployPlatform()
-                                    }
-                                }
-                            }
-                        }
-                        stage('smartcam overlay build') {
-                            environment {
-                                fw="kv260-smartcam"
-                            }
-                            when {
-                                anyOf {
-                                    changeset "**/kv260/overlays/smartcam/**"
-                                    triggeredBy 'TimerTrigger'
-                                    triggeredBy 'UserIdCause'
-                                    environment name: 'build_overlay', value: "true"
-                                }
-                            }
-                            steps {
-                                script {
-                                    hw.buildOverlay()
-                                    hw.buildFirmware()
-                                }
-                            }
-                            post {
-                                success {
-                                    script {
-                                        hw.deployFirmware()
-                                    }
-                                }
-                            }
-                        }
-                        stage('benchmark overlay build') {
-                            environment {
-                                fw="kv260-benchmark"
-                            }
-                            when {
-                                anyOf {
-                                    changeset "**/kv260/overlays/benchmark/**"
-                                    triggeredBy 'TimerTrigger'
-                                    triggeredBy 'UserIdCause'
-                                    environment name: 'build_overlay', value: "true"
-                                }
-                            }
-                            steps {
-                                script {
-                                    hw.buildOverlay()
-                                    hw.buildFirmware()
-                                }
-                            }
-                            post {
-                                success {
-                                    script {
-                                        hw.deployFirmware()
                                     }
                                 }
                             }
@@ -193,34 +139,7 @@ pipeline {
                             post {
                                 success {
                                     script {
-                                        env.build_overlay="true"
                                         hw.deployPlatform()
-                                    }
-                                }
-                            }
-                        }
-                        stage('aibox-reid overlay build') {
-                            environment {
-                                fw="kv260-aibox-reid"
-                            }
-                            when {
-                                anyOf {
-                                    changeset "**/kv260/overlays/aibox-reid/**"
-                                    triggeredBy 'TimerTrigger'
-                                    triggeredBy 'UserIdCause'
-                                    environment name: 'build_overlay', value: "true"
-                                }
-                            }
-                            steps {
-                                script {
-                                    hw.buildOverlay()
-                                    hw.buildFirmware()
-                                }
-                            }
-                            post {
-                                success {
-                                    script {
-                                        hw.deployFirmware()
                                     }
                                 }
                             }
@@ -248,34 +167,7 @@ pipeline {
                             post {
                                 success {
                                     script {
-                                        env.build_overlay="true"
                                         hw.deployPlatform()
-                                    }
-                                }
-                            }
-                        }
-                        stage('defect-detect overlay build') {
-                            environment {
-                                fw="kv260-defect-detect"
-                            }
-                            when {
-                                anyOf {
-                                    changeset "**/kv260/overlays/defect-detect/**"
-                                    triggeredBy 'TimerTrigger'
-                                    triggeredBy 'UserIdCause'
-                                    environment name: 'build_overlay', value: "true"
-                                }
-                            }
-                            steps {
-                                script {
-                                    hw.buildOverlay()
-                                    hw.buildFirmware()
-                                }
-                            }
-                            post {
-                                success {
-                                    script {
-                                        hw.deployFirmware()
                                     }
                                 }
                             }
@@ -303,34 +195,7 @@ pipeline {
                             post {
                                 success {
                                     script {
-                                        env.build_overlay="true"
                                         hw.deployPlatform()
-                                    }
-                                }
-                            }
-                        }
-                        stage('nlp-smartvision overlay build') {
-                            environment {
-                                fw="kv260-nlp-smartvision"
-                            }
-                            when {
-                                anyOf {
-                                    changeset "**/kv260/overlays/nlp-smartvision/**"
-                                    triggeredBy 'TimerTrigger'
-                                    triggeredBy 'UserIdCause'
-                                    environment name: 'build_overlay', value: "true"
-                                }
-                            }
-                            steps {
-                                script {
-                                    hw.buildOverlay()
-                                    hw.buildFirmware()
-                                }
-                            }
-                            post {
-                                success {
-                                    script {
-                                        hw.deployFirmware()
                                     }
                                 }
                             }
