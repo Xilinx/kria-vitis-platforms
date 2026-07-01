@@ -25,11 +25,6 @@ VIV_DIR = $(PFM_DIR)/$(PFM)
 VIV_XSA = $(VIV_DIR)/project/$(PFM).xsa
 VIV_BIT = $(VIV_DIR)/project/$(PFM).runs/impl_1/$(PFM)_wrapper.bit
 
-VITIS_DIR = $(BOARD)/overlays
-VITIS_OVERLAY_DIR = $(VITIS_DIR)/$(OVERLAY)
-VITIS_OVERLAY_BIT = $(VITIS_OVERLAY_DIR)/binary_container_1/link/int/system.bit
-VITIS_OVERLAY_XCLBIN = $(VITIS_OVERLAY_DIR)/binary_container_1/system.xclbin
-
 BIF_TEMPLATE = $(PWD)/common/firmware/template.bif
 JSON_TEMPLATE = $(PWD)/common/firmware/shell.json
 
@@ -38,37 +33,22 @@ FW_TMP = $(FW_TOP_DIR)/tmp
 FW_DIR = $(FW_TMP)/$(FW)/lib/firmware/xilinx/$(FW)
 FW_BIF = $(FW_TMP)/$(FW).bif
 FW_BIN = $(FW_TMP)/$(FW).bin
-FW_XCLBIN = $(FW_TMP)/$(FW).xclbin
 FW_DTSI = $(FW_DT_DIR)/dtsi/$(FW).dtsi
 FW_DTBO = $(FW_DT_DIR)/dtsi/$(FW).dtbo
-FW_DEPS = $(FW_DTBO) $(FW_BIN) $(JSON_TEMPLATE)
-
-ifdef OVERLAY
-FW_BIT = $(VITIS_OVERLAY_BIT)
-FW_DT_DIR = $(VITIS_OVERLAY_DIR)
-FW_DEPS += $(FW_XCLBIN)
-else
 FW_BIT = $(VIV_BIT)
 FW_DT_DIR = $(VIV_DIR)
-endif
+FW_DEPS = $(FW_DTBO) $(FW_BIN) $(JSON_TEMPLATE)
 
 .PHONY: help
 help:
 	@echo 'Usage:'
 	@echo ''
 	@echo '  make firmware FW=<val>'
-	@echo '    Build the firmware artifacts for a given platform or overlay.'
+	@echo '    Build the firmware artifacts for a given platform.'
 	@echo ''
 	@echo '    FW: valid options'
 	@echo -n '        '
 	@echo '${FW_LIST}' | sed -r 's/ /\n        /g'
-	@echo ''
-	@echo '  make overlay OVERLAY=<val>'
-	@echo '    Build the Vitis application overlay.'
-	@echo ''
-	@echo '    OVERLAY: valid options'
-	@echo -n '        '
-	@echo '${OVERLAY_LIST}' | sed -r 's/ /\n        /g'
 	@echo ''
 	@echo '  make platform PFM=<val> JOBS=<n>'
 	@echo '    Build the Vitis platform.'
@@ -120,34 +100,6 @@ $(FW_BIF): $(FW_BIT) $(BIF_TEMPLATE)
 	mkdir -p $(FW_TMP)
 	sed 's#@BIT@#$<#' <$(BIF_TEMPLATE) >$@
 
-$(FW_XCLBIN): $(VITIS_OVERLAY_XCLBIN)
-	mkdir -p $(FW_TMP)
-	cp -f $< $@
-
-.PHONY: check-overlay
-check-overlay:
-	@valid=0; \
-	for o in $(OVERLAY_LIST); do \
-	  if [ "$$o" = "$(OVERLAY)" ]; then \
-	    valid=1; \
-	    break; \
-	  fi \
-	done; \
-	if [ "$$valid" -ne 1 ]; then \
-	  echo 'Invalid parameter OVERLAY=$(OVERLAY). Choose one of'; \
-	  echo -n '        '; \
-	  echo '${OVERLAY_LIST}' | sed -r 's/ /\n        /g'; \
-	  echo ''; \
-	  exit 1; \
-	fi
-
-.PHONY: overlay
-overlay: check-overlay $(VITIS_OVERLAY_XCLBIN)
-$(VITIS_OVERLAY_XCLBIN): $(VITIS_OVERLAY_BIT)
-$(VITIS_OVERLAY_BIT): $(PFM_XPFM)
-	@echo 'Build $(OVERLAY) Vitis overlay using platform $(PFM)'
-	$(MAKE) -C $(VITIS_OVERLAY_DIR) all PLATFORM=$(PFM_XPFM)
-
 .PHONY: check-platform
 check-platform:
 	@valid=0; \
@@ -178,9 +130,7 @@ $(VIV_XSA):
 
 .PHONY: clean
 clean:
-	$(foreach o, $(OVERLAY_LIST), $(MAKE) -C $(PWD)/kv260/overlays/$(o) clean;)
 	$(foreach p, $(PFM_LIST), $(MAKE) -C $(PWD)/$(word 1,$(subst _, ,$(p)))/platforms/$(p) clean;)
 	$(foreach d, $(wildcard $(PWD)/kd240/platforms/ip/*), $(if $(wildcard $(d)/Makefile), $(MAKE) -C $(d) clean;))
 	$(foreach b, $(BOARD_LIST), $(RM) $(PWD)/$(b)/platforms/linux.bif $(PWD)/$(b)/platforms/vitis $(PWD)/$(b)/platforms/xilinx_*_$(PFM_VER) $(PWD)/$(b)/firmware $(PWD)/$(b)/platforms/hs_err_pid*.log;)
 	$(foreach p, $(PFM_LIST), $(RM) $(PWD)/$(word 1,$(subst _, ,$(p)))/platforms/$(p)/dtsi/*.dtbo;)
-	$(foreach o, $(OVERLAY_LIST), $(RM) $(PWD)/kv260/overlays/$(o)/dtsi/*.dtbo;)
