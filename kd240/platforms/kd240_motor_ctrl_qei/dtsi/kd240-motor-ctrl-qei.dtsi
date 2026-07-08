@@ -138,7 +138,7 @@
 		reg = <0x0 0x80000000 0x0 0x1000>;
 		xlnx,addrwidth = <0x20>;
 		xlnx,include-dre ;
-		xlnx,num-mm2s-channels = <0x2>;
+		xlnx,num-mm2s-channels = <0x1>;
 		xlnx,num-s2mm-channels = <0x4>;
 	};
 
